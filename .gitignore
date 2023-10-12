@@ -1,12 +1,13 @@
-node_modules/
-build/
-yarn-error.log
-.DS_Store
-coverage/
 .dotrun.json
-/.eslintcache
-.vscode/
+.DS_Store
+.env.local
+.eslintcache
 .nfs.*
+.vscode/
+build/
+coverage/
+node_modules/
+yarn-error.log
 
 .yarn/*
 !.yarn/patches
