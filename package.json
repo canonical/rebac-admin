@@ -1,0 +1,10 @@
+{
+  "name": "rebac-admin",
+  "version": "0.0.1",
+  "description": "A shared UI for managing ReBAC/OpenFGA permissions",
+  "repository": "git@github.com:canonical/rebac-admin.git",
+  "author": "Canonical Webteam",
+  "license": "",
+  "private": true,
+  "packageManager": "yarn@3.6.4"
+}
