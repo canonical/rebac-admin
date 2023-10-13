@@ -10,7 +10,7 @@ USE_ENV_LOCAL_ACCESS_TOKEN=false
 
 if [ -f .env.local ]
 then
-  ENV_LOCAL_ACCESS_TOKEN=$(grep -o "GITHUB_ACCESS_TOKEN=.*" .env.local | cut -d'=' -f2)
+  ENV_LOCAL_ACCESS_TOKEN=$(grep -o "^[^#]*GITHUB_ACCESS_TOKEN=.*" .env.local | cut -d'=' -f2)
   if [ -n "$ENV_LOCAL_ACCESS_TOKEN" ]
   then
     ACCESS_TOKEN="$ENV_LOCAL_ACCESS_TOKEN"
@@ -23,7 +23,6 @@ then
   if [ -n "$1" ]
   then
     ACCESS_TOKEN="$1"
-    echo "HERE"
   else
     echo "Please provide a valid github personal access token!"
     echo "Pass it via GITHUB_ACCESS_TOKEN in .env.local or as the sole argument of this script!"
@@ -37,7 +36,7 @@ OUTPUT_FILE="openapi.yaml"
 
 if [ -f .env.local ]
 then
-  ENV_LOCAL_API_SPEC_VERSION=$(grep -o "API_SPEC_VERSION=.*" .env.local | cut -d'=' -f2)
+  ENV_LOCAL_API_SPEC_VERSION=$(grep -o "^[^#]*API_SPEC_VERSION=.*" .env.local | cut -d'=' -f2)
   if [ -n "$ENV_LOCAL_API_SPEC_VERSION" ]
   then
     API_SPEC_VERSION="$ENV_LOCAL_API_SPEC_VERSION"
@@ -47,7 +46,7 @@ fi
 
 if [ $USE_ENV_LOCAL_API_SPEC_VERSION = false ] && [ -f .env ]
 then
-  ENV_API_SPEC_VERSION=$(grep -o "API_SPEC_VERSION=.*" .env | cut -d'=' -f2)
+  ENV_API_SPEC_VERSION=$(grep -o "^[^#]*API_SPEC_VERSION=.*" .env | cut -d'=' -f2)
   if [ -n "$ENV_API_SPEC_VERSION" ]
   then
     API_SPEC_VERSION="$ENV_API_SPEC_VERSION"
