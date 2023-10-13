@@ -44,8 +44,8 @@ fi
 
 if echo "$OPENAPI_YAML_CONTENT" > $OUTPUT_FILE
 then
-    echo "The content has been successfully written to $OUTPUT_FILE!"
+  echo "The content has been successfully written to $OUTPUT_FILE!"
 else
-    echo "Error: Couldn't write the content to $OUTPUT_FILE!"
-    exit 1
+  echo "Error: Couldn't write the content to $OUTPUT_FILE!"
+  exit 1
 fi
