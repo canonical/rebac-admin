@@ -23,7 +23,8 @@
     "build": "tsc && vite build",
     "clean": "./scripts/clean-files",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "start": "vite"
+    "start": "vite",
+    "fetch-api-spec": "./scripts/fetch-api-spec"
   },
   "peerDependencies": {
     "@types/react": "^18.0.0",
