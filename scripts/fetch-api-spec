@@ -44,7 +44,7 @@ fi
 
 if echo "$OPENAPI_YAML_CONTENT" > $OUTPUT_FILE
 then
-  echo "The content has been successfully written to $OUTPUT_FILE!"
+  echo "Version $API_SPEC_VERSION of openapi.yaml has been successfully downloaded!"
 else
   echo "Error: Couldn't write the content to $OUTPUT_FILE!"
   exit 1
