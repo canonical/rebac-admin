@@ -7,8 +7,14 @@
 # as the sole argument to this bash script.
 
 API_SPEC_VERSION="main"
-source .env
-source .env.local
+if [ -f .env ]
+then
+  source .env
+fi
+if [ -f .env.local ]
+then
+  source .env.local
+fi
 
 if [ -z "$API_SPEC_VERSION" ]
 then
