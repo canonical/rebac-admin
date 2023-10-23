@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
@@ -25,6 +26,12 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       port: Number(env.PORT),
+    },
+    test: {
+      environment: "happy-dom",
+      globals: true,
+      include: ["src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+      setupFiles: "src/test/setup.ts",
     },
   };
 });
