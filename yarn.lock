@@ -887,7 +887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^9.0.0":
+"@testing-library/dom@npm:9.3.3, @testing-library/dom@npm:^9.0.0":
   version: 9.3.3
   resolution: "@testing-library/dom@npm:9.3.3"
   dependencies:
@@ -4037,6 +4037,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rebac-admin@workspace:."
   dependencies:
+    "@testing-library/dom": 9.3.3
     "@testing-library/jest-dom": 6.1.4
     "@testing-library/react": 14.0.0
     "@testing-library/user-event": 14.5.1
