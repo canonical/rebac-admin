@@ -21,10 +21,12 @@
   },
   "scripts": {
     "build": "tsc && vite build",
+    "build-demo": "tsc && vite build -c vite-demo.config.ts",
     "clean": "./scripts/clean-files",
     "fetch-api-spec": "./scripts/fetch-api-spec",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier-check": "prettier --check src/**/* demo/src/**/*",
+    "serve-demo": "vite preview -c vite-demo.config.ts",
     "start": "vite"
   },
   "peerDependencies": {
