@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 
-import Index from "./index";
+import ReBACAdmin from "./ReBACAdmin";
 
-describe("Index", () => {
+describe("ReBACAdmin", () => {
   it("renders", () => {
-    render(<Index />);
+    render(<ReBACAdmin />);
     expect(screen.getByText("Canonical ReBAC Admin")).toBeInTheDocument();
   });
 });
