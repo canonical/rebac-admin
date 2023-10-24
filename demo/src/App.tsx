@@ -1,11 +1,7 @@
-import Index from "../../src";
+import { ReBACAdmin } from "../../src";
 
 const App = () => {
-  return (
-    <h1>
-      <Index />
-    </h1>
-  );
+  return <ReBACAdmin />;
 };
 
 export default App;
