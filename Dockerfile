@@ -7,7 +7,6 @@ FROM node:20 AS yarn-dependencies
 WORKDIR /srv
 
 ADD . .
-RUN corepack enable
 RUN yarn config set httpProxy $HTTP_PROXY
 RUN yarn config set httpsProxy $HTTPS_PROXY
 RUN yarn install
