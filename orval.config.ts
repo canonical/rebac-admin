@@ -10,7 +10,7 @@ export default defineConfig({
       client: "react-query",
       mode: "tags-split",
       mock: true,
-      clean: "src/api",
+      clean: ["src/api"],
       prettier: true,
     },
   },
