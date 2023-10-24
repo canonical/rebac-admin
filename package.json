@@ -28,8 +28,7 @@
     "prettier-check": "prettier --check src/**/* demo/src/**/*",
     "serve-demo": "vite preview -c vite-demo.config.ts",
     "start": "vite",
-    "test": "vitest run",
-    "test-watch": "vitest",
+    "test": "vitest",
     "test-ui": "vitest --ui --open=false",
     "typecheck": "vitest typecheck"
   },
