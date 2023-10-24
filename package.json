@@ -6,7 +6,7 @@
   "author": "Canonical Webteam",
   "license": "",
   "private": true,
-  "packageManager": "yarn@3.6.4",
+  "packageManager": "yarn@4.0.0",
   "type": "module",
   "files": [
     "dist"
@@ -20,8 +20,8 @@
     }
   },
   "scripts": {
-    "build": "tsc && vite build",
-    "build-demo": "tsc && vite build -c vite-demo.config.ts",
+    "build": "yarn run tsc && vite build",
+    "build-demo": "yarn run tsc && vite build -c vite-demo.config.ts",
     "clean": "./scripts/clean-files",
     "fetch-api-spec": "./scripts/fetch-api-spec",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
