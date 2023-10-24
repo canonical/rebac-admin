@@ -4,6 +4,7 @@
 .eslintcache
 .nfs.*
 .vscode/
+build/
 coverage/
 dist/
 node_modules/

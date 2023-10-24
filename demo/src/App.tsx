@@ -1,8 +1,9 @@
+import Index from "../../src";
+
 const App = () => {
   return (
     <h1>
-      Canonical ReBAC Admin
-      <div>Something or other</div>
+      <Index />
     </h1>
   );
 };
