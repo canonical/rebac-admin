@@ -8,8 +8,10 @@ export default defineConfig({
     output: {
       target: "src/api/api.ts",
       client: "react-query",
-      mode: "split",
+      mode: "tags-split",
       mock: true,
+      clean: "src/api",
+      prettier: true,
     },
   },
 });

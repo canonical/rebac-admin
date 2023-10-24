@@ -571,7 +571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:^8.2.0":
+"@faker-js/faker@npm:8.2.0":
   version: 8.2.0
   resolution: "@faker-js/faker@npm:8.2.0"
   checksum: febc17018acfb841a348591bfe415e815ea981bf7fa0a12670ac2b449479ad7e9e7b130c42878ec30210da964c13a620a3303dc00d63cb13ded00c6fc701e2be
@@ -1266,7 +1266,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.0.5":
+"@tanstack/react-query@npm:5.0.5":
   version: 5.0.5
   resolution: "@tanstack/react-query@npm:5.0.5"
   dependencies:
@@ -1892,7 +1892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.5.1":
+"axios@npm:1.5.1":
   version: 1.5.1
   resolution: "axios@npm:1.5.1"
   dependencies:
@@ -4759,7 +4759,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:^2.0.0":
+"msw@npm:2.0.0":
   version: 2.0.0
   resolution: "msw@npm:2.0.0"
   dependencies:
@@ -5100,13 +5100,6 @@ __metadata:
     is-inside-container: ^1.0.0
     is-wsl: ^2.2.0
   checksum: 3993c0f61d51fed8ac290e99c9c3cf45d3b6cfb3e2aa2b74cafd312c3486c22fd81df16ac8f3ab91dd8a4e3e729a16fc2480cfc406c4833416cf908acf1ae7c9
-  languageName: node
-  linkType: hard
-
-"openapi-types@npm:12.1.3":
-  version: 12.1.3
-  resolution: "openapi-types@npm:12.1.3"
-  checksum: 7fa5547f87a58d2aa0eba6e91d396f42d7d31bc3ae140e61b5d60b47d2fd068b48776f42407d5a8da7280cf31195aa128c2fc285e8bb871d1105edee5647a0bb
   languageName: node
   linkType: hard
 
@@ -5477,22 +5470,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rebac-admin@workspace:."
   dependencies:
-    "@faker-js/faker": ^8.2.0
-    "@tanstack/react-query": ^5.0.5
+    "@faker-js/faker": 8.2.0
+    "@tanstack/react-query": 5.0.5
     "@types/node": 20.8.5
     "@types/react": 18.2.28
     "@types/react-dom": 18.2.13
     "@typescript-eslint/eslint-plugin": 6.7.5
     "@typescript-eslint/parser": 6.7.5
     "@vitejs/plugin-react": 4.1.0
-    axios: ^1.5.1
+    axios: 1.5.1
     eslint: 8.51.0
     eslint-config-prettier: 9.0.0
     eslint-plugin-prettier: 5.0.1
     eslint-plugin-react-hooks: 4.6.0
     eslint-plugin-react-refresh: 0.4.3
-    msw: ^2.0.0
-    openapi-types: 12.1.3
+    msw: 2.0.0
     orval: 6.18.1
     prettier: 3.0.3
     react: 18.2.0

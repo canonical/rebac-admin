@@ -8,43 +8,18 @@ fi
 
 if [ -d src/api ]
 then
-  echo "Warning: The contents of src/api will be replaced with the Orval generated files!"
-  read -p "Do you want to proceed (y/n)? " DELETE_SRC_API
+  echo "Warning: The content of src/api will be overwritten by the Orval generated files!"
+  read -p "Do you want to proceed (Y/N)? " DELETE_SRC_API
   if [[ "$DELETE_SRC_API" =~ ^[Nn]$ ]]
   then
     exit 0
   fi
-  if ! [[ "$DELETE_SRC_API" =~ ^[Yy]$ ]]
+  if ! [[ -z "$DELETE_SRC_API" ]] && ! [[ "$DELETE_SRC_API" =~ ^[Yy]$ ]]
   then
     echo "Error: Invalid choice!"
-    echo "Please rerun the script and choose either 'y' for YES or 'n' for NO."
+    echo "Please rerun the script and choose either 'Y' for YES or 'N' for NO."
     exit 1
   fi
-  rm -r src/api
-  if [ -d src/api ]
-  then
-    echo "Error: Failed to delete src/api!"
-    exit 1
-  fi
-fi
-
-mkdir -p src/api
-if ! [ -d src/api ]
-then
-  echo "Error: Failed to create src/api!"
-  exit 1
 fi
 
 orval --config ./orval.config.ts
-if [ -f src/api/api.msw.ts ] && [ -f src/api/api.schemas.ts ] && [ -f src/api/api.ts ]
-then
-  echo "Orval has successfully generated the required files in src/api. Initiating linting..."
-  yarn eslint src/api/api.msw.ts --fix
-  yarn eslint src/api/api.schemas.ts --fix
-  yarn eslint src/api/api.msw.ts --fix
-  echo "Linting process completed!"
-else
-  echo "Error: Missing files and/or incorrect file names in src/api after running Orval!"
-  echo "Please check that orval.config.ts is set up correctly."
-  exit 1
-fi
