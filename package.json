@@ -92,5 +92,8 @@
       "prefer-alphabetical-dependencies": "error",
       "prefer-alphabetical-devDependencies": "error"
     }
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

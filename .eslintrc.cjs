@@ -64,4 +64,12 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  settings: {
+    "import/external-module-folders": [".yarn"],
+    "import/resolver": {
+      node: {
+        paths: ["src"],
+      },
+    },
+  },
 };
