@@ -13,9 +13,9 @@ module.exports = {
   ],
   ignorePatterns: ["dist", "build", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
-  "parserOptions": {
-    "parser": "@typescript-eslint/parser",
-    "project": "./tsconfig.json"
+  parserOptions: {
+    parser: "@typescript-eslint/parser",
+    project: "./tsconfig.json",
   },
   plugins: ["prettier", "react-refresh", "vitest", "promise", "jsx-a11y"],
   rules: {
@@ -27,8 +27,8 @@ module.exports = {
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".tsx"]
-      }
+        extensions: [".tsx"],
+      },
     ],
     "import/prefer-default-export": 0,
     "import/imports-first": ["error", "absolute-first"],
@@ -37,18 +37,18 @@ module.exports = {
       "error",
       {
         "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc"
+        alphabetize: {
+          order: "asc",
         },
-        "groups": [
+        groups: [
           "builtin",
           "external",
           "internal",
           "parent",
           "sibling",
-          "index"
-        ]
-      }
+          "index",
+        ],
+      },
     ],
     "jest/prefer-expect-assertions": 0,
     "jest/prefer-inline-snapshots": 0,
@@ -57,6 +57,7 @@ module.exports = {
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
+    "no-redeclare": 0,
     "prefer-destructuring": 0,
     "react-refresh/only-export-components": [
       "warn",
