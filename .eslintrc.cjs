@@ -2,18 +2,65 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
+    "react-app",
+    "eslint:recommended",
     "plugin:prettier/recommended",
-    'plugin:react-hooks/recommended',
+    "plugin:react-hooks/recommended",
+    "plugin:vitest/recommended",
+    "plugin:promise/recommended",
+    "plugin:import/typescript",
+    "plugin:jsx-a11y/recommended",
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
-  parser: '@typescript-eslint/parser',
-  plugins: ["prettier", 'react-refresh'],
+  ignorePatterns: ["dist", "build", ".eslintrc.cjs"],
+  parser: "@typescript-eslint/parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": "./tsconfig.json"
+  },
+  plugins: ["prettier", "react-refresh", "vitest", "promise", "jsx-a11y"],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-misused-promises": "error",
+    "prefer-promise-reject-errors": "error",
+    "@typescript-eslint/await-thenable": "error",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".tsx"]
+      }
+    ],
+    "import/prefer-default-export": 0,
+    "import/imports-first": ["error", "absolute-first"],
+    "import/newline-after-import": "error",
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc"
+        },
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ]
+      }
+    ],
+    "jest/prefer-expect-assertions": 0,
+    "jest/prefer-inline-snapshots": 0,
+    "jest/lowercase-name": 0,
+    "jest/no-hooks": 0,
+    "default-case": 0,
+    "no-param-reassign": 0,
+    "no-case-declarations": 0,
+    "prefer-destructuring": 0,
+    "react-refresh/only-export-components": [
+      "warn",
       { allowConstantExport: true },
     ],
   },
-}
+};
