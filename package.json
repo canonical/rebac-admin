@@ -6,7 +6,7 @@
   "author": "Canonical Webteam",
   "license": "",
   "private": true,
-  "packageManager": "yarn@4.0.0",
+  "packageManager": "yarn@3.6.4",
   "type": "module",
   "files": [
     "dist"
