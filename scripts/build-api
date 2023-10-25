@@ -9,7 +9,7 @@ fi
 if [ -d src/api ]
 then
   echo "Warning: The content of src/api will be overwritten by the Orval generated files!"
-  read -p "Do you want to proceed (Y/N)? " DELETE_SRC_API
+  read -p "Do you want to proceed? [Y/n] " DELETE_SRC_API
   if [[ "$DELETE_SRC_API" =~ ^[Nn]$ ]]
   then
     exit 0

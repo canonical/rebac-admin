@@ -28,7 +28,6 @@ export const getGetEntitlementsMock = () =>
       entity: faker.helpers.arrayElement([faker.word.sample(), undefined]),
       entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     })),
-    faker.random.word(),
   ]);
 
 export const getPutEntitlementsMock = () => faker.random.word();
@@ -38,7 +37,7 @@ export const getEntitlementsMSW = () => [
     return res(
       ctx.delay(1000),
       ctx.status(200, "Mocked status"),
-      ctx.text(getGetEntitlementsMock()),
+      ctx.json(getGetEntitlementsMock()),
     );
   }),
   rest.put("*/entitlements", (_req, res, ctx) => {
