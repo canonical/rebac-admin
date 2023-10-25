@@ -191,6 +191,7 @@ export type GetAuthenticationProvidersParams = {
 export type ErrorErrorCode =
   (typeof ErrorErrorCode)[keyof typeof ErrorErrorCode];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ErrorErrorCode = {
   BAD_REQUEST: "BAD_REQUEST",
   UNAUTHORIZED: "UNAUTHORIZED",
@@ -270,6 +271,7 @@ export interface User {
 export type IdentityProviderSyncMode =
   (typeof IdentityProviderSyncMode)[keyof typeof IdentityProviderSyncMode];
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const IdentityProviderSyncMode = {
   import: "import",
 } as const;

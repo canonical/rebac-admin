@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -25,6 +23,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   Resource,
   BadRequestResponse,
@@ -41,7 +42,7 @@ export const getResources = (
   params?: GetResourcesParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Resource[]>> => {
-  return axios.default.get(`/resources`, {
+  return axios.get(`/resources`, {
     ...options,
     params: { ...params, ...options?.params },
   });

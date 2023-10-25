@@ -16,8 +16,8 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import { rest } from "msw";
 import { faker } from "@faker-js/faker";
+import { rest } from "msw";
 
 export const getGetAuthenticationIdMock = () => ({
   id: faker.helpers.arrayElement([faker.word.sample(), undefined]),

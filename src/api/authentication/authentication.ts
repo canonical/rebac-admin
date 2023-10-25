@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   GetAuthenticationProviders200Item,
   BadRequestResponse,
@@ -45,7 +46,7 @@ export const getAuthenticationProviders = (
   params?: GetAuthenticationProvidersParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<GetAuthenticationProviders200Item[]>> => {
-  return axios.default.get(`/authentication/providers`, {
+  return axios.get(`/authentication/providers`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -143,7 +144,7 @@ export const getAuthentication = (
   params?: GetAuthenticationParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<IdentityProvider[]>> => {
-  return axios.default.get(`/authentication`, {
+  return axios.get(`/authentication`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -237,7 +238,7 @@ export const postAuthentication = (
   identityProvider: IdentityProvider,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<IdentityProvider>> => {
-  return axios.default.post(`/authentication`, identityProvider, options);
+  return axios.post(`/authentication`, identityProvider, options);
 };
 
 export const getPostAuthenticationMutationOptions = <

@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   Group,
   BadRequestResponse,
@@ -43,7 +44,7 @@ export const getGroups = (
   params?: GetGroupsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Group[]>> => {
-  return axios.default.get(`/groups`, {
+  return axios.get(`/groups`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -134,7 +135,7 @@ export const postGroups = (
   group: Group,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Group>> => {
-  return axios.default.post(`/groups`, group, options);
+  return axios.post(`/groups`, group, options);
 };
 
 export const getPostGroupsMutationOptions = <

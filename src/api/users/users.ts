@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   User,
   BadRequestResponse,
@@ -43,7 +44,7 @@ export const getUsers = (
   params?: GetUsersParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<User[]>> => {
-  return axios.default.get(`/users`, {
+  return axios.get(`/users`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -134,7 +135,7 @@ export const postUsers = (
   user: User,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<User>> => {
-  return axios.default.post(`/users`, user, options);
+  return axios.post(`/users`, user, options);
 };
 
 export const getPostUsersMutationOptions = <

@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   Role,
   BadRequestResponse,
@@ -43,7 +44,7 @@ export const getRoles = (
   params?: GetRolesParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Role[]>> => {
-  return axios.default.get(`/roles`, {
+  return axios.get(`/roles`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -134,7 +135,7 @@ export const postRoles = (
   role: Role,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Role[]>> => {
-  return axios.default.post(`/roles`, role, options);
+  return axios.post(`/roles`, role, options);
 };
 
 export const getPostRolesMutationOptions = <

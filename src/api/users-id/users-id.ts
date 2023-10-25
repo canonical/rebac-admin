@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   User,
   BadRequestResponse,
@@ -48,7 +49,7 @@ export const getUsersId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<User>> => {
-  return axios.default.get(`/users/${id}`, options);
+  return axios.get(`/users/${id}`, options);
 };
 
 export const getGetUsersIdQueryKey = (id: string) => {
@@ -142,7 +143,7 @@ export const patchUsersId = (
   user: User,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.patch(`/users/${id}`, user, options);
+  return axios.patch(`/users/${id}`, user, options);
 };
 
 export const getPatchUsersIdMutationOptions = <
@@ -220,7 +221,7 @@ export const deleteUsersId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(`/users/${id}`, options);
+  return axios.delete(`/users/${id}`, options);
 };
 
 export const getDeleteUsersIdMutationOptions = <
@@ -299,7 +300,7 @@ export const getUsersIdGroups = (
   params?: GetUsersIdGroupsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Group[]>> => {
-  return axios.default.get(`/users/${id}/groups`, {
+  return axios.get(`/users/${id}/groups`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -402,7 +403,7 @@ export const getUsersIdRoles = (
   params?: GetUsersIdRolesParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Role[]>> => {
-  return axios.default.get(`/users/${id}/roles`, {
+  return axios.get(`/users/${id}/roles`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -505,7 +506,7 @@ export const getUsersIdEntitlements = (
   params?: GetUsersIdEntitlementsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Entitlement[]>> => {
-  return axios.default.get(`/users/${id}/entitlements`, {
+  return axios.get(`/users/${id}/entitlements`, {
     ...options,
     params: { ...params, ...options?.params },
   });

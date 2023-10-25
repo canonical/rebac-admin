@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   GetEntitlements200OneItem,
   BadRequestResponse,
@@ -44,7 +45,7 @@ export const getEntitlements = (
   params?: GetEntitlementsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<GetEntitlements200OneItem[] | string>> => {
-  return axios.default.get(`/entitlements`, {
+  return axios.get(`/entitlements`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -135,7 +136,7 @@ export const putEntitlements = (
   putEntitlementsBody: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<string>> => {
-  return axios.default.put(`/entitlements`, putEntitlementsBody, options);
+  return axios.put(`/entitlements`, putEntitlementsBody, options);
 };
 
 export const getPutEntitlementsMutationOptions = <

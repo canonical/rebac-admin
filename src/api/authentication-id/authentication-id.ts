@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   IdentityProvider,
   BadRequestResponse,
@@ -42,7 +43,7 @@ export const getAuthenticationId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<IdentityProvider>> => {
-  return axios.default.get(`/authentication/${id}`, options);
+  return axios.get(`/authentication/${id}`, options);
 };
 
 export const getGetAuthenticationIdQueryKey = (id: string) => {
@@ -136,11 +137,7 @@ export const patchAuthenticationId = (
   identityProvider: IdentityProvider,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.patch(
-    `/authentication/${id}`,
-    identityProvider,
-    options,
-  );
+  return axios.patch(`/authentication/${id}`, identityProvider, options);
 };
 
 export const getPatchAuthenticationIdMutationOptions = <
@@ -218,7 +215,7 @@ export const deleteAuthenticationId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(`/authentication/${id}`, options);
+  return axios.delete(`/authentication/${id}`, options);
 };
 
 export const getDeleteAuthenticationIdMutationOptions = <

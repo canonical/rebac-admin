@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   Role,
   BadRequestResponse,
@@ -44,7 +45,7 @@ export const getRolesId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Role>> => {
-  return axios.default.get(`/roles/${id}`, options);
+  return axios.get(`/roles/${id}`, options);
 };
 
 export const getGetRolesIdQueryKey = (id: string) => {
@@ -138,7 +139,7 @@ export const patchRolesId = (
   role: Role,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.patch(`/roles/${id}`, role, options);
+  return axios.patch(`/roles/${id}`, role, options);
 };
 
 export const getPatchRolesIdMutationOptions = <
@@ -216,7 +217,7 @@ export const deleteRolesId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(`/roles/${id}`, options);
+  return axios.delete(`/roles/${id}`, options);
 };
 
 export const getDeleteRolesIdMutationOptions = <
@@ -295,7 +296,7 @@ export const getRolesIdEntitlements = (
   params?: GetRolesIdEntitlementsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Entitlement[]>> => {
-  return axios.default.get(`/roles/${id}/entitlements`, {
+  return axios.get(`/roles/${id}/entitlements`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -403,10 +404,7 @@ export const deleteRolesIdEntitlementsEntitlementId = (
   entitlementId: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(
-    `/roles/${id}/entitlements/${entitlementId}`,
-    options,
-  );
+  return axios.delete(`/roles/${id}/entitlements/${entitlementId}`, options);
 };
 
 export const getDeleteRolesIdEntitlementsEntitlementIdMutationOptions = <

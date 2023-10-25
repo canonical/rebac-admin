@@ -27,7 +27,7 @@ orval --config ./orval.config.ts
 if [ -f src/api/api.schemas.ts ]
 then
   echo "Orval has successfully generated the required files in src/api. Initiating linting..."
-  yarn eslint ./src/api --ext ts,tsx --report-unused-disable-directives --fix
+  yarn eslint ./src/api --ext ts,tsx --fix
   echo "Linting process completed!"
 else
   echo "Error: Missing files and/or incorrect file names in src/api after running Orval!"

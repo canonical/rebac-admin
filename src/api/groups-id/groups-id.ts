@@ -16,8 +16,6 @@
 
  * OpenAPI spec version: 0.0.6
  */
-import * as axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type {
   UseQueryOptions,
@@ -27,6 +25,9 @@ import type {
   UseQueryResult,
   QueryKey,
 } from "@tanstack/react-query";
+import axios from "axios";
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
 import type {
   Group,
   BadRequestResponse,
@@ -44,7 +45,7 @@ export const getGroupsId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<Group>> => {
-  return axios.default.get(`/groups/${id}`, options);
+  return axios.get(`/groups/${id}`, options);
 };
 
 export const getGetGroupsIdQueryKey = (id: string) => {
@@ -138,7 +139,7 @@ export const patchGroupsId = (
   group: Group,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.patch(`/groups/${id}`, group, options);
+  return axios.patch(`/groups/${id}`, group, options);
 };
 
 export const getPatchGroupsIdMutationOptions = <
@@ -216,7 +217,7 @@ export const deleteGroupsId = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(`/groups/${id}`, options);
+  return axios.delete(`/groups/${id}`, options);
 };
 
 export const getDeleteGroupsIdMutationOptions = <
@@ -295,7 +296,7 @@ export const getGroupsIdUsers = (
   params?: GetGroupsIdUsersParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<User[]>> => {
-  return axios.default.get(`/groups/${id}/users`, {
+  return axios.get(`/groups/${id}/users`, {
     ...options,
     params: { ...params, ...options?.params },
   });
@@ -398,7 +399,7 @@ export const patchGroupsIdUsers = (
   user: User,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.patch(`/groups/${id}/users`, user, options);
+  return axios.patch(`/groups/${id}/users`, user, options);
 };
 
 export const getPatchGroupsIdUsersMutationOptions = <
@@ -477,7 +478,7 @@ export const deleteGroupsIdUsersUserId = (
   userId: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  return axios.default.delete(`/groups/${id}/users/${userId}`, options);
+  return axios.delete(`/groups/${id}/users/${userId}`, options);
 };
 
 export const getDeleteGroupsIdUsersUserIdMutationOptions = <
