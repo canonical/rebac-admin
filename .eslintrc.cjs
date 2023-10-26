@@ -10,6 +10,7 @@ module.exports = {
     "plugin:promise/recommended",
     "plugin:import/typescript",
     "plugin:jsx-a11y/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
   ],
   ignorePatterns: ["dist", "build", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -17,7 +18,14 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     project: "./tsconfig.json",
   },
-  plugins: ["prettier", "react-refresh", "vitest", "promise", "jsx-a11y"],
+  plugins: [
+    "prettier",
+    "react-refresh",
+    "vitest",
+    "promise",
+    "jsx-a11y",
+    "@tanstack/query",
+  ],
   rules: {
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-floating-promises": "error",
@@ -63,6 +71,9 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error",
+    "@tanstack/query/stable-query-client": "error",
   },
   settings: {
     "import/external-module-folders": [".yarn"],
