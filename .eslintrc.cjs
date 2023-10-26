@@ -72,7 +72,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     "@tanstack/query/exhaustive-deps": "error",
-    "@tanstack/query/prefer-query-object-syntax": "error",
+    "@tanstack/query/prefer-query-object-syntax": 0,
     "@tanstack/query/stable-query-client": "error",
   },
   settings: {
