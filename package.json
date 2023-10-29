@@ -61,6 +61,7 @@
     "@vitejs/plugin-react": "4.1.0",
     "@vitest/ui": "0.34.6",
     "axios": "1.5.1",
+    "classnames": "2.3.2",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-react-app": "7.0.1",

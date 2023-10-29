@@ -6,10 +6,13 @@ import Form from "@canonical/react-components/dist/components/Form";
 import Icon from "@canonical/react-components/dist/components/Icon";
 import Input from "@canonical/react-components/dist/components/Input";
 import Row from "@canonical/react-components/dist/components/Row";
+import classNames from "classnames";
 import { useState } from "react";
 
 const App = () => {
   const [showAside, setShowAside] = useState(false);
+  const [menuPinned, setMenuPinned] = useState(false);
+  const [menuCollapsed, setMenuCollapsed] = useState(true);
 
   return (
     <div className="l-application" role="presentation">
@@ -32,13 +35,26 @@ const App = () => {
               />
             </a>
             <div className="p-panel__controls">
-              <span className="p-panel__toggle">Menu</span>
+              <span
+                role="button"
+                tabIndex={0}
+                className="p-panel__toggle"
+                onClick={() => setMenuCollapsed(!menuCollapsed)}
+                onKeyDown={() => setMenuCollapsed(!menuCollapsed)}
+              >
+                Menu
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <header className="l-navigation is-collapsed">
+      <header
+        className={classNames("l-navigation", {
+          "is-collapsed": menuCollapsed,
+          "is-pinned": menuPinned,
+        })}
+      >
         <div className="l-navigation__drawer">
           <div className="p-panel is-dark">
             <div className="p-panel__header is-sticky">
@@ -62,15 +78,25 @@ const App = () => {
                   hasIcon
                   appearance="base"
                   className="is-dark u-no-margin u-hide--medium"
+                  onClick={(evt) => {
+                    setMenuCollapsed(true);
+                    evt.currentTarget.blur();
+                  }}
                 >
-                  <Icon name="close" light />
+                  <Icon name="close" className="is-light" />
                 </Button>
                 <Button
                   hasIcon
                   appearance="base"
                   className="is-dark u-no-margin u-hide--small"
+                  onClick={() => {
+                    setMenuPinned(!menuPinned);
+                  }}
                 >
-                  <Icon name="pin" light />
+                  <Icon
+                    name={menuPinned ? "close" : "pin"}
+                    className="is-light"
+                  />
                 </Button>
               </div>
             </div>
