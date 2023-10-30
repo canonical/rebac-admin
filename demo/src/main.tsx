@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -14,16 +13,11 @@ const defferRender = async () => {
 if (root) {
   defferRender()
     .then(() => {
-      const queryClient = new QueryClient();
-
       ReactDOM.createRoot(root).render(
         <React.StrictMode>
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
+          <App />
         </React.StrictMode>,
       );
-
       return;
     })
     .catch((error) =>
