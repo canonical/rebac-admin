@@ -1,5 +1,3 @@
-import ReBACAdmin from "components/ReBACAdmin";
-
 import Button from "@canonical/react-components/dist/components/Button";
 import Col from "@canonical/react-components/dist/components/Col";
 import Form from "@canonical/react-components/dist/components/Form";
@@ -8,6 +6,8 @@ import Input from "@canonical/react-components/dist/components/Input";
 import Row from "@canonical/react-components/dist/components/Row";
 import classNames from "classnames";
 import { useState } from "react";
+
+import ReBACAdmin from "components/ReBACAdmin";
 
 const App = () => {
   const [showAside, setShowAside] = useState(false);
