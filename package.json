@@ -1,5 +1,5 @@
 {
-  "name": "rebac-admin",
+  "name": "@canonical/rebac-admin",
   "version": "0.0.1",
   "description": "A shared UI for managing ReBAC/OpenFGA permissions",
   "repository": "git@github.com:canonical/rebac-admin.git",
@@ -9,10 +9,14 @@
   "packageManager": "yarn@3.6.4",
   "type": "module",
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.d.*",
+    "dist/**/*.map",
+    "dist/**/*.scss"
   ],
   "main": "./dist/rebac-admin.umd.cjs",
   "module": "./dist/rebac-admin.js",
+  "types": "./dist/rebac-admin.d.ts",
   "exports": {
     ".": {
       "import": "./dist/rebac-admin.js",
@@ -27,13 +31,13 @@
     "fetch-api-spec": "./scripts/fetch-api-spec",
     "lint": "npmPkgJsonLint . && yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "eslint-check": "eslint src demo --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepack": "yarn build",
     "prettier-check": "prettier --check src/**/* demo/src/**/*",
     "serve-demo": "vite preview -c vite-demo.config.ts",
     "start": "vite",
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
-    "test": "vitest run",
-    "test-watch": "vitest",
+    "test": "vitest",
     "test-ui": "vitest --ui --open=false",
     "typecheck": "vitest typecheck"
   },
@@ -45,24 +49,26 @@
     "react-dom": "^18.0.0",
     "vanilla-framework": "^4.0.0"
   },
+  "dependencies": {
+    "@tanstack/react-query": "5.4.3",
+    "axios": "1.5.1",
+    "classnames": "2.3.2"
+  },
   "devDependencies": {
     "@canonical/react-components": "0.47.1",
     "@faker-js/faker": "8.2.0",
     "@tanstack/eslint-plugin-query": "5.0.5",
-    "@tanstack/react-query": "5.0.5",
     "@testing-library/dom": "9.3.3",
     "@testing-library/jest-dom": "6.1.4",
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.5.1",
     "@types/node": "20.8.5",
-    "@types/react": "18.2.28",
-    "@types/react-dom": "18.2.13",
+    "@types/react": "18.2.33",
+    "@types/react-dom": "18.2.14",
     "@typescript-eslint/eslint-plugin": "6.7.5",
     "@typescript-eslint/parser": "6.7.5",
     "@vitejs/plugin-react": "4.1.0",
     "@vitest/ui": "0.34.6",
-    "axios": "1.5.1",
-    "classnames": "2.3.2",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-react-app": "7.0.1",
@@ -88,6 +94,7 @@
     "typescript": "5.2.2",
     "vanilla-framework": "4.5.0",
     "vite": "4.4.11",
+    "vite-plugin-dts": "3.6.2",
     "vite-tsconfig-paths": "4.2.1",
     "vitest": "0.34.6"
   },

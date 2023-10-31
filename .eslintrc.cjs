@@ -76,7 +76,6 @@ module.exports = {
     "@tanstack/query/stable-query-client": "error",
   },
   settings: {
-    "import/external-module-folders": [".yarn"],
     "import/resolver": {
       node: {
         paths: ["src"],
