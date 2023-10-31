@@ -11,6 +11,7 @@
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.*",
+    "dist/**/*.map",
     "dist/**/*.scss"
   ],
   "main": "./dist/rebac-admin.umd.cjs",
