@@ -1,7 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import axios from "axios";
 
-const ReBACAdmin = () => {
+export type Props = {
+  // The absolute API URL.
+  apiURL: `${"http" | "/"}${string}`;
+};
+
+const ReBACAdmin = ({ apiURL }: Props) => {
   const queryClient = new QueryClient();
+  axios.defaults.baseURL = apiURL;
 
   return (
     <QueryClientProvider client={queryClient}>
