@@ -143,7 +143,7 @@ const App = () => {
         </div>
       </header>
       <main className="l-main">
-        <ReBACAdmin />
+        <ReBACAdmin apiURL="/api" />
       </main>
       {showAside ? (
         <aside className="l-aside" id="aside-panel">
