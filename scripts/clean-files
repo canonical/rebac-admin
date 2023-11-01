@@ -9,3 +9,5 @@ rm -rf \
   coverage \
   .pnp.* \
   openapi.yaml \
+  demo/public/mockServiceWorker.js \
+  build \

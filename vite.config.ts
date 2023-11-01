@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
     build: {
+      copyPublicDir: false,
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
         name: "rebac-admin",
@@ -36,6 +37,7 @@ export default defineConfig(({ mode }) => {
         exclude: ["**/*.msw.ts", "src/test"],
       }),
     ],
+    publicDir: "demo/public",
     server: {
       host: "0.0.0.0",
       port: Number(env.PORT),
