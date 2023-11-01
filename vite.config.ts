@@ -16,11 +16,12 @@ export default defineConfig(({ mode }) => {
         fileName: "rebac-admin",
       },
       rollupOptions: {
-        external: ["react", "react-dom"],
+        external: ["react", "react-dom", "react-router-dom"],
         output: {
           globals: {
             react: "React",
             "react-dom": "ReactDOM",
+            "react-router-dom": "_ReactRouterDOM",
           },
         },
       },
@@ -31,7 +32,8 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       dts({
         rollupTypes: true,
-        exclude: "**/*.msw.ts",
+        include: ["src"],
+        exclude: ["**/*.msw.ts", "src/test"],
       }),
     ],
     server: {
