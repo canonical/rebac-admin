@@ -1,4 +1,7 @@
+import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, mergeConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
 import libraryConfig from "./vite.config";
 
 /**
@@ -20,5 +23,6 @@ export default defineConfig((env) => {
   });
   const libConfig = libraryConfig(env);
   delete libConfig.build;
+  libConfig.plugins = [react(), tsconfigPaths()];
   return mergeConfig(libConfig, previewConfig(env));
 });
