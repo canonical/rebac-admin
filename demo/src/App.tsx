@@ -6,8 +6,7 @@ import Input from "@canonical/react-components/dist/components/Input";
 import Row from "@canonical/react-components/dist/components/Row";
 import classNames from "classnames";
 import { useState } from "react";
-
-import ReBACAdmin from "components/ReBACAdmin";
+import { Link, Outlet } from "react-router-dom";
 
 const App = () => {
   const [showAside, setShowAside] = useState(false);
@@ -19,7 +18,7 @@ const App = () => {
       <div className="l-navigation-bar">
         <div className="p-panel is-dark">
           <div className="p-panel__header">
-            <a className="p-panel__logo" href="#test">
+            <Link className="p-panel__logo" to="/">
               <img
                 className="p-panel__logo-icon"
                 src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
@@ -33,7 +32,7 @@ const App = () => {
                 alt="JAAS"
                 height="16"
               />
-            </a>
+            </Link>
             <div className="p-panel__controls">
               <span
                 role="button"
@@ -58,7 +57,7 @@ const App = () => {
         <div className="l-navigation__drawer">
           <div className="p-panel is-dark">
             <div className="p-panel__header is-sticky">
-              <a className="p-panel__logo" href="#test">
+              <Link className="p-panel__logo" to="/">
                 <img
                   className="p-panel__logo-icon"
                   src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
@@ -72,7 +71,7 @@ const App = () => {
                   alt="JAAS"
                   height="16"
                 />
-              </a>
+              </Link>
               <div className="p-panel__controls u-hide--large">
                 <Button
                   hasIcon
@@ -108,7 +107,7 @@ const App = () => {
                 <nav aria-label="Main">
                   <ul className="p-side-navigation__list">
                     <li className="p-side-navigation__item">
-                      <a className="p-side-navigation__link" href="#test">
+                      <Link className="p-side-navigation__link" to="/models">
                         <Icon
                           name="drag"
                           light
@@ -119,10 +118,13 @@ const App = () => {
                             Models
                           </span>
                         </span>
-                      </a>
+                      </Link>
                     </li>
                     <li className="p-side-navigation__item">
-                      <a className="p-side-navigation__link" href="#test">
+                      <Link
+                        className="p-side-navigation__link"
+                        to="/controllers"
+                      >
                         <Icon
                           name="menu"
                           light
@@ -133,7 +135,24 @@ const App = () => {
                             Controllers
                           </span>
                         </span>
-                      </a>
+                      </Link>
+                    </li>
+                    <li className="p-side-navigation__item">
+                      <Link
+                        className="p-side-navigation__link"
+                        to="/permissions"
+                      >
+                        <Icon
+                          name="user"
+                          light
+                          className="p-side-navigation__icon"
+                        />
+                        <span className="p-side-navigation__label">
+                          <span className="p-side-navigation__label">
+                            Permissions
+                          </span>
+                        </span>
+                      </Link>
                     </li>
                   </ul>
                 </nav>
@@ -143,7 +162,7 @@ const App = () => {
         </div>
       </header>
       <main className="l-main">
-        <ReBACAdmin apiURL="/api" />
+        <Outlet />
       </main>
       {showAside ? (
         <aside className="l-aside" id="aside-panel">

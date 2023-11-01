@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       dts({
         rollupTypes: true,
-        exclude: "**/*.msw.ts",
+        exclude: ["**/*.msw.ts", "src/test"],
       }),
     ],
     server: {
