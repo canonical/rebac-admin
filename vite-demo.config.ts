@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, mergeConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 import libraryConfig from "./vite.config";
@@ -19,6 +20,16 @@ export default defineConfig((env) => {
       preview: {
         port: Number(env.PORT),
       },
+      plugins: [
+        viteStaticCopy({
+          targets: [
+            {
+              src: "demo/public/mockServiceWorker.js",
+              dest: "./",
+            },
+          ],
+        }),
+      ],
     };
   });
   const libConfig = libraryConfig(env);
