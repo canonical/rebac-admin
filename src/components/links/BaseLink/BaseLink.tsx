@@ -6,10 +6,11 @@ export type BaseLinkProps = Omit<NavLinkProps, "to"> & {
   to: string;
 };
 
-const BaseLink = ({ baseURL, to, ...props }: BaseLinkProps) => {
-  let base = baseURL.startsWith("/") ? baseURL : baseURL.slice(1);
-  base = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL;
-  return <NavLink to={[base, to].join("")} {...props} />;
-};
+const BaseLink = ({ baseURL, to, ...props }: BaseLinkProps) => (
+  <NavLink
+    to={[baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL, to].join("")}
+    {...props}
+  />
+);
 
 export default BaseLink;
