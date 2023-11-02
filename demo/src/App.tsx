@@ -6,7 +6,20 @@ import Input from "@canonical/react-components/dist/components/Input";
 import Row from "@canonical/react-components/dist/components/Row";
 import classNames from "classnames";
 import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
+
+import Panel from "components/Panel";
+import {
+  AccessGovernanceLink,
+  AuthenticationLink,
+  EntitlementsLink,
+  GroupsLink,
+  ResourcesLink,
+  RolesLink,
+  UsersLink,
+} from "components/links";
+
+const rebacAdminBaseURL = "/permissions";
 
 const App = () => {
   const [showAside, setShowAside] = useState(false);
@@ -16,38 +29,21 @@ const App = () => {
   return (
     <div className="l-application" role="presentation">
       <div className="l-navigation-bar">
-        <div className="p-panel is-dark">
-          <div className="p-panel__header">
-            <Link className="p-panel__logo" to="/">
-              <img
-                className="p-panel__logo-icon"
-                src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
-                alt=""
-                width="24"
-                height="24"
-              />
-              <img
-                className="p-panel__logo-name is-fading-when-collapsed"
-                src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
-                alt="JAAS"
-                height="16"
-              />
-            </Link>
-            <div className="p-panel__controls">
-              <span
-                role="button"
-                tabIndex={0}
-                className="p-panel__toggle"
-                onClick={() => setMenuCollapsed(!menuCollapsed)}
-                onKeyDown={() => setMenuCollapsed(!menuCollapsed)}
-              >
-                Menu
-              </span>
-            </div>
-          </div>
-        </div>
+        <Panel
+          className="is-dark"
+          logo={{
+            component: Link,
+            icon: "https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg",
+            name: "https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg",
+            nameAlt: "JAAS",
+            to: "/",
+          }}
+          toggle={{
+            label: "Menu",
+            onClick: () => setMenuCollapsed(!menuCollapsed),
+          }}
+        />
       </div>
-
       <header
         className={classNames("l-navigation", {
           "is-collapsed": menuCollapsed,
@@ -55,24 +51,10 @@ const App = () => {
         })}
       >
         <div className="l-navigation__drawer">
-          <div className="p-panel is-dark">
-            <div className="p-panel__header is-sticky">
-              <Link className="p-panel__logo" to="/">
-                <img
-                  className="p-panel__logo-icon"
-                  src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
-                  alt=""
-                  width="24"
-                  height="24"
-                />
-                <img
-                  className="p-panel__logo-name is-fading-when-collapsed"
-                  src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
-                  alt="JAAS"
-                  height="16"
-                />
-              </Link>
-              <div className="p-panel__controls u-hide--large">
+          <Panel
+            className="is-dark"
+            controls={
+              <>
                 <Button
                   hasIcon
                   appearance="base"
@@ -97,68 +79,116 @@ const App = () => {
                     className="is-light"
                   />
                 </Button>
-              </div>
+              </>
+            }
+            controlsClassName="u-hide--large"
+            stickyHeader
+            logo={{
+              component: Link,
+              icon: "https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg",
+              name: "https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg",
+              nameAlt: "JAAS",
+              to: "/",
+            }}
+          >
+            <div className="p-side-navigation--icons is-dark" id="drawer-icons">
+              <nav aria-label="Main">
+                <ul className="p-side-navigation__list">
+                  <li className="p-side-navigation__item">
+                    <NavLink className="p-side-navigation__link" to="/models">
+                      <Icon
+                        name="drag"
+                        light
+                        className="p-side-navigation__icon"
+                      />
+                      <span className="p-side-navigation__label">
+                        <span className="p-side-navigation__label">Models</span>
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <NavLink
+                      className="p-side-navigation__link"
+                      to="/controllers"
+                    >
+                      <Icon
+                        name="menu"
+                        light
+                        className="p-side-navigation__icon"
+                      />
+                      <span className="p-side-navigation__label">
+                        <span className="p-side-navigation__label">
+                          Controllers
+                        </span>
+                      </span>
+                    </NavLink>
+                  </li>
+                </ul>
+                <ul className="p-side-navigation__list">
+                  <li className="p-side-navigation__item--title">
+                    <NavLink
+                      className="p-side-navigation__link"
+                      end
+                      to={rebacAdminBaseURL}
+                    >
+                      <Icon
+                        name="user"
+                        light
+                        className="p-side-navigation__icon"
+                      />
+                      <span className="p-side-navigation__label">
+                        <span className="p-side-navigation__label">
+                          Permissions
+                        </span>
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <AccessGovernanceLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <AuthenticationLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <EntitlementsLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <GroupsLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <ResourcesLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <RolesLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                  <li className="p-side-navigation__item">
+                    <UsersLink
+                      className="p-side-navigation__link"
+                      baseURL={rebacAdminBaseURL}
+                    />
+                  </li>
+                </ul>
+              </nav>
             </div>
-            <div className="p-panel__content">
-              <div
-                className="p-side-navigation--icons is-dark"
-                id="drawer-icons"
-              >
-                <nav aria-label="Main">
-                  <ul className="p-side-navigation__list">
-                    <li className="p-side-navigation__item">
-                      <Link className="p-side-navigation__link" to="/models">
-                        <Icon
-                          name="drag"
-                          light
-                          className="p-side-navigation__icon"
-                        />
-                        <span className="p-side-navigation__label">
-                          <span className="p-side-navigation__label">
-                            Models
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                    <li className="p-side-navigation__item">
-                      <Link
-                        className="p-side-navigation__link"
-                        to="/controllers"
-                      >
-                        <Icon
-                          name="menu"
-                          light
-                          className="p-side-navigation__icon"
-                        />
-                        <span className="p-side-navigation__label">
-                          <span className="p-side-navigation__label">
-                            Controllers
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                    <li className="p-side-navigation__item">
-                      <Link
-                        className="p-side-navigation__link"
-                        to="/permissions"
-                      >
-                        <Icon
-                          name="user"
-                          light
-                          className="p-side-navigation__icon"
-                        />
-                        <span className="p-side-navigation__label">
-                          <span className="p-side-navigation__label">
-                            Permissions
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-          </div>
+          </Panel>
         </div>
       </header>
       <main className="l-main">
@@ -166,83 +196,80 @@ const App = () => {
       </main>
       {showAside ? (
         <aside className="l-aside" id="aside-panel">
-          <div className="p-panel">
-            <div className="p-panel__header">
-              <h4 className="p-panel__title">Aside panel</h4>
-              <div className="p-panel__controls">
-                <Button
-                  appearance="base"
-                  className="u-no-margin--bottom"
-                  hasIcon
-                  onClick={() => setShowAside(false)}
-                >
-                  <Icon name="close" />
-                </Button>
-              </div>
-            </div>
-            <div className="p-panel__content">
-              <Form stacked>
-                <Input
-                  label="Full name"
-                  type="text"
-                  name="fullName"
-                  autoComplete="name"
-                  stacked
-                />
-                <Input
-                  label="Username"
-                  type="text"
-                  id="username-stacked"
-                  name="username-stacked"
-                  autoComplete="username"
-                  aria-describedby="exampleHelpTextMessage"
-                  stacked
-                  help="30 characters or fewer."
-                />
-                <Input
-                  type="text"
-                  label="Email address"
-                  aria-invalid="true"
-                  name="username-stackederror"
-                  autoComplete="email"
-                  required
-                  error="This field is required."
-                  stacked
-                />
-                <Input
-                  label="Address line 1"
-                  type="text"
-                  id="address-optional-stacked0"
-                  name="address-optional-stacked"
-                  autoComplete="address-line1"
-                  stacked
-                />
-                <Input
-                  label="Address line 2"
-                  type="text"
-                  id="address-optional-stacked1"
-                  name="address-optional-stacked"
-                  autoComplete="address-line3"
-                  stacked
-                />
-                <Row>
-                  <Col size={12}>
-                    <Button
-                      appearance="positive"
-                      className="u-float-right"
-                      name="add-details"
-                    >
-                      Add details
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
-            </div>
-          </div>
+          <Panel
+            controls={
+              <Button
+                appearance="base"
+                className="u-no-margin--bottom"
+                hasIcon
+                onClick={() => setShowAside(false)}
+              >
+                <Icon name="close" />
+              </Button>
+            }
+            title="Aside panel"
+          >
+            <Form stacked>
+              <Input
+                label="Full name"
+                type="text"
+                name="fullName"
+                autoComplete="name"
+                stacked
+              />
+              <Input
+                label="Username"
+                type="text"
+                id="username-stacked"
+                name="username-stacked"
+                autoComplete="username"
+                aria-describedby="exampleHelpTextMessage"
+                stacked
+                help="30 characters or fewer."
+              />
+              <Input
+                type="text"
+                label="Email address"
+                aria-invalid="true"
+                name="username-stackederror"
+                autoComplete="email"
+                required
+                error="This field is required."
+                stacked
+              />
+              <Input
+                label="Address line 1"
+                type="text"
+                id="address-optional-stacked0"
+                name="address-optional-stacked"
+                autoComplete="address-line1"
+                stacked
+              />
+              <Input
+                label="Address line 2"
+                type="text"
+                id="address-optional-stacked1"
+                name="address-optional-stacked"
+                autoComplete="address-line3"
+                stacked
+              />
+              <Row>
+                <Col size={12}>
+                  <Button
+                    appearance="positive"
+                    className="u-float-right"
+                    name="add-details"
+                  >
+                    Add details
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Panel>
         </aside>
       ) : null}
       <aside className="l-status">
-        <div className="p-panel">
+        <Panel wrapContent={false}>
           <Button
             onClick={() => setShowAside(!showAside)}
             dense
@@ -251,7 +278,7 @@ const App = () => {
           >
             Toggle aside
           </Button>
-        </div>
+        </Panel>
       </aside>
     </div>
   );

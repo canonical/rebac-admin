@@ -21,5 +21,15 @@ test("the index is displayed", async () => {
     url: "/settings/permissions",
     path: "/settings/permissions/*",
   });
-  expect(screen.getByText("Index")).toBeInTheDocument();
+  expect(
+    screen.getByRole("heading", { name: "Canonical ReBAC Admin" }),
+  ).toBeInTheDocument();
+});
+
+test("the users page is displayed", async () => {
+  renderComponent(<ReBACAdmin apiURL="/api" />, {
+    url: "/settings/permissions/users",
+    path: "/settings/permissions/*",
+  });
+  expect(screen.getByRole("heading", { name: "Users" })).toBeInTheDocument();
 });

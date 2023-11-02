@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 
+import Panel from "components/Panel";
 import ReBACAdmin from "components/ReBACAdmin";
 
 import App from "./App";
-import Panel from "./Panel";
 
 import "./scss/index.scss";
 
@@ -27,7 +27,9 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <Panel title="Demo">
-            <Link to="/permissions">Go to ReBAC Admin</Link>
+            <div className="u-fixed-width">
+              <Link to="/permissions">Go to ReBAC Admin</Link>
+            </div>
           </Panel>
         ),
       },
