@@ -12,6 +12,15 @@ module.exports = {
     "plugin:jsx-a11y/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
   ],
+  "overrides": [
+    {
+      "files": ["**/*.test-d.ts"],
+      "rules": {
+        // Typecheck files may use type assertions rather than expect().
+        "vitest/expect-expect": 0,
+      },
+    }
+  ],
   ignorePatterns: ["dist", "build", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -76,7 +85,6 @@ module.exports = {
     "@tanstack/query/stable-query-client": "error",
   },
   settings: {
-    "import/external-module-folders": [".yarn"],
     "import/resolver": {
       node: {
         paths: ["src"],

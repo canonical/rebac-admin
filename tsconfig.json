@@ -12,13 +12,13 @@
     "noImplicitAny": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "sourceMap": true,
+    "allowJs": false,
 
     /* Linting */
     "strict": true,
@@ -26,6 +26,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "demo", "src/test/setup.ts"],
+  "include": [
+    "src",
+    "demo",
+    "src/test/setup.ts",
+    "vite.config.ts",
+    "vite-demo.config.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
