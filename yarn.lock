@@ -1738,7 +1738,6 @@ __metadata:
     vanilla-framework: 4.5.0
     vite: 4.4.11
     vite-plugin-dts: 3.6.2
-    vite-plugin-static-copy: 0.17.0
     vite-tsconfig-paths: 4.2.1
     vitest: 0.34.6
   peerDependencies:
@@ -6430,7 +6429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
+"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
   version: 3.3.1
   resolution: "fast-glob@npm:3.3.1"
   dependencies:
@@ -6645,17 +6644,6 @@ __metadata:
     jsonfile: ^6.0.1
     universalify: ^2.0.0
   checksum: dc94ab37096f813cc3ca12f0f1b5ad6744dfed9ed21e953d72530d103cea193c2f81584a39e9dee1bea36de5ee66805678c0dddc048e8af1427ac19c00fffc50
-  languageName: node
-  linkType: hard
-
-"fs-extra@npm:^11.1.0":
-  version: 11.1.1
-  resolution: "fs-extra@npm:11.1.1"
-  dependencies:
-    graceful-fs: ^4.2.0
-    jsonfile: ^6.0.1
-    universalify: ^2.0.0
-  checksum: fb883c68245b2d777fbc1f2082c9efb084eaa2bbf9fddaa366130d196c03608eebef7fb490541276429ee1ca99f317e2d73e96f5ca0999eefedf5a624ae1edfd
   languageName: node
   linkType: hard
 
@@ -11472,20 +11460,6 @@ __metadata:
     vite:
       optional: true
   checksum: 4455deb4d91317e326df365713058ac4e1225b7cef476e6872cb5eeeab1f0919707a021ce11edf0e252c506022c5b4808cc465b7f875cb763118ea356da4531e
-  languageName: node
-  linkType: hard
-
-"vite-plugin-static-copy@npm:0.17.0":
-  version: 0.17.0
-  resolution: "vite-plugin-static-copy@npm:0.17.0"
-  dependencies:
-    chokidar: ^3.5.3
-    fast-glob: ^3.2.11
-    fs-extra: ^11.1.0
-    picocolors: ^1.0.0
-  peerDependencies:
-    vite: ^3.0.0 || ^4.0.0
-  checksum: b73f001f080517d7c2342ad5b0779c1e5ec8b5820e85a57280e8f979d095946a32ab717a59eaae60e3f715784a138785208619aa6d936cd9a80e6a03e364e4fc
   languageName: node
   linkType: hard
 
