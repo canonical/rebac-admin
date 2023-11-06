@@ -40,28 +40,33 @@ const urls = {
 };
 
 const prefixSection = <S extends object>(prefix: string, section: S): S => {
-  for (const key in section) {
-    const entry = section[key];
+  const clonedSection = cloneDeep(section);
+  for (const key in clonedSection) {
+    const entry = clonedSection[key];
     if (entry && typeof entry === "object") {
       // Run the prefixer over the nested object.
-      section[key] = prefixSection(prefix, entry);
+      clonedSection[key] = prefixSection(prefix, entry);
     } else if (typeof entry === "function") {
       // Wrap the function in another that will prefix the result.
-      section[key] = ((...args: unknown[]) =>
-        `${prefix}${entry(...args)}`) as typeof entry;
+      clonedSection[key] = ((...args: unknown[]) => {
+        const result = entry(...args);
+        if (typeof result === "string") {
+          return `${prefix}${result}`;
+        }
+        return result;
+      }) as typeof entry;
     } else if (typeof entry === "string") {
       // Prefix strings.
-      section[key] = `${prefix}${entry}` as typeof entry;
+      clonedSection[key] = `${prefix}${entry}` as typeof entry;
     }
   }
-  return section;
+  return clonedSection;
 };
 
 export const prefixedURLs = (baseURL: string) => {
-  const prefixedURLs = cloneDeep(urls);
   let prefix = baseURL.startsWith("/") ? baseURL : `/${baseURL}`;
   prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
-  return prefixSection(prefix, prefixedURLs);
+  return prefixSection(prefix, urls);
 };
 
 export default urls;

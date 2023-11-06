@@ -1,9 +1,16 @@
-import { prefixedURLs } from "./urls";
+import urls, { prefixedURLs } from "./urls";
 
 test("prefixes applied to top level", () => {
   expect(prefixedURLs("/permissions").entitlements).toBe(
     "/permissions/entitlements",
   );
+});
+
+test("urls object is not mutated", () => {
+  expect(prefixedURLs("/permissions").entitlements).toBe(
+    "/permissions/entitlements",
+  );
+  expect(urls.entitlements).toBe("/entitlements");
 });
 
 test("prefixes applied to nested", () => {
