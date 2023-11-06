@@ -78,7 +78,8 @@ yarn install
 
 Then you should be able to run your project as normal.
 
-When you're finished you can clean up the links by running the following in your host project:
+When you're finished you can clean up the links by running the following in your
+host project:
 
 ```bash
 yarn unlink --all
@@ -86,8 +87,9 @@ yarn unlink --all
 
 ## Testing private repository access
 
-To be able to install from a private GitHub repository make sure you have [ssh
-keys for GitHub set up](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys) on the machine or container you're using to install the
+To be able to install from a private GitHub repository make sure you have
+[ssh keys for GitHub set up](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys)
+on the machine or container you're using to install the
 package. You can test this with:
 
 ```bash
@@ -109,8 +111,11 @@ correctly either in `.env` or in `.env.local`:
 - `GITHUB_ACCESS_TOKEN`: represents the valid GitHub Personal Access Token with
   read access to the
   [Openfga Admin Openapi Spec](https://github.com/canonical/openfga-admin-openapi-spec/)
-  repository. You are required to provide this token either as an environment
-  variable or as the sole argument for the command mentioned below.
+  repository. For instance, you can provide a
+  [personal access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic)
+  with "full control of private repositories" scope. You are required to provide
+  this token either as an environment variable or as the sole argument for the
+  command mentioned below.
 
 Once the environment variables are set up correctly, to fetch the specified
 version of `openapi.yaml` spec file, run:
