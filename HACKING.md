@@ -9,6 +9,22 @@
 - [Testing private repository access](#testing-private-repository-access)
 - [Download openapi.yaml](#download-openapiyaml)
 - [Build API files](#build-api-files)
+- [Codebase and development guidelines](#codebase-and-development-guidelines)
+  - [React](#react)
+    - [Components](#components)
+    - [Demo files](#demo-files)
+      - [Demo service](#demo-service)
+    - [Package files](#package-files)
+      - [Common files](#common-files)
+      - [Views](#views)
+      - [SCSS](#scss)
+  - [React Query](#react-query)
+  - [TypeScript](#typescript)
+  - [Testing](#testing)
+    - [Test factories](#test-factories)
+  - [External libraries](#external-libraries)
+    - [Vanilla Framework](#vanilla-framework)
+    - [Vanilla React Components](#vanilla-react-components)
 
 ## Development setup
 
@@ -151,3 +167,106 @@ _Note: The API files are built from the `openapi.yaml` spec file. In case the
 spec file is not present in the root of the repository, the above command will
 first try to download it using the procedure described in
 [Download openapi.yaml](#download-openapiyaml)._
+
+## Codebase and development guidelines
+
+### React
+
+ReBAC Admin uses [React](https://react.dev/) for its component based UI. The
+[Redux dev tools](https://github.com/reduxjs/redux-devtools) extension can be useful
+during development.
+
+#### Components
+
+This project uses [function
+components](https://react.dev/learn/your-first-component#defining-a-component)
+and [hooks](https://react.dev/reference/react) over class based components.
+
+It is recommended to have one component per file, and one component per
+directory. A typical component directory will have the structure:
+
+- `_component.scss` (any SCSS specific to this component)
+- `Component.tsx` (the component itself)
+- `Component.test.tsx` (tests specific to this component)
+- `index.tsx` (export the component from this file)
+
+#### Demo files
+
+The `demo` folder contains an example application layout that displays the ReBAC
+Admin. This can be used in development to view the admin in context and is
+displayed by running `yarn start`.
+
+All files in the `demo` folder are for development only and are not included in
+the built package.
+
+##### Demo service
+
+The `demo` app is deployed to the Canonical web team's demo service when a PR is
+created on GitHub. The demo build is configured in `vite-demo.config.ts`.
+
+#### Package files
+
+The package source is contained in `src` and its contents are built for the
+rebac-admin package using Vite's library mode.
+
+Components and modules that are exposed by the module should be exported in `src/index.ts`.
+
+##### Common files
+
+Where possible write reusable code which should live in the top level
+directories e.g. `src/components`, `src/hooks`, `src/utils`.
+
+##### Views
+
+Distinct views of the app live in the `src/views` directory. These will usually equate to the
+top level routes.
+
+##### SCSS
+
+Shared SCSS should live in the `src/scss` directory, but SCSS specific to a page
+or component should live in the component's directory and be imported inside the
+component.
+
+### React Query
+
+ReBAC Admin uses [React Query](https://tanstack.com/query/latest) to communicate
+with the API.
+
+Each query has a hook that has been built from the API definition and can be
+found in the `src/api` sub-directories.
+
+### TypeScript
+
+ReBAC Admin is written in TypeScript. Wherever possible strict TypeScript
+should be used.
+
+### Testing
+
+The admin is unit tested and interaction tested using [Vitest](https://vitest.dev/) and [React
+Testing Library](https://testing-library.com/).
+
+#### Test factories
+
+The admin uses [Faker](https://fakerjs.dev/) test factories instead of data dumps to allow each test to
+declare the data required for it to pass.
+
+Test factories are generated from the API definition and can be found in the
+`.msw.ts` files in the `src/api` sub-directories.
+
+### External libraries
+
+ReBAC Admin makes use of a few external libraries that are built and
+maintained by Canonical.
+
+#### Vanilla Framework
+
+[Vanilla
+Framework](https://github.com/canonical/vanilla-framework) is a CSS framework
+used to provide consistency across Canonical's codebases.
+
+#### Vanilla React Components
+
+[Vanilla React
+Components](https://github.com/canonical/react-components) is a React
+implementation of Vanilla Framework and is the preferred method of consuming
+Vanilla Framework elements.
