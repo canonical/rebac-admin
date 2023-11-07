@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { HTMLProps } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import { vi } from "vitest";
 
 import { renderComponent } from "test/utils";
@@ -38,8 +38,8 @@ test("displays a logo", () => {
 });
 
 test("logo handles different components", () => {
-  const Link = ({ children, title }: HTMLProps<HTMLButtonElement>) => (
-    <button title={title}>{children}</button>
+  const Link = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => (
+    <button {...props} />
   );
   renderComponent(
     <Panel
