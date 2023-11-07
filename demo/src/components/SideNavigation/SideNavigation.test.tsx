@@ -34,7 +34,6 @@ test("displays links using a custom component", () => {
       items={[
         {
           label: "Link one",
-          href: "#",
         },
         <Link>Link two</Link>,
       ]}
