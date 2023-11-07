@@ -45,7 +45,10 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: "happy-dom",
       globals: true,
-      include: ["src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+      include: [
+        "src/**/*.{test,spec}.?(c|m)[jt]s?(x)",
+        "demo/**/*.{test,spec}.?(c|m)[jt]s?(x)",
+      ],
       setupFiles: "src/test/setup.ts",
     },
   };

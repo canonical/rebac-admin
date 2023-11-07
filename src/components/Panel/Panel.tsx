@@ -10,7 +10,7 @@ import type {
 
 import type { ExclusiveProps } from "types";
 
-type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
+export type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
 
 type PanelLogo<L = LogoDefaultElement> = PropsWithSpread<
   {
@@ -46,9 +46,10 @@ type HeaderProps<L = LogoDefaultElement> = ExclusiveProps<
   } & ExclusiveProps<LogoProps<L>, TitleProps>
 >;
 
-type Props<L = LogoDefaultElement> = {
-  wrapContent?: boolean;
+export type Props<L = LogoDefaultElement> = {
   className?: string;
+  dark?: boolean;
+  wrapContent?: boolean;
 } & PropsWithChildren &
   HeaderProps<L>;
 
@@ -82,6 +83,7 @@ const Panel = <L = LogoDefaultElement,>({
   className,
   controlsClassName,
   controls,
+  dark,
   logo,
   stickyHeader,
   title,
@@ -89,8 +91,12 @@ const Panel = <L = LogoDefaultElement,>({
   wrapContent = true,
 }: Props<L>) => {
   return (
-    <div className={classNames("p-panel", className)}>
-      {logo || title ? (
+    <div
+      className={classNames("p-panel", className, {
+        "is-dark": dark,
+      })}
+    >
+      {logo || title || controls || toggle ? (
         <div
           className={classNames("p-panel__header", {
             "is-sticky": stickyHeader,
