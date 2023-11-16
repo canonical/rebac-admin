@@ -6,6 +6,7 @@
 - [Testing in host projects](#testing-in-host-projects)
   - [Install from repo](#install-from-repo)
   - [Local link](#local-link)
+  - [Serving mock API](#serving-mock-api)
 - [Testing private repository access](#testing-private-repository-access)
 - [Download openapi.yaml](#download-openapiyaml)
 - [Build API files](#build-api-files)
@@ -41,6 +42,9 @@ To test ReBAC Admin in a host project you can either use a repo/branch directory
 from GitHub, or to develop locally you can use `yarn link`.
 
 ### Install from repo
+
+If you're setting up ReBAC Admin in a new project follow the main [install
+instructions](/README.md#install).
 
 To install from a GitHub repo make sure you [have private repository
 access](#testing-private-repository-access). Now you can add the package with:
@@ -100,6 +104,42 @@ host project:
 ```bash
 yarn unlink --all
 ```
+
+### Serving mock API
+
+You can test a host project using the mock API provided by this package if you
+don't have an API implementation.
+
+First checkout this repo:
+
+```bash
+git clone git@github.com:canonical/rebac-admin.git
+```
+
+Next install the dependencies:
+
+```bash
+cd rebac-admin
+yarn install
+```
+
+Finally start the mock API server:
+
+```
+yarn serve-mock-api
+```
+
+Now you can use the API in your host project. If you haven't already then follow
+the [install instructions](/README.md#install) to add the ReBACAdmin component
+to your project.
+
+Set the apiURL to the address and port the API is being served at:
+
+```
+<ReBACAdmin apiURL="http://localhost:8412/api" />
+```
+
+Load your app and you should be able to make requests to the mock API.
 
 ## Testing private repository access
 
