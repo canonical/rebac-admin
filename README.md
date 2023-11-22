@@ -18,6 +18,8 @@ Now you can add the rebac-admin package with:
 yarn add @canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git
 ```
 
+The package may be installed [from a branch or fork](HACKING.md#install-from-repo).
+
 You will also need the following peer dependencies if you don't have them already:
 
 ```bash

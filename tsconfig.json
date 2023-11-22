@@ -29,6 +29,7 @@
   "include": [
     "src",
     "demo",
+    "scripts/serve-mock-api.ts",
     "src/test/setup.ts",
     "vite.config.ts",
     "vite-demo.config.ts"
