@@ -133,7 +133,8 @@ Now you can use the API in your host project. If you haven't already then follow
 the [install instructions](/README.md#install) to add the ReBACAdmin component
 to your project.
 
-Set the apiURL to the address and port the API is being served at:
+Set the apiURL to the address and port the API is being served at. By default
+the api is served using port `8412`.
 
 ```
 <ReBACAdmin apiURL="http://localhost:8412/api" />

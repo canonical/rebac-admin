@@ -7,7 +7,7 @@ import { parse } from "dotenv";
 import express from "express";
 import ip from "ip";
 
-import { handlers } from "../demo/src/handlers";
+import { handlers } from "../src/mocks/handlers";
 
 const env = parse(readFileSync(path.resolve(process.cwd(), ".env")));
 
@@ -19,8 +19,9 @@ app.use(createMiddleware(...handlers));
 app.listen(env.API_PORT, () => {
   console.log("ReBAC Admin mock API running on:");
   console.log("");
-  console.log(`http://localhost:${env.API_PORT}`);
-  console.log(`http://${ip.address()}:${env.API_PORT}`);
+  console.log(`Local:   http://localhost:${env.API_PORT}/`);
+  console.log(`Network: http://${ip.address()}:${env.API_PORT}/`);
   console.log("");
   console.log("Press ctrl+c to stop the server.");
+  console.log("");
 });

@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => {
       dts({
         rollupTypes: true,
         include: ["src"],
-        exclude: ["**/*.msw.ts", "src/test"],
+        exclude: ["**/*.msw.ts", "src/test", "src/mocks"],
       }),
     ],
     publicDir: "demo/public",
