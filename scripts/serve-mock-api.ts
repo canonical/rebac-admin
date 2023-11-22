@@ -21,4 +21,6 @@ app.listen(env.API_PORT, () => {
   console.log("");
   console.log(`http://localhost:${env.API_PORT}`);
   console.log(`http://${ip.address()}:${env.API_PORT}`);
+  console.log("");
+  console.log("Press ctrl+c to stop the server.");
 });
