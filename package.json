@@ -43,7 +43,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^0.47.4",
+    "@canonical/react-components": "^0.47.4 || ^0.50.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "react": "^18.0.0",
@@ -58,7 +58,7 @@
     "clone-deep": "4.0.1"
   },
   "devDependencies": {
-    "@canonical/react-components": "0.47.4",
+    "@canonical/react-components": "0.50.4",
     "@faker-js/faker": "8.4.1",
     "@mswjs/http-middleware": "0.9.2",
     "@tanstack/eslint-plugin-query": "5.20.1",
