@@ -43,7 +43,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^0.47.4 || ^0.50.0",
+    "@canonical/react-components": "^0.50.4",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "react": "^18.0.0",
