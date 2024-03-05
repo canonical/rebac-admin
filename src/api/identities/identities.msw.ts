@@ -10,100 +10,16 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
 import type {
-  GetGroupEntitlementsResponse,
-  GetGroupIdentitiesResponse,
-  GetGroupRolesResponse,
-  GetGroupsResponse,
-  Group,
+  GetIdentitiesResponse,
+  GetIdentityEntitlementsResponse,
+  GetIdentityGroupsResponse,
+  GetIdentityRolesResponse,
+  Identity,
 } from "../api.schemas";
 
-export const getGetGroupsResponseMock = (
+export const getGetIdentitiesResponseMock = (
   overrideResponse: any = {},
-): GetGroupsResponse => ({
-  _links: {
-    next: { href: faker.word.sample(), ...overrideResponse },
-    ...overrideResponse,
-  },
-  _meta: {
-    page: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    size: faker.number.int({ min: undefined, max: undefined }),
-    total: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    ...overrideResponse,
-  },
-  message: faker.word.sample(),
-  status: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  })),
-  ...overrideResponse,
-});
-
-export const getPostGroupsResponseMock = (
-  overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
-  ...overrideResponse,
-});
-
-export const getGetGroupsItemResponseMock = (
-  overrideResponse: any = {},
-): GetGroupsResponse => ({
-  _links: {
-    next: { href: faker.word.sample(), ...overrideResponse },
-    ...overrideResponse,
-  },
-  _meta: {
-    page: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    size: faker.number.int({ min: undefined, max: undefined }),
-    total: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    ...overrideResponse,
-  },
-  message: faker.word.sample(),
-  status: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  })),
-  ...overrideResponse,
-});
-
-export const getPutGroupsItemResponseMock = (
-  overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
-  ...overrideResponse,
-});
-
-export const getGetGroupsItemIdentitiesResponseMock = (
-  overrideResponse: any = {},
-): GetGroupIdentitiesResponse => ({
+): GetIdentitiesResponse => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -154,9 +70,124 @@ export const getGetGroupsItemIdentitiesResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetGroupsItemRolesResponseMock = (
+export const getPostIdentitiesResponseMock = (
   overrideResponse: any = {},
-): GetGroupRolesResponse => ({
+): Identity => ({
+  addedBy: faker.word.sample(),
+  certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  groups: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  permissions: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  roles: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  source: faker.word.sample(),
+  ...overrideResponse,
+});
+
+export const getGetIdentitiesItemResponseMock = (
+  overrideResponse: any = {},
+): Identity => ({
+  addedBy: faker.word.sample(),
+  certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  groups: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  permissions: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  roles: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  source: faker.word.sample(),
+  ...overrideResponse,
+});
+
+export const getPutIdentitiesItemResponseMock = (
+  overrideResponse: any = {},
+): Identity => ({
+  addedBy: faker.word.sample(),
+  certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  groups: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  permissions: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  roles: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  source: faker.word.sample(),
+  ...overrideResponse,
+});
+
+export const getGetIdentitiesItemGroupsResponseMock = (
+  overrideResponse: any = {},
+): GetIdentityGroupsResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    name: faker.word.sample(),
+    ...overrideResponse,
+  })),
+  ...overrideResponse,
+});
+
+export const getGetIdentitiesItemRolesResponseMock = (
+  overrideResponse: any = {},
+): GetIdentityRolesResponse => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -203,9 +234,9 @@ export const getGetGroupsItemRolesResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetGroupsItemEntitlementsResponseMock = (
+export const getGetIdentitiesItemEntitlementsResponseMock = (
   overrideResponse: any = {},
-): GetGroupEntitlementsResponse => ({
+): GetIdentityEntitlementsResponse => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -238,14 +269,14 @@ export const getGetGroupsItemEntitlementsResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetGroupsMockHandler = (
-  overrideResponse?: GetGroupsResponse,
+export const getGetIdentitiesMockHandler = (
+  overrideResponse?: GetIdentitiesResponse,
 ) => {
-  return http.get("*/groups", async () => {
+  return http.get("*/identities", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getGetIdentitiesResponseMock(),
       ),
       {
         status: 200,
@@ -257,12 +288,12 @@ export const getGetGroupsMockHandler = (
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
-  return http.post("*/groups", async () => {
+export const getPostIdentitiesMockHandler = (overrideResponse?: Identity) => {
+  return http.post("*/identities", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getPostIdentitiesResponseMock(),
       ),
       {
         status: 200,
@@ -274,64 +305,16 @@ export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
   });
 };
 
-export const getGetGroupsItemMockHandler = (
-  overrideResponse?: GetGroupsResponse,
+export const getGetIdentitiesItemMockHandler = (
+  overrideResponse?: Identity,
 ) => {
-  return http.get("*/groups/:id", async () => {
-    await delay(1000);
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsItemResponseMock(),
-      ),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-  });
-};
-
-export const getPutGroupsItemMockHandler = (overrideResponse?: Group) => {
-  return http.put("*/groups/:id", async () => {
-    await delay(1000);
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse ? overrideResponse : getPutGroupsItemResponseMock(),
-      ),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-  });
-};
-
-export const getDeleteGroupsItemMockHandler = () => {
-  return http.delete("*/groups/:id", async () => {
-    await delay(1000);
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getGetGroupsItemIdentitiesMockHandler = (
-  overrideResponse?: GetGroupIdentitiesResponse,
-) => {
-  return http.get("*/groups/:id/identities", async () => {
+  return http.get("*/identities/:id", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsItemIdentitiesResponseMock(),
+          : getGetIdentitiesItemResponseMock(),
       ),
       {
         status: 200,
@@ -343,28 +326,16 @@ export const getGetGroupsItemIdentitiesMockHandler = (
   });
 };
 
-export const getPatchGroupsItemIdentitiesMockHandler = () => {
-  return http.patch("*/groups/:id/identities", async () => {
-    await delay(1000);
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getGetGroupsItemRolesMockHandler = (
-  overrideResponse?: GetGroupRolesResponse,
+export const getPutIdentitiesItemMockHandler = (
+  overrideResponse?: Identity,
 ) => {
-  return http.get("*/groups/:id/roles", async () => {
+  return http.put("*/identities/:id", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsItemRolesResponseMock(),
+          : getPutIdentitiesItemResponseMock(),
       ),
       {
         status: 200,
@@ -376,8 +347,8 @@ export const getGetGroupsItemRolesMockHandler = (
   });
 };
 
-export const getPatchGroupsItemRolesMockHandler = () => {
-  return http.patch("*/groups/:id/roles", async () => {
+export const getDeleteIdentitiesItemMockHandler = () => {
+  return http.delete("*/identities/:id", async () => {
     await delay(1000);
     return new HttpResponse(null, {
       status: 200,
@@ -388,16 +359,16 @@ export const getPatchGroupsItemRolesMockHandler = () => {
   });
 };
 
-export const getGetGroupsItemEntitlementsMockHandler = (
-  overrideResponse?: GetGroupEntitlementsResponse,
+export const getGetIdentitiesItemGroupsMockHandler = (
+  overrideResponse?: GetIdentityGroupsResponse,
 ) => {
-  return http.get("*/groups/:id/entitlements", async () => {
+  return http.get("*/identities/:id/groups", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsItemEntitlementsResponseMock(),
+          : getGetIdentitiesItemGroupsResponseMock(),
       ),
       {
         status: 200,
@@ -409,8 +380,8 @@ export const getGetGroupsItemEntitlementsMockHandler = (
   });
 };
 
-export const getPatchGroupsItemEntitlementsMockHandler = () => {
-  return http.patch("*/groups/:id/entitlements", async () => {
+export const getPatchIdentitiesItemGroupsMockHandler = () => {
+  return http.patch("*/identities/:id/groups", async () => {
     await delay(1000);
     return new HttpResponse(null, {
       status: 200,
@@ -420,16 +391,82 @@ export const getPatchGroupsItemEntitlementsMockHandler = () => {
     });
   });
 };
-export const getGroupsMock = () => [
-  getGetGroupsMockHandler(),
-  getPostGroupsMockHandler(),
-  getGetGroupsItemMockHandler(),
-  getPutGroupsItemMockHandler(),
-  getDeleteGroupsItemMockHandler(),
-  getGetGroupsItemIdentitiesMockHandler(),
-  getPatchGroupsItemIdentitiesMockHandler(),
-  getGetGroupsItemRolesMockHandler(),
-  getPatchGroupsItemRolesMockHandler(),
-  getGetGroupsItemEntitlementsMockHandler(),
-  getPatchGroupsItemEntitlementsMockHandler(),
+
+export const getGetIdentitiesItemRolesMockHandler = (
+  overrideResponse?: GetIdentityRolesResponse,
+) => {
+  return http.get("*/identities/:id/roles", async () => {
+    await delay(1000);
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetIdentitiesItemRolesResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchIdentitiesItemRolesMockHandler = () => {
+  return http.patch("*/identities/:id/roles", async () => {
+    await delay(1000);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getGetIdentitiesItemEntitlementsMockHandler = (
+  overrideResponse?: GetIdentityEntitlementsResponse,
+) => {
+  return http.get("*/identities/:id/entitlements", async () => {
+    await delay(1000);
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetIdentitiesItemEntitlementsResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchIdentitiesItemEntitlementsMockHandler = () => {
+  return http.patch("*/identities/:id/entitlements", async () => {
+    await delay(1000);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+export const getIdentitiesMock = () => [
+  getGetIdentitiesMockHandler(),
+  getPostIdentitiesMockHandler(),
+  getGetIdentitiesItemMockHandler(),
+  getPutIdentitiesItemMockHandler(),
+  getDeleteIdentitiesItemMockHandler(),
+  getGetIdentitiesItemGroupsMockHandler(),
+  getPatchIdentitiesItemGroupsMockHandler(),
+  getGetIdentitiesItemRolesMockHandler(),
+  getPatchIdentitiesItemRolesMockHandler(),
+  getGetIdentitiesItemEntitlementsMockHandler(),
+  getPatchIdentitiesItemEntitlementsMockHandler(),
 ];

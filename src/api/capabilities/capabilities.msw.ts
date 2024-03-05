@@ -9,11 +9,11 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetEntitlementsResponse } from "../api.schemas";
+import type { GetCapabilitiesResponse } from "../api.schemas";
 
-export const getGetEntitlementsResponseMock = (
+export const getGetCapabilitiesResponseMock = (
   overrideResponse: any = {},
-): GetEntitlementsResponse => ({
+): GetCapabilitiesResponse => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -38,25 +38,26 @@ export const getGetEntitlementsResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
-    entity_type: faker.word.sample(),
+    endpoint: faker.word.sample(),
+    methods: faker.helpers.arrayElement([
+      "GET",
+      "POST",
+      "DELETE",
+      "PATCH",
+    ] as const),
     ...overrideResponse,
   })),
   ...overrideResponse,
 });
 
-export const getGetRawEntitlementsResponseMock = (): string =>
-  faker.word.sample();
-
-export const getGetEntitlementsMockHandler = (
-  overrideResponse?: GetEntitlementsResponse,
+export const getGetCapabilitiesMockHandler = (
+  overrideResponse?: GetCapabilitiesResponse,
 ) => {
-  return http.get("*/entitlements", async () => {
+  return http.get("*/capabilities", async () => {
     await delay(1000);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetEntitlementsResponseMock(),
+        overrideResponse ? overrideResponse : getGetCapabilitiesResponseMock(),
       ),
       {
         status: 200,
@@ -67,19 +68,4 @@ export const getGetEntitlementsMockHandler = (
     );
   });
 };
-
-export const getGetRawEntitlementsMockHandler = () => {
-  return http.get("*/entitlements/raw", async () => {
-    await delay(1000);
-    return new HttpResponse(getGetRawEntitlementsResponseMock(), {
-      status: 200,
-      headers: {
-        "Content-Type": "text/plain",
-      },
-    });
-  });
-};
-export const getEntitlementsMock = () => [
-  getGetEntitlementsMockHandler(),
-  getGetRawEntitlementsMockHandler(),
-];
+export const getCapabilitiesMock = () => [getGetCapabilitiesMockHandler()];
