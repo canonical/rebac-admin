@@ -6,6 +6,10 @@ import { useGetIdentities } from "api/identities/identities";
 
 const COLUMN_DATA: Column[] = [
   {
+    Header: "first name",
+    accessor: "firstName",
+  },
+  {
     Header: "last name",
     accessor: "lastName",
   },
@@ -36,7 +40,8 @@ const Users = () => {
       return [];
     }
     const tableData = users.map((user) => ({
-      lastName: user?.lastName ?? "Unknown user",
+      firstName: user?.firstName ?? "Unknown",
+      lastName: user?.lastName ?? "Unknown",
       addedBy: user.addedBy,
       email: user.email,
       source: user.source,
