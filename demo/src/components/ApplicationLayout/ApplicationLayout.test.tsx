@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -71,7 +71,9 @@ test("displays an aside", () => {
 test("pins the menu", async () => {
   renderComponent(<ApplicationLayout logo={logo} navItems={[]} />);
   expect(document.querySelector(".l-navigation")).not.toHaveClass("is-pinned");
-  await userEvent.click(screen.getByRole("button", { name: "Pin menu" }));
+  await act(() =>
+    userEvent.click(screen.getByRole("button", { name: "Pin menu" })),
+  );
   expect(document.querySelector(".l-navigation")).toHaveClass("is-pinned");
 });
 
@@ -93,11 +95,15 @@ test("pins the menu using external state", async () => {
 test("opens and collapses the menu", async () => {
   renderComponent(<ApplicationLayout logo={logo} navItems={[]} />);
   expect(document.querySelector(".l-navigation")).toHaveClass("is-collapsed");
-  await userEvent.click(screen.getByRole("button", { name: "Menu" }));
+  await act(() =>
+    userEvent.click(screen.getByRole("button", { name: "Menu" })),
+  );
   expect(document.querySelector(".l-navigation")).not.toHaveClass(
     "is-collapsed",
   );
-  await userEvent.click(screen.getByRole("button", { name: "Close menu" }));
+  await act(() =>
+    userEvent.click(screen.getByRole("button", { name: "Close menu" })),
+  );
   expect(document.querySelector(".l-navigation")).toHaveClass("is-collapsed");
 });
 
@@ -112,6 +118,8 @@ test("collapses the menu using external state", async () => {
     />,
   );
   expect(document.querySelector(".l-navigation")).toHaveClass("is-collapsed");
-  await userEvent.click(screen.getByRole("button", { name: "Menu" }));
+  await act(() =>
+    userEvent.click(screen.getByRole("button", { name: "Menu" })),
+  );
   expect(onCollapseMenu).toHaveBeenCalledWith(false);
 });
