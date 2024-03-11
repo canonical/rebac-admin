@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
@@ -149,7 +149,7 @@ test("should display initial page before fetching users", () => {
 test("should display loading while fetching users", async () => {
   renderComponent(<Users />);
   const fetchDataButton = screen.getByRole("button", { name: "Fetch data" });
-  await waitFor(() => userEvent.click(fetchDataButton));
+  await act(() => userEvent.click(fetchDataButton));
   expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
 });
 
@@ -158,7 +158,7 @@ test("should display correct user data after fetching users", async () => {
   console.log = vi.fn();
   renderComponent(<Users />);
   const fetchDataButton = screen.getByRole("button", { name: "Fetch data" });
-  await waitFor(() => userEvent.click(fetchDataButton));
+  await act(() => userEvent.click(fetchDataButton));
   // getGetIdentitiesItemEntitlementsMockHandler is delayed by 1000ms.
   vi.advanceTimersByTime(1000);
   expect(
@@ -173,7 +173,8 @@ test("should display correct user data after fetching users", async () => {
   expect(columnHeaders[3]).toHaveTextContent("email");
   expect(columnHeaders[4]).toHaveTextContent("source");
   const rows = screen.getAllByRole("row");
-  // the first row is the column and the next 7 are users
+  // The first row contains the column headers and the next 7 rows contain
+  // user data.
   expect(rows).toHaveLength(8);
   const firstUserCells = within(rows[1]).getAllByRole("cell");
   expect(firstUserCells).toHaveLength(5);
