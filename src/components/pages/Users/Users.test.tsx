@@ -139,16 +139,27 @@ afterAll(() => {
   vi.useRealTimers();
 });
 
-test("data is fetched and displayed correctly", async () => {
-  const consoleLog = console.log;
-  console.log = vi.fn();
+test("should display initial page before fetching users", () => {
   renderComponent(<Users />);
   expect(screen.getByText("No data to display!")).toBeInTheDocument();
   const fetchDataButton = screen.getByRole("button", { name: "Fetch data" });
   expect(fetchDataButton).toBeInTheDocument();
+});
+
+test("should display loading while fetching users", async () => {
+  renderComponent(<Users />);
+  const fetchDataButton = screen.getByRole("button", { name: "Fetch data" });
   await waitFor(() => userEvent.click(fetchDataButton));
   expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
-  // getGetIdentitiesItemEntitlementsMockHandler is delayed by 1000ms in identities.msw.ts
+});
+
+test("should display correct user data after fetching users", async () => {
+  const consoleLog = console.log;
+  console.log = vi.fn();
+  renderComponent(<Users />);
+  const fetchDataButton = screen.getByRole("button", { name: "Fetch data" });
+  await waitFor(() => userEvent.click(fetchDataButton));
+  // getGetIdentitiesItemEntitlementsMockHandler is delayed by 1000ms.
   vi.advanceTimersByTime(1000);
   expect(
     await screen.findByRole("button", { name: "Refetch data" }),
