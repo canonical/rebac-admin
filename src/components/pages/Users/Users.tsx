@@ -1,8 +1,10 @@
-import { Button, ModularTable } from "@canonical/react-components";
-import { useEffect, useMemo } from "react";
+import { ModularTable } from "@canonical/react-components";
+import { useCallback, useEffect, useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
+import Content from "components/Content";
+import Panel from "components/Panel";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -28,11 +30,7 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isSuccess, refetch } = useGetIdentities(undefined, {
-    query: {
-      enabled: false,
-    },
-  });
+  const { data, isFetching, isSuccess } = useGetIdentities();
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -49,41 +47,33 @@ const Users = () => {
     return tableData;
   }, [data]);
 
-  const fetchUsers = () => {
-    refetch().catch((error) =>
-      console.error("Unable to fetch user data.", error),
-    );
-  };
-
   useEffect(() => {
     if (!isFetching && isSuccess) {
       console.log("Users fetched succesfully.", data);
     }
   }, [isFetching, isSuccess, data]);
 
-  if (isFetching) {
-    return <h3>Fetching users data...</h3>;
-  }
-
-  if (!isFetching && isSuccess) {
-    return (
-      <>
-        <Button onClick={fetchUsers}>Refetch data</Button>
+  const generateContent = useCallback((): JSX.Element => {
+    if (isFetching) {
+      return <h3>Fetching users data...</h3>;
+    } else if (!isFetching && isSuccess) {
+      return (
         <ModularTable
           className="audit-logs-table"
           columns={COLUMN_DATA}
           data={tableData}
           emptyMsg="No users found!"
         />
-      </>
-    );
-  }
+      );
+    } else {
+      return <h3>No data to display!</h3>;
+    }
+  }, [isFetching, isSuccess, tableData]);
 
   return (
-    <>
-      <h3>No data to display!</h3>
-      <Button onClick={fetchUsers}>Fetch data</Button>
-    </>
+    <Panel title="Users">
+      <Content>{generateContent()}</Content>
+    </Panel>
   );
 };
 

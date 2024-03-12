@@ -10,8 +10,6 @@ import type {
 
 import type { ExclusiveProps } from "types";
 
-import "./_panel.scss";
-
 export type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
 
 type PanelLogo<L = LogoDefaultElement> = PropsWithSpread<
@@ -126,9 +124,7 @@ const Panel = <L = LogoDefaultElement,>({
         </div>
       ) : null}
       {children && wrapContent ? (
-        <div className="p-panel__content">
-          <div className="l-content">{children}</div>
-        </div>
+        <div className="p-panel__content">{children}</div>
       ) : (
         children
       )}

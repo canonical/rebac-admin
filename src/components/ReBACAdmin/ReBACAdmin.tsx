@@ -40,14 +40,7 @@ const ReBACAdmin = ({ apiURL }: Props) => {
           element={<Panel title="Resources" />}
         />
         <Route path={urls.roles.index} element={<Panel title="Roles" />} />
-        <Route
-          path={urls.users.index}
-          element={
-            <Panel title="Users">
-              <Users />
-            </Panel>
-          }
-        />
+        <Route path={urls.users.index} element={<Users />} />
       </Routes>
     </QueryClientProvider>
   );
