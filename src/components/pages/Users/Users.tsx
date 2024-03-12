@@ -66,7 +66,7 @@ const Users = () => {
         />
       );
     } else {
-      return <h3>No data to display!</h3>;
+      return <h3>Couldn't fetch user data!</h3>;
     }
   }, [isFetching, isSuccess, tableData]);
 
