@@ -27,7 +27,7 @@ const COLUMN_DATA: Column[] = [
     Header: "source",
     accessor: "source",
   },
-];
+] as const;
 
 const Users = () => {
   const { data, isFetching, isSuccess } = useGetIdentities();
