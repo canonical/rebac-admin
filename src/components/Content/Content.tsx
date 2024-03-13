@@ -1,5 +1,7 @@
 import { type JSX } from "react";
 
+import "./_content.scss";
+
 type Props = {
   children: JSX.Element;
 };

@@ -1,4 +1,4 @@
-import { ModularTable } from "@canonical/react-components";
+import { ModularTable, Spinner } from "@canonical/react-components";
 import { useCallback, useEffect, useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
@@ -55,7 +55,7 @@ const Users = () => {
 
   const generateContent = useCallback((): JSX.Element => {
     if (isFetching) {
-      return <h3>Fetching users data...</h3>;
+      return <Spinner text="Fetching users data..." />;
     } else if (!isFetching && isSuccess) {
       return (
         <ModularTable
