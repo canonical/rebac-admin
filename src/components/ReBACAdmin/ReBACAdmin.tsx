@@ -3,6 +3,7 @@ import axios from "axios";
 import { Route, Routes } from "react-router-dom";
 
 import Panel from "components/Panel";
+import Users from "components/pages/Users";
 import urls from "urls";
 
 export type Props = {
@@ -39,7 +40,7 @@ const ReBACAdmin = ({ apiURL }: Props) => {
           element={<Panel title="Resources" />}
         />
         <Route path={urls.roles.index} element={<Panel title="Roles" />} />
-        <Route path={urls.users.index} element={<Panel title="Users" />} />
+        <Route path={urls.users.index} element={<Users />} />
       </Routes>
     </QueryClientProvider>
   );
