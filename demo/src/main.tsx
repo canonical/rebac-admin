@@ -12,11 +12,14 @@ import "./scss/index.scss";
 const root = document.getElementById("root");
 
 const defferRender = async () => {
+  if (import.meta.env.VITE_DEMO_API_MOCKED !== "true") {
+    return;
+  }
   const { mockApiWorker } = await import("./mockApiWorker");
   return mockApiWorker.start();
 };
 
-const admin = () => <ReBACAdmin apiURL="/api" />;
+const admin = () => <ReBACAdmin apiURL={import.meta.env.VITE_DEMO_API_URL} />;
 
 const router = createBrowserRouter([
   {
