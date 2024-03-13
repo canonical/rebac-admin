@@ -12,11 +12,16 @@ import "./scss/index.scss";
 const root = document.getElementById("root");
 
 const defferRender = async () => {
+  if (import.meta.env.VITE_DEMO_API_MOCKED !== "true") {
+    // If the API should not be mocked then prevent the service worker from
+    // taking over the network calls.
+    return;
+  }
   const { mockApiWorker } = await import("./mockApiWorker");
   return mockApiWorker.start();
 };
 
-const admin = () => <ReBACAdmin apiURL="/api" />;
+const admin = () => <ReBACAdmin apiURL={import.meta.env.VITE_DEMO_API_URL} />;
 
 const router = createBrowserRouter([
   {
