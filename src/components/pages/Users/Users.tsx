@@ -4,7 +4,6 @@ import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
-import Panel from "components/Panel";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -27,7 +26,7 @@ const COLUMN_DATA: Column[] = [
     Header: "source",
     accessor: "source",
   },
-] as const;
+];
 
 const Users = () => {
   const { data, isFetching, isSuccess } = useGetIdentities();
@@ -56,7 +55,7 @@ const Users = () => {
   const generateContent = useCallback((): JSX.Element => {
     if (isFetching) {
       return <Spinner text="Fetching users data..." />;
-    } else if (!isFetching && isSuccess) {
+    } else if (isSuccess) {
       return (
         <ModularTable
           className="audit-logs-table"
@@ -71,9 +70,9 @@ const Users = () => {
   }, [isFetching, isSuccess, tableData]);
 
   return (
-    <Panel title="Users">
-      <Content>{generateContent()}</Content>
-    </Panel>
+    <Content title="Users" endpoint="/identities">
+      {generateContent()}
+    </Content>
   );
 };
 
