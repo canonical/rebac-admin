@@ -221,7 +221,14 @@ export const getGetIdentitiesItemRolesResponseMock = (
           faker.word.sample(),
           undefined,
         ]),
-        entity: faker.helpers.arrayElement([{}, undefined]),
+        entity: faker.helpers.arrayElement([
+          {
+            id: faker.word.sample(),
+            type: faker.word.sample(),
+            ...overrideResponse,
+          },
+          undefined,
+        ]),
         resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
         ...overrideResponse,
       })),
@@ -273,7 +280,7 @@ export const getGetIdentitiesMockHandler = (
   overrideResponse?: GetIdentitiesResponse,
 ) => {
   return http.get("*/identities", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetIdentitiesResponseMock(),
@@ -290,7 +297,7 @@ export const getGetIdentitiesMockHandler = (
 
 export const getPostIdentitiesMockHandler = (overrideResponse?: Identity) => {
   return http.post("*/identities", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getPostIdentitiesResponseMock(),
@@ -309,7 +316,7 @@ export const getGetIdentitiesItemMockHandler = (
   overrideResponse?: Identity,
 ) => {
   return http.get("*/identities/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -330,7 +337,7 @@ export const getPutIdentitiesItemMockHandler = (
   overrideResponse?: Identity,
 ) => {
   return http.put("*/identities/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -349,7 +356,7 @@ export const getPutIdentitiesItemMockHandler = (
 
 export const getDeleteIdentitiesItemMockHandler = () => {
   return http.delete("*/identities/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -363,7 +370,7 @@ export const getGetIdentitiesItemGroupsMockHandler = (
   overrideResponse?: GetIdentityGroupsResponse,
 ) => {
   return http.get("*/identities/:id/groups", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -382,7 +389,7 @@ export const getGetIdentitiesItemGroupsMockHandler = (
 
 export const getPatchIdentitiesItemGroupsMockHandler = () => {
   return http.patch("*/identities/:id/groups", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -396,7 +403,7 @@ export const getGetIdentitiesItemRolesMockHandler = (
   overrideResponse?: GetIdentityRolesResponse,
 ) => {
   return http.get("*/identities/:id/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -415,7 +422,7 @@ export const getGetIdentitiesItemRolesMockHandler = (
 
 export const getPatchIdentitiesItemRolesMockHandler = () => {
   return http.patch("*/identities/:id/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -429,7 +436,7 @@ export const getGetIdentitiesItemEntitlementsMockHandler = (
   overrideResponse?: GetIdentityEntitlementsResponse,
 ) => {
   return http.get("*/identities/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -448,7 +455,7 @@ export const getGetIdentitiesItemEntitlementsMockHandler = (
 
 export const getPatchIdentitiesItemEntitlementsMockHandler = () => {
   return http.patch("*/identities/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {

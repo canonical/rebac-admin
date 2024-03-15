@@ -575,8 +575,8 @@ export const useGetIdentitiesItemGroups = <
 };
 
 /**
- * Add or remove the identity to/from a group.
- * @summary Add or remove the identity to/from a group.
+ * Add or remove the identity to/from groups.
+ * @summary Add or remove the identity to/from groups.
  */
 export const patchIdentitiesItemGroups = (
   id: string,
@@ -636,7 +636,7 @@ export type PatchIdentitiesItemGroupsMutationError = AxiosError<
 >;
 
 /**
- * @summary Add or remove the identity to/from a group.
+ * @summary Add or remove the identity to/from groups.
  */
 export const usePatchIdentitiesItemGroups = <
   TError = AxiosError<
@@ -773,8 +773,8 @@ export const useGetIdentitiesItemRoles = <
 };
 
 /**
- * Add or remove the identity to/from a role.
- * @summary Add or remove the identity to/from a role.
+ * Add or remove the identity to/from roles.
+ * @summary Add or remove the identity to/from roles.
  */
 export const patchIdentitiesItemRoles = (
   id: string,
@@ -834,7 +834,7 @@ export type PatchIdentitiesItemRolesMutationError = AxiosError<
 >;
 
 /**
- * @summary Add or remove the identity to/from a role.
+ * @summary Add or remove the identity to/from roles.
  */
 export const usePatchIdentitiesItemRoles = <
   TError = AxiosError<

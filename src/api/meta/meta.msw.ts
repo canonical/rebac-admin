@@ -13,7 +13,7 @@ export const getSwaggerJsonResponseMock = (): string => faker.word.sample();
 
 export const getSwaggerJsonMockHandler = (overrideResponse?: string) => {
   return http.get("*/swagger.json", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getSwaggerJsonResponseMock(),

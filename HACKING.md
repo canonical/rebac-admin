@@ -3,6 +3,7 @@
 #### In this document:
 
 - [Development setup](#development-setup)
+- [Develop with external API](#develop-with-external-api)
 - [Testing in host projects](#testing-in-host-projects)
   - [Install from repo](#install-from-repo)
   - [Local link](#local-link)
@@ -34,7 +35,20 @@ To develop ReBAC Admin you will need to do the following steps:
 1. Install Yarn.
 2. Fetch this repo.
 3. Run `yarn install`.
-4. Now you can run the project with `yarn start`.
+4. _Optional_: configure the project to [use an external
+   API](#develop-with-external-api).
+5. Now you can run the project with `yarn start`.
+
+## Develop with external API
+
+By default this project uses a mocked API. To develop against a real API you can
+create an `.env.local` file in the root of the project and set the following
+variables:
+
+```
+VITE_DEMO_API_MOCKED=false
+VITE_DEMO_API_URL=http://example.com/api
+```
 
 ## Testing in host projects
 

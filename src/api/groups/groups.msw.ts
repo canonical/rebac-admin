@@ -190,7 +190,14 @@ export const getGetGroupsItemRolesResponseMock = (
           faker.word.sample(),
           undefined,
         ]),
-        entity: faker.helpers.arrayElement([{}, undefined]),
+        entity: faker.helpers.arrayElement([
+          {
+            id: faker.word.sample(),
+            type: faker.word.sample(),
+            ...overrideResponse,
+          },
+          undefined,
+        ]),
         resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
         ...overrideResponse,
       })),
@@ -242,7 +249,7 @@ export const getGetGroupsMockHandler = (
   overrideResponse?: GetGroupsResponse,
 ) => {
   return http.get("*/groups", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
@@ -259,7 +266,7 @@ export const getGetGroupsMockHandler = (
 
 export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
   return http.post("*/groups", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
@@ -278,7 +285,7 @@ export const getGetGroupsItemMockHandler = (
   overrideResponse?: GetGroupsResponse,
 ) => {
   return http.get("*/groups/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetGroupsItemResponseMock(),
@@ -295,7 +302,7 @@ export const getGetGroupsItemMockHandler = (
 
 export const getPutGroupsItemMockHandler = (overrideResponse?: Group) => {
   return http.put("*/groups/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getPutGroupsItemResponseMock(),
@@ -312,7 +319,7 @@ export const getPutGroupsItemMockHandler = (overrideResponse?: Group) => {
 
 export const getDeleteGroupsItemMockHandler = () => {
   return http.delete("*/groups/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -326,7 +333,7 @@ export const getGetGroupsItemIdentitiesMockHandler = (
   overrideResponse?: GetGroupIdentitiesResponse,
 ) => {
   return http.get("*/groups/:id/identities", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -345,7 +352,7 @@ export const getGetGroupsItemIdentitiesMockHandler = (
 
 export const getPatchGroupsItemIdentitiesMockHandler = () => {
   return http.patch("*/groups/:id/identities", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -359,7 +366,7 @@ export const getGetGroupsItemRolesMockHandler = (
   overrideResponse?: GetGroupRolesResponse,
 ) => {
   return http.get("*/groups/:id/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -378,7 +385,7 @@ export const getGetGroupsItemRolesMockHandler = (
 
 export const getPatchGroupsItemRolesMockHandler = () => {
   return http.patch("*/groups/:id/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -392,7 +399,7 @@ export const getGetGroupsItemEntitlementsMockHandler = (
   overrideResponse?: GetGroupEntitlementsResponse,
 ) => {
   return http.get("*/groups/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -411,7 +418,7 @@ export const getGetGroupsItemEntitlementsMockHandler = (
 
 export const getPatchGroupsItemEntitlementsMockHandler = () => {
   return http.patch("*/groups/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {

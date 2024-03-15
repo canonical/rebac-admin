@@ -54,7 +54,7 @@ export const getGetCapabilitiesMockHandler = (
   overrideResponse?: GetCapabilitiesResponse,
 ) => {
   return http.get("*/capabilities", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetCapabilitiesResponseMock(),

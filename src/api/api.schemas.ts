@@ -6,15 +6,6 @@
 
  * OpenAPI spec version: 0.0.10
  */
-export type GetAuthenticationProviders200AllOfDataItem = { [key: string]: any };
-
-export type GetAuthenticationProviders200AllOf = {
-  data: GetAuthenticationProviders200AllOfDataItem[];
-};
-
-export type GetAuthenticationProviders200 = Response &
-  GetAuthenticationProviders200AllOf;
-
 /**
  * A string to filter results by
  */
@@ -232,7 +223,7 @@ export type GetIdentitiesParams = {
   filter?: FilterParamParameter;
 };
 
-export type GetAuthenticationParams = {
+export type GetIdentityProvidersParams = {
   /**
    * The number of records to return per response
    */
@@ -247,7 +238,7 @@ export type GetAuthenticationParams = {
   nextToken?: PaginationNextTokenParameter;
 };
 
-export type GetAuthenticationProvidersParams = {
+export type GetAvailableIdentityProvidersParams = {
   /**
    * The number of records to return per response
    */
@@ -329,17 +320,19 @@ export type GetIdentityGroupsResponse = Response & Groups;
 
 export type GetIdentitiesResponse = Response & Identities;
 
-export type GetIdentityProvidersResponseAllOfDataItem = {
+export type GetIdentityProvidersResponse = Response & IdentityProviders;
+
+export interface AvailableIdentityProvider {
   id: string;
-  name: string;
-};
+  name?: string;
+}
 
-export type GetIdentityProvidersResponseAllOf = {
-  data: GetIdentityProvidersResponseAllOfDataItem[];
-};
+export interface AvailableIdentityProviders {
+  data: AvailableIdentityProvider[];
+}
 
-export type GetIdentityProvidersResponse = Response &
-  GetIdentityProvidersResponseAllOf;
+export type GetAvailableIdentityProvidersResponse = Response &
+  AvailableIdentityProviders;
 
 export type GetCapabilitiesResponse = Response & Capabilities;
 
@@ -350,35 +343,25 @@ export type IdentityProviderPatchRequestBodyAllOfItem = {
 export type IdentityProviderPatchRequestBody = PatchRequestBody &
   IdentityProviderPatchRequestBodyAllOfItem[];
 
-export type RoleEntitlementsPatchItem = EntityEntitlementItem &
-  RoleEntitlementsPatchItemAllOf;
-
-export type RoleEntitlementsPatchItemAllOfOp =
-  (typeof RoleEntitlementsPatchItemAllOfOp)[keyof typeof RoleEntitlementsPatchItemAllOfOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const RoleEntitlementsPatchItemAllOfOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum RoleEntitlementsPatchItemAllOfOp {
+  add = "add",
+  remove = "remove",
+}
 export type RoleEntitlementsPatchItemAllOf = {
   op: RoleEntitlementsPatchItemAllOfOp;
 };
+
+export type RoleEntitlementsPatchItem = EntityEntitlementItem &
+  RoleEntitlementsPatchItemAllOf;
 
 export interface RoleEntitlementsPatchRequestBody {
   patches: RoleEntitlementsPatchItem[];
 }
 
-export type GroupEntitlementsPatchItemAllOfOp =
-  (typeof GroupEntitlementsPatchItemAllOfOp)[keyof typeof GroupEntitlementsPatchItemAllOfOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GroupEntitlementsPatchItemAllOfOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum GroupEntitlementsPatchItemAllOfOp {
+  add = "add",
+  remove = "remove",
+}
 export type GroupEntitlementsPatchItemAllOf = {
   op: GroupEntitlementsPatchItemAllOfOp;
 };
@@ -390,15 +373,10 @@ export interface GroupEntitlementsPatchRequestBody {
   patches: GroupEntitlementsPatchItem[];
 }
 
-export type GroupRolesPatchItemOp =
-  (typeof GroupRolesPatchItemOp)[keyof typeof GroupRolesPatchItemOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GroupRolesPatchItemOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum GroupRolesPatchItemOp {
+  add = "add",
+  remove = "remove",
+}
 export interface GroupRolesPatchItem {
   op: GroupRolesPatchItemOp;
   role: string;
@@ -408,15 +386,10 @@ export interface GroupRolesPatchRequestBody {
   patches: GroupRolesPatchItem[];
 }
 
-export type GroupIdentitiesPatchItemOp =
-  (typeof GroupIdentitiesPatchItemOp)[keyof typeof GroupIdentitiesPatchItemOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GroupIdentitiesPatchItemOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum GroupIdentitiesPatchItemOp {
+  add = "add",
+  remove = "remove",
+}
 export interface GroupIdentitiesPatchItem {
   identity: string;
   op: GroupIdentitiesPatchItemOp;
@@ -436,15 +409,10 @@ export interface EntityEntitlementItem {
   entitlement: EntityEntitlement;
 }
 
-export type IdentityEntitlementsPatchItemAllOfOp =
-  (typeof IdentityEntitlementsPatchItemAllOfOp)[keyof typeof IdentityEntitlementsPatchItemAllOfOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const IdentityEntitlementsPatchItemAllOfOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum IdentityEntitlementsPatchItemAllOfOp {
+  add = "add",
+  remove = "remove",
+}
 export type IdentityEntitlementsPatchItemAllOf = {
   op: IdentityEntitlementsPatchItemAllOfOp;
 };
@@ -456,15 +424,10 @@ export interface IdentityEntitlementsPatchRequestBody {
   patches: IdentityEntitlementsPatchItem[];
 }
 
-export type IdentityRolesPatchItemOp =
-  (typeof IdentityRolesPatchItemOp)[keyof typeof IdentityRolesPatchItemOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const IdentityRolesPatchItemOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum IdentityRolesPatchItemOp {
+  add = "add",
+  remove = "remove",
+}
 export interface IdentityRolesPatchItem {
   op: IdentityRolesPatchItemOp;
   role: string;
@@ -474,15 +437,10 @@ export interface IdentityRolesPatchRequestBody {
   patches: IdentityRolesPatchItem[];
 }
 
-export type IdentityGroupsPatchItemOp =
-  (typeof IdentityGroupsPatchItemOp)[keyof typeof IdentityGroupsPatchItemOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const IdentityGroupsPatchItemOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum IdentityGroupsPatchItemOp {
+  add = "add",
+  remove = "remove",
+}
 export interface IdentityGroupsPatchItem {
   group: string;
   op: IdentityGroupsPatchItemOp;
@@ -492,15 +450,10 @@ export interface IdentityGroupsPatchRequestBody {
   patches: IdentityGroupsPatchItem[];
 }
 
-export type PatchRequestBodyItemOp =
-  (typeof PatchRequestBodyItemOp)[keyof typeof PatchRequestBodyItemOp];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PatchRequestBodyItemOp = {
-  add: "add",
-  remove: "remove",
-} as const;
-
+export enum PatchRequestBodyItemOp {
+  add = "add",
+  remove = "remove",
+}
 export interface PatchRequestBodyElementValueItem {
   id: string;
 }
@@ -514,17 +467,12 @@ export type PatchRequestBodyItem = {
 
 export type PatchRequestBody = PatchRequestBodyItem[];
 
-export type CapabilityMethodsItem =
-  (typeof CapabilityMethodsItem)[keyof typeof CapabilityMethodsItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CapabilityMethodsItem = {
-  GET: "GET",
-  POST: "POST",
-  DELETE: "DELETE",
-  PATCH: "PATCH",
-} as const;
-
+export enum CapabilityMethodsItem {
+  GET = "GET",
+  POST = "POST",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
+}
 export interface Capability {
   endpoint: string;
   methods: CapabilityMethodsItem[];
@@ -561,7 +509,8 @@ export interface Resources {
 }
 
 export interface Entity {
-  [key: string]: any;
+  id: string;
+  type: string;
 }
 
 export interface Resource {
@@ -615,14 +564,9 @@ export interface Identities {
   data: Identity[];
 }
 
-export type IdentityProviderSyncMode =
-  (typeof IdentityProviderSyncMode)[keyof typeof IdentityProviderSyncMode];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const IdentityProviderSyncMode = {
-  import: "import",
-} as const;
-
+export enum IdentityProviderSyncMode {
+  import = "import",
+}
 export interface IdentityProvider {
   acceptsPromptNone?: boolean;
   accountLinkingOnly?: boolean;
