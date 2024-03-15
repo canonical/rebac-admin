@@ -10,14 +10,14 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
 import type {
-  GetAuthenticationProviders200,
+  GetAvailableIdentityProvidersResponse,
   GetIdentityProvidersResponse,
   IdentityProvider,
 } from "../api.schemas";
 
-export const getGetAuthenticationProvidersResponseMock = (
+export const getGetAvailableIdentityProvidersResponseMock = (
   overrideResponse: any = {},
-): GetAuthenticationProviders200 => ({
+): GetAvailableIdentityProvidersResponse => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -41,11 +41,15 @@ export const getGetAuthenticationProvidersResponseMock = (
   data: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
-  ).map(() => ({})),
+  ).map(() => ({
+    id: faker.word.sample(),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    ...overrideResponse,
+  })),
   ...overrideResponse,
 });
 
-export const getGetAuthenticationResponseMock = (
+export const getGetIdentityProvidersResponseMock = (
   overrideResponse: any = {},
 ): GetIdentityProvidersResponse => ({
   _links: {
@@ -72,14 +76,50 @@ export const getGetAuthenticationResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    id: faker.word.sample(),
-    name: faker.word.sample(),
+    acceptsPromptNone: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    accountLinkingOnly: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    clientID: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    clientSecret: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    disableIdentityInfo: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    identityCount: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    redirectUrl: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    storeTokens: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    storeTokensReadable: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    syncMode: faker.helpers.arrayElement([
+      faker.helpers.arrayElement(["import"] as const),
+      undefined,
+    ]),
+    trustEmail: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     ...overrideResponse,
   })),
   ...overrideResponse,
 });
 
-export const getPostAuthenticationResponseMock = (
+export const getPostIdentityProvidersResponseMock = (
   overrideResponse: any = {},
 ): IdentityProvider => ({
   acceptsPromptNone: faker.helpers.arrayElement([
@@ -120,7 +160,7 @@ export const getPostAuthenticationResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetAuthenticationItemResponseMock = (
+export const getGetIdentityProvidersItemResponseMock = (
   overrideResponse: any = {},
 ): IdentityProvider => ({
   acceptsPromptNone: faker.helpers.arrayElement([
@@ -161,16 +201,57 @@ export const getGetAuthenticationItemResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetAuthenticationProvidersMockHandler = (
-  overrideResponse?: GetAuthenticationProviders200,
+export const getPutIdentityProvidersItemResponseMock = (
+  overrideResponse: any = {},
+): IdentityProvider => ({
+  acceptsPromptNone: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  accountLinkingOnly: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  clientID: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  clientSecret: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  disableIdentityInfo: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  identityCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  redirectUrl: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  storeTokens: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  storeTokensReadable: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  syncMode: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(["import"] as const),
+    undefined,
+  ]),
+  trustEmail: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  ...overrideResponse,
+});
+
+export const getGetAvailableIdentityProvidersMockHandler = (
+  overrideResponse?: GetAvailableIdentityProvidersResponse,
 ) => {
   return http.get("*/authentication/providers", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetAuthenticationProvidersResponseMock(),
+          : getGetAvailableIdentityProvidersResponseMock(),
       ),
       {
         status: 200,
@@ -182,16 +263,16 @@ export const getGetAuthenticationProvidersMockHandler = (
   });
 };
 
-export const getGetAuthenticationMockHandler = (
+export const getGetIdentityProvidersMockHandler = (
   overrideResponse?: GetIdentityProvidersResponse,
 ) => {
   return http.get("*/authentication", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetAuthenticationResponseMock(),
+          : getGetIdentityProvidersResponseMock(),
       ),
       {
         status: 200,
@@ -203,16 +284,16 @@ export const getGetAuthenticationMockHandler = (
   });
 };
 
-export const getPostAuthenticationMockHandler = (
+export const getPostIdentityProvidersMockHandler = (
   overrideResponse?: IdentityProvider,
 ) => {
   return http.post("*/authentication", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getPostAuthenticationResponseMock(),
+          : getPostIdentityProvidersResponseMock(),
       ),
       {
         status: 200,
@@ -224,16 +305,16 @@ export const getPostAuthenticationMockHandler = (
   });
 };
 
-export const getGetAuthenticationItemMockHandler = (
+export const getGetIdentityProvidersItemMockHandler = (
   overrideResponse?: IdentityProvider,
 ) => {
   return http.get("*/authentication/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetAuthenticationItemResponseMock(),
+          : getGetIdentityProvidersItemResponseMock(),
       ),
       {
         status: 200,
@@ -245,21 +326,30 @@ export const getGetAuthenticationItemMockHandler = (
   });
 };
 
-export const getPutAuthenticationItemMockHandler = () => {
+export const getPutIdentityProvidersItemMockHandler = (
+  overrideResponse?: IdentityProvider,
+) => {
   return http.put("*/authentication/:id", async () => {
-    await delay(1000);
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    await delay(900);
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPutIdentityProvidersItemResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   });
 };
 
-export const getDeleteAuthenticationItemMockHandler = () => {
+export const getDeleteIdentityProvidersItemMockHandler = () => {
   return http.delete("*/authentication/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -269,10 +359,10 @@ export const getDeleteAuthenticationItemMockHandler = () => {
   });
 };
 export const getAuthenticationMock = () => [
-  getGetAuthenticationProvidersMockHandler(),
-  getGetAuthenticationMockHandler(),
-  getPostAuthenticationMockHandler(),
-  getGetAuthenticationItemMockHandler(),
-  getPutAuthenticationItemMockHandler(),
-  getDeleteAuthenticationItemMockHandler(),
+  getGetAvailableIdentityProvidersMockHandler(),
+  getGetIdentityProvidersMockHandler(),
+  getPostIdentityProvidersMockHandler(),
+  getGetIdentityProvidersItemMockHandler(),
+  getPutIdentityProvidersItemMockHandler(),
+  getDeleteIdentityProvidersItemMockHandler(),
 ];

@@ -38,7 +38,11 @@ export const getGetResourcesResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entity: {},
+    entity: {
+      id: faker.word.sample(),
+      type: faker.word.sample(),
+      ...overrideResponse,
+    },
     id: faker.word.sample(),
     name: faker.word.sample(),
     ...overrideResponse,
@@ -50,7 +54,7 @@ export const getGetResourcesMockHandler = (
   overrideResponse?: GetResourcesResponse,
 ) => {
   return http.get("*/resources", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetResourcesResponseMock(),
