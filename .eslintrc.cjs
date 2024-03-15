@@ -36,6 +36,8 @@ module.exports = {
     "@tanstack/query",
   ],
   rules: {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-misused-promises": "error",

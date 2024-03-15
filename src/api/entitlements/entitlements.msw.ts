@@ -53,7 +53,7 @@ export const getGetEntitlementsMockHandler = (
   overrideResponse?: GetEntitlementsResponse,
 ) => {
   return http.get("*/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetEntitlementsResponseMock(),
@@ -70,7 +70,7 @@ export const getGetEntitlementsMockHandler = (
 
 export const getGetRawEntitlementsMockHandler = () => {
   return http.get("*/entitlements/raw", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(getGetRawEntitlementsResponseMock(), {
       status: 200,
       headers: {

@@ -51,7 +51,14 @@ export const getGetRolesResponseMock = (
           faker.word.sample(),
           undefined,
         ]),
-        entity: faker.helpers.arrayElement([{}, undefined]),
+        entity: faker.helpers.arrayElement([
+          {
+            id: faker.word.sample(),
+            type: faker.word.sample(),
+            ...overrideResponse,
+          },
+          undefined,
+        ]),
         resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
         ...overrideResponse,
       })),
@@ -78,7 +85,14 @@ export const getPostRolesResponseMock = (overrideResponse: any = {}): Role[] =>
           faker.word.sample(),
           undefined,
         ]),
-        entity: faker.helpers.arrayElement([{}, undefined]),
+        entity: faker.helpers.arrayElement([
+          {
+            id: faker.word.sample(),
+            type: faker.word.sample(),
+            ...overrideResponse,
+          },
+          undefined,
+        ]),
         resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
         ...overrideResponse,
       })),
@@ -98,7 +112,14 @@ export const getGetRolesItemResponseMock = (
       (_, i) => i + 1,
     ).map(() => ({
       entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-      entity: faker.helpers.arrayElement([{}, undefined]),
+      entity: faker.helpers.arrayElement([
+        {
+          id: faker.word.sample(),
+          type: faker.word.sample(),
+          ...overrideResponse,
+        },
+        undefined,
+      ]),
       resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
       ...overrideResponse,
     })),
@@ -109,7 +130,7 @@ export const getGetRolesItemResponseMock = (
   ...overrideResponse,
 });
 
-export const getPatchRolesItemResponseMock = (
+export const getPutRolesItemResponseMock = (
   overrideResponse: any = {},
 ): Role => ({
   entitlements: faker.helpers.arrayElement([
@@ -118,7 +139,14 @@ export const getPatchRolesItemResponseMock = (
       (_, i) => i + 1,
     ).map(() => ({
       entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-      entity: faker.helpers.arrayElement([{}, undefined]),
+      entity: faker.helpers.arrayElement([
+        {
+          id: faker.word.sample(),
+          type: faker.word.sample(),
+          ...overrideResponse,
+        },
+        undefined,
+      ]),
       resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
       ...overrideResponse,
     })),
@@ -166,7 +194,7 @@ export const getGetRolesItemEntitlementsResponseMock = (
 
 export const getGetRolesMockHandler = (overrideResponse?: GetRolesResponse) => {
   return http.get("*/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetRolesResponseMock(),
@@ -183,7 +211,7 @@ export const getGetRolesMockHandler = (overrideResponse?: GetRolesResponse) => {
 
 export const getPostRolesMockHandler = (overrideResponse?: Role[]) => {
   return http.post("*/roles", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getPostRolesResponseMock(),
@@ -200,7 +228,7 @@ export const getPostRolesMockHandler = (overrideResponse?: Role[]) => {
 
 export const getGetRolesItemMockHandler = (overrideResponse?: Role) => {
   return http.get("*/roles/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse ? overrideResponse : getGetRolesItemResponseMock(),
@@ -215,12 +243,12 @@ export const getGetRolesItemMockHandler = (overrideResponse?: Role) => {
   });
 };
 
-export const getPatchRolesItemMockHandler = (overrideResponse?: Role) => {
+export const getPutRolesItemMockHandler = (overrideResponse?: Role) => {
   return http.put("*/roles/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPatchRolesItemResponseMock(),
+        overrideResponse ? overrideResponse : getPutRolesItemResponseMock(),
       ),
       {
         status: 200,
@@ -234,7 +262,7 @@ export const getPatchRolesItemMockHandler = (overrideResponse?: Role) => {
 
 export const getDeleteRolesItemMockHandler = () => {
   return http.delete("*/roles/:id", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -248,7 +276,7 @@ export const getGetRolesItemEntitlementsMockHandler = (
   overrideResponse?: GetRoleEntitlementsResponse,
 ) => {
   return http.get("*/roles/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
@@ -267,7 +295,7 @@ export const getGetRolesItemEntitlementsMockHandler = (
 
 export const getPatchRolesItemEntitlementsMockHandler = () => {
   return http.patch("*/roles/:id/entitlements", async () => {
-    await delay(1000);
+    await delay(900);
     return new HttpResponse(null, {
       status: 200,
       headers: {
@@ -280,7 +308,7 @@ export const getRolesMock = () => [
   getGetRolesMockHandler(),
   getPostRolesMockHandler(),
   getGetRolesItemMockHandler(),
-  getPatchRolesItemMockHandler(),
+  getPutRolesItemMockHandler(),
   getDeleteRolesItemMockHandler(),
   getGetRolesItemEntitlementsMockHandler(),
   getPatchRolesItemEntitlementsMockHandler(),

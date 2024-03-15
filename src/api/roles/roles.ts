@@ -292,7 +292,7 @@ export const useGetRolesItem = <
  * Update a role.
  * @summary Update a role.
  */
-export const patchRolesItem = (
+export const putRolesItem = (
   id: string,
   role: Role,
   options?: AxiosRequestConfig,
@@ -300,7 +300,7 @@ export const patchRolesItem = (
   return axios.put(`/roles/${id}`, role, options);
 };
 
-export const getPatchRolesItemMutationOptions = <
+export const getPutRolesItemMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -310,14 +310,14 @@ export const getPatchRolesItemMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchRolesItem>>,
+    Awaited<ReturnType<typeof putRolesItem>>,
     TError,
     { id: string; data: Role },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof patchRolesItem>>,
+  Awaited<ReturnType<typeof putRolesItem>>,
   TError,
   { id: string; data: Role },
   TContext
@@ -325,29 +325,29 @@ export const getPatchRolesItemMutationOptions = <
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof patchRolesItem>>,
+    Awaited<ReturnType<typeof putRolesItem>>,
     { id: string; data: Role }
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchRolesItem(id, data, axiosOptions);
+    return putRolesItem(id, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PatchRolesItemMutationResult = NonNullable<
-  Awaited<ReturnType<typeof patchRolesItem>>
+export type PutRolesItemMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putRolesItem>>
 >;
-export type PatchRolesItemMutationBody = Role;
-export type PatchRolesItemMutationError = AxiosError<
+export type PutRolesItemMutationBody = Role;
+export type PutRolesItemMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Update a role.
  */
-export const usePatchRolesItem = <
+export const usePutRolesItem = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -357,14 +357,14 @@ export const usePatchRolesItem = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchRolesItem>>,
+    Awaited<ReturnType<typeof putRolesItem>>,
     TError,
     { id: string; data: Role },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }) => {
-  const mutationOptions = getPatchRolesItemMutationOptions(options);
+  const mutationOptions = getPutRolesItemMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

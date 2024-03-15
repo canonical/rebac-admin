@@ -21,9 +21,9 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type {
   BadRequestResponse,
   DefaultResponse,
-  GetAuthenticationParams,
-  GetAuthenticationProviders200,
-  GetAuthenticationProvidersParams,
+  GetAvailableIdentityProvidersParams,
+  GetAvailableIdentityProvidersResponse,
+  GetIdentityProvidersParams,
   GetIdentityProvidersResponse,
   IdentityProvider,
   NotFoundResponse,
@@ -36,24 +36,24 @@ import type {
 
  * @summary Returns the list of supported identity providers.
  */
-export const getAuthenticationProviders = (
-  params?: GetAuthenticationProvidersParams,
+export const getAvailableIdentityProviders = (
+  params?: GetAvailableIdentityProvidersParams,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetAuthenticationProviders200>> => {
+): Promise<AxiosResponse<GetAvailableIdentityProvidersResponse>> => {
   return axios.get(`/authentication/providers`, {
     ...options,
     params: { ...params, ...options?.params },
   });
 };
 
-export const getGetAuthenticationProvidersQueryKey = (
-  params?: GetAuthenticationProvidersParams,
+export const getGetAvailableIdentityProvidersQueryKey = (
+  params?: GetAvailableIdentityProvidersParams,
 ) => {
   return [`/authentication/providers`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetAuthenticationProvidersQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAuthenticationProviders>>,
+export const getGetAvailableIdentityProvidersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAvailableIdentityProviders>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -61,11 +61,11 @@ export const getGetAuthenticationProvidersQueryOptions = <
     | DefaultResponse
   >,
 >(
-  params?: GetAuthenticationProvidersParams,
+  params?: GetAvailableIdentityProvidersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthenticationProviders>>,
+        Awaited<ReturnType<typeof getAvailableIdentityProviders>>,
         TError,
         TData
       >
@@ -76,32 +76,32 @@ export const getGetAuthenticationProvidersQueryOptions = <
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetAuthenticationProvidersQueryKey(params);
+    queryOptions?.queryKey ?? getGetAvailableIdentityProvidersQueryKey(params);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getAuthenticationProviders>>
+    Awaited<ReturnType<typeof getAvailableIdentityProviders>>
   > = ({ signal }) =>
-    getAuthenticationProviders(params, { signal, ...axiosOptions });
+    getAvailableIdentityProviders(params, { signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getAuthenticationProviders>>,
+    Awaited<ReturnType<typeof getAvailableIdentityProviders>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetAuthenticationProvidersQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthenticationProviders>>
+export type GetAvailableIdentityProvidersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAvailableIdentityProviders>>
 >;
-export type GetAuthenticationProvidersQueryError = AxiosError<
+export type GetAvailableIdentityProvidersQueryError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Returns the list of supported identity providers.
  */
-export const useGetAuthenticationProviders = <
-  TData = Awaited<ReturnType<typeof getAuthenticationProviders>>,
+export const useGetAvailableIdentityProviders = <
+  TData = Awaited<ReturnType<typeof getAvailableIdentityProviders>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -109,11 +109,11 @@ export const useGetAuthenticationProviders = <
     | DefaultResponse
   >,
 >(
-  params?: GetAuthenticationProvidersParams,
+  params?: GetAvailableIdentityProvidersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthenticationProviders>>,
+        Awaited<ReturnType<typeof getAvailableIdentityProviders>>,
         TError,
         TData
       >
@@ -121,7 +121,7 @@ export const useGetAuthenticationProviders = <
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetAuthenticationProvidersQueryOptions(
+  const queryOptions = getGetAvailableIdentityProvidersQueryOptions(
     params,
     options,
   );
@@ -140,8 +140,8 @@ export const useGetAuthenticationProviders = <
 
  * @summary List configured authentication providers.
  */
-export const getAuthentication = (
-  params?: GetAuthenticationParams,
+export const getIdentityProviders = (
+  params?: GetIdentityProvidersParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<GetIdentityProvidersResponse>> => {
   return axios.get(`/authentication`, {
@@ -150,14 +150,14 @@ export const getAuthentication = (
   });
 };
 
-export const getGetAuthenticationQueryKey = (
-  params?: GetAuthenticationParams,
+export const getGetIdentityProvidersQueryKey = (
+  params?: GetIdentityProvidersParams,
 ) => {
   return [`/authentication`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetAuthenticationQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAuthentication>>,
+export const getGetIdentityProvidersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getIdentityProviders>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -165,11 +165,11 @@ export const getGetAuthenticationQueryOptions = <
     | DefaultResponse
   >,
 >(
-  params?: GetAuthenticationParams,
+  params?: GetIdentityProvidersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthentication>>,
+        Awaited<ReturnType<typeof getIdentityProviders>>,
         TError,
         TData
       >
@@ -180,31 +180,31 @@ export const getGetAuthenticationQueryOptions = <
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetAuthenticationQueryKey(params);
+    queryOptions?.queryKey ?? getGetIdentityProvidersQueryKey(params);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getAuthentication>>
-  > = ({ signal }) => getAuthentication(params, { signal, ...axiosOptions });
+    Awaited<ReturnType<typeof getIdentityProviders>>
+  > = ({ signal }) => getIdentityProviders(params, { signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getAuthentication>>,
+    Awaited<ReturnType<typeof getIdentityProviders>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetAuthenticationQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthentication>>
+export type GetIdentityProvidersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getIdentityProviders>>
 >;
-export type GetAuthenticationQueryError = AxiosError<
+export type GetIdentityProvidersQueryError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary List configured authentication providers.
  */
-export const useGetAuthentication = <
-  TData = Awaited<ReturnType<typeof getAuthentication>>,
+export const useGetIdentityProviders = <
+  TData = Awaited<ReturnType<typeof getIdentityProviders>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -212,11 +212,11 @@ export const useGetAuthentication = <
     | DefaultResponse
   >,
 >(
-  params?: GetAuthenticationParams,
+  params?: GetIdentityProvidersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthentication>>,
+        Awaited<ReturnType<typeof getIdentityProviders>>,
         TError,
         TData
       >
@@ -224,7 +224,7 @@ export const useGetAuthentication = <
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetAuthenticationQueryOptions(params, options);
+  const queryOptions = getGetIdentityProvidersQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -239,14 +239,14 @@ export const useGetAuthentication = <
  * Configure a new authentication provider.
  * @summary Configure a new authentication provider.
  */
-export const postAuthentication = (
+export const postIdentityProviders = (
   identityProvider: IdentityProvider,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<IdentityProvider>> => {
   return axios.post(`/authentication`, identityProvider, options);
 };
 
-export const getPostAuthenticationMutationOptions = <
+export const getPostIdentityProvidersMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -256,14 +256,14 @@ export const getPostAuthenticationMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof postAuthentication>>,
+    Awaited<ReturnType<typeof postIdentityProviders>>,
     TError,
     { data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof postAuthentication>>,
+  Awaited<ReturnType<typeof postIdentityProviders>>,
   TError,
   { data: IdentityProvider },
   TContext
@@ -271,29 +271,29 @@ export const getPostAuthenticationMutationOptions = <
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof postAuthentication>>,
+    Awaited<ReturnType<typeof postIdentityProviders>>,
     { data: IdentityProvider }
   > = (props) => {
     const { data } = props ?? {};
 
-    return postAuthentication(data, axiosOptions);
+    return postIdentityProviders(data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PostAuthenticationMutationResult = NonNullable<
-  Awaited<ReturnType<typeof postAuthentication>>
+export type PostIdentityProvidersMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postIdentityProviders>>
 >;
-export type PostAuthenticationMutationBody = IdentityProvider;
-export type PostAuthenticationMutationError = AxiosError<
+export type PostIdentityProvidersMutationBody = IdentityProvider;
+export type PostIdentityProvidersMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Configure a new authentication provider.
  */
-export const usePostAuthentication = <
+export const usePostIdentityProviders = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -303,14 +303,14 @@ export const usePostAuthentication = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof postAuthentication>>,
+    Awaited<ReturnType<typeof postIdentityProviders>>,
     TError,
     { data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }) => {
-  const mutationOptions = getPostAuthenticationMutationOptions(options);
+  const mutationOptions = getPostIdentityProvidersMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -318,19 +318,19 @@ export const usePostAuthentication = <
  * Get a single authentication provider.
  * @summary Get a single authentication provider.
  */
-export const getAuthenticationItem = (
+export const getIdentityProvidersItem = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<IdentityProvider>> => {
   return axios.get(`/authentication/${id}`, options);
 };
 
-export const getGetAuthenticationItemQueryKey = (id: string) => {
+export const getGetIdentityProvidersItemQueryKey = (id: string) => {
   return [`/authentication/${id}`] as const;
 };
 
-export const getGetAuthenticationItemQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAuthenticationItem>>,
+export const getGetIdentityProvidersItemQueryOptions = <
+  TData = Awaited<ReturnType<typeof getIdentityProvidersItem>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -342,7 +342,7 @@ export const getGetAuthenticationItemQueryOptions = <
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthenticationItem>>,
+        Awaited<ReturnType<typeof getIdentityProvidersItem>>,
         TError,
         TData
       >
@@ -353,11 +353,11 @@ export const getGetAuthenticationItemQueryOptions = <
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetAuthenticationItemQueryKey(id);
+    queryOptions?.queryKey ?? getGetIdentityProvidersItemQueryKey(id);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getAuthenticationItem>>
-  > = ({ signal }) => getAuthenticationItem(id, { signal, ...axiosOptions });
+    Awaited<ReturnType<typeof getIdentityProvidersItem>>
+  > = ({ signal }) => getIdentityProvidersItem(id, { signal, ...axiosOptions });
 
   return {
     queryKey,
@@ -365,24 +365,24 @@ export const getGetAuthenticationItemQueryOptions = <
     enabled: !!id,
     ...queryOptions,
   } as UseQueryOptions<
-    Awaited<ReturnType<typeof getAuthenticationItem>>,
+    Awaited<ReturnType<typeof getIdentityProvidersItem>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetAuthenticationItemQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthenticationItem>>
+export type GetIdentityProvidersItemQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getIdentityProvidersItem>>
 >;
-export type GetAuthenticationItemQueryError = AxiosError<
+export type GetIdentityProvidersItemQueryError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Get a single authentication provider.
  */
-export const useGetAuthenticationItem = <
-  TData = Awaited<ReturnType<typeof getAuthenticationItem>>,
+export const useGetIdentityProvidersItem = <
+  TData = Awaited<ReturnType<typeof getIdentityProvidersItem>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -394,7 +394,7 @@ export const useGetAuthenticationItem = <
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getAuthenticationItem>>,
+        Awaited<ReturnType<typeof getIdentityProvidersItem>>,
         TError,
         TData
       >
@@ -402,7 +402,7 @@ export const useGetAuthenticationItem = <
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetAuthenticationItemQueryOptions(id, options);
+  const queryOptions = getGetIdentityProvidersItemQueryOptions(id, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -417,15 +417,15 @@ export const useGetAuthenticationItem = <
  * Update an authentication provider configuration.
  * @summary Update an authentication provider configuration.
  */
-export const putAuthenticationItem = (
+export const putIdentityProvidersItem = (
   id: string,
   identityProvider: IdentityProvider,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<IdentityProvider>> => {
   return axios.put(`/authentication/${id}`, identityProvider, options);
 };
 
-export const getPutAuthenticationItemMutationOptions = <
+export const getPutIdentityProvidersItemMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -435,14 +435,14 @@ export const getPutAuthenticationItemMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putAuthenticationItem>>,
+    Awaited<ReturnType<typeof putIdentityProvidersItem>>,
     TError,
     { id: string; data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof putAuthenticationItem>>,
+  Awaited<ReturnType<typeof putIdentityProvidersItem>>,
   TError,
   { id: string; data: IdentityProvider },
   TContext
@@ -450,29 +450,29 @@ export const getPutAuthenticationItemMutationOptions = <
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof putAuthenticationItem>>,
+    Awaited<ReturnType<typeof putIdentityProvidersItem>>,
     { id: string; data: IdentityProvider }
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return putAuthenticationItem(id, data, axiosOptions);
+    return putIdentityProvidersItem(id, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PutAuthenticationItemMutationResult = NonNullable<
-  Awaited<ReturnType<typeof putAuthenticationItem>>
+export type PutIdentityProvidersItemMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putIdentityProvidersItem>>
 >;
-export type PutAuthenticationItemMutationBody = IdentityProvider;
-export type PutAuthenticationItemMutationError = AxiosError<
+export type PutIdentityProvidersItemMutationBody = IdentityProvider;
+export type PutIdentityProvidersItemMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Update an authentication provider configuration.
  */
-export const usePutAuthenticationItem = <
+export const usePutIdentityProvidersItem = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -482,14 +482,14 @@ export const usePutAuthenticationItem = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putAuthenticationItem>>,
+    Awaited<ReturnType<typeof putIdentityProvidersItem>>,
     TError,
     { id: string; data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }) => {
-  const mutationOptions = getPutAuthenticationItemMutationOptions(options);
+  const mutationOptions = getPutIdentityProvidersItemMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -497,14 +497,14 @@ export const usePutAuthenticationItem = <
  * Remove an authentication provider configuration.
  * @summary Remove an authentication provider configuration.
  */
-export const deleteAuthenticationItem = (
+export const deleteIdentityProvidersItem = (
   id: string,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
   return axios.delete(`/authentication/${id}`, options);
 };
 
-export const getDeleteAuthenticationItemMutationOptions = <
+export const getDeleteIdentityProvidersItemMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -514,14 +514,14 @@ export const getDeleteAuthenticationItemMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteAuthenticationItem>>,
+    Awaited<ReturnType<typeof deleteIdentityProvidersItem>>,
     TError,
     { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteAuthenticationItem>>,
+  Awaited<ReturnType<typeof deleteIdentityProvidersItem>>,
   TError,
   { id: string },
   TContext
@@ -529,29 +529,29 @@ export const getDeleteAuthenticationItemMutationOptions = <
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteAuthenticationItem>>,
+    Awaited<ReturnType<typeof deleteIdentityProvidersItem>>,
     { id: string }
   > = (props) => {
     const { id } = props ?? {};
 
-    return deleteAuthenticationItem(id, axiosOptions);
+    return deleteIdentityProvidersItem(id, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type DeleteAuthenticationItemMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteAuthenticationItem>>
+export type DeleteIdentityProvidersItemMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteIdentityProvidersItem>>
 >;
 
-export type DeleteAuthenticationItemMutationError = AxiosError<
+export type DeleteIdentityProvidersItemMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
  * @summary Remove an authentication provider configuration.
  */
-export const useDeleteAuthenticationItem = <
+export const useDeleteIdentityProvidersItem = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -561,14 +561,15 @@ export const useDeleteAuthenticationItem = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteAuthenticationItem>>,
+    Awaited<ReturnType<typeof deleteIdentityProvidersItem>>,
     TError,
     { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }) => {
-  const mutationOptions = getDeleteAuthenticationItemMutationOptions(options);
+  const mutationOptions =
+    getDeleteIdentityProvidersItemMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
