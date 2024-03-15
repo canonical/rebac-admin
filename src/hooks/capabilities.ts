@@ -1,34 +1,12 @@
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
 
-export type CapabilityActionItem =
-  (typeof CapabilityActionItem)[keyof typeof CapabilityActionItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CapabilityActionItem = {
-  LIST: "list",
-  ADD: "add",
-  DELETE: "delete",
-  UPDATE: "update",
-} as const;
-
-export const CapabilityActionToMethod: Readonly<
-  Record<CapabilityActionItem, CapabilityMethodsItem>
-> = {
-  [CapabilityActionItem.LIST]: CapabilityMethodsItem.GET,
-  [CapabilityActionItem.ADD]: CapabilityMethodsItem.POST,
-  [CapabilityActionItem.DELETE]: CapabilityMethodsItem.DELETE,
-  [CapabilityActionItem.UPDATE]: CapabilityMethodsItem.PATCH,
-};
-
-const CapabilityMethodToAction: Readonly<
-  Record<CapabilityMethodsItem, CapabilityActionItem>
-> = {
-  [CapabilityMethodsItem.GET]: CapabilityActionItem.LIST,
-  [CapabilityMethodsItem.POST]: CapabilityActionItem.ADD,
-  [CapabilityMethodsItem.DELETE]: CapabilityActionItem.DELETE,
-  [CapabilityMethodsItem.PATCH]: CapabilityActionItem.UPDATE,
-};
+export enum CapabilityActionItem {
+  LIST = CapabilityMethodsItem.GET,
+  ADD = CapabilityMethodsItem.POST,
+  DELETE = CapabilityMethodsItem.DELETE,
+  UPDATE = CapabilityMethodsItem.PATCH,
+}
 
 export const useGetCapabilityActions = (endpoint: string) => {
   const { data, isFetching, isSuccess } = useGetCapabilities();
@@ -36,7 +14,11 @@ export const useGetCapabilityActions = (endpoint: string) => {
     actions:
       data?.data.data
         .find((capability) => capability.endpoint === endpoint)
-        ?.methods.map((method) => CapabilityMethodToAction[method]) ?? [],
+        ?.methods.map((method) =>
+          Object.values<string>(CapabilityActionItem).find(
+            (action) => action === method,
+          ),
+        ) ?? [],
     isFetching,
     isSuccess,
   };

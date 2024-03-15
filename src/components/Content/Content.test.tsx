@@ -1,15 +1,39 @@
 import { screen } from "@testing-library/react";
+import { setupServer } from "msw/node";
 
+import { Label as CheckCapabilityActionLabel } from "components/CheckCapabilityAction";
+import { getActualCapabilitiesMock } from "mocks/handlers";
 import { renderComponent } from "test/utils";
 
 import Content from "./Content";
 
-test("should display content", () => {
+const mockApiServer = setupServer(...getActualCapabilitiesMock());
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+beforeEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
+
+test("should display content", async () => {
+  const title = "Mock content title";
   const content = "This is the content!";
   renderComponent(
-    <Content>
+    <Content title={title} endpoint="/swagger.json">
       <p>{content}</p>
     </Content>,
   );
-  expect(screen.getByText(content).closest("div")).toHaveClass("l-content");
+  expect(screen.getByText(title)).toBeInTheDocument();
+  expect(
+    screen.getByTestId(CheckCapabilityActionLabel.LOADING),
+  ).toBeInTheDocument();
+  expect((await screen.findByText(content)).closest("div")).toHaveClass(
+    "l-content",
+  );
 });

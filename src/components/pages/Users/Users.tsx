@@ -4,6 +4,11 @@ import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
+import {
+  CapabilityActionItem,
+  useCheckCapabilityAction,
+} from "hooks/capabilities";
+import { Endpoint } from "types/api";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -29,7 +34,15 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isSuccess } = useGetIdentities();
+  const { data, isFetching, isSuccess, refetch } = useGetIdentities(undefined, {
+    query: {
+      enabled: false,
+    },
+  });
+  const { isActionAllowed } = useCheckCapabilityAction(
+    Endpoint.IDENTITIES,
+    CapabilityActionItem.LIST,
+  );
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -51,6 +64,14 @@ const Users = () => {
       console.log("Users fetched succesfully.", data);
     }
   }, [isFetching, isSuccess, data]);
+
+  useEffect(() => {
+    if (isActionAllowed) {
+      refetch().catch((error) =>
+        console.error("Unable to fetch users.", error),
+      );
+    }
+  }, [isActionAllowed, refetch]);
 
   const generateContent = useCallback((): JSX.Element => {
     if (isFetching) {

@@ -6,6 +6,10 @@ import {
   type CapabilityActionItem,
 } from "hooks/capabilities";
 
+export enum Label {
+  LOADING = "loading",
+}
+
 type Props = {
   children: JSX.Element;
   endpoint: string;
@@ -21,14 +25,12 @@ const CheckCapabilityAction = ({
     endpoint,
     action,
   );
-  if (isFetching) {
-    return (
-      <Spinner text={`Checking if ${action} ${endpoint} can be performed...`} />
-    );
-  } else if (isActionAllowed && isSuccess) {
+  if (isActionAllowed && isSuccess) {
     return <>{children}</>;
+  } else if (isFetching) {
+    return <Spinner data-testid={Label.LOADING} />;
   } else {
-    return <h3>{`Can't ${action} ${endpoint}!`}</h3>;
+    return <h3>This feature is not enabled.</h3>;
   }
 };
 

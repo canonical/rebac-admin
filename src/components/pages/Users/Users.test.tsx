@@ -7,6 +7,7 @@ import {
   getGetIdentitiesMockHandler,
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
+import { getActualCapabilitiesMock } from "mocks/handlers";
 import { renderComponent } from "test/utils";
 
 import Users from "./Users";
@@ -23,7 +24,10 @@ const mockUserData = getGetIdentitiesResponseMock({
     ...Array.from({ length: 6 }, () => getGetIdentitiesItemResponseMock()),
   ],
 });
-const mockApiServer = setupServer(getGetIdentitiesMockHandler(mockUserData));
+const mockApiServer = setupServer(
+  getGetIdentitiesMockHandler(mockUserData),
+  ...getActualCapabilitiesMock(),
+);
 
 beforeAll(() => {
   mockApiServer.listen();
@@ -42,6 +46,7 @@ test("should display correct user data after fetching users", async () => {
   console.log = vi.fn();
 
   renderComponent(<Users />);
+  expect(screen.getByTestId("loading")).toBeInTheDocument();
   expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
   await waitFor(() => expect(console.log).toHaveBeenCalledTimes(1));
   const columnHeaders = await screen.findAllByRole("columnheader");
