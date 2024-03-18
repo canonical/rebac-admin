@@ -1,49 +1,53 @@
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
+import { Endpoint } from "types/api";
 
-export enum CapabilityActionItem {
-  LIST = CapabilityMethodsItem.GET,
-  ADD = CapabilityMethodsItem.POST,
+export enum CapabilityAction {
+  READ = CapabilityMethodsItem.GET,
+  CREATE = CapabilityMethodsItem.POST,
   DELETE = CapabilityMethodsItem.DELETE,
   UPDATE = CapabilityMethodsItem.PATCH,
 }
 
-export const useGetCapabilityActions = (endpoint: string) => {
-  const { data, isFetching, isSuccess } = useGetCapabilities();
+const CAPABILITIES_CACHE_TIME = 30 * 60 * 1000;
+
+export const useGetCapabilityActions = (endpoint: Endpoint) => {
+  const { data, isFetching, isRefetching, isError, error } = useGetCapabilities(
+    // Change caching time from default 5 minutes to 30 minutes.
+    { query: { gcTime: CAPABILITIES_CACHE_TIME } },
+  );
   return {
     actions:
       data?.data.data
         .find((capability) => capability.endpoint === endpoint)
         ?.methods.map((method) =>
-          Object.values<string>(CapabilityActionItem).find(
+          Object.values<string>(CapabilityAction).find(
             (action) => action === method,
           ),
         ) ?? [],
     isFetching,
-    isSuccess,
+    isRefetching,
+    isError,
+    error,
   };
 };
 
-export const useCheckCapabilityAction = (
-  endpoint: string,
-  action: CapabilityActionItem,
+export const useCheckCapability = (
+  endpoint: Endpoint,
+  action: CapabilityAction,
 ) => {
-  const { actions, isFetching, isSuccess } = useGetCapabilityActions(endpoint);
+  const { actions, isFetching, isRefetching, isError, error } =
+    useGetCapabilityActions(endpoint);
   return {
     isActionAllowed: actions?.includes(action) ?? false,
     isFetching,
-    isSuccess,
+    isRefetching,
+    isError,
+    error,
   };
 };
 
-export const useCheckUsersCapabilityAction = (action: CapabilityActionItem) => {
-  const { isActionAllowed, isFetching, isSuccess } = useCheckCapabilityAction(
-    "/identities",
-    action,
-  );
-  return {
-    isActionAllowed,
-    isFetching,
-    isSuccess,
-  };
+export const useCheckUsersCapability = (action: CapabilityAction) => {
+  const { isActionAllowed } = useCheckCapability(Endpoint.IDENTITIES, action);
+  return { isActionAllowed };
 };

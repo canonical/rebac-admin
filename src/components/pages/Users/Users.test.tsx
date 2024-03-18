@@ -7,6 +7,7 @@ import {
   getGetIdentitiesMockHandler,
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
+import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { getActualCapabilitiesMock } from "mocks/handlers";
 import { renderComponent } from "test/utils";
 
@@ -46,8 +47,7 @@ test("should display correct user data after fetching users", async () => {
   console.log = vi.fn();
 
   renderComponent(<Users />);
-  expect(screen.getByTestId("loading")).toBeInTheDocument();
-  expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
+  expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
   await waitFor(() => expect(console.log).toHaveBeenCalledTimes(1));
   const columnHeaders = await screen.findAllByRole("columnheader");
   expect(columnHeaders).toHaveLength(5);

@@ -1,13 +1,10 @@
 import { ModularTable, Spinner } from "@canonical/react-components";
-import { useCallback, useEffect, useMemo, type JSX } from "react";
+import { useCallback, useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
-import {
-  CapabilityActionItem,
-  useCheckCapabilityAction,
-} from "hooks/capabilities";
+import { CapabilityAction, useCheckUsersCapability } from "hooks/capabilities";
 import { Endpoint } from "types/api";
 
 const COLUMN_DATA: Column[] = [
@@ -34,15 +31,10 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isSuccess, refetch } = useGetIdentities(undefined, {
-    query: {
-      enabled: false,
-    },
-  });
-  const { isActionAllowed } = useCheckCapabilityAction(
-    Endpoint.IDENTITIES,
-    CapabilityActionItem.LIST,
-  );
+  const { data, isFetching, isError, error } = useGetIdentities();
+  const { isActionAllowed } = useCheckUsersCapability(CapabilityAction.READ);
+
+  console.log(isActionAllowed);
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -59,24 +51,14 @@ const Users = () => {
     return tableData;
   }, [data]);
 
-  useEffect(() => {
-    if (!isFetching && isSuccess) {
-      console.log("Users fetched succesfully.", data);
-    }
-  }, [isFetching, isSuccess, data]);
-
-  useEffect(() => {
-    if (isActionAllowed) {
-      refetch().catch((error) =>
-        console.error("Unable to fetch users.", error),
-      );
-    }
-  }, [isActionAllowed, refetch]);
-
   const generateContent = useCallback((): JSX.Element => {
     if (isFetching) {
       return <Spinner text="Fetching users data..." />;
-    } else if (isSuccess) {
+    } else if (!isActionAllowed) {
+      return <h3>User data access not granted.</h3>;
+    } else if (isError) {
+      return <h3>Couldn't fetch user data. {error?.message ?? ""}</h3>;
+    } else {
       return (
         <ModularTable
           className="audit-logs-table"
@@ -85,13 +67,11 @@ const Users = () => {
           emptyMsg="No users found!"
         />
       );
-    } else {
-      return <h3>Couldn't fetch user data!</h3>;
     }
-  }, [isFetching, isSuccess, tableData]);
+  }, [error?.message, isActionAllowed, isError, isFetching, tableData]);
 
   return (
-    <Content title="Users" endpoint="/identities">
+    <Content title="Users" endpoint={Endpoint.IDENTITIES}>
       {generateContent()}
     </Content>
   );

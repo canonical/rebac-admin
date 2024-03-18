@@ -1,27 +1,25 @@
 import type { ReactNode } from "react";
 import { type JSX } from "react";
 
-import CheckCapabilityAction from "components/CheckCapabilityAction";
+import CheckCapability from "components/CheckCapability";
 import Panel from "components/Panel";
-import { CapabilityActionItem } from "hooks/capabilities";
+import { CapabilityAction } from "hooks/capabilities";
+import type { Endpoint } from "types/api";
 
 import "./_content.scss";
 
 type Props = {
   children: JSX.Element;
   title: ReactNode;
-  endpoint: string;
+  endpoint: Endpoint;
 };
 
 const Content = ({ children, title, endpoint }: Props): JSX.Element => (
   <Panel title={title}>
     <div className="l-content">
-      <CheckCapabilityAction
-        endpoint={endpoint}
-        action={CapabilityActionItem.LIST}
-      >
+      <CheckCapability endpoint={endpoint} action={CapabilityAction.READ}>
         {children}
-      </CheckCapabilityAction>
+      </CheckCapability>
     </div>
   </Panel>
 );

@@ -20,7 +20,7 @@ export const getActualCapabilitiesMock = () =>
     // required, as we verify the availability of the respective capability when
     // accessing various parts of the application.
     if (
-      handler.info.path === "*/capabilities" &&
+      handler.info.path === `*${Endpoint.CAPABILITIES}` &&
       handler.info.method === CapabilityMethodsItem.GET
     ) {
       return getGetCapabilitiesMockHandler(
