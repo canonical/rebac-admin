@@ -18,9 +18,6 @@ export default defineConfig({
       prettier: true,
       override: {
         useNativeEnums: true,
-        query: {
-          useQuery: true,
-        }
       },
     },
   },
