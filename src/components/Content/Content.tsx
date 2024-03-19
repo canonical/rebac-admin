@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { type JSX } from "react";
 
 import CheckCapability from "components/CheckCapability";
@@ -9,10 +9,9 @@ import type { Endpoint } from "types/api";
 import "./_content.scss";
 
 type Props = {
-  children: JSX.Element;
   title: ReactNode;
   endpoint: Endpoint;
-};
+} & PropsWithChildren;
 
 const Content = ({ children, title, endpoint }: Props): JSX.Element => (
   <Panel title={title}>

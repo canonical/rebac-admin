@@ -1,10 +1,14 @@
-import { ModularTable, Spinner } from "@canonical/react-components";
-import { useCallback, useMemo, type JSX } from "react";
+import {
+  Button,
+  ModularTable,
+  Notification,
+  Spinner,
+} from "@canonical/react-components";
+import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
-import { CapabilityAction, useCheckUsersCapability } from "hooks/capabilities";
 import { Endpoint } from "types/api";
 
 const COLUMN_DATA: Column[] = [
@@ -31,10 +35,7 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error } = useGetIdentities();
-  const { isActionAllowed } = useCheckUsersCapability(CapabilityAction.READ);
-
-  console.log(isActionAllowed);
+  const { data, isFetching, isError, error, refetch } = useGetIdentities();
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -51,13 +52,25 @@ const Users = () => {
     return tableData;
   }, [data]);
 
-  const generateContent = useCallback((): JSX.Element => {
+  const generateErrorContent = (error: string) => (
+    <>
+      Couldn't fetch user data. {error} Try{" "}
+      <Button appearance="link" onClick={() => refetch()}>
+        refetching
+      </Button>{" "}
+      user data.
+    </>
+  );
+
+  const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text="Fetching users data..." />;
-    } else if (!isActionAllowed) {
-      return <h3>User data access not granted.</h3>;
     } else if (isError) {
-      return <h3>Couldn't fetch user data. {error?.message ?? ""}</h3>;
+      return (
+        <Notification severity="negative" title="Error">
+          {generateErrorContent(error?.message ?? "")}
+        </Notification>
+      );
     } else {
       return (
         <ModularTable
@@ -68,7 +81,7 @@ const Users = () => {
         />
       );
     }
-  }, [error?.message, isActionAllowed, isError, isFetching, tableData]);
+  };
 
   return (
     <Content title="Users" endpoint={Endpoint.IDENTITIES}>

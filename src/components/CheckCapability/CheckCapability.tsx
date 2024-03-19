@@ -21,19 +21,20 @@ const CheckCapability = ({
   endpoint,
   action,
 }: Props): JSX.Element => {
+  const { isActionAllowed, isFetching, isRefetching, isError, error, refetch } =
+    useCheckCapability(endpoint, action);
+
   const generateErrorContent = (error: string) => (
     <>
       Failed to check capability. {error} Try{" "}
-      <Button appearance="link" onClick={() => window.location.reload()}>
-        refreshing
+      <Button appearance="link" onClick={refetch}>
+        refetching
       </Button>{" "}
-      the page.
+      capability.
     </>
   );
 
-  const { isActionAllowed, isFetching, isRefetching, isError, error } =
-    useCheckCapability(endpoint, action);
-  if (isFetching && !isRefetching) {
+  if (isFetching && ((isFetching && isError) || (!isRefetching && !isError))) {
     return <Spinner data-testid={Label.LOADING} />;
   } else if (isError) {
     return (

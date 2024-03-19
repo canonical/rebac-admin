@@ -1,6 +1,7 @@
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
 import { Endpoint } from "types/api";
+import { MAX_SIGNED_INT32 } from "types/utils";
 
 export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
@@ -9,13 +10,13 @@ export enum CapabilityAction {
   UPDATE = CapabilityMethodsItem.PATCH,
 }
 
-const CAPABILITIES_CACHE_TIME = 30 * 60 * 1000;
-
 export const useGetCapabilityActions = (endpoint: Endpoint) => {
-  const { data, isFetching, isRefetching, isError, error } = useGetCapabilities(
-    // Change caching time from default 5 minutes to 30 minutes.
-    { query: { gcTime: CAPABILITIES_CACHE_TIME } },
-  );
+  const { data, isFetching, isRefetching, isError, error, refetch } =
+    useGetCapabilities(
+      // The maximal signed 32-bit number is the maximal allowed time, as
+      // gcTime uses setTimeout, which only supports signed 32-bit numbers.
+      { query: { gcTime: MAX_SIGNED_INT32 } },
+    );
   return {
     actions:
       data?.data.data
@@ -29,6 +30,7 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
     isRefetching,
     isError,
     error,
+    refetch,
   };
 };
 
@@ -36,7 +38,7 @@ export const useCheckCapability = (
   endpoint: Endpoint,
   action: CapabilityAction,
 ) => {
-  const { actions, isFetching, isRefetching, isError, error } =
+  const { actions, isFetching, isRefetching, isError, error, refetch } =
     useGetCapabilityActions(endpoint);
   return {
     isActionAllowed: actions?.includes(action) ?? false,
@@ -44,10 +46,11 @@ export const useCheckCapability = (
     isRefetching,
     isError,
     error,
+    refetch,
   };
 };
 
 export const useCheckUsersCapability = (action: CapabilityAction) => {
   const { isActionAllowed } = useCheckCapability(Endpoint.IDENTITIES, action);
-  return { isActionAllowed };
+  return isActionAllowed;
 };
