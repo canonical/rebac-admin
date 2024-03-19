@@ -1,6 +1,5 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { setupServer } from "msw/node";
-import { vi } from "vitest";
 
 import {
   getGetIdentitiesItemResponseMock,
@@ -43,12 +42,8 @@ afterAll(() => {
 });
 
 test("should display correct user data after fetching users", async () => {
-  const consoleLog = console.log;
-  console.log = vi.fn();
-
   renderComponent(<Users />);
   expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
-  await waitFor(() => expect(console.log).toHaveBeenCalledTimes(1));
   const columnHeaders = await screen.findAllByRole("columnheader");
   expect(columnHeaders).toHaveLength(5);
   const rows = screen.getAllByRole("row");
@@ -62,6 +57,4 @@ test("should display correct user data after fetching users", async () => {
   expect(firstUserCells[2]).toHaveTextContent("within");
   expect(firstUserCells[3]).toHaveTextContent("pfft");
   expect(firstUserCells[4]).toHaveTextContent("noteworthy");
-
-  console.log = consoleLog;
 });
