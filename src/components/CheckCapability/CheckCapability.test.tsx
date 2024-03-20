@@ -44,7 +44,7 @@ test("should display placeholder message if user has no capability", async () =>
   );
   expect(screen.getByTestId(Label.LOADING)).toBeInTheDocument();
   expect(
-    await screen.findByText("This feature is not enabled."),
+    await screen.findByText("This feature is disabled."),
   ).toBeInTheDocument();
 });
 

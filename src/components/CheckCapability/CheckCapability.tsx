@@ -35,7 +35,7 @@ const CheckCapability = ({
   } else if (isAllowed) {
     return <>{children}</>;
   } else {
-    return <h3>This feature is not enabled.</h3>;
+    return <h3>This feature is disabled.</h3>;
   }
 };
 
