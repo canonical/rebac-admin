@@ -1,4 +1,6 @@
-import { screen, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { HttpResponse, delay, http } from "msw";
 import { setupServer } from "msw/node";
 
 import {
@@ -9,6 +11,7 @@ import {
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { getActualCapabilitiesMock } from "mocks/handlers";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 
 import Users from "./Users";
 
@@ -57,4 +60,26 @@ test("should display correct user data after fetching users", async () => {
   expect(firstUserCells[2]).toHaveTextContent("within");
   expect(firstUserCells[3]).toHaveTextContent("pfft");
   expect(firstUserCells[4]).toHaveTextContent("noteworthy");
+});
+
+test("should display error notification and refetch data", async () => {
+  mockApiServer.use(
+    http.get(`*${Endpoint.IDENTITIES}`, async () => {
+      await delay(900);
+      return new HttpResponse(null, { status: 404 });
+    }),
+  );
+  renderComponent(<Users />);
+  expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
+  const usersErrorNotification = await screen.findByText(
+    /Couldn't fetch user data/,
+  );
+  expect(usersErrorNotification.childElementCount).toBe(1);
+  const refetchButton = usersErrorNotification.children[0];
+  mockApiServer.use(getGetIdentitiesMockHandler());
+  expect(refetchButton).toHaveTextContent("refetch");
+  await act(() => userEvent.click(refetchButton));
+  expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
+  const columnHeaders = await screen.findAllByRole("columnheader");
+  expect(columnHeaders).toHaveLength(5);
 });

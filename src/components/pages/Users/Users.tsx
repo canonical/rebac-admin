@@ -1,14 +1,10 @@
-import {
-  Button,
-  ModularTable,
-  Notification,
-  Spinner,
-} from "@canonical/react-components";
+import { ModularTable, Spinner } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
+import ErrorNotification from "components/ErrorNotification";
 import { Endpoint } from "types/api";
 
 const COLUMN_DATA: Column[] = [
@@ -35,7 +31,11 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error, refetch } = useGetIdentities();
+  const { data, isFetching, isError, error, refetch } = useGetIdentities(
+    undefined,
+    // Failed query will not retry. Might need to add this option to all queries.
+    { query: { retry: false } },
+  );
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -52,24 +52,16 @@ const Users = () => {
     return tableData;
   }, [data]);
 
-  const generateErrorContent = (error: string) => (
-    <>
-      Couldn't fetch user data. {error} Try{" "}
-      <Button appearance="link" onClick={() => refetch()}>
-        refetching
-      </Button>{" "}
-      user data.
-    </>
-  );
-
   const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text="Fetching users data..." />;
     } else if (isError) {
       return (
-        <Notification severity="negative" title="Error">
-          {generateErrorContent(error?.message ?? "")}
-        </Notification>
+        <ErrorNotification
+          message="Couldn't fetch user data."
+          error={error?.message ?? ""}
+          onClick={() => void refetch()}
+        />
       );
     } else {
       return (

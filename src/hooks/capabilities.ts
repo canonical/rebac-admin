@@ -1,7 +1,6 @@
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
 import { Endpoint } from "types/api";
-import { MAX_SIGNED_INT32 } from "types/utils";
 
 export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
@@ -11,11 +10,11 @@ export enum CapabilityAction {
 }
 
 export const useGetCapabilityActions = (endpoint: Endpoint) => {
-  const { data, isFetching, isRefetching, isError, error, refetch } =
+  const { data, isFetching, isPending, isError, error, refetch } =
     useGetCapabilities(
-      // The maximal signed 32-bit number is the maximal allowed time, as
-      // gcTime uses setTimeout, which only supports signed 32-bit numbers.
-      { query: { gcTime: MAX_SIGNED_INT32 } },
+      // Capabilities should persist for the entire user session.
+      // Failed query will not retry. Might need to add this option to all queries.
+      { query: { gcTime: Infinity, staleTime: Infinity, retry: false } },
     );
   return {
     actions:
@@ -27,7 +26,7 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
           ),
         ) ?? [],
     isFetching,
-    isRefetching,
+    isPending,
     isError,
     error,
     refetch,
@@ -38,12 +37,12 @@ export const useCheckCapability = (
   endpoint: Endpoint,
   action: CapabilityAction,
 ) => {
-  const { actions, isFetching, isRefetching, isError, error, refetch } =
+  const { actions, isFetching, isPending, isError, error, refetch } =
     useGetCapabilityActions(endpoint);
   return {
-    isActionAllowed: actions?.includes(action) ?? false,
+    isAllowed: actions?.includes(action) ?? false,
     isFetching,
-    isRefetching,
+    isPending,
     isError,
     error,
     refetch,
@@ -51,6 +50,6 @@ export const useCheckCapability = (
 };
 
 export const useCheckUsersCapability = (action: CapabilityAction) => {
-  const { isActionAllowed } = useCheckCapability(Endpoint.IDENTITIES, action);
-  return isActionAllowed;
+  const { isAllowed } = useCheckCapability(Endpoint.IDENTITIES, action);
+  return isAllowed;
 };

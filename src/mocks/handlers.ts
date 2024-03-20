@@ -1,3 +1,4 @@
+import type { Capability } from "api/api.schemas";
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { getAuthenticationMock } from "api/authentication/authentication.msw";
 import {
@@ -13,7 +14,9 @@ import { getResourcesMock } from "api/resources/resources.msw";
 import { getRolesMock } from "api/roles/roles.msw";
 import { Endpoint } from "types/api";
 
-export const getActualCapabilitiesMock = () =>
+export const getActualCapabilitiesMock = (
+  overrideGetCapabilitiesResponse?: Capability[],
+) =>
   getCapabilitiesMock().map((handler) => {
     // When fetching the capabilities, the actual endpoints and request method
     // types should be returned instead of randomized mocked data. This is
@@ -25,10 +28,12 @@ export const getActualCapabilitiesMock = () =>
     ) {
       return getGetCapabilitiesMockHandler(
         getGetCapabilitiesResponseMock({
-          data: Object.values<string>(Endpoint).map((endpoint) => ({
-            endpoint,
-            methods: Object.values<string>(CapabilityMethodsItem),
-          })),
+          data: overrideGetCapabilitiesResponse
+            ? overrideGetCapabilitiesResponse
+            : Object.values<string>(Endpoint).map((endpoint) => ({
+                endpoint,
+                methods: Object.values<string>(CapabilityMethodsItem),
+              })),
         }),
       );
     }

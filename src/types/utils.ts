@@ -5,5 +5,3 @@
 export type ExclusiveProps<A, B> =
   | (A & Partial<Record<keyof B, never>>)
   | (B & Partial<Record<keyof A, never>>);
-
-export const MAX_SIGNED_INT32 = Math.pow(2, 31) - 1;
