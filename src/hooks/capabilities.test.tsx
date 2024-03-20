@@ -9,7 +9,11 @@ import { getActualCapabilitiesMock } from "mocks/handlers";
 import ComponentProviders from "test/ComponentProviders";
 import { Endpoint } from "types/api";
 
-import { useGetCapabilityActions } from "./capabilities";
+import {
+  CapabilityAction,
+  useCheckCapability,
+  useGetCapabilityActions,
+} from "./capabilities";
 
 const mockApiServer = setupServer(
   ...getActualCapabilitiesMock([
@@ -65,7 +69,7 @@ describe("useGetCapabilityAction", () => {
       },
     );
     await waitFor(() => {
-      expect(result.current.actions).toStrictEqual([CapabilityMethodsItem.GET]);
+      expect(result.current.isFetching).toBe(false);
     });
     const { actions, isFetching, isPending, isError, error } = result.current;
     expect(actions).toStrictEqual([CapabilityMethodsItem.GET]);
@@ -99,6 +103,109 @@ describe("useGetCapabilityAction", () => {
     });
     const { actions, isFetching, isPending, isError, error } = result.current;
     expect(actions).toStrictEqual([]);
+    expect(isFetching).toBe(false);
+    expect(isPending).toBe(false);
+    expect(isError).toBe(true);
+    expect(error).toStrictEqual(
+      new axios.AxiosError("Request failed with status code 404"),
+    );
+  });
+});
+
+describe("useCheckCapability", () => {
+  test("should return correct data while fetching capability", async () => {
+    const { result } = renderHook(
+      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path={"*"}
+            queryClient={new QueryClient()}
+          />
+        ),
+      },
+    );
+    const { isAllowed, isFetching, isPending, isError, error } = result.current;
+    expect(isAllowed).toBe(false);
+    expect(isFetching).toBe(true);
+    expect(isPending).toBe(true);
+    expect(isError).toBe(false);
+    expect(error).toStrictEqual(null);
+  });
+
+  test("should return true if capability is available", async () => {
+    const { result } = renderHook(
+      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path={"*"}
+            queryClient={new QueryClient()}
+          />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    const { isAllowed, isFetching, isPending, isError, error } = result.current;
+    expect(isAllowed).toBe(true);
+    expect(isFetching).toBe(false);
+    expect(isPending).toBe(false);
+    expect(isError).toBe(false);
+    expect(error).toStrictEqual(null);
+  });
+
+  test("should return false if capability is not available", async () => {
+    const { result } = renderHook(
+      () => useCheckCapability(Endpoint.META, CapabilityAction.UPDATE),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path={"*"}
+            queryClient={new QueryClient()}
+          />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    const { isAllowed, isFetching, isPending, isError, error } = result.current;
+    expect(isAllowed).toBe(false);
+    expect(isFetching).toBe(false);
+    expect(isPending).toBe(false);
+    expect(isError).toBe(false);
+    expect(error).toStrictEqual(null);
+  });
+
+  test("should return error", async () => {
+    mockApiServer.use(
+      http.get(`*${Endpoint.CAPABILITIES}`, async () => {
+        await delay(900);
+        return new HttpResponse(null, { status: 404 });
+      }),
+    );
+    const { result } = renderHook(
+      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path={"*"}
+            queryClient={new QueryClient()}
+          />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+    const { isAllowed, isFetching, isPending, isError, error } = result.current;
+    expect(isAllowed).toBe(false);
     expect(isFetching).toBe(false);
     expect(isPending).toBe(false);
     expect(isError).toBe(true);

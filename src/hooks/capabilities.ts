@@ -1,6 +1,6 @@
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
-import { Endpoint } from "types/api";
+import type { Endpoint } from "types/api";
 
 export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
@@ -47,9 +47,4 @@ export const useCheckCapability = (
     error,
     refetch,
   };
-};
-
-export const useCheckUsersCapability = (action: CapabilityAction) => {
-  const { isAllowed } = useCheckCapability(Endpoint.IDENTITIES, action);
-  return isAllowed;
 };
