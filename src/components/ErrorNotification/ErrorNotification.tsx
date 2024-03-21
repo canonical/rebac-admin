@@ -1,21 +1,19 @@
-import { Button, Notification, Strip } from "@canonical/react-components";
+import { Button, Notification } from "@canonical/react-components";
 
 type Props = {
   message: string;
   error: string;
-  onClick: () => void;
+  onRefetch: () => void;
 };
 
-const ErrorNotification = ({ message, error, onClick }: Props) => (
-  <Strip>
-    <Notification severity="negative" title="Error">
-      {message} {error} Try{" "}
-      <Button appearance="link" onClick={onClick}>
-        refetching
-      </Button>
-      .
-    </Notification>
-  </Strip>
+const ErrorNotification = ({ message, error, onRefetch }: Props) => (
+  <Notification severity="negative" title="Error">
+    {message} {error} Try{" "}
+    <Button appearance="link" onClick={onRefetch}>
+      refetching
+    </Button>
+    .
+  </Notification>
 );
 
 export default ErrorNotification;

@@ -7,6 +7,8 @@ import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import { Endpoint } from "types/api";
 
+import { Label } from "./types";
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "first name",
@@ -31,11 +33,7 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error, refetch } = useGetIdentities(
-    undefined,
-    // Failed query will not retry. Might need to add this option to all queries.
-    { query: { retry: false } },
-  );
+  const { data, isFetching, isError, error, refetch } = useGetIdentities();
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -54,13 +52,13 @@ const Users = () => {
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {
-      return <Spinner text="Fetching users data..." />;
+      return <Spinner text={Label.FETCHING_USERS} />;
     } else if (isError) {
       return (
         <ErrorNotification
-          message="Couldn't fetch user data."
+          message={Label.FETCHING_USERS_ERROR}
           error={error?.message ?? ""}
-          onClick={() => void refetch()}
+          onRefetch={() => void refetch()}
         />
       );
     } else {
@@ -69,7 +67,7 @@ const Users = () => {
           className="audit-logs-table"
           columns={COLUMN_DATA}
           data={tableData}
-          emptyMsg="No users found!"
+          emptyMsg={Label.NO_USERS}
         />
       );
     }

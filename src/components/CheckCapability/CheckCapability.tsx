@@ -1,4 +1,4 @@
-import { Spinner } from "@canonical/react-components";
+import { Notification, Spinner, Strip } from "@canonical/react-components";
 import type { JSX, PropsWithChildren } from "react";
 
 import ErrorNotification from "components/ErrorNotification";
@@ -17,25 +17,29 @@ const CheckCapability = ({
   endpoint,
   action,
 }: Props): JSX.Element => {
-  const { isAllowed, isFetching, isPending, isError, error, refetch } =
+  const { hasCapability, isFetching, isError, error, refetch } =
     useCheckCapability(endpoint, action);
 
   // Display the spinner for the initial query and for any subsequent queries
   // that follow a failed one.
-  if (isFetching && (isPending || (!isPending && isError))) {
+  if (isFetching) {
     return <Spinner data-testid={Label.LOADING} />;
   } else if (isError) {
     return (
       <ErrorNotification
-        message={Label.ERROR_MESSAGE}
+        message={Label.CHECK_CAPABILITY_ERROR}
         error={error?.message ?? ""}
-        onClick={() => void refetch()}
+        onRefetch={() => void refetch()}
       />
     );
-  } else if (isAllowed) {
+  } else if (hasCapability) {
     return <>{children}</>;
   } else {
-    return <h3>This feature is disabled.</h3>;
+    return (
+      <Strip>
+        <Notification severity="caution">{Label.DISABLED_FEATURE}</Notification>
+      </Strip>
+    );
   }
 };
 

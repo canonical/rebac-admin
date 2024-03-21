@@ -9,11 +9,12 @@ import {
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
-import { getActualCapabilitiesMock } from "mocks/handlers";
+import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
 import Users from "./Users";
+import { Label as UsersLabel } from "./types";
 
 const mockUserData = getGetIdentitiesResponseMock({
   data: [
@@ -29,14 +30,14 @@ const mockUserData = getGetIdentitiesResponseMock({
 });
 const mockApiServer = setupServer(
   getGetIdentitiesMockHandler(mockUserData),
-  ...getActualCapabilitiesMock(),
+  ...getGetActualCapabilitiesMock(),
 );
 
 beforeAll(() => {
   mockApiServer.listen();
 });
 
-beforeEach(() => {
+afterEach(() => {
   mockApiServer.resetHandlers();
 });
 
@@ -44,9 +45,13 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-test("should display correct user data after fetching users", async () => {
+test("should display spinner on mount", () => {
   renderComponent(<Users />);
   expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
+});
+
+test("should display correct user data after fetching users", async () => {
+  renderComponent(<Users />);
   const columnHeaders = await screen.findAllByRole("columnheader");
   expect(columnHeaders).toHaveLength(5);
   const rows = screen.getAllByRole("row");
@@ -62,6 +67,14 @@ test("should display correct user data after fetching users", async () => {
   expect(firstUserCells[4]).toHaveTextContent("noteworthy");
 });
 
+test("should display no users data when no users are available", async () => {
+  mockApiServer.use(
+    getGetIdentitiesMockHandler(getGetIdentitiesResponseMock({ data: [] })),
+  );
+  renderComponent(<Users />);
+  expect(await screen.findByText(UsersLabel.NO_USERS)).toBeInTheDocument();
+});
+
 test("should display error notification and refetch data", async () => {
   mockApiServer.use(
     http.get(`*${Endpoint.IDENTITIES}`, async () => {
@@ -70,16 +83,26 @@ test("should display error notification and refetch data", async () => {
     }),
   );
   renderComponent(<Users />);
-  expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
   const usersErrorNotification = await screen.findByText(
-    /Couldn't fetch user data/,
+    UsersLabel.FETCHING_USERS_ERROR,
+    { exact: false },
   );
   expect(usersErrorNotification.childElementCount).toBe(1);
   const refetchButton = usersErrorNotification.children[0];
-  mockApiServer.use(getGetIdentitiesMockHandler());
+  mockApiServer.use(
+    getGetIdentitiesMockHandler(
+      getGetIdentitiesResponseMock({
+        data: Array.from({ length: 6 }, () =>
+          getGetIdentitiesItemResponseMock(),
+        ),
+      }),
+    ),
+  );
   expect(refetchButton).toHaveTextContent("refetch");
   await act(() => userEvent.click(refetchButton));
-  expect(await screen.findByText("Fetching users data...")).toBeInTheDocument();
-  const columnHeaders = await screen.findAllByRole("columnheader");
-  expect(columnHeaders).toHaveLength(5);
+  expect(
+    await screen.findByText(UsersLabel.FETCHING_USERS),
+  ).toBeInTheDocument();
+  const rows = await screen.findAllByRole("row");
+  expect(rows).toHaveLength(7);
 });

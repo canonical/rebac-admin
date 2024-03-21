@@ -6,12 +6,12 @@ import { renderComponent } from "test/utils";
 
 import ErrorNotification from "./ErrorNotification";
 
-test("should render correctly", async () => {
+test("should render correctly and be able to refetch", async () => {
   const message = "Failed to fetch data.";
   const error = "There was an error.";
-  const onClick = vi.fn();
+  const onRefetch = vi.fn();
   renderComponent(
-    <ErrorNotification message={message} error={error} onClick={onClick} />,
+    <ErrorNotification message={message} error={error} onRefetch={onRefetch} />,
   );
   const errorNotification = screen.getByText(`${message} ${error} Try`, {
     exact: false,
@@ -20,5 +20,5 @@ test("should render correctly", async () => {
   const refetchButton = errorNotification.children[0];
   expect(refetchButton).toHaveTextContent("refetch");
   await act(() => userEvent.click(refetchButton));
-  expect(onClick).toHaveBeenCalledTimes(1);
+  expect(onRefetch).toHaveBeenCalledTimes(1);
 });

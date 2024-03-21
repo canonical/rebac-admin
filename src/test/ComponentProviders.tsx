@@ -1,4 +1,4 @@
-import type { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode, PropsWithChildren } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -6,14 +6,20 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 export type ComponentProps = {
   path: string;
   routeChildren?: ReactNode;
-  queryClient: QueryClient;
+  queryClient?: QueryClient;
 } & PropsWithChildren;
 
 const ComponentProviders = ({
   children,
   routeChildren,
   path,
-  queryClient,
+  queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  }),
 }: ComponentProps) => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>

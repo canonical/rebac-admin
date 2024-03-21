@@ -12,7 +12,13 @@ export type Props = {
 };
 
 const ReBACAdmin = ({ apiURL }: Props) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
   axios.defaults.baseURL = apiURL;
 
   return (

@@ -1,4 +1,5 @@
 export enum Label {
   LOADING = "loading",
-  ERROR_MESSAGE = "Unable to check capability.",
+  CHECK_CAPABILITY_ERROR = "Unable to check capability.",
+  DISABLED_FEATURE = "This feature is disabled.",
 }

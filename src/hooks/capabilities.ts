@@ -10,12 +10,11 @@ export enum CapabilityAction {
 }
 
 export const useGetCapabilityActions = (endpoint: Endpoint) => {
-  const { data, isFetching, isPending, isError, error, refetch } =
-    useGetCapabilities(
-      // Capabilities should persist for the entire user session.
-      // Failed query will not retry. Might need to add this option to all queries.
-      { query: { gcTime: Infinity, staleTime: Infinity, retry: false } },
-    );
+  const { data, isFetching, isError, error, refetch } = useGetCapabilities(
+    // Capabilities should persist for the entire user session.
+    // Failed query will not retry. Might need to add this option to all queries.
+    { query: { gcTime: Infinity, staleTime: Infinity } },
+  );
   return {
     actions:
       data?.data.data
@@ -26,7 +25,6 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
           ),
         ) ?? [],
     isFetching,
-    isPending,
     isError,
     error,
     refetch,
@@ -37,12 +35,11 @@ export const useCheckCapability = (
   endpoint: Endpoint,
   action: CapabilityAction,
 ) => {
-  const { actions, isFetching, isPending, isError, error, refetch } =
+  const { actions, isFetching, isError, error, refetch } =
     useGetCapabilityActions(endpoint);
   return {
-    isAllowed: actions?.includes(action) ?? false,
+    hasCapability: actions?.includes(action) ?? false,
     isFetching,
-    isPending,
     isError,
     error,
     refetch,

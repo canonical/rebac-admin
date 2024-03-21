@@ -1,12 +1,13 @@
-import { QueryClient } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import axios from "axios";
-import { HttpResponse, delay, http } from "msw";
 import { setupServer } from "msw/node";
 
 import { CapabilityMethodsItem } from "api/api.schemas";
-import { getActualCapabilitiesMock } from "mocks/handlers";
-import ComponentProviders from "test/ComponentProviders";
+import {
+  getGetActualCapabilitiesMock,
+  getGetCapabilitiesErrorMockHandler,
+} from "mocks/capabilities";
+import { renderWrappedHook } from "test/utils";
 import { Endpoint } from "types/api";
 
 import {
@@ -16,7 +17,7 @@ import {
 } from "./capabilities";
 
 const mockApiServer = setupServer(
-  ...getActualCapabilitiesMock([
+  ...getGetActualCapabilitiesMock([
     { endpoint: Endpoint.META, methods: [CapabilityMethodsItem.GET] },
   ]),
 );
@@ -25,7 +26,7 @@ beforeAll(() => {
   mockApiServer.listen();
 });
 
-beforeEach(() => {
+afterEach(() => {
   mockApiServer.resetHandlers();
 });
 
@@ -33,78 +34,37 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-describe("useGetCapabilityAction", () => {
+describe("useGetCapabilityActions", () => {
   test("should return correct data while fetching capabilities", async () => {
-    const { result } = renderHook(
-      () => useGetCapabilityActions(Endpoint.META),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    const { result } = renderWrappedHook(() =>
+      useGetCapabilityActions(Endpoint.META),
     );
-    const { actions, isFetching, isPending, isError, error } = result.current;
+    const { actions, isFetching } = result.current;
     expect(actions).toStrictEqual([]);
     expect(isFetching).toBe(true);
-    expect(isPending).toBe(true);
-    expect(isError).toBe(false);
-    expect(error).toStrictEqual(null);
   });
 
   test("should return correct actions after succesfully fetching capabilities", async () => {
-    const { result } = renderHook(
-      () => useGetCapabilityActions(Endpoint.META),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    const { result } = renderWrappedHook(() =>
+      useGetCapabilityActions(Endpoint.META),
     );
     await waitFor(() => {
       expect(result.current.isFetching).toBe(false);
     });
-    const { actions, isFetching, isPending, isError, error } = result.current;
+    const { actions, isFetching } = result.current;
     expect(actions).toStrictEqual([CapabilityMethodsItem.GET]);
     expect(isFetching).toBe(false);
-    expect(isPending).toBe(false);
-    expect(isError).toBe(false);
-    expect(error).toStrictEqual(null);
   });
 
   test("should return error", async () => {
-    mockApiServer.use(
-      http.get(`*${Endpoint.CAPABILITIES}`, async () => {
-        await delay(900);
-        return new HttpResponse(null, { status: 404 });
-      }),
-    );
-    const { result } = renderHook(
-      () => useGetCapabilityActions(Endpoint.META),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    mockApiServer.use(getGetCapabilitiesErrorMockHandler());
+    const { result } = renderWrappedHook(() =>
+      useGetCapabilityActions(Endpoint.META),
     );
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
     });
-    const { actions, isFetching, isPending, isError, error } = result.current;
-    expect(actions).toStrictEqual([]);
-    expect(isFetching).toBe(false);
-    expect(isPending).toBe(false);
+    const { isError, error } = result.current;
     expect(isError).toBe(true);
     expect(error).toStrictEqual(
       new axios.AxiosError("Request failed with status code 404"),
@@ -114,100 +74,47 @@ describe("useGetCapabilityAction", () => {
 
 describe("useCheckCapability", () => {
   test("should return correct data while fetching capability", async () => {
-    const { result } = renderHook(
-      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(Endpoint.META, CapabilityAction.READ),
     );
-    const { isAllowed, isFetching, isPending, isError, error } = result.current;
-    expect(isAllowed).toBe(false);
+    const { hasCapability, isFetching } = result.current;
+    expect(hasCapability).toBe(false);
     expect(isFetching).toBe(true);
-    expect(isPending).toBe(true);
-    expect(isError).toBe(false);
-    expect(error).toStrictEqual(null);
   });
 
   test("should return true if capability is available", async () => {
-    const { result } = renderHook(
-      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(Endpoint.META, CapabilityAction.READ),
     );
     await waitFor(() => {
       expect(result.current.isFetching).toBe(false);
     });
-    const { isAllowed, isFetching, isPending, isError, error } = result.current;
-    expect(isAllowed).toBe(true);
+    const { hasCapability, isFetching } = result.current;
+    expect(hasCapability).toBe(true);
     expect(isFetching).toBe(false);
-    expect(isPending).toBe(false);
-    expect(isError).toBe(false);
-    expect(error).toStrictEqual(null);
   });
 
   test("should return false if capability is not available", async () => {
-    const { result } = renderHook(
-      () => useCheckCapability(Endpoint.META, CapabilityAction.UPDATE),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(Endpoint.META, CapabilityAction.UPDATE),
     );
     await waitFor(() => {
       expect(result.current.isFetching).toBe(false);
     });
-    const { isAllowed, isFetching, isPending, isError, error } = result.current;
-    expect(isAllowed).toBe(false);
+    const { hasCapability, isFetching } = result.current;
+    expect(hasCapability).toBe(false);
     expect(isFetching).toBe(false);
-    expect(isPending).toBe(false);
-    expect(isError).toBe(false);
-    expect(error).toStrictEqual(null);
   });
 
   test("should return error", async () => {
-    mockApiServer.use(
-      http.get(`*${Endpoint.CAPABILITIES}`, async () => {
-        await delay(900);
-        return new HttpResponse(null, { status: 404 });
-      }),
-    );
-    const { result } = renderHook(
-      () => useCheckCapability(Endpoint.META, CapabilityAction.READ),
-      {
-        wrapper: (props) => (
-          <ComponentProviders
-            {...props}
-            path={"*"}
-            queryClient={new QueryClient()}
-          />
-        ),
-      },
+    mockApiServer.use(getGetCapabilitiesErrorMockHandler());
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(Endpoint.META, CapabilityAction.READ),
     );
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
     });
-    const { isAllowed, isFetching, isPending, isError, error } = result.current;
-    expect(isAllowed).toBe(false);
-    expect(isFetching).toBe(false);
-    expect(isPending).toBe(false);
+    const { isError, error } = result.current;
     expect(isError).toBe(true);
     expect(error).toStrictEqual(
       new axios.AxiosError("Request failed with status code 404"),
