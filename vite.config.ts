@@ -43,6 +43,10 @@ export default defineConfig(({ mode }) => {
       port: Number(env.PORT),
     },
     test: {
+      coverage: {
+        reporter: ["text", "json-summary", "json"],
+        reportOnFailure: true,
+      },
       environment: "happy-dom",
       globals: true,
       include: [
