@@ -37,7 +37,7 @@ export const getGetActualCapabilitiesMock = (
 
 export const getGetCapabilitiesErrorMockHandler = (status: number = 404) => {
   return http.get(`*${Endpoint.CAPABILITIES}`, async () => {
-    await delay(Number(import.meta.env.MOCK_API_DELAY));
+    await delay(Number(import.meta.env.VITE_MOCK_API_DELAY));
     return new HttpResponse(undefined, {
       status,
       headers: {
