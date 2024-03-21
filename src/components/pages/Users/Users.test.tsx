@@ -1,6 +1,5 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { HttpResponse, delay, http } from "msw";
 import { setupServer } from "msw/node";
 
 import {
@@ -10,8 +9,8 @@ import {
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { renderComponent } from "test/utils";
-import { Endpoint } from "types/api";
 
 import Users from "./Users";
 import { Label as UsersLabel } from "./types";
@@ -76,12 +75,7 @@ test("should display no users data when no users are available", async () => {
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(
-    http.get(`*${Endpoint.IDENTITIES}`, async () => {
-      await delay(900);
-      return new HttpResponse(null, { status: 404 });
-    }),
-  );
+  mockApiServer.use(getGetIdentitiesErrorMockHandler());
   renderComponent(<Users />);
   const usersErrorNotification = await screen.findByText(
     UsersLabel.FETCHING_USERS_ERROR,
