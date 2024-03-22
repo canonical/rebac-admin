@@ -1,10 +1,13 @@
 import { ModularTable, Spinner } from "@canonical/react-components";
-import { useCallback, useEffect, useMemo, type JSX } from "react";
+import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
-import Panel from "components/Panel";
+import ErrorNotification from "components/ErrorNotification";
+import { Endpoint } from "types/api";
+
+import { Label } from "./types";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -27,10 +30,10 @@ const COLUMN_DATA: Column[] = [
     Header: "source",
     accessor: "source",
   },
-] as const;
+];
 
 const Users = () => {
-  const { data, isFetching, isSuccess } = useGetIdentities();
+  const { data, isFetching, isError, error, refetch } = useGetIdentities();
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -47,33 +50,33 @@ const Users = () => {
     return tableData;
   }, [data]);
 
-  useEffect(() => {
-    if (!isFetching && isSuccess) {
-      console.log("Users fetched succesfully.", data);
-    }
-  }, [isFetching, isSuccess, data]);
-
-  const generateContent = useCallback((): JSX.Element => {
+  const generateContent = (): JSX.Element => {
     if (isFetching) {
-      return <Spinner text="Fetching users data..." />;
-    } else if (!isFetching && isSuccess) {
+      return <Spinner text={Label.FETCHING_USERS} />;
+    } else if (isError) {
+      return (
+        <ErrorNotification
+          message={Label.FETCHING_USERS_ERROR}
+          error={error?.message ?? ""}
+          onRefetch={() => void refetch()}
+        />
+      );
+    } else {
       return (
         <ModularTable
           className="audit-logs-table"
           columns={COLUMN_DATA}
           data={tableData}
-          emptyMsg="No users found!"
+          emptyMsg={Label.NO_USERS}
         />
       );
-    } else {
-      return <h3>Couldn't fetch user data!</h3>;
     }
-  }, [isFetching, isSuccess, tableData]);
+  };
 
   return (
-    <Panel title="Users">
-      <Content>{generateContent()}</Content>
-    </Panel>
+    <Content title="Users" endpoint={Endpoint.IDENTITIES}>
+      {generateContent()}
+    </Content>
   );
 };
 

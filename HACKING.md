@@ -216,7 +216,7 @@ To build the API files using Orval, run:
 yarn build-api
 ```
 
-Once the script runs succesfully, the built API files can be found in `src/api`.
+Once the script runs successfully, the built API files can be found in `src/api`.
 
 _Note: The API files are built from the `openapi.yaml` spec file. In case the
 spec file is not present in the root of the repository, the above command will

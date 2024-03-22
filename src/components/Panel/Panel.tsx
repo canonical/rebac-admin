@@ -8,7 +8,7 @@ import type {
   ReactNode,
 } from "react";
 
-import type { ExclusiveProps } from "types";
+import type { ExclusiveProps } from "types/utils";
 
 export type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
 
