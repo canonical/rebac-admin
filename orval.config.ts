@@ -1,4 +1,9 @@
+import { parse } from "dotenv";
+import { readFileSync } from "fs";
 import { defineConfig } from "orval";
+import path from "path";
+
+const env = parse(readFileSync(path.resolve(process.cwd(), ".env")));
 
 export default defineConfig({
   openapi: {
@@ -12,7 +17,7 @@ export default defineConfig({
       mock: {
         type: "msw",
         // Needs to be shorter than the 1000ms timeout that RTL sets for async methods.
-        delay: 900,
+        delay: Number(env.VITE_MOCK_API_DELAY),
       },
       clean: ["src/api"],
       prettier: true,

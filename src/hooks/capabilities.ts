@@ -12,7 +12,6 @@ export enum CapabilityAction {
 export const useGetCapabilityActions = (endpoint: Endpoint) => {
   const { data, isFetching, isError, error, refetch } = useGetCapabilities(
     // Capabilities should persist for the entire user session.
-    // Failed query will not retry. Might need to add this option to all queries.
     { query: { gcTime: Infinity, staleTime: Infinity } },
   );
   return {
