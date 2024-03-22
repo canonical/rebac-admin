@@ -1,4 +1,4 @@
-import { Notification, Spinner, Strip } from "@canonical/react-components";
+import { Notification, Spinner } from "@canonical/react-components";
 import type { JSX, PropsWithChildren } from "react";
 
 import ErrorNotification from "components/ErrorNotification";
@@ -36,9 +36,7 @@ const CheckCapability = ({
     return <>{children}</>;
   } else {
     return (
-      <Strip>
-        <Notification severity="caution">{Label.DISABLED_FEATURE}</Notification>
-      </Strip>
+      <Notification severity="caution">{Label.DISABLED_FEATURE}</Notification>
     );
   }
 };
