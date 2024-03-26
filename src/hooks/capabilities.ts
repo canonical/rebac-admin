@@ -6,7 +6,8 @@ export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
   CREATE = CapabilityMethodsItem.POST,
   DELETE = CapabilityMethodsItem.DELETE,
-  UPDATE = CapabilityMethodsItem.PATCH,
+  UPDATE = CapabilityMethodsItem.PUT,
+  RELATE = CapabilityMethodsItem.PATCH,
 }
 
 export const useGetCapabilityActions = (endpoint: Endpoint) => {

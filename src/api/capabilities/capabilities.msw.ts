@@ -42,6 +42,7 @@ export const getGetCapabilitiesResponseMock = (
     methods: faker.helpers.arrayElement([
       "GET",
       "POST",
+      "PUT",
       "DELETE",
       "PATCH",
     ] as const),

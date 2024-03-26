@@ -470,6 +470,7 @@ export type PatchRequestBody = PatchRequestBodyItem[];
 export enum CapabilityMethodsItem {
   GET = "GET",
   POST = "POST",
+  PUT = "PUT",
   DELETE = "DELETE",
   PATCH = "PATCH",
 }
