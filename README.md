@@ -69,9 +69,10 @@ const Permissions = (): JSX.Element => (
 
 The following props can be provided to the `ReBACAdmin` component to configure the admin.
 
-| Prop   | Description                                                                          | Examples                       |
-| :----- | :----------------------------------------------------------------------------------- | :----------------------------- |
-| apiURL | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| Prop     | Description                                                                          | Examples                       |
+| :------- | :----------------------------------------------------------------------------------- | :----------------------------- |
+| apiURL   | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| logLevel | The level of logging to be used by the logger. (optional; default value: "silent")   | trace, debug, error, silent    |
 
 ## Navigation
 

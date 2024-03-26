@@ -4,6 +4,7 @@ import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Panel from "components/Panel";
 import ReBACAdmin from "components/ReBACAdmin";
+import logger from "utils/logger";
 
 import App from "./App";
 
@@ -21,7 +22,12 @@ const defferRender = async () => {
   return mockApiWorker.start();
 };
 
-const admin = () => <ReBACAdmin apiURL={import.meta.env.VITE_DEMO_API_URL} />;
+const admin = () => (
+  <ReBACAdmin
+    apiURL={import.meta.env.VITE_DEMO_API_URL}
+    logLevel={logger.levels.TRACE}
+  />
+);
 
 const router = createBrowserRouter([
   {
@@ -65,8 +71,8 @@ if (root) {
       return;
     })
     .catch((error) =>
-      console.error("Error while trying to start mock API worker.", error),
+      logger.error("Error while trying to start mock API worker.", error),
     );
 } else {
-  console.error("Root element not found in DOM.");
+  logger.error("Root element not found in DOM.");
 }

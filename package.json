@@ -55,7 +55,8 @@
     "@tanstack/react-query": "5.24.7",
     "axios": "1.6.7",
     "classnames": "2.5.1",
-    "clone-deep": "4.0.1"
+    "clone-deep": "4.0.1",
+    "loglevel": "1.9.1"
   },
   "devDependencies": {
     "@canonical/react-components": "0.50.4",
