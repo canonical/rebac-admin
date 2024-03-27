@@ -1873,9 +1873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.50.4":
-  version: 0.50.4
-  resolution: "@canonical/react-components@npm:0.50.4"
+"@canonical/react-components@npm:0.51.1":
+  version: 0.51.1
+  resolution: "@canonical/react-components@npm:0.51.1"
   dependencies:
     "@types/jest": "npm:29.5.11"
     "@types/node": "npm:20.8.5"
@@ -1891,10 +1891,11 @@ __metadata:
   peerDependencies:
     "@types/react": ^17.0.2 || ^18.0.0
     "@types/react-dom": ^17.0.2 || ^18.0.0
+    formik: ^2.4.5
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/50f2c855c3019af4042287197c5dc2170302218705f1a5d5bb71c95542f6303348ffe8b0d211a99d9872fdf692710a620b777de7f2544f3fc9d5516d31ef8370
+  checksum: 10c0/b81206c17e4edfd24ff70d26ac64553d464e05617b5ba5dff6fa741a3c6310266fbfa0e7bce62153ae2b25bf28a814e430177b3ca167a777b6a2229977776097
   languageName: node
   linkType: hard
 
@@ -1902,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@canonical/rebac-admin@workspace:."
   dependencies:
-    "@canonical/react-components": "npm:0.50.4"
+    "@canonical/react-components": "npm:0.51.1"
     "@faker-js/faker": "npm:8.4.1"
     "@mswjs/http-middleware": "npm:0.9.2"
     "@tanstack/eslint-plugin-query": "npm:5.20.1"
@@ -1957,13 +1958,13 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     tsx: "npm:4.7.1"
     typescript: "npm:5.3.3"
-    vanilla-framework: "npm:4.8.0"
+    vanilla-framework: "npm:4.9.0"
     vite: "npm:5.1.4"
     vite-plugin-dts: "npm:3.7.3"
     vite-tsconfig-paths: "npm:4.3.1"
     vitest: "npm:1.3.1"
   peerDependencies:
-    "@canonical/react-components": ^0.50.4
+    "@canonical/react-components": ^0.50.4 || ^0.51.0
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
     react: ^18.0.0
@@ -12056,10 +12057,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.8.0":
-  version: 4.8.0
-  resolution: "vanilla-framework@npm:4.8.0"
-  checksum: 10c0/b3f9515eb438021ef489d8c1c79e76edeffd16ef5db68af9c27fec6cb1efe0db20b191d1b2d2dbf9a19c613f329a2933b389e0489ebcaddbe12ec6e0cfced95f
+"vanilla-framework@npm:4.9.0":
+  version: 4.9.0
+  resolution: "vanilla-framework@npm:4.9.0"
+  checksum: 10c0/8d4c5d775070bda32d7dc6de3fd0359e8bc1ae3f3a8c73561a55b16b72cdd74972ece2aca02910dcc889655c74c76048c3bcc434a6b6586d21ad4c0efcc2bc0f
   languageName: node
   linkType: hard
 
