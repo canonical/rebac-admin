@@ -1,6 +1,7 @@
 import { waitFor } from "@testing-library/react";
 import axios from "axios";
 import { setupServer } from "msw/node";
+import { vi } from "vitest";
 
 import { CapabilityMethodsItem } from "api/api.schemas";
 import {
@@ -9,11 +10,13 @@ import {
 } from "mocks/capabilities";
 import { renderWrappedHook } from "test/utils";
 import { Endpoint } from "types/api";
+import { logger } from "utils";
 
 import {
   CapabilityAction,
   useCheckCapability,
   useGetCapabilityActions,
+  Label as CapabilitiesLabel,
 } from "./capabilities";
 
 const mockApiServer = setupServer(
@@ -57,6 +60,7 @@ describe("useGetCapabilityActions", () => {
   });
 
   test("should return error", async () => {
+    const loggerErrorSpy = vi.spyOn(logger, "error");
     mockApiServer.use(getGetCapabilitiesErrorMockHandler());
     const { result } = renderWrappedHook(() =>
       useGetCapabilityActions(Endpoint.META),
@@ -68,6 +72,10 @@ describe("useGetCapabilityActions", () => {
     expect(isError).toBe(true);
     expect(error).toStrictEqual(
       new axios.AxiosError("Request failed with status code 404"),
+    );
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      CapabilitiesLabel.FETCHING_CAPABILITIES_ERROR,
+      error,
     );
   });
 });
@@ -107,6 +115,7 @@ describe("useCheckCapability", () => {
   });
 
   test("should return error", async () => {
+    const loggerErrorSpy = vi.spyOn(logger, "error");
     mockApiServer.use(getGetCapabilitiesErrorMockHandler());
     const { result } = renderWrappedHook(() =>
       useCheckCapability(Endpoint.META, CapabilityAction.READ),
@@ -118,6 +127,10 @@ describe("useCheckCapability", () => {
     expect(isError).toBe(true);
     expect(error).toStrictEqual(
       new axios.AxiosError("Request failed with status code 404"),
+    );
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      CapabilitiesLabel.FETCHING_CAPABILITIES_ERROR,
+      error,
     );
   });
 });

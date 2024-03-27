@@ -4,7 +4,7 @@ import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Panel from "components/Panel";
 import ReBACAdmin from "components/ReBACAdmin";
-import logger from "utils/logger";
+import { logger } from "utils";
 
 import App from "./App";
 
@@ -71,8 +71,8 @@ if (root) {
       return;
     })
     .catch((error) =>
-      logger.error("Error while trying to start mock API worker.", error),
+      console.error("Error while trying to start mock API worker.", error),
     );
 } else {
-  logger.error("Root element not found in DOM.");
+  console.error("Root element not found in DOM.");
 }

@@ -74,6 +74,11 @@ The following props can be provided to the `ReBACAdmin` component to configure t
 | apiURL   | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
 | logLevel | The level of logging to be used by the logger. (optional; default value: "silent")   | trace, debug, error, silent    |
 
+The available `logLevel` options are `trace`, `debug`, `info`, `warn`, `error`
+and `silent`. `trace` displays all logs, while `silent` disables everything.
+Every other option displays every log of the same level and higher. All options
+are passed as a string of lowercase letters.
+
 ## Navigation
 
 Links to each subsection of the ReBAC admin will need to be displayed within

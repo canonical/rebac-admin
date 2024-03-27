@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import Panel from "components/Panel";
 import Users from "components/pages/Users";
 import urls from "urls";
-import logger from "utils/logger";
+import { logger } from "utils";
 
 export type Props = {
   // The absolute API URL.
@@ -27,7 +27,7 @@ const ReBACAdmin = ({ apiURL, logLevel = logger.levels.SILENT }: Props) => {
   axios.defaults.baseURL = apiURL;
 
   useEffect(() => {
-    logger.setLevel(logLevel);
+    logger.setDefaultLevel(logLevel);
   }, [logLevel]);
 
   return (

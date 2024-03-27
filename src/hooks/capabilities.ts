@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
 import type { Endpoint } from "types/api";
-import logger from "utils/logger";
+import { logger } from "utils";
 
 export enum Label {
   FETCHING_CAPABILITIES_ERROR = "Unable to fetch capabilities.",
