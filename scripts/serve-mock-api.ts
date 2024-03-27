@@ -17,11 +17,11 @@ app.use(cors());
 app.use(createMiddleware(...handlers));
 
 app.listen(env.API_PORT, () => {
-  console.debug("ReBAC Admin mock API running on:");
-  console.debug("");
-  console.debug(`Local:   http://localhost:${env.API_PORT}/`);
-  console.debug(`Network: http://${ip.address()}:${env.API_PORT}/`);
-  console.debug("");
-  console.debug("Press ctrl+c to stop the server.");
-  console.debug("");
+  console.log("ReBAC Admin mock API running on:");
+  console.log("");
+  console.log(`Local:   http://localhost:${env.API_PORT}/`);
+  console.log(`Network: http://${ip.address()}:${env.API_PORT}/`);
+  console.log("");
+  console.log("Press ctrl+c to stop the server.");
+  console.log("");
 });
