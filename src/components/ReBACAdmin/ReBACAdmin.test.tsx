@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import axios from "axios";
 
 import { renderComponent } from "test/utils";
+import { logger } from "utils";
 
 import ReBACAdmin from "./ReBACAdmin";
 
@@ -32,4 +33,14 @@ test("the users page is displayed", async () => {
     path: "/settings/permissions/*",
   });
   expect(screen.getByRole("heading", { name: "Users" })).toBeInTheDocument();
+});
+
+test("should have log level set to silent by default", () => {
+  renderComponent(<ReBACAdmin apiURL="/api" />);
+  expect(logger.getLevel()).toBe(logger.levels.SILENT);
+});
+
+test("should be able to set log level", () => {
+  renderComponent(<ReBACAdmin apiURL="/api" logLevel={logger.levels.ERROR} />);
+  expect(logger.getLevel()).toBe(logger.levels.ERROR);
 });

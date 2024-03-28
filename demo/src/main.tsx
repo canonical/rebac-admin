@@ -4,6 +4,7 @@ import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Panel from "components/Panel";
 import ReBACAdmin from "components/ReBACAdmin";
+import { logger } from "utils";
 
 import App from "./App";
 
@@ -21,7 +22,12 @@ const defferRender = async () => {
   return mockApiWorker.start();
 };
 
-const admin = () => <ReBACAdmin apiURL={import.meta.env.VITE_DEMO_API_URL} />;
+const admin = () => (
+  <ReBACAdmin
+    apiURL={import.meta.env.VITE_DEMO_API_URL}
+    logLevel={logger.levels.TRACE}
+  />
+);
 
 const router = createBrowserRouter([
   {

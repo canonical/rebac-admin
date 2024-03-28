@@ -1,6 +1,9 @@
+import { useEffect } from "react";
+
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
 import type { Endpoint } from "types/api";
+import { logger } from "utils";
 
 export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
@@ -15,6 +18,13 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
     // Capabilities should persist for the entire user session.
     { query: { gcTime: Infinity, staleTime: Infinity } },
   );
+
+  useEffect(() => {
+    if (error) {
+      logger.error("Unable to fetch capabilities.", error);
+    }
+  }, [error]);
+
   return {
     actions:
       data?.data.data

@@ -1,17 +1,22 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
+import type { LogLevelDesc } from "loglevel";
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Panel from "components/Panel";
 import Users from "components/pages/Users";
 import urls from "urls";
+import { logger } from "utils";
 
 export type Props = {
   // The absolute API URL.
   apiURL: `${"http" | "/"}${string}`;
+  // The level of logging to be used by the logger.
+  logLevel?: LogLevelDesc;
 };
 
-const ReBACAdmin = ({ apiURL }: Props) => {
+const ReBACAdmin = ({ apiURL, logLevel = logger.levels.SILENT }: Props) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -20,6 +25,10 @@ const ReBACAdmin = ({ apiURL }: Props) => {
     },
   });
   axios.defaults.baseURL = apiURL;
+
+  useEffect(() => {
+    logger.setDefaultLevel(logLevel);
+  }, [logLevel]);
 
   return (
     <QueryClientProvider client={queryClient}>
