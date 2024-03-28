@@ -5,10 +5,6 @@ import { useGetCapabilities } from "api/capabilities/capabilities";
 import type { Endpoint } from "types/api";
 import { logger } from "utils";
 
-export enum Label {
-  FETCHING_CAPABILITIES_ERROR = "Unable to fetch capabilities.",
-}
-
 export enum CapabilityAction {
   READ = CapabilityMethodsItem.GET,
   CREATE = CapabilityMethodsItem.POST,
@@ -24,7 +20,7 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
 
   useEffect(() => {
     if (error) {
-      logger.error(Label.FETCHING_CAPABILITIES_ERROR, error);
+      logger.error("Unable to fetch capabilities.", error);
     }
   }, [error]);
 
