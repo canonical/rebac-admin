@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - admin-service-api
   pull_request:
     branches:
       - main
+      - admin-service-api
 jobs:
   lint:
     name: Lint
