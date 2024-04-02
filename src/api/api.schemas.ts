@@ -4,28 +4,20 @@
  * Canonical OpenFGA Administration Product Compatibility API
  * The following specification outlines the API required for the FGA administration frontend to interact with an OpenFGA instance through a products API. This is an evolving specification as reflected in the version number.
 
- * OpenAPI spec version: 0.0.10
- */
-/**
- * A string to filter results by
- */
-export type FilterParamParameter = string;
+#### Changelog
+| Version | Notes |
+|---|---|
+| **0.0.8** | Implement response type as defined in [IAM Platform Admin UI HTTP Spec](https://docs.google.com/document/d/1ElV22e3mePGFPq8CaM3F3IkuyuOLNpjG7yYgtjvygf4/edit). |
+| **0.0.7** | Added `/entitlements/raw` endpoint to split `/entitlements` responses. |
+| **0.0.6** | Ensured compatibility with Orval Restful Client Generator. |
+| **0.0.5** | Add filter parameter to top level collection `GET` requests. |
+| **0.0.4** | Added pagination parameters to appropriate `GET` requests.<br />Changed a couple of `PUT`'s to `PATCH`'s to account for the possible subset returned from the paginated `GET`'s. |
+| **0.0.3** | Added skeleton error responses for `400`, `401`, `404`, and `5XX` (`default`) |
+| **0.0.2** | Added `GET /users/{id}/groups`<br />Added `GET /users/{id}roles`<br />Added `GET /users/{id}/entitlements`<br />Added `GET,PUT /groups/{id}/users`<br>Added `DELETE /groups/{id}/users/{userId}`<br />Added `GET /roles/{id}/entitlements`<br />Added `DELETE /roles/{id}/entitlements/{entitlementId}` |
+| **0.0.1** | Initial dump |
 
-/**
- * The continuation token to retrieve the next set of results
+ * OpenAPI spec version: 0.0.8
  */
-export type PaginationNextTokenParameter = string;
-
-/**
- * The record offset to return results from
- */
-export type PaginationPageParameter = number;
-
-/**
- * The number of records to return per response
- */
-export type PaginationSizeParameter = number;
-
 export type GetResourcesParams = {
   /**
    * The number of records to return per response
@@ -35,11 +27,6 @@ export type GetResourcesParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-  entityType?: string;
 };
 
 export type GetEntitlementsParams = {
@@ -52,16 +39,12 @@ export type GetEntitlementsParams = {
    */
   page?: PaginationPageParameter;
   /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-  /**
    * A string to filter results by
    */
   filter?: FilterParamParameter;
 };
 
-export type GetRolesItemEntitlementsParams = {
+export type GetRolesIdEntitlementsParams = {
   /**
    * The number of records to return per response
    */
@@ -70,10 +53,6 @@ export type GetRolesItemEntitlementsParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
 
 export type GetRolesParams = {
@@ -86,16 +65,12 @@ export type GetRolesParams = {
    */
   page?: PaginationPageParameter;
   /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-  /**
    * A string to filter results by
    */
   filter?: FilterParamParameter;
 };
 
-export type GetGroupsItemEntitlementsParams = {
+export type GetGroupsIdUsersParams = {
   /**
    * The number of records to return per response
    */
@@ -104,13 +79,17 @@ export type GetGroupsItemEntitlementsParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
 
-export type GetGroupsItemRolesParams = {
+export type GetGroupsId200 = Response & Groups;
+
+export type GetGroups200 = Response & Groups;
+
+export type GetUsersIdEntitlements200 = Response & Entitlements;
+
+export type GetUsersIdRoles200 = Response & Roles;
+
+export type GetUsersIdRolesParams = {
   /**
    * The number of records to return per response
    */
@@ -119,13 +98,11 @@ export type GetGroupsItemRolesParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
 
-export type GetGroupsItemIdentitiesParams = {
+export type GetUsersIdGroups200 = Response & Groups;
+
+export type GetUsersIdGroupsParams = {
   /**
    * The number of records to return per response
    */
@@ -134,11 +111,30 @@ export type GetGroupsItemIdentitiesParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
+
+export type GetUsersId200 = Response & Users;
+
+export type GetUsers200 = Response & Users;
+
+export type GetAuthenticationId200 = Response & IdentityProviders;
+
+export type GetAuthentication200 = Response & IdentityProviders;
+
+/**
+ * A string to filter results by
+ */
+export type FilterParamParameter = string;
+
+/**
+ * The record offset to return results from
+ */
+export type PaginationPageParameter = number;
+
+/**
+ * The number of records to return per response
+ */
+export type PaginationSizeParameter = number;
 
 export type GetGroupsParams = {
   /**
@@ -150,16 +146,38 @@ export type GetGroupsParams = {
    */
   page?: PaginationPageParameter;
   /**
-   * The continuation token to retrieve the next set of results
+   * A string to filter results by
    */
-  nextToken?: PaginationNextTokenParameter;
+  filter?: FilterParamParameter;
+};
+
+export type GetUsersIdEntitlementsParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
+export type GetUsersParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
   /**
    * A string to filter results by
    */
   filter?: FilterParamParameter;
 };
 
-export type GetIdentitiesItemEntitlementsParams = {
+export type GetAuthenticationParams = {
   /**
    * The number of records to return per response
    */
@@ -168,13 +186,9 @@ export type GetIdentitiesItemEntitlementsParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
 
-export type GetIdentitiesItemRolesParams = {
+export type GetAuthenticationProvidersParams = {
   /**
    * The number of records to return per response
    */
@@ -183,85 +197,43 @@ export type GetIdentitiesItemRolesParams = {
    * The record offset to return results from
    */
   page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
 };
-
-export type GetIdentitiesItemGroupsParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-};
-
-export type GetIdentitiesParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-  /**
-   * A string to filter results by
-   */
-  filter?: FilterParamParameter;
-};
-
-export type GetIdentityProvidersParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-};
-
-export type GetAvailableIdentityProvidersParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-};
-
-/**
- * Unexpected error
- */
-export type DefaultResponse = Response;
 
 /**
  * Not found
  */
 export type NotFoundResponse = Response;
+
+export type ResponseDataItem = { [key: string]: any };
+
+export type _ResponseMeta = {
+  page: number;
+  size: number;
+  total: number;
+};
+
+export interface Response {
+  _links: _ResponseLinks;
+  _meta: _ResponseMeta;
+  data: ResponseDataItem[];
+  message: string;
+  status: number;
+}
+
+export type GetResources200 = Response & Resources;
+
+export type GetRolesIdEntitlements200 = Response & Entitlements;
+
+export type GetRolesId200 = Response & Roles;
+
+export type GetRoles200 = Response & Roles;
+
+export type GetGroupsIdUsers200 = Response & Users;
+
+/**
+ * Unexpected error
+ */
+export type DefaultResponse = Response;
 
 /**
  * Unauthorized
@@ -273,262 +245,52 @@ export type UnauthorizedResponse = Response;
  */
 export type BadRequestResponse = Response;
 
-export type GetResourcesResponse = Response & Resources;
-
-export type GetEntitlementsResponseAllOf = {
-  data: EntityEntitlement[];
-};
-
-export type GetEntitlementsResponse = Response & GetEntitlementsResponseAllOf;
-
-export type GetRoleEntitlementsResponseAllOf = {
-  data: EntityEntitlement[];
-};
-
-export type GetRoleEntitlementsResponse = Response &
-  GetRoleEntitlementsResponseAllOf;
-
-export type GetRolesResponse = Response & Roles;
-
-export type GetGroupEntitlementsResponseAllOf = {
-  data: EntityEntitlement[];
-};
-
-export type GetGroupEntitlementsResponse = Response &
-  GetGroupEntitlementsResponseAllOf;
-
-export type PatchGroupRolesResponse = Response & Roles;
-
-export type GetGroupRolesResponse = Response & Roles;
-
-export type PatchGroupIdentitiesResponse = Response & Identities;
-
-export type GetGroupIdentitiesResponse = Response & Identities;
-
-export type GetGroupsResponse = Response & Groups;
-
-export type GetIdentityEntitlementsResponseAllOf = {
-  data: EntityEntitlement[];
-};
-
-export type GetIdentityEntitlementsResponse = Response &
-  GetIdentityEntitlementsResponseAllOf;
-
-export type GetIdentityRolesResponse = Response & Roles;
-
-export type GetIdentityGroupsResponse = Response & Groups;
-
-export type GetIdentitiesResponse = Response & Identities;
-
-export type GetIdentityProvidersResponse = Response & IdentityProviders;
-
-export interface AvailableIdentityProvider {
-  id: string;
-  name?: string;
-}
-
-export interface AvailableIdentityProviders {
-  data: AvailableIdentityProvider[];
-}
-
-export type GetAvailableIdentityProvidersResponse = Response &
-  AvailableIdentityProviders;
-
-export type GetCapabilitiesResponse = Response & Capabilities;
-
-export type IdentityProviderPatchRequestBodyAllOfItem = {
-  value: IdentityProvider[];
-};
-
-export type IdentityProviderPatchRequestBody = PatchRequestBody &
-  IdentityProviderPatchRequestBodyAllOfItem[];
-
-export enum RoleEntitlementsPatchItemAllOfOp {
-  add = "add",
-  remove = "remove",
-}
-export type RoleEntitlementsPatchItemAllOf = {
-  op: RoleEntitlementsPatchItemAllOfOp;
-};
-
-export type RoleEntitlementsPatchItem = EntityEntitlementItem &
-  RoleEntitlementsPatchItemAllOf;
-
-export interface RoleEntitlementsPatchRequestBody {
-  patches: RoleEntitlementsPatchItem[];
-}
-
-export enum GroupEntitlementsPatchItemAllOfOp {
-  add = "add",
-  remove = "remove",
-}
-export type GroupEntitlementsPatchItemAllOf = {
-  op: GroupEntitlementsPatchItemAllOfOp;
-};
-
-export type GroupEntitlementsPatchItem = EntityEntitlementItem &
-  GroupEntitlementsPatchItemAllOf;
-
-export interface GroupEntitlementsPatchRequestBody {
-  patches: GroupEntitlementsPatchItem[];
-}
-
-export enum GroupRolesPatchItemOp {
-  add = "add",
-  remove = "remove",
-}
-export interface GroupRolesPatchItem {
-  op: GroupRolesPatchItemOp;
-  role: string;
-}
-
-export interface GroupRolesPatchRequestBody {
-  patches: GroupRolesPatchItem[];
-}
-
-export enum GroupIdentitiesPatchItemOp {
-  add = "add",
-  remove = "remove",
-}
-export interface GroupIdentitiesPatchItem {
-  identity: string;
-  op: GroupIdentitiesPatchItemOp;
-}
-
-export interface GroupIdentitiesPatchRequestBody {
-  patches: GroupIdentitiesPatchItem[];
-}
-
-export interface EntityEntitlement {
-  entitlement_type: string;
-  entity_name: string;
-  entity_type: string;
-}
-
-export interface EntityEntitlementItem {
-  entitlement: EntityEntitlement;
-}
-
-export enum IdentityEntitlementsPatchItemAllOfOp {
-  add = "add",
-  remove = "remove",
-}
-export type IdentityEntitlementsPatchItemAllOf = {
-  op: IdentityEntitlementsPatchItemAllOfOp;
-};
-
-export type IdentityEntitlementsPatchItem = EntityEntitlementItem &
-  IdentityEntitlementsPatchItemAllOf;
-
-export interface IdentityEntitlementsPatchRequestBody {
-  patches: IdentityEntitlementsPatchItem[];
-}
-
-export enum IdentityRolesPatchItemOp {
-  add = "add",
-  remove = "remove",
-}
-export interface IdentityRolesPatchItem {
-  op: IdentityRolesPatchItemOp;
-  role: string;
-}
-
-export interface IdentityRolesPatchRequestBody {
-  patches: IdentityRolesPatchItem[];
-}
-
-export enum IdentityGroupsPatchItemOp {
-  add = "add",
-  remove = "remove",
-}
-export interface IdentityGroupsPatchItem {
-  group: string;
-  op: IdentityGroupsPatchItemOp;
-}
-
-export interface IdentityGroupsPatchRequestBody {
-  patches: IdentityGroupsPatchItem[];
-}
-
-export enum PatchRequestBodyItemOp {
-  add = "add",
-  remove = "remove",
-}
-export interface PatchRequestBodyElementValueItem {
-  id: string;
-}
-
-export type PatchRequestBodyElementValue = PatchRequestBodyElementValueItem[];
-
-export type PatchRequestBodyItem = {
-  op: PatchRequestBodyItemOp;
-  value: PatchRequestBodyElementValue;
-};
-
-export type PatchRequestBody = PatchRequestBodyItem[];
-
-export enum CapabilityMethodsItem {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  DELETE = "DELETE",
-  PATCH = "PATCH",
-}
-export interface Capability {
-  endpoint: string;
-  methods: CapabilityMethodsItem[];
-}
-
-export interface Capabilities {
-  data: Capability[];
-}
-
-export interface ResponseLinksNext {
+export type _ResponseLinksNext = {
   href: string;
-}
+};
 
-export interface ResponseLinks {
-  next: ResponseLinksNext;
-}
+export type _ResponseLinks = {
+  next: _ResponseLinksNext;
+};
 
-export interface ResponseMeta {
-  page?: number;
-  pageToken?: string;
-  size: number;
-  total?: number;
-}
-
-export interface Response {
-  _links: ResponseLinks;
-  _meta: ResponseMeta;
-  message: string;
-  status: number;
+export interface Resource {
+  entity: Entity;
+  id: string;
+  name: string;
+  parent: Resource;
 }
 
 export interface Resources {
   data: Resource[];
 }
 
-export interface Entity {
-  id: string;
-  type: string;
+export type Entitlement = string;
+
+export type EntityEntitlementsDataItem = {
+  entitlement?: Entitlement;
+  entity?: Entity;
+};
+
+export interface EntityEntitlements {
+  data: EntityEntitlementsDataItem[];
 }
 
-export interface Resource {
-  entity: Entity;
-  id: string;
-  name: string;
-  parent?: Resource;
+export type GetEntitlements200 = Response & EntityEntitlements;
+
+export interface Entitlements {
+  data: Entitlement[];
 }
 
-export interface RoleEntitlement {
+export type Entity = string;
+
+export type RoleEntitlementsItem = {
   entitlement?: string;
   entity?: Entity;
   resource?: string;
-}
+};
 
 export interface Role {
-  entitlements?: RoleEntitlement[];
+  entitlements?: RoleEntitlementsItem[];
   id?: string;
   name: string;
 }
@@ -546,7 +308,7 @@ export interface Groups {
   data: Group[];
 }
 
-export interface Identity {
+export interface User {
   addedBy: string;
   certificate?: string;
   email: string;
@@ -561,8 +323,8 @@ export interface Identity {
   source: string;
 }
 
-export interface Identities {
-  data: Identity[];
+export interface Users {
+  data: User[];
 }
 
 export enum IdentityProviderSyncMode {
@@ -573,16 +335,16 @@ export interface IdentityProvider {
   accountLinkingOnly?: boolean;
   clientID?: string;
   clientSecret?: string;
-  disableIdentityInfo?: boolean;
+  disableUserInfo?: boolean;
   enabled?: boolean;
   id?: string;
-  identityCount?: number;
   name?: string;
   redirectUrl?: string;
   storeTokens?: boolean;
   storeTokensReadable?: boolean;
   syncMode?: IdentityProviderSyncMode;
   trustEmail?: boolean;
+  userCount?: number;
 }
 
 export interface IdentityProviders {

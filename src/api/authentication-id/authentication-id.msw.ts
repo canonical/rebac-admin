@@ -21,11 +21,11 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetGroups200, Group } from "../api.schemas";
+import type { GetAuthenticationId200 } from "../api.schemas";
 
-export const getGetGroupsResponseMock = (
+export const getGetAuthenticationIdResponseMock = (
   overrideResponse: any = {},
-): GetGroups200 => ({
+): GetAuthenticationId200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -46,20 +46,16 @@ export const getGetGroupsResponseMock = (
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (
-  overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
-  ...overrideResponse,
-});
-
-export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
-  return http.get("*/groups", async () => {
+export const getGetAuthenticationIdMockHandler = (
+  overrideResponse?: GetAuthenticationId200,
+) => {
+  return http.get("*/authentication/:id", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
+        overrideResponse
+          ? overrideResponse
+          : getGetAuthenticationIdResponseMock(),
       ),
       {
         status: 200,
@@ -71,23 +67,31 @@ export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
-  return http.post("*/groups", async () => {
+export const getPatchAuthenticationIdMockHandler = () => {
+  return http.patch("*/authentication/:id", async () => {
     await delay(900);
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
-      ),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 };
-export const getGroupsMock = () => [
-  getGetGroupsMockHandler(),
-  getPostGroupsMockHandler(),
+
+export const getDeleteAuthenticationIdMockHandler = () => {
+  return http.delete("*/authentication/:id", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+export const getAuthenticationIdMock = () => [
+  getGetAuthenticationIdMockHandler(),
+  getPatchAuthenticationIdMockHandler(),
+  getDeleteAuthenticationIdMockHandler(),
 ];

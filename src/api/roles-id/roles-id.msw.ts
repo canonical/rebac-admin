@@ -21,11 +21,11 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetGroups200, Group } from "../api.schemas";
+import type { GetRolesId200, GetRolesIdEntitlements200 } from "../api.schemas";
 
-export const getGetGroupsResponseMock = (
+export const getGetRolesIdResponseMock = (
   overrideResponse: any = {},
-): GetGroups200 => ({
+): GetRolesId200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -46,20 +46,35 @@ export const getGetGroupsResponseMock = (
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (
+export const getGetRolesIdEntitlementsResponseMock = (
   overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
+): GetRolesIdEntitlements200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({})),
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
   ...overrideResponse,
 });
 
-export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
-  return http.get("*/groups", async () => {
+export const getGetRolesIdMockHandler = (overrideResponse?: GetRolesId200) => {
+  return http.get("*/roles/:id", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getGetRolesIdResponseMock(),
       ),
       {
         status: 200,
@@ -71,12 +86,40 @@ export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
-  return http.post("*/groups", async () => {
+export const getPatchRolesIdMockHandler = () => {
+  return http.patch("*/roles/:id", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getDeleteRolesIdMockHandler = () => {
+  return http.delete("*/roles/:id", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getGetRolesIdEntitlementsMockHandler = (
+  overrideResponse?: GetRolesIdEntitlements200,
+) => {
+  return http.get("*/roles/:id/entitlements", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdEntitlementsResponseMock(),
       ),
       {
         status: 200,
@@ -87,7 +130,22 @@ export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
     );
   });
 };
-export const getGroupsMock = () => [
-  getGetGroupsMockHandler(),
-  getPostGroupsMockHandler(),
+
+export const getDeleteRolesIdEntitlementsEntitlementIdMockHandler = () => {
+  return http.delete("*/roles/:id/entitlements/:entitlementId", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+export const getRolesIdMock = () => [
+  getGetRolesIdMockHandler(),
+  getPatchRolesIdMockHandler(),
+  getDeleteRolesIdMockHandler(),
+  getGetRolesIdEntitlementsMockHandler(),
+  getDeleteRolesIdEntitlementsEntitlementIdMockHandler(),
 ];

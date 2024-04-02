@@ -21,11 +21,11 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetGroups200, Group } from "../api.schemas";
+import type { GetUsers200, User } from "../api.schemas";
 
-export const getGetGroupsResponseMock = (
+export const getGetUsersResponseMock = (
   overrideResponse: any = {},
-): GetGroups200 => ({
+): GetUsers200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -46,20 +46,37 @@ export const getGetGroupsResponseMock = (
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (
-  overrideResponse: any = {},
-): Group => ({
+export const getPostUsersResponseMock = (overrideResponse: any = {}): User => ({
+  addedBy: faker.word.sample(),
+  certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  groups: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
   id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
+  joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  permissions: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  roles: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  source: faker.word.sample(),
   ...overrideResponse,
 });
 
-export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
-  return http.get("*/groups", async () => {
+export const getGetUsersMockHandler = (overrideResponse?: GetUsers200) => {
+  return http.get("*/users", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getGetUsersResponseMock(),
       ),
       {
         status: 200,
@@ -71,12 +88,12 @@ export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
-  return http.post("*/groups", async () => {
+export const getPostUsersMockHandler = (overrideResponse?: User) => {
+  return http.post("*/users", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getPostUsersResponseMock(),
       ),
       {
         status: 200,
@@ -87,7 +104,7 @@ export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
     );
   });
 };
-export const getGroupsMock = () => [
-  getGetGroupsMockHandler(),
-  getPostGroupsMockHandler(),
+export const getUsersMock = () => [
+  getGetUsersMockHandler(),
+  getPostUsersMockHandler(),
 ];
