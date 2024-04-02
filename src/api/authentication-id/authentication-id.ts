@@ -33,32 +33,28 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type {
   BadRequestResponse,
   DefaultResponse,
-  GetEntitlements200,
-  GetEntitlementsParams,
+  GetAuthenticationId200,
+  IdentityProvider,
   NotFoundResponse,
   UnauthorizedResponse,
 } from "../api.schemas";
 
 /**
- * The application/json response type will return the JSON authorisation model.
- * @summary Get the list of entitlements in JSON format.
+ * @summary Get a single authentication method.
  */
-export const getEntitlements = (
-  params?: GetEntitlementsParams,
+export const getAuthenticationId = (
+  id: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetEntitlements200>> => {
-  return axios.get(`/entitlements`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+): Promise<AxiosResponse<GetAuthenticationId200>> => {
+  return axios.get(`/authentication/${id}`, options);
 };
 
-export const getGetEntitlementsQueryKey = (params?: GetEntitlementsParams) => {
-  return [`/entitlements`, ...(params ? [params] : [])] as const;
+export const getGetAuthenticationIdQueryKey = (id: string) => {
+  return [`/authentication/${id}`] as const;
 };
 
-export const getGetEntitlementsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getEntitlements>>,
+export const getGetAuthenticationIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAuthenticationId>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -66,11 +62,11 @@ export const getGetEntitlementsQueryOptions = <
     | DefaultResponse
   >,
 >(
-  params?: GetEntitlementsParams,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getEntitlements>>,
+        Awaited<ReturnType<typeof getAuthenticationId>>,
         TError,
         TData
       >
@@ -80,31 +76,36 @@ export const getGetEntitlementsQueryOptions = <
 ) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetEntitlementsQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getGetAuthenticationIdQueryKey(id);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getEntitlements>>> = ({
-    signal,
-  }) => getEntitlements(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAuthenticationId>>
+  > = ({ signal }) => getAuthenticationId(id, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getEntitlements>>,
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthenticationId>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetEntitlementsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getEntitlements>>
+export type GetAuthenticationIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAuthenticationId>>
 >;
-export type GetEntitlementsQueryError = AxiosError<
+export type GetAuthenticationIdQueryError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
- * @summary Get the list of entitlements in JSON format.
+ * @summary Get a single authentication method.
  */
-export const useGetEntitlements = <
-  TData = Awaited<ReturnType<typeof getEntitlements>>,
+export const useGetAuthenticationId = <
+  TData = Awaited<ReturnType<typeof getAuthenticationId>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -112,11 +113,11 @@ export const useGetEntitlements = <
     | DefaultResponse
   >,
 >(
-  params?: GetEntitlementsParams,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getEntitlements>>,
+        Awaited<ReturnType<typeof getAuthenticationId>>,
         TError,
         TData
       >
@@ -124,7 +125,7 @@ export const useGetEntitlements = <
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetEntitlementsQueryOptions(params, options);
+  const queryOptions = getGetAuthenticationIdQueryOptions(id, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -136,102 +137,17 @@ export const useGetEntitlements = <
 };
 
 /**
- * The text/plain response type will return the raw authorisation model.
- * @summary Get the list of entitlements as raw text.
+ * @summary Update an authentication method.
  */
-export const getEntitlementsRaw = (
+export const patchAuthenticationId = (
+  id: string,
+  identityProvider: IdentityProvider,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
-  return axios.get(`/entitlements/raw`, options);
+): Promise<AxiosResponse<void>> => {
+  return axios.patch(`/authentication/${id}`, identityProvider, options);
 };
 
-export const getGetEntitlementsRawQueryKey = () => {
-  return [`/entitlements/raw`] as const;
-};
-
-export const getGetEntitlementsRawQueryOptions = <
-  TData = Awaited<ReturnType<typeof getEntitlementsRaw>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof getEntitlementsRaw>>,
-      TError,
-      TData
-    >
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetEntitlementsRawQueryKey();
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getEntitlementsRaw>>
-  > = ({ signal }) => getEntitlementsRaw({ signal, ...axiosOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getEntitlementsRaw>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetEntitlementsRawQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getEntitlementsRaw>>
->;
-export type GetEntitlementsRawQueryError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Get the list of entitlements as raw text.
- */
-export const useGetEntitlementsRaw = <
-  TData = Awaited<ReturnType<typeof getEntitlementsRaw>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof getEntitlementsRaw>>,
-      TError,
-      TData
-    >
-  >;
-  axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetEntitlementsRawQueryOptions(options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-/**
- * @summary Update the authorisation model.
- */
-export const putEntitlementsRaw = (
-  putEntitlementsRawBody: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
-  return axios.put(`/entitlements/raw`, putEntitlementsRawBody, options);
-};
-
-export const getPutEntitlementsRawMutationOptions = <
+export const getPatchAuthenticationIdMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -241,44 +157,44 @@ export const getPutEntitlementsRawMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putEntitlementsRaw>>,
+    Awaited<ReturnType<typeof patchAuthenticationId>>,
     TError,
-    { data: string },
+    { id: string; data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof putEntitlementsRaw>>,
+  Awaited<ReturnType<typeof patchAuthenticationId>>,
   TError,
-  { data: string },
+  { id: string; data: IdentityProvider },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof putEntitlementsRaw>>,
-    { data: string }
+    Awaited<ReturnType<typeof patchAuthenticationId>>,
+    { id: string; data: IdentityProvider }
   > = (props) => {
-    const { data } = props ?? {};
+    const { id, data } = props ?? {};
 
-    return putEntitlementsRaw(data, axiosOptions);
+    return patchAuthenticationId(id, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PutEntitlementsRawMutationResult = NonNullable<
-  Awaited<ReturnType<typeof putEntitlementsRaw>>
+export type PatchAuthenticationIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof patchAuthenticationId>>
 >;
-export type PutEntitlementsRawMutationBody = string;
-export type PutEntitlementsRawMutationError = AxiosError<
+export type PatchAuthenticationIdMutationBody = IdentityProvider;
+export type PatchAuthenticationIdMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
- * @summary Update the authorisation model.
+ * @summary Update an authentication method.
  */
-export const usePutEntitlementsRaw = <
+export const usePatchAuthenticationId = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -288,14 +204,92 @@ export const usePutEntitlementsRaw = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putEntitlementsRaw>>,
+    Awaited<ReturnType<typeof patchAuthenticationId>>,
     TError,
-    { data: string },
+    { id: string; data: IdentityProvider },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }) => {
-  const mutationOptions = getPutEntitlementsRawMutationOptions(options);
+  const mutationOptions = getPatchAuthenticationIdMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove an authentication method.
+ */
+export const deleteAuthenticationId = (
+  id: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<void>> => {
+  return axios.delete(`/authentication/${id}`, options);
+};
+
+export const getDeleteAuthenticationIdMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAuthenticationId>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteAuthenticationId>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteAuthenticationId>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteAuthenticationId(id, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteAuthenticationIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteAuthenticationId>>
+>;
+
+export type DeleteAuthenticationIdMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Remove an authentication method.
+ */
+export const useDeleteAuthenticationId = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAuthenticationId>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const mutationOptions = getDeleteAuthenticationIdMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

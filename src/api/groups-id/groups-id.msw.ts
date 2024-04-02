@@ -21,11 +21,11 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetGroups200, Group } from "../api.schemas";
+import type { GetGroupsId200, GetGroupsIdUsers200 } from "../api.schemas";
 
-export const getGetGroupsResponseMock = (
+export const getGetGroupsIdResponseMock = (
   overrideResponse: any = {},
-): GetGroups200 => ({
+): GetGroupsId200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -46,20 +46,37 @@ export const getGetGroupsResponseMock = (
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (
+export const getGetGroupsIdUsersResponseMock = (
   overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
+): GetGroupsIdUsers200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({})),
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
   ...overrideResponse,
 });
 
-export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
-  return http.get("*/groups", async () => {
+export const getGetGroupsIdMockHandler = (
+  overrideResponse?: GetGroupsId200,
+) => {
+  return http.get("*/groups/:id", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getGetGroupsIdResponseMock(),
       ),
       {
         status: 200,
@@ -71,12 +88,38 @@ export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
-  return http.post("*/groups", async () => {
+export const getPatchGroupsIdMockHandler = () => {
+  return http.patch("*/groups/:id", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getDeleteGroupsIdMockHandler = () => {
+  return http.delete("*/groups/:id", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getGetGroupsIdUsersMockHandler = (
+  overrideResponse?: GetGroupsIdUsers200,
+) => {
+  return http.get("*/groups/:id/users", async () => {
     await delay(900);
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock(),
+        overrideResponse ? overrideResponse : getGetGroupsIdUsersResponseMock(),
       ),
       {
         status: 200,
@@ -87,7 +130,35 @@ export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
     );
   });
 };
-export const getGroupsMock = () => [
-  getGetGroupsMockHandler(),
-  getPostGroupsMockHandler(),
+
+export const getPatchGroupsIdUsersMockHandler = () => {
+  return http.patch("*/groups/:id/users", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+
+export const getDeleteGroupsIdUsersUserIdMockHandler = () => {
+  return http.delete("*/groups/:id/users/:userId", async () => {
+    await delay(900);
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
+};
+export const getGroupsIdMock = () => [
+  getGetGroupsIdMockHandler(),
+  getPatchGroupsIdMockHandler(),
+  getDeleteGroupsIdMockHandler(),
+  getGetGroupsIdUsersMockHandler(),
+  getPatchGroupsIdUsersMockHandler(),
+  getDeleteGroupsIdUsersUserIdMockHandler(),
 ];

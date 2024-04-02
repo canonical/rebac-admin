@@ -2,10 +2,9 @@ import { ModularTable, Spinner } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
-import { useGetIdentities } from "api/identities/identities";
+import { useGetUsers } from "api/users/users";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
-import { Endpoint } from "types/api";
 
 import { Label } from "./types";
 
@@ -33,7 +32,7 @@ const COLUMN_DATA: Column[] = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error, refetch } = useGetIdentities();
+  const { data, isFetching, isError, error, refetch } = useGetUsers();
 
   const tableData = useMemo(() => {
     const users = data?.data.data;
@@ -73,11 +72,7 @@ const Users = () => {
     }
   };
 
-  return (
-    <Content title="Users" endpoint={Endpoint.IDENTITIES}>
-      {generateContent()}
-    </Content>
-  );
+  return <Content title="Users">{generateContent()}</Content>;
 };
 
 export default Users;

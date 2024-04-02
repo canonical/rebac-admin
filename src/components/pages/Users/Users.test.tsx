@@ -3,34 +3,27 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
 import {
-  getGetIdentitiesItemResponseMock,
-  getGetIdentitiesMockHandler,
-  getGetIdentitiesResponseMock,
-} from "api/identities/identities.msw";
-import { Label as CheckCapabilityLabel } from "components/CheckCapability";
-import { getGetActualCapabilitiesMock } from "mocks/capabilities";
-import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
+  getGetUsersMockHandler,
+  getGetUsersResponseMock,
+} from "api/users/users.msw";
+import { getGetUsersErrorMockHandler } from "mocks/users";
 import { renderComponent } from "test/utils";
 
 import Users from "./Users";
 import { Label as UsersLabel } from "./types";
 
-const mockUserData = getGetIdentitiesResponseMock({
+const mockUserData = getGetUsersResponseMock({
   data: [
-    getGetIdentitiesItemResponseMock({
+    {
       addedBy: "within",
       email: "pfft",
       firstName: "really",
       lastName: undefined,
       source: "noteworthy",
-    }),
-    ...Array.from({ length: 6 }, () => getGetIdentitiesItemResponseMock()),
+    },
   ],
 });
-const mockApiServer = setupServer(
-  getGetIdentitiesMockHandler(mockUserData),
-  ...getGetActualCapabilitiesMock(),
-);
+const mockApiServer = setupServer(getGetUsersMockHandler(mockUserData));
 
 beforeAll(() => {
   mockApiServer.listen();
@@ -46,7 +39,7 @@ afterAll(() => {
 
 test("should display spinner on mount", () => {
   renderComponent(<Users />);
-  expect(screen.getByTestId(CheckCapabilityLabel.LOADING)).toBeInTheDocument();
+  expect(screen.getByText(UsersLabel.FETCHING_USERS)).toBeInTheDocument();
 });
 
 test("should display correct user data after fetching users", async () => {
@@ -56,7 +49,7 @@ test("should display correct user data after fetching users", async () => {
   const rows = screen.getAllByRole("row");
   // The first row contains the column headers and the next 7 rows contain
   // user data.
-  expect(rows).toHaveLength(8);
+  expect(rows).toHaveLength(2);
   const firstUserCells = within(rows[1]).getAllByRole("cell");
   expect(firstUserCells).toHaveLength(5);
   expect(firstUserCells[0]).toHaveTextContent("really");
@@ -68,14 +61,14 @@ test("should display correct user data after fetching users", async () => {
 
 test("should display no users data when no users are available", async () => {
   mockApiServer.use(
-    getGetIdentitiesMockHandler(getGetIdentitiesResponseMock({ data: [] })),
+    getGetUsersMockHandler(getGetUsersResponseMock({ data: [] })),
   );
   renderComponent(<Users />);
   expect(await screen.findByText(UsersLabel.NO_USERS)).toBeInTheDocument();
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(getGetIdentitiesErrorMockHandler());
+  mockApiServer.use(getGetUsersErrorMockHandler());
   renderComponent(<Users />);
   const usersErrorNotification = await screen.findByText(
     UsersLabel.FETCHING_USERS_ERROR,
@@ -83,20 +76,12 @@ test("should display error notification and refetch data", async () => {
   );
   expect(usersErrorNotification.childElementCount).toBe(1);
   const refetchButton = usersErrorNotification.children[0];
-  mockApiServer.use(
-    getGetIdentitiesMockHandler(
-      getGetIdentitiesResponseMock({
-        data: Array.from({ length: 6 }, () =>
-          getGetIdentitiesItemResponseMock(),
-        ),
-      }),
-    ),
-  );
+  mockApiServer.use(getGetUsersMockHandler(mockUserData));
   expect(refetchButton).toHaveTextContent("refetch");
   await act(() => userEvent.click(refetchButton));
   expect(
     await screen.findByText(UsersLabel.FETCHING_USERS),
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
-  expect(rows).toHaveLength(7);
+  expect(rows).toHaveLength(2);
 });

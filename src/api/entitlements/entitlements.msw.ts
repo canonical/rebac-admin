@@ -4,53 +4,56 @@
  * Canonical OpenFGA Administration Product Compatibility API
  * The following specification outlines the API required for the FGA administration frontend to interact with an OpenFGA instance through a products API. This is an evolving specification as reflected in the version number.
 
- * OpenAPI spec version: 0.0.10
+#### Changelog
+| Version | Notes |
+|---|---|
+| **0.0.8** | Implement response type as defined in [IAM Platform Admin UI HTTP Spec](https://docs.google.com/document/d/1ElV22e3mePGFPq8CaM3F3IkuyuOLNpjG7yYgtjvygf4/edit). |
+| **0.0.7** | Added `/entitlements/raw` endpoint to split `/entitlements` responses. |
+| **0.0.6** | Ensured compatibility with Orval Restful Client Generator. |
+| **0.0.5** | Add filter parameter to top level collection `GET` requests. |
+| **0.0.4** | Added pagination parameters to appropriate `GET` requests.<br />Changed a couple of `PUT`'s to `PATCH`'s to account for the possible subset returned from the paginated `GET`'s. |
+| **0.0.3** | Added skeleton error responses for `400`, `401`, `404`, and `5XX` (`default`) |
+| **0.0.2** | Added `GET /users/{id}/groups`<br />Added `GET /users/{id}roles`<br />Added `GET /users/{id}/entitlements`<br />Added `GET,PUT /groups/{id}/users`<br>Added `DELETE /groups/{id}/users/{userId}`<br />Added `GET /roles/{id}/entitlements`<br />Added `DELETE /roles/{id}/entitlements/{entitlementId}` |
+| **0.0.1** | Initial dump |
+
+ * OpenAPI spec version: 0.0.8
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetEntitlementsResponse } from "../api.schemas";
+import type { GetEntitlements200 } from "../api.schemas";
 
 export const getGetEntitlementsResponseMock = (
   overrideResponse: any = {},
-): GetEntitlementsResponse => ({
+): GetEntitlements200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
   },
   _meta: {
-    page: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    page: faker.number.int({ min: undefined, max: undefined }),
     size: faker.number.int({ min: undefined, max: undefined }),
-    total: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
+    total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  message: faker.word.sample(),
-  status: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
   data: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
-  ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
-    entity_type: faker.word.sample(),
-    ...overrideResponse,
-  })),
+  ).map(() => ({})),
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
   ...overrideResponse,
 });
 
-export const getGetRawEntitlementsResponseMock = (): string =>
+export const getGetEntitlementsRawResponseMock = (): string =>
+  faker.word.sample();
+
+export const getPutEntitlementsRawResponseMock = (): string =>
   faker.word.sample();
 
 export const getGetEntitlementsMockHandler = (
-  overrideResponse?: GetEntitlementsResponse,
+  overrideResponse?: GetEntitlements200,
 ) => {
   return http.get("*/entitlements", async () => {
     await delay(900);
@@ -68,10 +71,22 @@ export const getGetEntitlementsMockHandler = (
   });
 };
 
-export const getGetRawEntitlementsMockHandler = () => {
+export const getGetEntitlementsRawMockHandler = () => {
   return http.get("*/entitlements/raw", async () => {
     await delay(900);
-    return new HttpResponse(getGetRawEntitlementsResponseMock(), {
+    return new HttpResponse(getGetEntitlementsRawResponseMock(), {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    });
+  });
+};
+
+export const getPutEntitlementsRawMockHandler = () => {
+  return http.put("*/entitlements/raw", async () => {
+    await delay(900);
+    return new HttpResponse(getPutEntitlementsRawResponseMock(), {
       status: 200,
       headers: {
         "Content-Type": "text/plain",
@@ -81,5 +96,6 @@ export const getGetRawEntitlementsMockHandler = () => {
 };
 export const getEntitlementsMock = () => [
   getGetEntitlementsMockHandler(),
-  getGetRawEntitlementsMockHandler(),
+  getGetEntitlementsRawMockHandler(),
+  getPutEntitlementsRawMockHandler(),
 ];

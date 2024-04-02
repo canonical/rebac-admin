@@ -4,7 +4,19 @@
  * Canonical OpenFGA Administration Product Compatibility API
  * The following specification outlines the API required for the FGA administration frontend to interact with an OpenFGA instance through a products API. This is an evolving specification as reflected in the version number.
 
- * OpenAPI spec version: 0.0.10
+#### Changelog
+| Version | Notes |
+|---|---|
+| **0.0.8** | Implement response type as defined in [IAM Platform Admin UI HTTP Spec](https://docs.google.com/document/d/1ElV22e3mePGFPq8CaM3F3IkuyuOLNpjG7yYgtjvygf4/edit). |
+| **0.0.7** | Added `/entitlements/raw` endpoint to split `/entitlements` responses. |
+| **0.0.6** | Ensured compatibility with Orval Restful Client Generator. |
+| **0.0.5** | Add filter parameter to top level collection `GET` requests. |
+| **0.0.4** | Added pagination parameters to appropriate `GET` requests.<br />Changed a couple of `PUT`'s to `PATCH`'s to account for the possible subset returned from the paginated `GET`'s. |
+| **0.0.3** | Added skeleton error responses for `400`, `401`, `404`, and `5XX` (`default`) |
+| **0.0.2** | Added `GET /users/{id}/groups`<br />Added `GET /users/{id}roles`<br />Added `GET /users/{id}/entitlements`<br />Added `GET,PUT /groups/{id}/users`<br>Added `DELETE /groups/{id}/users/{userId}`<br />Added `GET /roles/{id}/entitlements`<br />Added `DELETE /roles/{id}/entitlements/{entitlementId}` |
+| **0.0.1** | Initial dump |
+
+ * OpenAPI spec version: 0.0.8
  */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
@@ -21,24 +33,20 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type {
   BadRequestResponse,
   DefaultResponse,
-  GetRoleEntitlementsResponse,
-  GetRolesItemEntitlementsParams,
+  GetRoles200,
   GetRolesParams,
-  GetRolesResponse,
   NotFoundResponse,
   Role,
-  RoleEntitlementsPatchRequestBody,
   UnauthorizedResponse,
 } from "../api.schemas";
 
 /**
- * Get the list of roles.
  * @summary Get the list of roles.
  */
 export const getRoles = (
   params?: GetRolesParams,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetRolesResponse>> => {
+): Promise<AxiosResponse<GetRoles200>> => {
   return axios.get(`/roles`, {
     ...options,
     params: { ...params, ...options?.params },
@@ -120,8 +128,7 @@ export const useGetRoles = <
 };
 
 /**
- * Create a new role.
- * @summary Create a new role.
+ * @summary Create a new role
  */
 export const postRoles = (
   role: Role,
@@ -175,7 +182,7 @@ export type PostRolesMutationError = AxiosError<
 >;
 
 /**
- * @summary Create a new role.
+ * @summary Create a new role
  */
 export const usePostRoles = <
   TError = AxiosError<
@@ -195,453 +202,6 @@ export const usePostRoles = <
   axios?: AxiosRequestConfig;
 }) => {
   const mutationOptions = getPostRolesMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * Get a single role.
- * @summary Get a single role.
- */
-export const getRolesItem = (
-  id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Role>> => {
-  return axios.get(`/roles/${id}`, options);
-};
-
-export const getGetRolesItemQueryKey = (id: string) => {
-  return [`/roles/${id}`] as const;
-};
-
-export const getGetRolesItemQueryOptions = <
-  TData = Awaited<ReturnType<typeof getRolesItem>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getRolesItem>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
-) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetRolesItemQueryKey(id);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRolesItem>>> = ({
-    signal,
-  }) => getRolesItem(id, { signal, ...axiosOptions });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getRolesItem>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetRolesItemQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getRolesItem>>
->;
-export type GetRolesItemQueryError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Get a single role.
- */
-export const useGetRolesItem = <
-  TData = Awaited<ReturnType<typeof getRolesItem>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getRolesItem>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetRolesItemQueryOptions(id, options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-/**
- * Update a role.
- * @summary Update a role.
- */
-export const putRolesItem = (
-  id: string,
-  role: Role,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Role>> => {
-  return axios.put(`/roles/${id}`, role, options);
-};
-
-export const getPutRolesItemMutationOptions = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putRolesItem>>,
-    TError,
-    { id: string; data: Role },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof putRolesItem>>,
-  TError,
-  { id: string; data: Role },
-  TContext
-> => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof putRolesItem>>,
-    { id: string; data: Role }
-  > = (props) => {
-    const { id, data } = props ?? {};
-
-    return putRolesItem(id, data, axiosOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type PutRolesItemMutationResult = NonNullable<
-  Awaited<ReturnType<typeof putRolesItem>>
->;
-export type PutRolesItemMutationBody = Role;
-export type PutRolesItemMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Update a role.
- */
-export const usePutRolesItem = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof putRolesItem>>,
-    TError,
-    { id: string; data: Role },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationOptions = getPutRolesItemMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * Delete a role.
- * @summary Delete a role.
- */
-export const deleteRolesItem = (
-  id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.delete(`/roles/${id}`, options);
-};
-
-export const getDeleteRolesItemMutationOptions = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteRolesItem>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteRolesItem>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteRolesItem>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
-
-    return deleteRolesItem(id, axiosOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type DeleteRolesItemMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteRolesItem>>
->;
-
-export type DeleteRolesItemMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Delete a role.
- */
-export const useDeleteRolesItem = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteRolesItem>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationOptions = getDeleteRolesItemMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * Get the entitlements of a role.
- * @summary Get the entitlements of a role.
- */
-export const getRolesItemEntitlements = (
-  id: string,
-  params?: GetRolesItemEntitlementsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetRoleEntitlementsResponse>> => {
-  return axios.get(`/roles/${id}/entitlements`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
-};
-
-export const getGetRolesItemEntitlementsQueryKey = (
-  id: string,
-  params?: GetRolesItemEntitlementsParams,
-) => {
-  return [`/roles/${id}/entitlements`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetRolesItemEntitlementsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getRolesItemEntitlements>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(
-  id: string,
-  params?: GetRolesItemEntitlementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getRolesItemEntitlements>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
-) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetRolesItemEntitlementsQueryKey(id, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getRolesItemEntitlements>>
-  > = ({ signal }) =>
-    getRolesItemEntitlements(id, params, { signal, ...axiosOptions });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getRolesItemEntitlements>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetRolesItemEntitlementsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getRolesItemEntitlements>>
->;
-export type GetRolesItemEntitlementsQueryError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Get the entitlements of a role.
- */
-export const useGetRolesItemEntitlements = <
-  TData = Awaited<ReturnType<typeof getRolesItemEntitlements>>,
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
->(
-  id: string,
-  params?: GetRolesItemEntitlementsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getRolesItemEntitlements>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetRolesItemEntitlementsQueryOptions(
-    id,
-    params,
-    options,
-  );
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-/**
- * Add or remove a direct entitlements to/from a role.
- * @summary Add or remove a direct entitlements to/from a role.
- */
-export const patchRolesItemEntitlements = (
-  id: string,
-  roleEntitlementsPatchRequestBody: RoleEntitlementsPatchRequestBody,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(
-    `/roles/${id}/entitlements`,
-    roleEntitlementsPatchRequestBody,
-    options,
-  );
-};
-
-export const getPatchRolesItemEntitlementsMutationOptions = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchRolesItemEntitlements>>,
-    TError,
-    { id: string; data: RoleEntitlementsPatchRequestBody },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof patchRolesItemEntitlements>>,
-  TError,
-  { id: string; data: RoleEntitlementsPatchRequestBody },
-  TContext
-> => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof patchRolesItemEntitlements>>,
-    { id: string; data: RoleEntitlementsPatchRequestBody }
-  > = (props) => {
-    const { id, data } = props ?? {};
-
-    return patchRolesItemEntitlements(id, data, axiosOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type PatchRolesItemEntitlementsMutationResult = NonNullable<
-  Awaited<ReturnType<typeof patchRolesItemEntitlements>>
->;
-export type PatchRolesItemEntitlementsMutationBody =
-  RoleEntitlementsPatchRequestBody;
-export type PatchRolesItemEntitlementsMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
->;
-
-/**
- * @summary Add or remove a direct entitlements to/from a role.
- */
-export const usePatchRolesItemEntitlements = <
-  TError = AxiosError<
-    | BadRequestResponse
-    | UnauthorizedResponse
-    | NotFoundResponse
-    | DefaultResponse
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchRolesItemEntitlements>>,
-    TError,
-    { id: string; data: RoleEntitlementsPatchRequestBody },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationOptions = getPatchRolesItemEntitlementsMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
