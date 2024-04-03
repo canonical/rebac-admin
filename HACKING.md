@@ -141,14 +141,6 @@ correctly either in `.env` or in `.env.local`:
   `main` branch of
   [Openfga Admin Openapi Spec](https://github.com/canonical/openfga-admin-openapi-spec/tree/main)
   will be downloaded.
-- `GITHUB_ACCESS_TOKEN`: represents the valid GitHub Personal Access Token with
-  read access to the
-  [Openfga Admin Openapi Spec](https://github.com/canonical/openfga-admin-openapi-spec/)
-  repository. For instance, you can provide a
-  [personal access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic)
-  with "full control of private repositories" scope. You are required to provide
-  this token either as an environment variable or as the sole argument for the
-  command mentioned below.
 
 Once the environment variables are set up correctly, to fetch the specified
 version of `openapi.yaml` spec file, run:
