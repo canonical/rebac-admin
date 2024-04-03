@@ -4,26 +4,23 @@ This is a shared UI for managing ReBAC permissions.
 
 - [Install](#install)
 - [Displaying the component](#displaying-the-component)
+  - [Import CSS](#import-css)
 - [Config](#config)
 - [Navigation](#navigation)
 - [Limiting access](#limiting-access)
 
 ## Install
 
-First, make sure you have [ssh keys for GitHub set up](HACKING.md#testing-private-repository-access).
-
-Now you can add the rebac-admin package with:
+You can add the rebac-admin package with:
 
 ```bash
-yarn add @canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git
+yarn add @canonical/rebac-admin
 ```
-
-The package may be installed [from a branch or fork](HACKING.md#install-from-repo).
 
 You will also need the following peer dependencies if you don't have them already:
 
 ```bash
-yarn add @canonical/react-components @types/react @types/react-dom react react-dom vanilla-framework react-router-dom
+yarn add @canonical/react-components @types/react @types/react-dom react react-dom vanilla-framework react-router-dom axios @tanstack/react-query formik yup
 ```
 
 ## Displaying the component
@@ -32,6 +29,8 @@ The ReBAC admin is displayed using a single component. This component will
 handle routing based on the URL it is displayed at. If using react-router
 then this route should end with `/*` so that the admin component can receive
 child routes.
+
+Make sure to also [import the css](#import-css).
 
 ```jsx
 import { ReBACAdmin } from "@canonical/rebac-admin";
@@ -62,7 +61,14 @@ const Permissions = (): JSX.Element => (
     <ReBACAdmin apiURL="http://example.com/api" />
   </BrowserRouter>
 );
+```
 
+### Import CSS
+
+Inside your main CSS file add the following:
+
+```css
+@import "@canonical/rebac-admin/dist/rebac-admin.css";
 ```
 
 ## Config
