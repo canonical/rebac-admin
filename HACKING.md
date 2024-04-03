@@ -5,10 +5,7 @@
 - [Development setup](#development-setup)
 - [Develop with external API](#develop-with-external-api)
 - [Testing in host projects](#testing-in-host-projects)
-  - [Install from repo](#install-from-repo)
-  - [Local link](#local-link)
-  - [Serving mock API](#serving-mock-api)
-- [Testing private repository access](#testing-private-repository-access)
+- [Serving mock API](#serving-mock-api)
 - [Download openapi.yaml](#download-openapiyaml)
 - [Build API files](#build-api-files)
 - [Codebase and development guidelines](#codebase-and-development-guidelines)
@@ -52,29 +49,7 @@ VITE_DEMO_API_URL=http://example.com/api
 
 ## Testing in host projects
 
-To test ReBAC Admin in a host project you can either use a repo/branch directory
-from GitHub, or to develop locally you can use `yarn link`.
-
-### Install from repo
-
-If you're setting up ReBAC Admin in a new project follow the main [install
-instructions](/README.md#install).
-
-To install from a GitHub repo make sure you [have private repository
-access](#testing-private-repository-access). Now you can add the package with:
-
-```bash
-yarn add @canonical/rebac-admin@git+ssh://git@github.com:<username>/rebac-admin.git#<branch>
-```
-
-Or if the project already uses rebac-admin you can change the line in
-package.json:
-
-```bash
-"@canonical/rebac-admin": "git+ssh://git@github.com:<username>/rebac-admin.git#<branch>",
-```
-
-### Local link
+To test ReBAC Admin in a host project you can use `yarn link`.
 
 To use a local link, first make sure this project is set up by
 running the following commands inside the rebac-admin repo:
@@ -119,7 +94,7 @@ host project:
 yarn unlink --all
 ```
 
-### Serving mock API
+## Serving mock API
 
 You can test a host project using the mock API provided by this package if you
 don't have an API implementation.
@@ -156,19 +131,6 @@ the api is served using port `8412`.
 
 Load your app and you should be able to make requests to the mock API.
 
-## Testing private repository access
-
-To be able to install from a private GitHub repository make sure you have
-[ssh keys for GitHub set up](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys)
-on the machine or container you're using to install the
-package. You can test this with:
-
-```bash
-git ls-remote git@github.com:canonical/rebac-admin.git
-```
-
-If successful you should see a list of refs.
-
 ## Download openapi.yaml
 
 Before starting, make sure that the following environment variables are setup
@@ -179,14 +141,6 @@ correctly either in `.env` or in `.env.local`:
   `main` branch of
   [Openfga Admin Openapi Spec](https://github.com/canonical/openfga-admin-openapi-spec/tree/main)
   will be downloaded.
-- `GITHUB_ACCESS_TOKEN`: represents the valid GitHub Personal Access Token with
-  read access to the
-  [Openfga Admin Openapi Spec](https://github.com/canonical/openfga-admin-openapi-spec/)
-  repository. For instance, you can provide a
-  [personal access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic)
-  with "full control of private repositories" scope. You are required to provide
-  this token either as an environment variable or as the sole argument for the
-  command mentioned below.
 
 Once the environment variables are set up correctly, to fetch the specified
 version of `openapi.yaml` spec file, run:
