@@ -19,3 +19,8 @@ test("handles base URLs without slashes", () => {
     `/permissions/users`,
   );
 });
+
+test("displays an icon", () => {
+  renderComponent(<BaseLink baseURL="permissions" to="/users" icon="users" />);
+  expect(document.querySelector(".p-icon--users")).toBeInTheDocument();
+});

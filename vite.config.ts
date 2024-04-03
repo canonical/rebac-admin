@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: ["react", "react-dom", "react-router-dom"],
         output: {
+          assetFileNames: "rebac-admin.[ext]",
           globals: {
             react: "React",
             "react-dom": "ReactDOM",
