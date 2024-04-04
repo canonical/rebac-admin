@@ -41,13 +41,36 @@ export const getGetUsersIdResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    addedBy: faker.word.sample(),
+    certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    email: faker.word.sample(),
+    firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    groups: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    permissions: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    roles: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    source: faker.word.sample(),
+    ...overrideResponse,
+  })),
   ...overrideResponse,
 });
 
@@ -64,13 +87,13 @@ export const getGetUsersIdGroupsResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
@@ -87,13 +110,13 @@ export const getGetUsersIdRolesResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
@@ -110,13 +133,13 @@ export const getGetUsersIdEntitlementsResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 

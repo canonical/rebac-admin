@@ -36,13 +36,17 @@ export const getGetEntitlementsResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    entity: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    ...overrideResponse,
+  })),
   ...overrideResponse,
 });
 

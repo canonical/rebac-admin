@@ -36,40 +36,21 @@ export const getGetRolesResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
-export const getPostRolesResponseMock = (overrideResponse: any = {}): Role[] =>
+export const getPostRolesResponseMock = (): Role[] =>
   Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
-  ).map(() => ({
-    entitlements: faker.helpers.arrayElement([
-      Array.from(
-        { length: faker.number.int({ min: 1, max: 10 }) },
-        (_, i) => i + 1,
-      ).map(() => ({
-        entitlement: faker.helpers.arrayElement([
-          faker.word.sample(),
-          undefined,
-        ]),
-        entity: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-        resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-        ...overrideResponse,
-      })),
-      undefined,
-    ]),
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  }));
+  ).map(() => faker.word.sample());
 
 export const getGetRolesMockHandler = (overrideResponse?: GetRoles200) => {
   return http.get("*/roles", async () => {
