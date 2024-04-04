@@ -63,7 +63,6 @@ const Users = () => {
     } else {
       return (
         <ModularTable
-          className="audit-logs-table"
           columns={COLUMN_DATA}
           data={tableData}
           emptyMsg={Label.NO_USERS}

@@ -40,10 +40,6 @@ export const getGetAuthenticationProvidersResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
@@ -62,13 +58,53 @@ export const getGetAuthenticationResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    acceptsPromptNone: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    accountLinkingOnly: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    clientID: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    clientSecret: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    disableUserInfo: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    redirectUrl: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    storeTokens: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    storeTokensReadable: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    syncMode: faker.helpers.arrayElement([
+      faker.helpers.arrayElement(["import"] as const),
+      undefined,
+    ]),
+    trustEmail: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
+    userCount: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    ...overrideResponse,
+  })),
   ...overrideResponse,
 });
 

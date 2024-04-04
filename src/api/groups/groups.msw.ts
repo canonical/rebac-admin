@@ -36,23 +36,17 @@ export const getGetGroupsResponseMock = (
     total: faker.number.int({ min: undefined, max: undefined }),
     ...overrideResponse,
   },
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({})),
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (
-  overrideResponse: any = {},
-): Group => ({
-  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.word.sample(),
-  ...overrideResponse,
-});
+export const getPostGroupsResponseMock = (): Group => faker.word.sample();
 
 export const getGetGroupsMockHandler = (overrideResponse?: GetGroups200) => {
   return http.get("*/groups", async () => {
