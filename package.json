@@ -1,11 +1,11 @@
 {
   "name": "@canonical/rebac-admin",
-  "version": "0.0.1-apha.1",
+  "version": "0.0.1-alpha.1",
   "description": "A shared UI for managing ReBAC/OpenFGA permissions",
   "repository": "git@github.com:canonical/rebac-admin.git",
   "author": "Canonical Webteam",
   "license": "AGPL-3.0",
-  "private": true,
+  "private": false,
   "packageManager": "yarn@4.1.0",
   "type": "module",
   "files": [
@@ -23,9 +23,9 @@
       "require": "./dist/rebac-admin.umd.cjs"
     },
     "./dist/rebac-admin.css": {
-        "import": "./dist/rebac-admin.css",
-        "require": "./dist/rebac-admin.css"
-      }
+      "import": "./dist/rebac-admin.css",
+      "require": "./dist/rebac-admin.css"
+    }
   },
   "scripts": {
     "build": "yarn run tsc && vite build",

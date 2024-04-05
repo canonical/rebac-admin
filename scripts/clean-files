@@ -8,6 +8,5 @@ rm -rf \
   .yarn/install-state.gz \
   coverage \
   .pnp.* \
-  openapi.yaml \
   demo/public/mockServiceWorker.js \
   build \
