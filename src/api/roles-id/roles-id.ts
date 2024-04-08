@@ -84,6 +84,7 @@ export const getGetRolesIdQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
+    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getRolesId>>,
@@ -344,6 +345,7 @@ export const getGetRolesIdEntitlementsQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
+    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getRolesIdEntitlements>>,

@@ -82,11 +82,14 @@ export const getGetUsersQueryOptions = <
     signal,
   }) => getUsers(params, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getUsers>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
+  return {
+    queryKey,
+    queryFn,
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
 };
 
 export type GetUsersQueryResult = NonNullable<

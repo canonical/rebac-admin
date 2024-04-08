@@ -82,11 +82,14 @@ export const getGetRolesQueryOptions = <
     signal,
   }) => getRoles(params, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getRoles>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
+  return {
+    queryKey,
+    queryFn,
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getRoles>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
 };
 
 export type GetRolesQueryResult = NonNullable<

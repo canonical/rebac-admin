@@ -23,6 +23,11 @@ export default defineConfig({
       prettier: true,
       override: {
         useNativeEnums: true,
+        query: {
+          options: {
+            refetchOnWindowFocus: false,
+          },
+        },
       },
     },
   },

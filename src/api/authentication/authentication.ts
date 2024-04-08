@@ -92,7 +92,12 @@ export const getGetAuthenticationProvidersQueryOptions = <
   > = ({ signal }) =>
     getAuthenticationProviders(params, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+  return {
+    queryKey,
+    queryFn,
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  } as UseQueryOptions<
     Awaited<ReturnType<typeof getAuthenticationProviders>>,
     TError,
     TData
@@ -193,7 +198,12 @@ export const getGetAuthenticationQueryOptions = <
     Awaited<ReturnType<typeof getAuthentication>>
   > = ({ signal }) => getAuthentication(params, { signal, ...axiosOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+  return {
+    queryKey,
+    queryFn,
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  } as UseQueryOptions<
     Awaited<ReturnType<typeof getAuthentication>>,
     TError,
     TData
