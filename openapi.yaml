@@ -594,16 +594,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/RoleObject'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/Response'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -652,8 +650,13 @@ paths:
               anyOf:
                 - $ref: '#/components/schemas/Role'
       responses:
-        '200':
-          description: OK
+        '501':
+          description: Update a role. Method not implemented by choice
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -669,6 +672,11 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -708,6 +716,35 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/default'
+    patch:
+      tags:
+        - roles/{id}
+      parameters:
+        - $ref: '#/components/parameters/PaginationSize'
+        - $ref: '#/components/parameters/PaginationPage'
+      summary: Update entitlements of a role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntitlementsPatchRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
   /roles/{id}/entitlements/{entitlementId}:
     parameters:
       - name: id
@@ -727,6 +764,42 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+  /roles/{id}/groups:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - roles/{id}
+      parameters:
+        - $ref: '#/components/parameters/PaginationSize'
+        - $ref: '#/components/parameters/PaginationPage'
+      summary: Get the groups of a role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - $ref: '#/components/schemas/Groups'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -946,6 +1019,31 @@ components:
     Role:
       type: string
       examples: ["global", "administrator", "viewer"]
+    RoleObject:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+    EntitlementsPatchRequest:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items:
+            type: object
+            required:
+              - relation
+              - object
+            properties:
+              relation:
+                type: string
+              object:
+                type: string
     Entity:
       type: string
       examples: ["Controller", "Cloud"]

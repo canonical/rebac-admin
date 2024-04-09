@@ -18,31 +18,15 @@
 
  * OpenAPI spec version: 0.0.8
  */
-export type GetResourcesParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-};
+export type GetResources200 = Response & Resources;
 
-export type GetRolesIdEntitlementsParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-};
+export type GetEntitlements200 = Response & EntityEntitlements;
 
-export type GetGroupsId200 = Response & Groups;
+export type GetRolesIdGroups200 = Response & Groups;
 
-export type GetGroupsParams = {
+export type GetRolesId200 = Response & Roles;
+
+export type GetRolesParams = {
   /**
    * The number of records to return per response
    */
@@ -56,6 +40,19 @@ export type GetGroupsParams = {
    */
   filter?: FilterParamParameter;
 };
+
+export type GetGroupsIdUsersParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
+export type GetUsersIdRoles200 = Response & Roles;
 
 export type GetUsersIdRolesParams = {
   /**
@@ -104,6 +101,17 @@ export type PaginationPageParameter = number;
  */
 export type PaginationSizeParameter = number;
 
+export type GetResourcesParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
 export type GetEntitlementsParams = {
   /**
    * The number of records to return per response
@@ -119,7 +127,40 @@ export type GetEntitlementsParams = {
   filter?: FilterParamParameter;
 };
 
-export type GetRolesParams = {
+export type GetRolesIdGroupsParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
+export type PatchRolesIdEntitlementsParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
+export type GetRolesIdEntitlementsParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
+export type GetGroupsParams = {
   /**
    * The number of records to return per response
    */
@@ -132,17 +173,6 @@ export type GetRolesParams = {
    * A string to filter results by
    */
   filter?: FilterParamParameter;
-};
-
-export type GetGroupsIdUsersParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
 };
 
 export type GetUsersIdEntitlementsParams = {
@@ -194,6 +224,11 @@ export type GetAuthenticationProvidersParams = {
 };
 
 /**
+ * Not found
+ */
+export type NotFoundResponse = Response;
+
+/**
  * Unauthorized
  */
 export type UnauthorizedResponse = Response;
@@ -224,33 +259,22 @@ export interface Response {
   status: number;
 }
 
-export type GetResources200 = Response & Resources;
-
-export type GetEntitlements200 = Response & EntityEntitlements;
-
 export type GetRolesIdEntitlements200 = Response & Entitlements;
-
-export type GetRolesId200 = Response & Roles;
 
 export type GetRoles200 = Response & Roles;
 
 export type GetGroupsIdUsers200 = Response & Users;
 
+export type GetGroupsId200 = Response & Groups;
+
 export type GetGroups200 = Response & Groups;
 
 export type GetUsersIdEntitlements200 = Response & Entitlements;
-
-export type GetUsersIdRoles200 = Response & Roles;
 
 /**
  * Unexpected error
  */
 export type DefaultResponse = Response;
-
-/**
- * Not found
- */
-export type NotFoundResponse = Response;
 
 export interface Resource {
   entity: Entity;
@@ -279,6 +303,19 @@ export interface Entitlements {
 }
 
 export type Entity = string;
+
+export type EntitlementsPatchRequestPermissionsItem = {
+  object: string;
+  relation: string;
+};
+
+export interface EntitlementsPatchRequest {
+  permissions: EntitlementsPatchRequestPermissionsItem[];
+}
+
+export interface RoleObject {
+  id: string;
+}
 
 export type Role = string;
 

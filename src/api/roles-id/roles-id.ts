@@ -33,10 +33,15 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type {
   BadRequestResponse,
   DefaultResponse,
+  EntitlementsPatchRequest,
   GetRolesId200,
   GetRolesIdEntitlements200,
   GetRolesIdEntitlementsParams,
+  GetRolesIdGroups200,
+  GetRolesIdGroupsParams,
   NotFoundResponse,
+  PatchRolesIdEntitlementsParams,
+  Response,
   Role,
   UnauthorizedResponse,
 } from "../api.schemas";
@@ -137,7 +142,7 @@ export const patchRolesId = (
   id: string,
   role: Role,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<DefaultResponse>> => {
   return axios.patch(`/roles/${id}`, role, options);
 };
 
@@ -146,6 +151,7 @@ export const getPatchRolesIdMutationOptions = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -182,7 +188,11 @@ export type PatchRolesIdMutationResult = NonNullable<
 >;
 export type PatchRolesIdMutationBody = Role;
 export type PatchRolesIdMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+  | BadRequestResponse
+  | UnauthorizedResponse
+  | NotFoundResponse
+  | Response
+  | DefaultResponse
 >;
 
 /**
@@ -193,6 +203,7 @@ export const usePatchRolesId = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -215,7 +226,7 @@ export const usePatchRolesId = <
 export const deleteRolesId = (
   id: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<Response>> => {
   return axios.delete(`/roles/${id}`, options);
 };
 
@@ -400,13 +411,112 @@ export const useGetRolesIdEntitlements = <
 };
 
 /**
+ * @summary Update entitlements of a role
+ */
+export const patchRolesIdEntitlements = (
+  id: string,
+  entitlementsPatchRequest: EntitlementsPatchRequest,
+  params?: PatchRolesIdEntitlementsParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.patch(`/roles/${id}/entitlements`, entitlementsPatchRequest, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getPatchRolesIdEntitlementsMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    TError,
+    {
+      id: string;
+      data: EntitlementsPatchRequest;
+      params?: PatchRolesIdEntitlementsParams;
+    },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+  TError,
+  {
+    id: string;
+    data: EntitlementsPatchRequest;
+    params?: PatchRolesIdEntitlementsParams;
+  },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    {
+      id: string;
+      data: EntitlementsPatchRequest;
+      params?: PatchRolesIdEntitlementsParams;
+    }
+  > = (props) => {
+    const { id, data, params } = props ?? {};
+
+    return patchRolesIdEntitlements(id, data, params, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PatchRolesIdEntitlementsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof patchRolesIdEntitlements>>
+>;
+export type PatchRolesIdEntitlementsMutationBody = EntitlementsPatchRequest;
+export type PatchRolesIdEntitlementsMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Update entitlements of a role
+ */
+export const usePatchRolesIdEntitlements = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    TError,
+    {
+      id: string;
+      data: EntitlementsPatchRequest;
+      params?: PatchRolesIdEntitlementsParams;
+    },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const mutationOptions = getPatchRolesIdEntitlementsMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
  * @summary Remove an entitlement from a role
  */
 export const deleteRolesIdEntitlementsEntitlementId = (
   id: string,
   entitlementId: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<Response>> => {
   return axios.delete(`/roles/${id}/entitlements/${entitlementId}`, options);
 };
 
@@ -482,4 +592,110 @@ export const useDeleteRolesIdEntitlementsEntitlementId = <
     getDeleteRolesIdEntitlementsEntitlementIdMutationOptions(options);
 
   return useMutation(mutationOptions);
+};
+/**
+ * @summary Get the groups of a role
+ */
+export const getRolesIdGroups = (
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<GetRolesIdGroups200>> => {
+  return axios.get(`/roles/${id}/groups`, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getGetRolesIdGroupsQueryKey = (
+  id: string,
+  params?: GetRolesIdGroupsParams,
+) => {
+  return [`/roles/${id}/groups`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetRolesIdGroupsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRolesIdGroups>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRolesIdGroups>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetRolesIdGroupsQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRolesIdGroups>>
+  > = ({ signal }) => getRolesIdGroups(id, params, { signal, ...axiosOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRolesIdGroups>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRolesIdGroupsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRolesIdGroups>>
+>;
+export type GetRolesIdGroupsQueryError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Get the groups of a role
+ */
+export const useGetRolesIdGroups = <
+  TData = Awaited<ReturnType<typeof getRolesIdGroups>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRolesIdGroups>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRolesIdGroupsQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
 };

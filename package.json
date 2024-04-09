@@ -5,7 +5,6 @@
   "repository": "git@github.com:canonical/rebac-admin.git",
   "author": "Canonical Webteam",
   "license": "AGPL-3.0",
-  "private": false,
   "packageManager": "yarn@4.1.0",
   "type": "module",
   "files": [
