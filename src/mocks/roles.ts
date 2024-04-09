@@ -13,3 +13,21 @@ export const getGetRolesErrorMockHandler = (status: number = 404) => {
     });
   });
 };
+
+export const getPostRolesErrorMockHandler = (
+  status = 500,
+  response?: string,
+) => {
+  return http.post(`*${Endpoint.ROLES}`, async () => {
+    await delay(Number(import.meta.env.VITE_MOCK_API_DELAY));
+    return new HttpResponse(
+      response ? JSON.stringify({ message: response }) : null,
+      {
+        status,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};

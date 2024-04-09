@@ -6,6 +6,7 @@ import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 
+import RolePanelButton from "./RolePanelButton";
 import { Label } from "./types";
 
 const COLUMN_DATA: Column[] = [
@@ -51,7 +52,11 @@ const Roles = () => {
     }
   };
 
-  return <Content title="Roles">{generateContent()}</Content>;
+  return (
+    <Content controls={<RolePanelButton />} title="Roles">
+      {generateContent()}
+    </Content>
+  );
 };
 
 export default Roles;

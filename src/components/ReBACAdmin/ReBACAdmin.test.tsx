@@ -16,6 +16,14 @@ test("the api URL can be configured", () => {
   expect(axios.defaults.baseURL).toBe(apiURL);
 });
 
+test("the auth token can be configured", () => {
+  const apiURL = "http://example.com/api";
+  renderComponent(<ReBACAdmin apiURL={apiURL} authToken="U3VwZXIgc2VjcmV0" />);
+  expect(axios.defaults.headers.common["X-Authorization"]).toBe(
+    "U3VwZXIgc2VjcmV0",
+  );
+});
+
 test("the index is displayed", async () => {
   renderComponent(<ReBACAdmin apiURL="/api" />, {
     url: "/settings/permissions",
