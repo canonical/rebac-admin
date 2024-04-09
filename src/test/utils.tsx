@@ -68,7 +68,6 @@ export const hasNotification = async (
   severity = NotificationSeverity.NEGATIVE,
 ) => {
   const notification = await screen.findByText(message);
-  expect(notification).toBeInTheDocument();
   expect(
     notification.closest(`.p-notification--${severity}`),
   ).toBeInTheDocument();
@@ -79,7 +78,6 @@ export const hasToast = async (
   severity = NotificationSeverity.POSITIVE,
 ) => {
   const toast = await screen.findByText(message);
-  expect(toast).toBeInTheDocument();
   const card = toast.closest(".toast-card");
   expect(card).toBeInTheDocument();
   expect(card).toHaveAttribute("data-type", severity);

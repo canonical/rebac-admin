@@ -31,7 +31,11 @@ const ReBACAdmin = ({ apiURL, asidePanelId, authToken }: Props) => {
   axios.defaults.baseURL = apiURL;
 
   useEffect(() => {
-    axios.defaults.headers.common["X-Authorization"] = authToken;
+    if (authToken) {
+      axios.defaults.headers.common["X-Authorization"] = authToken;
+    } else if (axios.defaults.headers.common["X-Authorization"]) {
+      delete axios.defaults.headers.common["X-Authorization"];
+    }
   }, [authToken]);
 
   return (
