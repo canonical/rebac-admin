@@ -596,7 +596,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RoleObject'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
