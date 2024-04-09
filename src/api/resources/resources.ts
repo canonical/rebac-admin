@@ -79,12 +79,7 @@ export const getGetResourcesQueryOptions = <
     signal,
   }) => getResources(params, { signal, ...axiosOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    refetchOnWindowFocus: false,
-    ...queryOptions,
-  } as UseQueryOptions<
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getResources>>,
     TError,
     TData

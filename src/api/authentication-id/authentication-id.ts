@@ -86,7 +86,6 @@ export const getGetAuthenticationIdQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getAuthenticationId>>,

@@ -82,14 +82,11 @@ export const getGetGroupsQueryOptions = <
     signal,
   }) => getGroups(params, { signal, ...axiosOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    refetchOnWindowFocus: false,
-    ...queryOptions,
-  } as UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData> & {
-    queryKey: QueryKey;
-  };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroups>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
 };
 
 export type GetGroupsQueryResult = NonNullable<

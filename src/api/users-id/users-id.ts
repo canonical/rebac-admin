@@ -88,7 +88,6 @@ export const getGetUsersIdQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getUsersId>>,
@@ -348,7 +347,6 @@ export const getGetUsersIdGroupsQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getUsersIdGroups>>,
@@ -456,7 +454,6 @@ export const getGetUsersIdRolesQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getUsersIdRoles>>,
@@ -565,7 +562,6 @@ export const getGetUsersIdEntitlementsQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getUsersIdEntitlements>>,

@@ -86,12 +86,7 @@ export const getGetEntitlementsQueryOptions = <
     signal,
   }) => getEntitlements(params, { signal, ...axiosOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    refetchOnWindowFocus: false,
-    ...queryOptions,
-  } as UseQueryOptions<
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEntitlements>>,
     TError,
     TData
@@ -180,12 +175,7 @@ export const getGetEntitlementsRawQueryOptions = <
     Awaited<ReturnType<typeof getEntitlementsRaw>>
   > = ({ signal }) => getEntitlementsRaw({ signal, ...axiosOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    refetchOnWindowFocus: false,
-    ...queryOptions,
-  } as UseQueryOptions<
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEntitlementsRaw>>,
     TError,
     TData

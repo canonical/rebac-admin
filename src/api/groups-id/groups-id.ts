@@ -85,7 +85,6 @@ export const getGetGroupsIdQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getGroupsId>>,
@@ -345,7 +344,6 @@ export const getGetGroupsIdUsersQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!id,
-    refetchOnWindowFocus: false,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getGroupsIdUsers>>,
