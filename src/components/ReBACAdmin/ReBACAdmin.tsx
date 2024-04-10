@@ -17,6 +17,7 @@ const ReBACAdmin = ({ apiURL }: Props) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        refetchOnWindowFocus: false,
         retry: false,
       },
     },
