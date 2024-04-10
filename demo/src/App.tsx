@@ -153,7 +153,9 @@ const App = () => {
               </Row>
             </Form>
           </AppAside>
-        ) : null
+        ) : (
+          <aside id="aside-panel" />
+        )
       }
       status={
         <Button

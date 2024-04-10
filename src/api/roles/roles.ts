@@ -36,7 +36,8 @@ import type {
   GetRoles200,
   GetRolesParams,
   NotFoundResponse,
-  Role,
+  Response,
+  RoleObject,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -131,10 +132,10 @@ export const useGetRoles = <
  * @summary Create a new role
  */
 export const postRoles = (
-  role: Role,
+  roleObject: RoleObject,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Role[]>> => {
-  return axios.post(`/roles`, role, options);
+): Promise<AxiosResponse<Response>> => {
+  return axios.post(`/roles`, roleObject, options);
 };
 
 export const getPostRolesMutationOptions = <
@@ -149,21 +150,21 @@ export const getPostRolesMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postRoles>>,
     TError,
-    { data: Role },
+    { data: RoleObject },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postRoles>>,
   TError,
-  { data: Role },
+  { data: RoleObject },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postRoles>>,
-    { data: Role }
+    { data: RoleObject }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -176,7 +177,7 @@ export const getPostRolesMutationOptions = <
 export type PostRolesMutationResult = NonNullable<
   Awaited<ReturnType<typeof postRoles>>
 >;
-export type PostRolesMutationBody = Role;
+export type PostRolesMutationBody = RoleObject;
 export type PostRolesMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
@@ -196,7 +197,7 @@ export const usePostRoles = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postRoles>>,
     TError,
-    { data: Role },
+    { data: RoleObject },
     TContext
   >;
   axios?: AxiosRequestConfig;

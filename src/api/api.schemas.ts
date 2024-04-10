@@ -29,7 +29,9 @@ export type GetResourcesParams = {
   page?: PaginationPageParameter;
 };
 
-export type GetRolesIdEntitlementsParams = {
+export type GetRolesId200 = Response & Roles;
+
+export type GetGroupsIdUsersParams = {
   /**
    * The number of records to return per response
    */
@@ -39,8 +41,6 @@ export type GetRolesIdEntitlementsParams = {
    */
   page?: PaginationPageParameter;
 };
-
-export type GetGroupsId200 = Response & Groups;
 
 export type GetGroupsParams = {
   /**
@@ -119,6 +119,17 @@ export type GetEntitlementsParams = {
   filter?: FilterParamParameter;
 };
 
+export type GetRolesIdEntitlementsParams = {
+  /**
+   * The number of records to return per response
+   */
+  size?: PaginationSizeParameter;
+  /**
+   * The record offset to return results from
+   */
+  page?: PaginationPageParameter;
+};
+
 export type GetRolesParams = {
   /**
    * The number of records to return per response
@@ -132,17 +143,6 @@ export type GetRolesParams = {
    * A string to filter results by
    */
   filter?: FilterParamParameter;
-};
-
-export type GetGroupsIdUsersParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
 };
 
 export type GetUsersIdEntitlementsParams = {
@@ -194,6 +194,11 @@ export type GetAuthenticationProvidersParams = {
 };
 
 /**
+ * Unexpected error
+ */
+export type DefaultResponse = Response;
+
+/**
  * Unauthorized
  */
 export type UnauthorizedResponse = Response;
@@ -228,24 +233,17 @@ export type GetResources200 = Response & Resources;
 
 export type GetEntitlements200 = Response & EntityEntitlements;
 
-export type GetRolesIdEntitlements200 = Response & Entitlements;
-
-export type GetRolesId200 = Response & Roles;
-
 export type GetRoles200 = Response & Roles;
 
 export type GetGroupsIdUsers200 = Response & Users;
+
+export type GetGroupsId200 = Response & Groups;
 
 export type GetGroups200 = Response & Groups;
 
 export type GetUsersIdEntitlements200 = Response & Entitlements;
 
 export type GetUsersIdRoles200 = Response & Roles;
-
-/**
- * Unexpected error
- */
-export type DefaultResponse = Response;
 
 /**
  * Not found
@@ -278,7 +276,13 @@ export interface Entitlements {
   data: Entitlement[];
 }
 
+export type GetRolesIdEntitlements200 = Response & Entitlements;
+
 export type Entity = string;
+
+export interface RoleObject {
+  id: string;
+}
 
 export type Role = string;
 

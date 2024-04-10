@@ -75,9 +75,11 @@ Inside your main CSS file add the following:
 
 The following props can be provided to the `ReBACAdmin` component to configure the admin.
 
-| Prop   | Description                                                                          | Examples                       |
-| :----- | :----------------------------------------------------------------------------------- | :----------------------------- |
-| apiURL | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| Prop         | Description                                                                          | Examples                       |
+| :----------- | :----------------------------------------------------------------------------------- | :----------------------------- |
+| apiURL       | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| asidePanelId | The element ID to use to render aside panels into. Should not begin with "#".        | app-aside                      |
+| authToken    | The base64 encoded user id for the authenticated user.                               | VGhpcyBpcyB5b3VyIHByaXplIQ==   |
 
 ## Navigation
 

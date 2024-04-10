@@ -594,16 +594,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/RoleObject'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/Response'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -946,6 +944,14 @@ components:
     Role:
       type: string
       examples: ["global", "administrator", "viewer"]
+    RoleObject:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
     Entity:
       type: string
       examples: ["Controller", "Cloud"]

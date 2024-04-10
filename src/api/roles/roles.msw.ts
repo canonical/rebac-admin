@@ -21,7 +21,7 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetRoles200, Role } from "../api.schemas";
+import type { GetRoles200, Response } from "../api.schemas";
 
 export const getGetRolesResponseMock = (
   overrideResponse: any = {},
@@ -46,11 +46,23 @@ export const getGetRolesResponseMock = (
   ...overrideResponse,
 });
 
-export const getPostRolesResponseMock = (): Role[] =>
-  Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => faker.word.sample());
+export const getPostRolesResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
 
 export const getGetRolesMockHandler = (overrideResponse?: GetRoles200) => {
   return http.get("*/roles", async () => {
@@ -69,7 +81,7 @@ export const getGetRolesMockHandler = (overrideResponse?: GetRoles200) => {
   });
 };
 
-export const getPostRolesMockHandler = (overrideResponse?: Role[]) => {
+export const getPostRolesMockHandler = (overrideResponse?: Response) => {
   return http.post("*/roles", async () => {
     await delay(900);
     return new HttpResponse(

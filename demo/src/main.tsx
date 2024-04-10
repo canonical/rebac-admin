@@ -21,7 +21,13 @@ const defferRender = async () => {
   return mockApiWorker.start();
 };
 
-const admin = () => <ReBACAdmin apiURL={import.meta.env.VITE_DEMO_API_URL} />;
+const admin = () => (
+  <ReBACAdmin
+    apiURL={import.meta.env.VITE_DEMO_API_URL}
+    asidePanelId="aside-panel"
+    authToken={import.meta.env.VITE_DEMO_AUTH_TOKEN}
+  />
+);
 
 const router = createBrowserRouter([
   {

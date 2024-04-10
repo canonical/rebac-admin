@@ -1,5 +1,6 @@
+import { NotificationSeverity } from "@canonical/react-components";
 import { QueryClient } from "@tanstack/react-query";
-import { render, renderHook } from "@testing-library/react";
+import { render, renderHook, screen } from "@testing-library/react";
 import React from "react";
 import type { ReactNode } from "react";
 
@@ -60,4 +61,24 @@ export const renderWrappedHook = <Result, Props>(
     ),
   });
   return { changeURL, result, queryClient };
+};
+
+export const hasNotification = async (
+  message: string,
+  severity = NotificationSeverity.NEGATIVE,
+) => {
+  const notification = await screen.findByText(message);
+  expect(
+    notification.closest(`.p-notification--${severity}`),
+  ).toBeInTheDocument();
+};
+
+export const hasToast = async (
+  message: string,
+  severity = NotificationSeverity.POSITIVE,
+) => {
+  const toast = await screen.findByText(message);
+  const card = toast.closest(".toast-card");
+  expect(card).toBeInTheDocument();
+  expect(card).toHaveAttribute("data-type", severity);
 };
