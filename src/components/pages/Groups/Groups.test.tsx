@@ -4,9 +4,9 @@ import { setupServer } from "msw/node";
 
 import {
   getGetGroupsMockHandler,
+  getGetGroupsMockHandler404,
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
-import { getGetGroupsErrorMockHandler } from "mocks/groups";
 import { renderComponent } from "test/utils";
 
 import Groups from "./Groups";
@@ -58,7 +58,7 @@ test("should display no groups data when no groups are available", async () => {
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(getGetGroupsErrorMockHandler());
+  mockApiServer.use(getGetGroupsMockHandler404());
   renderComponent(<Groups />);
   const groupsErrorNotification = await screen.findByText(
     GroupsLabel.FETCHING_GROUPS_ERROR,

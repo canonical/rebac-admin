@@ -6,8 +6,9 @@ import { vi } from "vitest";
 import {
   getPostRolesResponseMock,
   getPostRolesMockHandler,
+  getPostRolesMockHandler400,
+  getPostRolesResponseMock400,
 } from "api/roles/roles.msw";
-import { getPostRolesErrorMockHandler } from "mocks/roles";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { Label as RolePanelLabel } from "../RolePanel";
@@ -47,7 +48,9 @@ test("should add a role", async () => {
 // eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding roles", async () => {
   mockApiServer.use(
-    getPostRolesErrorMockHandler(500, "That role already exists"),
+    getPostRolesMockHandler400(
+      getPostRolesResponseMock400({ message: "That role already exists" }),
+    ),
   );
   renderComponent(<AddRolePanel close={vi.fn()} />);
   await act(
