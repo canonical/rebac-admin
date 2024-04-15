@@ -11,6 +11,8 @@ import Users from "components/pages/Users";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import urls from "urls";
 
+import "scss/index.scss";
+
 export type Props = {
   // The absolute API URL.
   apiURL: `${"http" | "/"}${string}`;

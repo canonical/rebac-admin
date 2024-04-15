@@ -21,7 +21,7 @@ test("can display edit state", async () => {
 test("can display the add panel", async () => {
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
-      <div id="aside-panel"></div>
+      <aside id="aside-panel"></aside>
       <RolePanelButton />
     </ReBACAdminContext.Provider>,
   );
@@ -31,7 +31,8 @@ test("can display the add panel", async () => {
         screen.getByRole("button", { name: "Create role" }),
       ),
   );
-  const heading = screen.getByRole("heading", { name: "Create role" });
-  expect(heading).toBeInTheDocument();
-  expect(heading.closest(".p-panel")).toBeInTheDocument();
+  const panel = await screen.findByRole("complementary", {
+    name: "Create role",
+  });
+  expect(panel).toBeInTheDocument();
 });

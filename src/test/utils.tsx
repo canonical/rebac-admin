@@ -75,7 +75,7 @@ export const hasNotification = async (
 
 export const hasToast = async (
   message: string,
-  severity = NotificationSeverity.POSITIVE,
+  severity: string = NotificationSeverity.POSITIVE,
 ) => {
   const toast = await screen.findByText(message);
   const card = toast.closest(".toast-card");

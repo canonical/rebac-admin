@@ -1,33 +1,12 @@
 import { screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
-import {
-  getPostRolesResponseMock,
-  getPostRolesMockHandler,
-} from "api/roles/roles.msw";
+import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
 import RolePanel from "./RolePanel";
 import { Label } from "./types";
-
-const mockRolesData = getPostRolesResponseMock({
-  message: "Role was created!",
-});
-const mockApiServer = setupServer(getPostRolesMockHandler(mockRolesData));
-
-beforeAll(() => {
-  mockApiServer.listen();
-});
-
-afterEach(() => {
-  mockApiServer.resetHandlers();
-});
-
-afterAll(() => {
-  mockApiServer.close();
-});
 
 test("can submit the form", async () => {
   const onSubmit = vi.fn();
@@ -40,4 +19,26 @@ test("can submit the form", async () => {
       ),
   );
   expect(onSubmit).toHaveBeenCalled();
+});
+
+test("the input is disabled when editing", async () => {
+  renderComponent(
+    <RolePanel close={vi.fn()} roleId="admin" onSubmit={vi.fn()} />,
+  );
+  expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
+});
+
+test("the entitlement form can be displayed", async () => {
+  renderComponent(
+    <RolePanel close={vi.fn()} roleId="admin" onSubmit={vi.fn()} />,
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: /Add entitlements/ }),
+      ),
+  );
+  expect(
+    screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
+  ).toBeInTheDocument();
 });
