@@ -10,7 +10,11 @@ import {
   getPostRolesMockHandler400,
   getPostRolesResponseMock400,
 } from "api/roles/roles.msw";
-import { getPatchRolesIdEntitlementsMockHandler } from "api/roles-id/roles-id.msw";
+import {
+  getPatchRolesIdEntitlementsMockHandler,
+  getPatchRolesIdEntitlementsMockHandler400,
+  getPatchRolesIdEntitlementsResponseMock400,
+} from "api/roles-id/roles-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
@@ -154,9 +158,10 @@ test("should handle errors when adding roles", async () => {
 test("should handle errors when adding entitlements", async () => {
   mockApiServer.use(
     getPostRolesMockHandler(mockRolesData),
-    getPatchRolesIdEntitlementsErrorMockHandler(
-      500,
-      "No resource with that name found",
+    getPatchRolesIdEntitlementsMockHandler400(
+      getPatchRolesIdEntitlementsResponseMock400({
+        message: "No resource with that name found",
+      }),
     ),
   );
   renderComponent(<AddRolePanel close={vi.fn()} />);
