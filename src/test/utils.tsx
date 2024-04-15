@@ -1,6 +1,12 @@
 import { NotificationSeverity } from "@canonical/react-components";
 import { QueryClient } from "@tanstack/react-query";
-import { render, renderHook, screen } from "@testing-library/react";
+import {
+  getByText,
+  render,
+  renderHook,
+  screen,
+  within,
+} from "@testing-library/react";
 import React from "react";
 import type { ReactNode } from "react";
 
@@ -81,4 +87,23 @@ export const hasToast = async (
   const card = toast.closest(".toast-card");
   expect(card).toBeInTheDocument();
   expect(card).toHaveAttribute("data-type", severity);
+};
+
+export const hasEmptyState = async (
+  title: string,
+  message?: string,
+  buttonLabel?: string,
+) => {
+  const emptyStateHeader = await screen.findByRole("heading", { name: title });
+  expect(emptyStateHeader).toHaveClass("p-heading--4");
+  const emptyState = emptyStateHeader.parentElement;
+  expect(emptyState).not.toBeNull();
+  if (message) {
+    expect(getByText(emptyState!, message)).toBeInTheDocument();
+  }
+  if (buttonLabel) {
+    expect(
+      within(emptyState!).getByRole("button", { name: buttonLabel }),
+    ).toBeInTheDocument();
+  }
 };

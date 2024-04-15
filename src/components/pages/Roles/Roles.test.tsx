@@ -9,7 +9,7 @@ import {
 } from "api/roles/roles.msw";
 import { getGetRolesIdEntitlementsMockHandler } from "api/roles-id/roles-id.msw";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { renderComponent } from "test/utils";
+import { hasEmptyState, renderComponent } from "test/utils";
 
 import Roles from "./Roles";
 import { Label, Label as RolesLabel } from "./types";
@@ -52,12 +52,13 @@ test("should display correct role data after fetching roles", async () => {
   expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
 });
 
+// eslint-disable-next-line vitest/expect-expect
 test("should display no roles data when no roles are available", async () => {
   mockApiServer.use(
     getGetRolesMockHandler(getGetRolesResponseMock({ data: [] })),
   );
   renderComponent(<Roles />);
-  expect(await screen.findByText(RolesLabel.NO_ROLES)).toBeInTheDocument();
+  await hasEmptyState("No roles", RolesLabel.NO_ROLES, "Create role");
 });
 
 test("should display error notification and refetch data", async () => {

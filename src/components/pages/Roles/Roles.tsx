@@ -1,5 +1,6 @@
 import {
   ContextualMenu,
+  EmptyState,
   Icon,
   ModularTable,
   Spinner,
@@ -83,6 +84,13 @@ const Roles = () => {
           error={error?.message ?? ""}
           onRefetch={() => void refetch()}
         />
+      );
+    } else if (!tableData.length) {
+      return (
+        <EmptyState image={null} title="No roles">
+          <p>{Label.NO_ROLES}</p>
+          <RolePanelButton />
+        </EmptyState>
       );
     } else {
       return (
