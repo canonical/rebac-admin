@@ -368,10 +368,6 @@ paths:
     get:
       tags:
         - groups
-      parameters:
-        - $ref: '#/components/parameters/PaginationSize'
-        - $ref: '#/components/parameters/PaginationPage'
-        - $ref: '#/components/parameters/FilterParam'
       summary: Get all groups
       responses:
         '200':
@@ -399,14 +395,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: '#/components/schemas/GroupObject'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Response'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -447,16 +443,14 @@ paths:
       tags:
         - groups/{id}
       summary: Update a group.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              anyOf:
-                - $ref: '#/components/schemas/Group'
       responses:
-        '200':
-          description: OK
+        '501':
+          description: Method not implemented by choice
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -472,6 +466,11 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -480,7 +479,93 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/default'
-  /groups/{id}/users:
+  /groups/{id}/roles:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - groups/{id}
+      summary: Get the roles of a group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - $ref: '#/components/schemas/Roles'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+    post:
+      tags:
+        - groups/{id}
+      summary: Update roles of a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolesPostRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+  /groups/{id}/roles/{rolesId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: rolesId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      tags:
+        - groups/{id}
+      summary: Remove a role from a group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+  /groups/{id}/entitlements:
     parameters:
       - name: id
         in: path
@@ -493,7 +578,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PaginationSize'
         - $ref: '#/components/parameters/PaginationPage'
-      summary: Get the users of a group
+      summary: Get the entitlements of a group
       responses:
         '200':
           description: OK
@@ -502,7 +587,7 @@ paths:
               schema:
                 allOf:
                   - $ref: "#/components/schemas/Response"
-                  - $ref: '#/components/schemas/Users'
+                  - $ref: '#/components/schemas/Entitlements'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -514,16 +599,21 @@ paths:
     patch:
       tags:
         - groups/{id}
-      summary: Update the list of a groups users.
+      summary: Update entitlements of a group
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/EntitlementsPatchRequest'
       responses:
-        '200':
+        '201':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -532,14 +622,14 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/default'
-  /groups/{id}/users/{userId}:
+  /groups/{id}/entitlements/{entitlementId}:
     parameters:
       - name: id
         in: path
         required: true
         schema:
           type: string
-      - name: userId
+      - name: entitlementId
         in: path
         required: true
         schema:
@@ -547,10 +637,104 @@ paths:
     delete:
       tags:
         - groups/{id}
-      summary: Remove a user from a group
+      summary: Remove an entitlement from a group
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+  /groups/{id}/identities:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - groups/{id}
+      parameters:
+        - $ref: '#/components/parameters/PaginationSize'
+        - $ref: '#/components/parameters/PaginationPage'
+      summary: Get the identities of a group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - $ref: '#/components/schemas/Identities'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+    patch:
+      tags:
+        - groups/{id}
+      summary: Update identities of a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentitiesPatchRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+  /groups/{id}/identities/{identityId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: identityId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      tags:
+        - groups/{id}
+      summary: Remove an identity from a group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -642,16 +826,9 @@ paths:
       tags:
         - roles/{id}
       summary: Update a role.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              anyOf:
-                - $ref: '#/components/schemas/Role'
       responses:
         '501':
-          description: Update a role. Method not implemented by choice
+          description: Method not implemented by choice
           content:
             application/json:
               schema:
@@ -719,9 +896,6 @@ paths:
     patch:
       tags:
         - roles/{id}
-      parameters:
-        - $ref: '#/components/parameters/PaginationSize'
-        - $ref: '#/components/parameters/PaginationPage'
       summary: Update entitlements of a role
       requestBody:
         required: true
@@ -1007,6 +1181,14 @@ components:
     Group:
       type: string
       examples: ["global", "administrator", "viewer"]
+    GroupObject:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
     Roles:
       type: object
       required:
@@ -1016,6 +1198,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
+    RolesPostRequest:
+      type: object
+      required:
+        - roles
+      properties:
+        roles:
+          type: array
+          items:
+            type: string
     Role:
       type: string
       examples: ["global", "administrator", "viewer"]
@@ -1044,6 +1235,27 @@ components:
                 type: string
               object:
                 type: string
+    Identities:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identity'
+    Identity:
+      type: string
+      examples: ["user:joe", "user:susan", "user:dummy"]
+    IdentitiesPatchRequest:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
     Entity:
       type: string
       examples: ["Controller", "Cloud"]
