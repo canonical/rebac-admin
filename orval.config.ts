@@ -1,9 +1,4 @@
-import { parse } from "dotenv";
-import { readFileSync } from "fs";
 import { defineConfig } from "orval";
-import path from "path";
-
-const env = parse(readFileSync(path.resolve(process.cwd(), ".env")));
 
 export default defineConfig({
   openapi: {
