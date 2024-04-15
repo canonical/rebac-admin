@@ -706,6 +706,32 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/default'
+    patch:
+      tags:
+        - roles/{id}
+      summary: Update entitlements of a role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntitlementsPatchRequest"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/default"
   /roles/{id}/entitlements/{entitlementId}:
     parameters:
       - name: id
@@ -952,6 +978,23 @@ components:
         id:
           type: string
       examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+    EntitlementsPatchRequest:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items:
+            type: object
+            required:
+              - relation
+              - object
+            properties:
+              relation:
+                type: string
+              object:
+                type: string
     Entity:
       type: string
       examples: ["Controller", "Cloud"]

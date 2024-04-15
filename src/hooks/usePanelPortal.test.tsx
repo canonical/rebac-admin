@@ -10,8 +10,8 @@ import { usePanelPortal } from "./usePanelPortal";
 const content = "This is the content";
 const containerId = "portal-container";
 
-const TestComponent = () => {
-  const { openPortal, closePortal, isOpen, Portal } = usePanelPortal();
+const TestComponent = ({ classes }: { classes?: string }) => {
+  const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(classes);
   return (
     <>
       <Button onClick={isOpen ? closePortal : openPortal}>Toggle</Button>
@@ -70,4 +70,18 @@ test("can remove a portal", async () => {
   let container = document.getElementById(containerId);
   expect(container).not.toHaveClass("l-aside");
   expect(container?.firstChild).not.toHaveClass("p-panel");
+});
+
+test("can add and remove additional classes", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: containerId }}>
+      <div id={containerId}></div>
+      <TestComponent classes="extra-class" />
+    </ReBACAdminContext.Provider>,
+  );
+  const toggle = screen.getByRole("button", { name: "Toggle" });
+  await act(async () => await userEvent.click(toggle));
+  expect(document.getElementById(containerId)).toHaveClass("extra-class");
+  await act(async () => await userEvent.click(toggle));
+  expect(document.getElementById(containerId)).not.toHaveClass("extra-class");
 });

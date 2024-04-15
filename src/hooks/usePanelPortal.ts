@@ -3,7 +3,7 @@ import usePortal from "react-useportal";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 
-export const usePanelPortal = () => {
+export const usePanelPortal = (className?: string, labelledBy?: string) => {
   const { asidePanelId } = useContext(ReBACAdminContext);
   const portal = usePortal({
     bindTo: asidePanelId
@@ -17,18 +17,32 @@ export const usePanelPortal = () => {
     if (isOpen && asidePanelId) {
       // The portal container needs to be the aside element as Vanilla
       // does not allow the aside to be nested.
-      document.getElementById(asidePanelId)?.classList.add("l-aside");
+      const asideNode = document.getElementById(asidePanelId);
+      asideNode?.classList.add("l-aside");
+      if (className) {
+        asideNode?.classList.add(className);
+      }
+      if (labelledBy) {
+        asideNode?.setAttribute("aria-labelledby", labelledBy);
+      }
       // The portal node must have the panel class as Vanilla requires the panel
       // to be a direct descendent of the aside.
       portalNode.classList.add("p-panel");
     }
     return () => {
       if (asidePanelId) {
-        document.getElementById(asidePanelId)?.classList.remove("l-aside");
+        const asideNode = document.getElementById(asidePanelId);
+        asideNode?.classList.remove("l-aside");
+        if (className) {
+          asideNode?.classList.remove(className);
+        }
+        if (labelledBy) {
+          asideNode?.removeAttribute("aria-labelledby");
+        }
         portalNode.classList.remove("p-panel");
       }
     };
-  }, [isOpen, asidePanelId, portalRef]);
+  }, [isOpen, asidePanelId, portalRef, className, labelledBy]);
 
   return portal;
 };

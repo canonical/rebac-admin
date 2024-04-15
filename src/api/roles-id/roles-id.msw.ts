@@ -27,6 +27,7 @@ import type {
   GetRolesId200,
   GetRolesIdEntitlements200,
   NotFoundResponse,
+  Response,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -393,6 +394,114 @@ export const getGetRolesIdEntitlementsResponseMock404 = (
 });
 
 export const getGetRolesIdEntitlementsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMockDefault = (
   overrideResponse: any = {},
 ): DefaultResponse => ({
   _links: {
@@ -926,6 +1035,132 @@ export const getGetRolesIdEntitlementsMockHandlerDefault = (
   });
 };
 
+export const getPatchRolesIdEntitlementsMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchRolesIdEntitlementsMockHandler201 = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMock201(),
+      ),
+      {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchRolesIdEntitlementsMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchRolesIdEntitlementsMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchRolesIdEntitlementsMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchRolesIdEntitlementsMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.patch("*/roles/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchRolesIdEntitlementsResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
 export const getDeleteRolesIdEntitlementsEntitlementIdMockHandler = () => {
   return http.delete("*/roles/:id/entitlements/:entitlementId", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
@@ -1038,5 +1273,6 @@ export const getRolesIdMock = () => [
   getPatchRolesIdMockHandler(),
   getDeleteRolesIdMockHandler(),
   getGetRolesIdEntitlementsMockHandler(),
+  getPatchRolesIdEntitlementsMockHandler(),
   getDeleteRolesIdEntitlementsEntitlementIdMockHandler(),
 ];
