@@ -10,13 +10,13 @@ import NoEntityCard from "./NoEntityCard";
 const title = "Mock title";
 const message = "Mock message";
 
-test("should display without action button", async () => {
+test("should render correctly without action button", async () => {
   renderComponent(<NoEntityCard title={title} message={message} />);
   await hasEmptyState(title, message);
   expect(screen.queryByRole("button")).not.toBeInTheDocument();
 });
 
-test("should display with action button", async () => {
+test("should render correctly with action button", async () => {
   const handleClick = vi.fn();
   const actionButtonName = "Mock action";
   renderComponent(
@@ -26,8 +26,8 @@ test("should display with action button", async () => {
       actionButton={<Button onClick={handleClick}>{actionButtonName}</Button>}
     />,
   );
-  await hasEmptyState(title, message);
+  await hasEmptyState(title, message, actionButtonName);
   const actionButton = screen.getByRole("button", { name: actionButtonName });
   await act(() => userEvent.click(actionButton));
-  expect(handleClick).toHaveBeenCalled();
+  expect(handleClick).toHaveBeenCalledTimes(1);
 });
