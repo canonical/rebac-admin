@@ -902,23 +902,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EntitlementsPatchRequest'
+              $ref: "#/components/schemas/EntitlementsPatchRequest"
       responses:
-        '201':
+        "201":
           description: OK
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: "#/components/schemas/Response"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
   /roles/{id}/entitlements/{entitlementId}:
     parameters:
       - name: id

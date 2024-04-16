@@ -1,0 +1,12 @@
+@import "vanilla-framework/scss/vanilla";
+
+.entitlements-panel-form {
+  &__fields {
+    display: flex;
+    gap: $sph--large;
+  }
+
+  &__submit {
+    padding-top: $spv--large * 2 + $spv--small;
+  }
+}

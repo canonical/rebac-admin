@@ -4,9 +4,9 @@ import { setupServer } from "msw/node";
 
 import {
   getGetUsersMockHandler,
+  getGetUsersMockHandler404,
   getGetUsersResponseMock,
 } from "api/users/users.msw";
-import { getGetUsersErrorMockHandler } from "mocks/users";
 import { renderComponent } from "test/utils";
 
 import Users from "./Users";
@@ -68,7 +68,7 @@ test("should display no users data when no users are available", async () => {
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(getGetUsersErrorMockHandler());
+  mockApiServer.use(getGetUsersMockHandler404());
   renderComponent(<Users />);
   const usersErrorNotification = await screen.findByText(
     UsersLabel.FETCHING_USERS_ERROR,

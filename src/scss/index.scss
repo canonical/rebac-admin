@@ -1,3 +1,22 @@
-.todo {
-  color: #fff;
+@import "vanilla-framework/scss/vanilla";
+@include vanilla;
+@include vf-p-icon-settings;
+@include vf-p-icon-lock-locked;
+
+.p-icon--chevron-left {
+  @extend %icon;
+  @include vf-icon-chevron($color-mid-dark);
+
+  transform: rotate(90deg);
+}
+
+.p-icon--chevron-right {
+  @extend %icon;
+  @include vf-icon-chevron($color-mid-dark);
+
+  transform: rotate(270deg);
+}
+
+.l-application .l-aside.is-medium {
+  width: 45rem;
 }

@@ -4,9 +4,9 @@ import { setupServer } from "msw/node";
 
 import {
   getGetRolesMockHandler,
+  getGetRolesMockHandler404,
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
-import { getGetRolesErrorMockHandler } from "mocks/roles";
 import { renderComponent } from "test/utils";
 
 import Roles from "./Roles";
@@ -58,7 +58,7 @@ test("should display no roles data when no roles are available", async () => {
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(getGetRolesErrorMockHandler());
+  mockApiServer.use(getGetRolesMockHandler404());
   renderComponent(<Roles />);
   const rolesErrorNotification = await screen.findByText(
     RolesLabel.FETCHING_ROLES_ERROR,

@@ -60,7 +60,9 @@
   },
   "dependencies": {
     "classnames": "2.5.1",
-    "clone-deep": "4.0.1"
+    "clone-deep": "4.0.1",
+    "react-hot-toast": "2.4.1",
+    "react-useportal": "1.0.19"
   },
   "devDependencies": {
     "@canonical/react-components": "0.51.1",
@@ -103,7 +105,7 @@
     "ip": "2.0.1",
     "msw": "2.2.2",
     "npm-package-json-lint": "7.1.0",
-    "orval": "6.25.0",
+    "orval": "6.27.1",
     "postcss": "8.4.35",
     "prettier": "3.2.5",
     "react": "18.2.0",
