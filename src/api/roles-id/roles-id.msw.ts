@@ -21,7 +21,16 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-import type { GetRolesId200, GetRolesIdEntitlements200 } from "../api.schemas";
+import type {
+  BadRequestResponse,
+  DefaultResponse,
+  GetRolesId200,
+  GetRolesIdEntitlements200,
+  GetRolesIdGroups200,
+  NotFoundResponse,
+  Response,
+  UnauthorizedResponse,
+} from "../api.schemas";
 
 export const getGetRolesIdResponseMock = (
   overrideResponse: any = {},
@@ -46,6 +55,299 @@ export const getGetRolesIdResponseMock = (
   ...overrideResponse,
 });
 
+export const getGetRolesIdResponseMock200 = (
+  overrideResponse: any = {},
+): GetRolesId200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdResponseMock501 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
 export const getGetRolesIdEntitlementsResponseMock = (
   overrideResponse: any = {},
 ): GetRolesIdEntitlements200 => ({
@@ -66,6 +368,435 @@ export const getGetRolesIdEntitlementsResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdEntitlementsResponseMock200 = (
+  overrideResponse: any = {},
+): GetRolesIdEntitlements200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdEntitlementsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdEntitlementsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdEntitlementsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdEntitlementsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchRolesIdEntitlementsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteRolesIdEntitlementsEntitlementIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMock = (
+  overrideResponse: any = {},
+): GetRolesIdGroups200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMock200 = (
+  overrideResponse: any = {},
+): GetRolesIdGroups200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetRolesIdGroupsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 
@@ -195,18 +926,6 @@ export const getPatchRolesIdMockHandler = () => {
   });
 };
 
-export const getPatchRolesIdMockHandler200 = () => {
-  return http.patch("*/roles/:id", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
 export const getPatchRolesIdMockHandler400 = (
   overrideResponse?: BadRequestResponse,
 ) => {
@@ -264,6 +983,23 @@ export const getPatchRolesIdMockHandler404 = (
   });
 };
 
+export const getPatchRolesIdMockHandler501 = (overrideResponse?: Response) => {
+  return http.patch("*/roles/:id", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getPatchRolesIdResponseMock501(),
+      ),
+      {
+        status: 501,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
 export const getPatchRolesIdMockHandlerDefault = (
   overrideResponse?: DefaultResponse,
 ) => {
@@ -287,13 +1023,35 @@ export const getPatchRolesIdMockHandlerDefault = (
 
 export const getDeleteRolesIdMockHandler = (overrideResponse?: Response) => {
   return http.delete("*/roles/:id", async () => {
-    await delay(900);
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getDeleteRolesIdResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
+  });
+};
+
+export const getDeleteRolesIdMockHandler200 = (overrideResponse?: Response) => {
+  return http.delete("*/roles/:id", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getDeleteRolesIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
   });
 };
 
@@ -627,16 +1385,16 @@ export const getPatchRolesIdEntitlementsMockHandlerDefault = (
   });
 };
 
-export const getPatchRolesIdEntitlementsMockHandler = (
+export const getDeleteRolesIdEntitlementsEntitlementIdMockHandler = (
   overrideResponse?: Response,
 ) => {
-  return http.patch("*/roles/:id/entitlements", async () => {
-    await delay(900);
+  return http.delete("*/roles/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getPatchRolesIdEntitlementsResponseMock(),
+          : getDeleteRolesIdEntitlementsEntitlementIdResponseMock(),
       ),
       {
         status: 200,
@@ -648,17 +1406,24 @@ export const getPatchRolesIdEntitlementsMockHandler = (
   });
 };
 
-export const getDeleteRolesIdEntitlementsEntitlementIdMockHandler = (
+export const getDeleteRolesIdEntitlementsEntitlementIdMockHandler200 = (
   overrideResponse?: Response,
 ) => {
   return http.delete("*/roles/:id/entitlements/:entitlementId", async () => {
-    await delay(900);
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteRolesIdEntitlementsEntitlementIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   });
 };
 
@@ -735,6 +1500,130 @@ export const getDeleteRolesIdEntitlementsEntitlementIdMockHandlerDefault = (
         overrideResponse
           ? overrideResponse
           : getDeleteRolesIdEntitlementsEntitlementIdResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandler = (
+  overrideResponse?: GetRolesIdGroups200,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getGetRolesIdGroupsResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandler200 = (
+  overrideResponse?: GetRolesIdGroups200,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdGroupsResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdGroupsResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdGroupsResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdGroupsResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetRolesIdGroupsMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.get("*/roles/:id/groups", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetRolesIdGroupsResponseMockDefault(),
       ),
       {
         status: 200,

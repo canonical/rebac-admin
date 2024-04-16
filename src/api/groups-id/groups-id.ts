@@ -34,13 +34,18 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import type {
   BadRequestResponse,
   DefaultResponse,
+  EntitlementsPatchRequest,
   GetGroupsId200,
-  GetGroupsIdUsers200,
-  GetGroupsIdUsersParams,
-  Group,
+  GetGroupsIdEntitlements200,
+  GetGroupsIdEntitlementsParams,
+  GetGroupsIdIdentities200,
+  GetGroupsIdIdentitiesParams,
+  GetGroupsIdRoles200,
+  IdentitiesPatchRequest,
   NotFoundResponse,
+  Response,
+  RolesPostRequest,
   UnauthorizedResponse,
-  User,
 } from "../api.schemas";
 
 /**
@@ -137,10 +142,9 @@ export const useGetGroupsId = <
  */
 export const patchGroupsId = (
   id: string,
-  group: Group,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(`/groups/${id}`, group, options);
+): Promise<AxiosResponse<DefaultResponse>> => {
+  return axios.patch(`/groups/${id}`, undefined, options);
 };
 
 export const getPatchGroupsIdMutationOptions = <
@@ -148,6 +152,7 @@ export const getPatchGroupsIdMutationOptions = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -155,25 +160,25 @@ export const getPatchGroupsIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchGroupsId>>,
     TError,
-    { id: string; data: Group },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchGroupsId>>,
   TError,
-  { id: string; data: Group },
+  { id: string },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchGroupsId>>,
-    { id: string; data: Group }
+    { id: string }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id } = props ?? {};
 
-    return patchGroupsId(id, data, axiosOptions);
+    return patchGroupsId(id, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -182,9 +187,13 @@ export const getPatchGroupsIdMutationOptions = <
 export type PatchGroupsIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchGroupsId>>
 >;
-export type PatchGroupsIdMutationBody = Group;
+
 export type PatchGroupsIdMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+  | BadRequestResponse
+  | UnauthorizedResponse
+  | NotFoundResponse
+  | Response
+  | DefaultResponse
 >;
 
 /**
@@ -195,6 +204,7 @@ export const usePatchGroupsId = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -202,14 +212,14 @@ export const usePatchGroupsId = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchGroupsId>>,
     TError,
-    { id: string; data: Group },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchGroupsId>>,
   TError,
-  { id: string; data: Group },
+  { id: string },
   TContext
 > => {
   const mutationOptions = getPatchGroupsIdMutationOptions(options);
@@ -222,7 +232,7 @@ export const usePatchGroupsId = <
 export const deleteGroupsId = (
   id: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<Response>> => {
   return axios.delete(`/groups/${id}`, options);
 };
 
@@ -300,28 +310,21 @@ export const useDeleteGroupsId = <
   return useMutation(mutationOptions);
 };
 /**
- * @summary Get the users of a group
+ * @summary Get the roles of a group
  */
-export const getGroupsIdUsers = (
+export const getGroupsIdRoles = (
   id: string,
-  params?: GetGroupsIdUsersParams,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupsIdUsers200>> => {
-  return axios.get(`/groups/${id}/users`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+): Promise<AxiosResponse<GetGroupsIdRoles200>> => {
+  return axios.get(`/groups/${id}/roles`, options);
 };
 
-export const getGetGroupsIdUsersQueryKey = (
-  id: string,
-  params?: GetGroupsIdUsersParams,
-) => {
-  return [`/groups/${id}/users`, ...(params ? [params] : [])] as const;
+export const getGetGroupsIdRolesQueryKey = (id: string) => {
+  return [`/groups/${id}/roles`] as const;
 };
 
-export const getGetGroupsIdUsersQueryOptions = <
-  TData = Awaited<ReturnType<typeof getGroupsIdUsers>>,
+export const getGetGroupsIdRolesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroupsIdRoles>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -330,11 +333,10 @@ export const getGetGroupsIdUsersQueryOptions = <
   >,
 >(
   id: string,
-  params?: GetGroupsIdUsersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getGroupsIdUsers>>,
+        Awaited<ReturnType<typeof getGroupsIdRoles>>,
         TError,
         TData
       >
@@ -344,12 +346,11 @@ export const getGetGroupsIdUsersQueryOptions = <
 ) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetGroupsIdUsersQueryKey(id, params);
+  const queryKey = queryOptions?.queryKey ?? getGetGroupsIdRolesQueryKey(id);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getGroupsIdUsers>>
-  > = ({ signal }) => getGroupsIdUsers(id, params, { signal, ...axiosOptions });
+    Awaited<ReturnType<typeof getGroupsIdRoles>>
+  > = ({ signal }) => getGroupsIdRoles(id, { signal, ...axiosOptions });
 
   return {
     queryKey,
@@ -357,24 +358,24 @@ export const getGetGroupsIdUsersQueryOptions = <
     enabled: !!id,
     ...queryOptions,
   } as UseQueryOptions<
-    Awaited<ReturnType<typeof getGroupsIdUsers>>,
+    Awaited<ReturnType<typeof getGroupsIdRoles>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetGroupsIdUsersQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getGroupsIdUsers>>
+export type GetGroupsIdRolesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroupsIdRoles>>
 >;
-export type GetGroupsIdUsersQueryError = AxiosError<
+export type GetGroupsIdRolesQueryError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
- * @summary Get the users of a group
+ * @summary Get the roles of a group
  */
-export const useGetGroupsIdUsers = <
-  TData = Awaited<ReturnType<typeof getGroupsIdUsers>>,
+export const useGetGroupsIdRoles = <
+  TData = Awaited<ReturnType<typeof getGroupsIdRoles>>,
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -383,11 +384,10 @@ export const useGetGroupsIdUsers = <
   >,
 >(
   id: string,
-  params?: GetGroupsIdUsersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getGroupsIdUsers>>,
+        Awaited<ReturnType<typeof getGroupsIdRoles>>,
         TError,
         TData
       >
@@ -395,7 +395,7 @@ export const useGetGroupsIdUsers = <
     axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetGroupsIdUsersQueryOptions(id, params, options);
+  const queryOptions = getGetGroupsIdRolesQueryOptions(id, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -407,17 +407,17 @@ export const useGetGroupsIdUsers = <
 };
 
 /**
- * @summary Update the list of a groups users.
+ * @summary Update roles of a group
  */
-export const patchGroupsIdUsers = (
+export const postGroupsIdRoles = (
   id: string,
-  user: User,
+  rolesPostRequest: RolesPostRequest,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(`/groups/${id}/users`, user, options);
+): Promise<AxiosResponse<Response>> => {
+  return axios.post(`/groups/${id}/roles`, rolesPostRequest, options);
 };
 
-export const getPatchGroupsIdUsersMutationOptions = <
+export const getPostGroupsIdRolesMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -427,44 +427,44 @@ export const getPatchGroupsIdUsersMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchGroupsIdUsers>>,
+    Awaited<ReturnType<typeof postGroupsIdRoles>>,
     TError,
-    { id: string; data: User },
+    { id: string; data: RolesPostRequest },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof patchGroupsIdUsers>>,
+  Awaited<ReturnType<typeof postGroupsIdRoles>>,
   TError,
-  { id: string; data: User },
+  { id: string; data: RolesPostRequest },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof patchGroupsIdUsers>>,
-    { id: string; data: User }
+    Awaited<ReturnType<typeof postGroupsIdRoles>>,
+    { id: string; data: RolesPostRequest }
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchGroupsIdUsers(id, data, axiosOptions);
+    return postGroupsIdRoles(id, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PatchGroupsIdUsersMutationResult = NonNullable<
-  Awaited<ReturnType<typeof patchGroupsIdUsers>>
+export type PostGroupsIdRolesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postGroupsIdRoles>>
 >;
-export type PatchGroupsIdUsersMutationBody = User;
-export type PatchGroupsIdUsersMutationError = AxiosError<
+export type PostGroupsIdRolesMutationBody = RolesPostRequest;
+export type PostGroupsIdRolesMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
- * @summary Update the list of a groups users.
+ * @summary Update roles of a group
  */
-export const usePatchGroupsIdUsers = <
+export const usePostGroupsIdRoles = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -474,34 +474,34 @@ export const usePatchGroupsIdUsers = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof patchGroupsIdUsers>>,
+    Awaited<ReturnType<typeof postGroupsIdRoles>>,
     TError,
-    { id: string; data: User },
+    { id: string; data: RolesPostRequest },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
-  Awaited<ReturnType<typeof patchGroupsIdUsers>>,
+  Awaited<ReturnType<typeof postGroupsIdRoles>>,
   TError,
-  { id: string; data: User },
+  { id: string; data: RolesPostRequest },
   TContext
 > => {
-  const mutationOptions = getPatchGroupsIdUsersMutationOptions(options);
+  const mutationOptions = getPostGroupsIdRolesMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
 /**
- * @summary Remove a user from a group
+ * @summary Remove a role from a group
  */
-export const deleteGroupsIdUsersUserId = (
+export const deleteGroupsIdRolesRolesId = (
   id: string,
-  userId: string,
+  rolesId: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.delete(`/groups/${id}/users/${userId}`, options);
+): Promise<AxiosResponse<Response>> => {
+  return axios.delete(`/groups/${id}/roles/${rolesId}`, options);
 };
 
-export const getDeleteGroupsIdUsersUserIdMutationOptions = <
+export const getDeleteGroupsIdRolesRolesIdMutationOptions = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -511,44 +511,44 @@ export const getDeleteGroupsIdUsersUserIdMutationOptions = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>,
+    Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>,
     TError,
-    { id: string; userId: string },
+    { id: string; rolesId: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>,
+  Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>,
   TError,
-  { id: string; userId: string },
+  { id: string; rolesId: string },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>,
-    { id: string; userId: string }
+    Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>,
+    { id: string; rolesId: string }
   > = (props) => {
-    const { id, userId } = props ?? {};
+    const { id, rolesId } = props ?? {};
 
-    return deleteGroupsIdUsersUserId(id, userId, axiosOptions);
+    return deleteGroupsIdRolesRolesId(id, rolesId, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type DeleteGroupsIdUsersUserIdMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>
+export type DeleteGroupsIdRolesRolesIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>
 >;
 
-export type DeleteGroupsIdUsersUserIdMutationError = AxiosError<
+export type DeleteGroupsIdRolesRolesIdMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
 /**
- * @summary Remove a user from a group
+ * @summary Remove a role from a group
  */
-export const useDeleteGroupsIdUsersUserId = <
+export const useDeleteGroupsIdRolesRolesId = <
   TError = AxiosError<
     | BadRequestResponse
     | UnauthorizedResponse
@@ -558,19 +558,593 @@ export const useDeleteGroupsIdUsersUserId = <
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>,
+    Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>,
     TError,
-    { id: string; userId: string },
+    { id: string; rolesId: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
-  Awaited<ReturnType<typeof deleteGroupsIdUsersUserId>>,
+  Awaited<ReturnType<typeof deleteGroupsIdRolesRolesId>>,
   TError,
-  { id: string; userId: string },
+  { id: string; rolesId: string },
   TContext
 > => {
-  const mutationOptions = getDeleteGroupsIdUsersUserIdMutationOptions(options);
+  const mutationOptions = getDeleteGroupsIdRolesRolesIdMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Get the entitlements of a group
+ */
+export const getGroupsIdEntitlements = (
+  id: string,
+  params?: GetGroupsIdEntitlementsParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<GetGroupsIdEntitlements200>> => {
+  return axios.get(`/groups/${id}/entitlements`, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getGetGroupsIdEntitlementsQueryKey = (
+  id: string,
+  params?: GetGroupsIdEntitlementsParams,
+) => {
+  return [`/groups/${id}/entitlements`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetGroupsIdEntitlementsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroupsIdEntitlements>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetGroupsIdEntitlementsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupsIdEntitlements>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetGroupsIdEntitlementsQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getGroupsIdEntitlements>>
+  > = ({ signal }) =>
+    getGroupsIdEntitlements(id, params, { signal, ...axiosOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroupsIdEntitlements>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetGroupsIdEntitlementsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroupsIdEntitlements>>
+>;
+export type GetGroupsIdEntitlementsQueryError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Get the entitlements of a group
+ */
+export const useGetGroupsIdEntitlements = <
+  TData = Awaited<ReturnType<typeof getGroupsIdEntitlements>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetGroupsIdEntitlementsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupsIdEntitlements>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetGroupsIdEntitlementsQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+/**
+ * @summary Update entitlements of a group
+ */
+export const patchGroupsIdEntitlements = (
+  id: string,
+  entitlementsPatchRequest: EntitlementsPatchRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.patch(
+    `/groups/${id}/entitlements`,
+    entitlementsPatchRequest,
+    options,
+  );
+};
+
+export const getPatchGroupsIdEntitlementsMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchGroupsIdEntitlements>>,
+    TError,
+    { id: string; data: EntitlementsPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof patchGroupsIdEntitlements>>,
+  TError,
+  { id: string; data: EntitlementsPatchRequest },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof patchGroupsIdEntitlements>>,
+    { id: string; data: EntitlementsPatchRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return patchGroupsIdEntitlements(id, data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PatchGroupsIdEntitlementsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof patchGroupsIdEntitlements>>
+>;
+export type PatchGroupsIdEntitlementsMutationBody = EntitlementsPatchRequest;
+export type PatchGroupsIdEntitlementsMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Update entitlements of a group
+ */
+export const usePatchGroupsIdEntitlements = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchGroupsIdEntitlements>>,
+    TError,
+    { id: string; data: EntitlementsPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof patchGroupsIdEntitlements>>,
+  TError,
+  { id: string; data: EntitlementsPatchRequest },
+  TContext
+> => {
+  const mutationOptions = getPatchGroupsIdEntitlementsMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove an entitlement from a group
+ */
+export const deleteGroupsIdEntitlementsEntitlementId = (
+  id: string,
+  entitlementId: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.delete(`/groups/${id}/entitlements/${entitlementId}`, options);
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>,
+    TError,
+    { id: string; entitlementId: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>,
+  TError,
+  { id: string; entitlementId: string },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>,
+    { id: string; entitlementId: string }
+  > = (props) => {
+    const { id, entitlementId } = props ?? {};
+
+    return deleteGroupsIdEntitlementsEntitlementId(
+      id,
+      entitlementId,
+      axiosOptions,
+    );
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteGroupsIdEntitlementsEntitlementIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>
+>;
+
+export type DeleteGroupsIdEntitlementsEntitlementIdMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Remove an entitlement from a group
+ */
+export const useDeleteGroupsIdEntitlementsEntitlementId = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>,
+    TError,
+    { id: string; entitlementId: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteGroupsIdEntitlementsEntitlementId>>,
+  TError,
+  { id: string; entitlementId: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteGroupsIdEntitlementsEntitlementIdMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Get the identities of a group
+ */
+export const getGroupsIdIdentities = (
+  id: string,
+  params?: GetGroupsIdIdentitiesParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<GetGroupsIdIdentities200>> => {
+  return axios.get(`/groups/${id}/identities`, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getGetGroupsIdIdentitiesQueryKey = (
+  id: string,
+  params?: GetGroupsIdIdentitiesParams,
+) => {
+  return [`/groups/${id}/identities`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetGroupsIdIdentitiesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroupsIdIdentities>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetGroupsIdIdentitiesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupsIdIdentities>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetGroupsIdIdentitiesQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getGroupsIdIdentities>>
+  > = ({ signal }) =>
+    getGroupsIdIdentities(id, params, { signal, ...axiosOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroupsIdIdentities>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetGroupsIdIdentitiesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroupsIdIdentities>>
+>;
+export type GetGroupsIdIdentitiesQueryError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Get the identities of a group
+ */
+export const useGetGroupsIdIdentities = <
+  TData = Awaited<ReturnType<typeof getGroupsIdIdentities>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetGroupsIdIdentitiesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupsIdIdentities>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetGroupsIdIdentitiesQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+/**
+ * @summary Update identities of a group
+ */
+export const patchGroupsIdIdentities = (
+  id: string,
+  identitiesPatchRequest: IdentitiesPatchRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.patch(
+    `/groups/${id}/identities`,
+    identitiesPatchRequest,
+    options,
+  );
+};
+
+export const getPatchGroupsIdIdentitiesMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchGroupsIdIdentities>>,
+    TError,
+    { id: string; data: IdentitiesPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof patchGroupsIdIdentities>>,
+  TError,
+  { id: string; data: IdentitiesPatchRequest },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof patchGroupsIdIdentities>>,
+    { id: string; data: IdentitiesPatchRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return patchGroupsIdIdentities(id, data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PatchGroupsIdIdentitiesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof patchGroupsIdIdentities>>
+>;
+export type PatchGroupsIdIdentitiesMutationBody = IdentitiesPatchRequest;
+export type PatchGroupsIdIdentitiesMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Update identities of a group
+ */
+export const usePatchGroupsIdIdentities = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchGroupsIdIdentities>>,
+    TError,
+    { id: string; data: IdentitiesPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof patchGroupsIdIdentities>>,
+  TError,
+  { id: string; data: IdentitiesPatchRequest },
+  TContext
+> => {
+  const mutationOptions = getPatchGroupsIdIdentitiesMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove an identity from a group
+ */
+export const deleteGroupsIdIdentitiesIdentityId = (
+  id: string,
+  identityId: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.delete(`/groups/${id}/identities/${identityId}`, options);
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>,
+    TError,
+    { id: string; identityId: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>,
+  TError,
+  { id: string; identityId: string },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>,
+    { id: string; identityId: string }
+  > = (props) => {
+    const { id, identityId } = props ?? {};
+
+    return deleteGroupsIdIdentitiesIdentityId(id, identityId, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteGroupsIdIdentitiesIdentityIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>
+>;
+
+export type DeleteGroupsIdIdentitiesIdentityIdMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Remove an identity from a group
+ */
+export const useDeleteGroupsIdIdentitiesIdentityId = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>,
+    TError,
+    { id: string; identityId: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteGroupsIdIdentitiesIdentityId>>,
+  TError,
+  { id: string; identityId: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteGroupsIdIdentitiesIdentityIdMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

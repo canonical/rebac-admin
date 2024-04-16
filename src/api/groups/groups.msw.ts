@@ -25,8 +25,8 @@ import type {
   BadRequestResponse,
   DefaultResponse,
   GetGroups200,
-  Group,
   NotFoundResponse,
+  Response,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -148,9 +148,41 @@ export const getGetGroupsResponseMockDefault = (
   ...overrideResponse,
 });
 
-export const getPostGroupsResponseMock = (): Group => faker.word.sample();
+export const getPostGroupsResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
 
-export const getPostGroupsResponseMock200 = (): Group => faker.word.sample();
+export const getPostGroupsResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
 
 export const getPostGroupsResponseMock400 = (
   overrideResponse: any = {},
@@ -334,7 +366,7 @@ export const getGetGroupsMockHandlerDefault = (
   });
 };
 
-export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
+export const getPostGroupsMockHandler = (overrideResponse?: Response) => {
   return http.post("*/groups", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
@@ -351,15 +383,15 @@ export const getPostGroupsMockHandler = (overrideResponse?: Group) => {
   });
 };
 
-export const getPostGroupsMockHandler200 = (overrideResponse?: Group) => {
+export const getPostGroupsMockHandler201 = (overrideResponse?: Response) => {
   return http.post("*/groups", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getPostGroupsResponseMock200(),
+        overrideResponse ? overrideResponse : getPostGroupsResponseMock201(),
       ),
       {
-        status: 200,
+        status: 201,
         headers: {
           "Content-Type": "application/json",
         },

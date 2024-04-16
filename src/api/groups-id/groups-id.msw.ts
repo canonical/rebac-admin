@@ -25,8 +25,11 @@ import type {
   BadRequestResponse,
   DefaultResponse,
   GetGroupsId200,
-  GetGroupsIdUsers200,
+  GetGroupsIdEntitlements200,
+  GetGroupsIdIdentities200,
+  GetGroupsIdRoles200,
   NotFoundResponse,
+  Response,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -202,9 +205,63 @@ export const getPatchGroupsIdResponseMock404 = (
   ...overrideResponse,
 });
 
+export const getPatchGroupsIdResponseMock501 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
 export const getPatchGroupsIdResponseMockDefault = (
   overrideResponse: any = {},
 ): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -292,9 +349,9 @@ export const getDeleteGroupsIdResponseMockDefault = (
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMock = (
+export const getGetGroupsIdRolesResponseMock = (
   overrideResponse: any = {},
-): GetGroupsIdUsers200 => ({
+): GetGroupsIdRoles200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -311,36 +368,13 @@ export const getGetGroupsIdUsersResponseMock = (
   data: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
-  ).map(() => ({
-    addedBy: faker.word.sample(),
-    certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    email: faker.word.sample(),
-    firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    groups: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    permissions: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    roles: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    source: faker.word.sample(),
-    ...overrideResponse,
-  })),
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMock200 = (
+export const getGetGroupsIdRolesResponseMock200 = (
   overrideResponse: any = {},
-): GetGroupsIdUsers200 => ({
+): GetGroupsIdRoles200 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -357,34 +391,11 @@ export const getGetGroupsIdUsersResponseMock200 = (
   data: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
-  ).map(() => ({
-    addedBy: faker.word.sample(),
-    certificate: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    email: faker.word.sample(),
-    firstName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    groups: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    joined: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    lastLogin: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    lastName: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    permissions: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    roles: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    source: faker.word.sample(),
-    ...overrideResponse,
-  })),
+  ).map(() => faker.word.sample()),
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMock400 = (
+export const getGetGroupsIdRolesResponseMock400 = (
   overrideResponse: any = {},
 ): BadRequestResponse => ({
   _links: {
@@ -402,7 +413,7 @@ export const getGetGroupsIdUsersResponseMock400 = (
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMock401 = (
+export const getGetGroupsIdRolesResponseMock401 = (
   overrideResponse: any = {},
 ): UnauthorizedResponse => ({
   _links: {
@@ -420,7 +431,7 @@ export const getGetGroupsIdUsersResponseMock401 = (
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMock404 = (
+export const getGetGroupsIdRolesResponseMock404 = (
   overrideResponse: any = {},
 ): NotFoundResponse => ({
   _links: {
@@ -438,7 +449,7 @@ export const getGetGroupsIdUsersResponseMock404 = (
   ...overrideResponse,
 });
 
-export const getGetGroupsIdUsersResponseMockDefault = (
+export const getGetGroupsIdRolesResponseMockDefault = (
   overrideResponse: any = {},
 ): DefaultResponse => ({
   _links: {
@@ -456,7 +467,43 @@ export const getGetGroupsIdUsersResponseMockDefault = (
   ...overrideResponse,
 });
 
-export const getPatchGroupsIdUsersResponseMock400 = (
+export const getPostGroupsIdRolesResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPostGroupsIdRolesResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPostGroupsIdRolesResponseMock400 = (
   overrideResponse: any = {},
 ): BadRequestResponse => ({
   _links: {
@@ -474,7 +521,7 @@ export const getPatchGroupsIdUsersResponseMock400 = (
   ...overrideResponse,
 });
 
-export const getPatchGroupsIdUsersResponseMock401 = (
+export const getPostGroupsIdRolesResponseMock401 = (
   overrideResponse: any = {},
 ): UnauthorizedResponse => ({
   _links: {
@@ -492,7 +539,7 @@ export const getPatchGroupsIdUsersResponseMock401 = (
   ...overrideResponse,
 });
 
-export const getPatchGroupsIdUsersResponseMock404 = (
+export const getPostGroupsIdRolesResponseMock404 = (
   overrideResponse: any = {},
 ): NotFoundResponse => ({
   _links: {
@@ -510,7 +557,7 @@ export const getPatchGroupsIdUsersResponseMock404 = (
   ...overrideResponse,
 });
 
-export const getPatchGroupsIdUsersResponseMockDefault = (
+export const getPostGroupsIdRolesResponseMockDefault = (
   overrideResponse: any = {},
 ): DefaultResponse => ({
   _links: {
@@ -528,7 +575,43 @@ export const getPatchGroupsIdUsersResponseMockDefault = (
   ...overrideResponse,
 });
 
-export const getDeleteGroupsIdUsersUserIdResponseMock400 = (
+export const getDeleteGroupsIdRolesRolesIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdRolesRolesIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdRolesRolesIdResponseMock400 = (
   overrideResponse: any = {},
 ): BadRequestResponse => ({
   _links: {
@@ -546,7 +629,7 @@ export const getDeleteGroupsIdUsersUserIdResponseMock400 = (
   ...overrideResponse,
 });
 
-export const getDeleteGroupsIdUsersUserIdResponseMock401 = (
+export const getDeleteGroupsIdRolesRolesIdResponseMock401 = (
   overrideResponse: any = {},
 ): UnauthorizedResponse => ({
   _links: {
@@ -564,7 +647,7 @@ export const getDeleteGroupsIdUsersUserIdResponseMock401 = (
   ...overrideResponse,
 });
 
-export const getDeleteGroupsIdUsersUserIdResponseMock404 = (
+export const getDeleteGroupsIdRolesRolesIdResponseMock404 = (
   overrideResponse: any = {},
 ): NotFoundResponse => ({
   _links: {
@@ -582,7 +665,675 @@ export const getDeleteGroupsIdUsersUserIdResponseMock404 = (
   ...overrideResponse,
 });
 
-export const getDeleteGroupsIdUsersUserIdResponseMockDefault = (
+export const getDeleteGroupsIdRolesRolesIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMock = (
+  overrideResponse: any = {},
+): GetGroupsIdEntitlements200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMock200 = (
+  overrideResponse: any = {},
+): GetGroupsIdEntitlements200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdEntitlementsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdEntitlementsResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMock = (
+  overrideResponse: any = {},
+): GetGroupsIdIdentities200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMock200 = (
+  overrideResponse: any = {},
+): GetGroupsIdIdentities200 => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => faker.word.sample()),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getGetGroupsIdIdentitiesResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMock201 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getPatchGroupsIdIdentitiesResponseMockDefault = (
+  overrideResponse: any = {},
+): DefaultResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMock = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMock200 = (
+  overrideResponse: any = {},
+): Response => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMock400 = (
+  overrideResponse: any = {},
+): BadRequestResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMock401 = (
+  overrideResponse: any = {},
+): UnauthorizedResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMock404 = (
+  overrideResponse: any = {},
+): NotFoundResponse => ({
+  _links: {
+    next: { href: faker.word.sample(), ...overrideResponse },
+    ...overrideResponse,
+  },
+  _meta: {
+    page: faker.number.int({ min: undefined, max: undefined }),
+    size: faker.number.int({ min: undefined, max: undefined }),
+    total: faker.number.int({ min: undefined, max: undefined }),
+    ...overrideResponse,
+  },
+  message: faker.word.sample(),
+  status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
+export const getDeleteGroupsIdIdentitiesIdentityIdResponseMockDefault = (
   overrideResponse: any = {},
 ): DefaultResponse => ({
   _links: {
@@ -728,18 +1479,6 @@ export const getPatchGroupsIdMockHandler = () => {
   });
 };
 
-export const getPatchGroupsIdMockHandler200 = () => {
-  return http.patch("*/groups/:id", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
 export const getPatchGroupsIdMockHandler400 = (
   overrideResponse?: BadRequestResponse,
 ) => {
@@ -797,6 +1536,23 @@ export const getPatchGroupsIdMockHandler404 = (
   });
 };
 
+export const getPatchGroupsIdMockHandler501 = (overrideResponse?: Response) => {
+  return http.patch("*/groups/:id", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getPatchGroupsIdResponseMock501(),
+      ),
+      {
+        status: 501,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
 export const getPatchGroupsIdMockHandlerDefault = (
   overrideResponse?: DefaultResponse,
 ) => {
@@ -818,27 +1574,41 @@ export const getPatchGroupsIdMockHandlerDefault = (
   });
 };
 
-export const getDeleteGroupsIdMockHandler = () => {
+export const getDeleteGroupsIdMockHandler = (overrideResponse?: Response) => {
   return http.delete("*/groups/:id", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse ? overrideResponse : getDeleteGroupsIdResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   });
 };
 
-export const getDeleteGroupsIdMockHandler200 = () => {
+export const getDeleteGroupsIdMockHandler200 = (
+  overrideResponse?: Response,
+) => {
   return http.delete("*/groups/:id", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   });
 };
 
@@ -926,14 +1696,14 @@ export const getDeleteGroupsIdMockHandlerDefault = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandler = (
-  overrideResponse?: GetGroupsIdUsers200,
+export const getGetGroupsIdRolesMockHandler = (
+  overrideResponse?: GetGroupsIdRoles200,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
-        overrideResponse ? overrideResponse : getGetGroupsIdUsersResponseMock(),
+        overrideResponse ? overrideResponse : getGetGroupsIdRolesResponseMock(),
       ),
       {
         status: 200,
@@ -945,16 +1715,16 @@ export const getGetGroupsIdUsersMockHandler = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandler200 = (
-  overrideResponse?: GetGroupsIdUsers200,
+export const getGetGroupsIdRolesMockHandler200 = (
+  overrideResponse?: GetGroupsIdRoles200,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsIdUsersResponseMock200(),
+          : getGetGroupsIdRolesResponseMock200(),
       ),
       {
         status: 200,
@@ -966,16 +1736,16 @@ export const getGetGroupsIdUsersMockHandler200 = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandler400 = (
+export const getGetGroupsIdRolesMockHandler400 = (
   overrideResponse?: BadRequestResponse,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsIdUsersResponseMock400(),
+          : getGetGroupsIdRolesResponseMock400(),
       ),
       {
         status: 400,
@@ -987,16 +1757,16 @@ export const getGetGroupsIdUsersMockHandler400 = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandler401 = (
+export const getGetGroupsIdRolesMockHandler401 = (
   overrideResponse?: UnauthorizedResponse,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsIdUsersResponseMock401(),
+          : getGetGroupsIdRolesResponseMock401(),
       ),
       {
         status: 401,
@@ -1008,16 +1778,16 @@ export const getGetGroupsIdUsersMockHandler401 = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandler404 = (
+export const getGetGroupsIdRolesMockHandler404 = (
   overrideResponse?: NotFoundResponse,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsIdUsersResponseMock404(),
+          : getGetGroupsIdRolesResponseMock404(),
       ),
       {
         status: 404,
@@ -1029,16 +1799,16 @@ export const getGetGroupsIdUsersMockHandler404 = (
   });
 };
 
-export const getGetGroupsIdUsersMockHandlerDefault = (
+export const getGetGroupsIdRolesMockHandlerDefault = (
   overrideResponse?: DefaultResponse,
 ) => {
-  return http.get("*/groups/:id/users", async () => {
+  return http.get("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getGetGroupsIdUsersResponseMockDefault(),
+          : getGetGroupsIdRolesResponseMockDefault(),
       ),
       {
         status: 200,
@@ -1050,103 +1820,16 @@ export const getGetGroupsIdUsersMockHandlerDefault = (
   });
 };
 
-export const getPatchGroupsIdUsersMockHandler = () => {
-  return http.patch("*/groups/:id/users", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getPatchGroupsIdUsersMockHandler200 = () => {
-  return http.patch("*/groups/:id/users", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getPatchGroupsIdUsersMockHandler400 = (
-  overrideResponse?: BadRequestResponse,
+export const getPostGroupsIdRolesMockHandler = (
+  overrideResponse?: Response,
 ) => {
-  return http.patch("*/groups/:id/users", async () => {
+  return http.post("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getPatchGroupsIdUsersResponseMock400(),
-      ),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-  });
-};
-
-export const getPatchGroupsIdUsersMockHandler401 = (
-  overrideResponse?: UnauthorizedResponse,
-) => {
-  return http.patch("*/groups/:id/users", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse
-          ? overrideResponse
-          : getPatchGroupsIdUsersResponseMock401(),
-      ),
-      {
-        status: 401,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-  });
-};
-
-export const getPatchGroupsIdUsersMockHandler404 = (
-  overrideResponse?: NotFoundResponse,
-) => {
-  return http.patch("*/groups/:id/users", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse
-          ? overrideResponse
-          : getPatchGroupsIdUsersResponseMock404(),
-      ),
-      {
-        status: 404,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-  });
-};
-
-export const getPatchGroupsIdUsersMockHandlerDefault = (
-  overrideResponse?: DefaultResponse,
-) => {
-  return http.patch("*/groups/:id/users", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse
-          ? overrideResponse
-          : getPatchGroupsIdUsersResponseMockDefault(),
+          : getPostGroupsIdRolesResponseMock(),
       ),
       {
         status: 200,
@@ -1158,40 +1841,37 @@ export const getPatchGroupsIdUsersMockHandlerDefault = (
   });
 };
 
-export const getDeleteGroupsIdUsersUserIdMockHandler = () => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getDeleteGroupsIdUsersUserIdMockHandler200 = () => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
-    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  });
-};
-
-export const getDeleteGroupsIdUsersUserIdMockHandler400 = (
-  overrideResponse?: BadRequestResponse,
+export const getPostGroupsIdRolesMockHandler201 = (
+  overrideResponse?: Response,
 ) => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
+  return http.post("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getDeleteGroupsIdUsersUserIdResponseMock400(),
+          : getPostGroupsIdRolesResponseMock201(),
+      ),
+      {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPostGroupsIdRolesMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.post("*/groups/:id/roles", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPostGroupsIdRolesResponseMock400(),
       ),
       {
         status: 400,
@@ -1203,16 +1883,16 @@ export const getDeleteGroupsIdUsersUserIdMockHandler400 = (
   });
 };
 
-export const getDeleteGroupsIdUsersUserIdMockHandler401 = (
+export const getPostGroupsIdRolesMockHandler401 = (
   overrideResponse?: UnauthorizedResponse,
 ) => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
+  return http.post("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getDeleteGroupsIdUsersUserIdResponseMock401(),
+          : getPostGroupsIdRolesResponseMock401(),
       ),
       {
         status: 401,
@@ -1224,16 +1904,16 @@ export const getDeleteGroupsIdUsersUserIdMockHandler401 = (
   });
 };
 
-export const getDeleteGroupsIdUsersUserIdMockHandler404 = (
+export const getPostGroupsIdRolesMockHandler404 = (
   overrideResponse?: NotFoundResponse,
 ) => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
+  return http.post("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getDeleteGroupsIdUsersUserIdResponseMock404(),
+          : getPostGroupsIdRolesResponseMock404(),
       ),
       {
         status: 404,
@@ -1245,16 +1925,898 @@ export const getDeleteGroupsIdUsersUserIdMockHandler404 = (
   });
 };
 
-export const getDeleteGroupsIdUsersUserIdMockHandlerDefault = (
+export const getPostGroupsIdRolesMockHandlerDefault = (
   overrideResponse?: DefaultResponse,
 ) => {
-  return http.delete("*/groups/:id/users/:userId", async () => {
+  return http.post("*/groups/:id/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
       JSON.stringify(
         overrideResponse
           ? overrideResponse
-          : getDeleteGroupsIdUsersUserIdResponseMockDefault(),
+          : getPostGroupsIdRolesResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandler200 = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdRolesRolesIdMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.delete("*/groups/:id/roles/:rolesId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdRolesRolesIdResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandler = (
+  overrideResponse?: GetGroupsIdEntitlements200,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandler200 = (
+  overrideResponse?: GetGroupsIdEntitlements200,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdEntitlementsMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.get("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdEntitlementsResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandler201 = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMock201(),
+      ),
+      {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdEntitlementsMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.patch("*/groups/:id/entitlements", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdEntitlementsResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandler200 = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdEntitlementsEntitlementIdMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.delete("*/groups/:id/entitlements/:entitlementId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdEntitlementsEntitlementIdResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandler = (
+  overrideResponse?: GetGroupsIdIdentities200,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandler200 = (
+  overrideResponse?: GetGroupsIdIdentities200,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getGetGroupsIdIdentitiesMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.get("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getGetGroupsIdIdentitiesResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandler201 = (
+  overrideResponse?: Response,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMock201(),
+      ),
+      {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getPatchGroupsIdIdentitiesMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.patch("*/groups/:id/identities", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getPatchGroupsIdIdentitiesResponseMockDefault(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandler = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMock(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandler200 = (
+  overrideResponse?: Response,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMock200(),
+      ),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandler400 = (
+  overrideResponse?: BadRequestResponse,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMock400(),
+      ),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandler401 = (
+  overrideResponse?: UnauthorizedResponse,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMock401(),
+      ),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandler404 = (
+  overrideResponse?: NotFoundResponse,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMock404(),
+      ),
+      {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  });
+};
+
+export const getDeleteGroupsIdIdentitiesIdentityIdMockHandlerDefault = (
+  overrideResponse?: DefaultResponse,
+) => {
+  return http.delete("*/groups/:id/identities/:identityId", async () => {
+    await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse
+          ? overrideResponse
+          : getDeleteGroupsIdIdentitiesIdentityIdResponseMockDefault(),
       ),
       {
         status: 200,
@@ -1269,7 +2831,13 @@ export const getGroupsIdMock = () => [
   getGetGroupsIdMockHandler(),
   getPatchGroupsIdMockHandler(),
   getDeleteGroupsIdMockHandler(),
-  getGetGroupsIdUsersMockHandler(),
-  getPatchGroupsIdUsersMockHandler(),
-  getDeleteGroupsIdUsersUserIdMockHandler(),
+  getGetGroupsIdRolesMockHandler(),
+  getPostGroupsIdRolesMockHandler(),
+  getDeleteGroupsIdRolesRolesIdMockHandler(),
+  getGetGroupsIdEntitlementsMockHandler(),
+  getPatchGroupsIdEntitlementsMockHandler(),
+  getDeleteGroupsIdEntitlementsEntitlementIdMockHandler(),
+  getGetGroupsIdIdentitiesMockHandler(),
+  getPatchGroupsIdIdentitiesMockHandler(),
+  getDeleteGroupsIdIdentitiesIdentityIdMockHandler(),
 ];

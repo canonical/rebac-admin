@@ -41,7 +41,7 @@ import type {
   GetRolesIdGroups200,
   GetRolesIdGroupsParams,
   NotFoundResponse,
-  Role,
+  Response,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -139,10 +139,9 @@ export const useGetRolesId = <
  */
 export const patchRolesId = (
   id: string,
-  role: Role,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<DefaultResponse>> => {
-  return axios.patch(`/roles/${id}`, role, options);
+  return axios.patch(`/roles/${id}`, undefined, options);
 };
 
 export const getPatchRolesIdMutationOptions = <
@@ -158,25 +157,25 @@ export const getPatchRolesIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchRolesId>>,
     TError,
-    { id: string; data: Role },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchRolesId>>,
   TError,
-  { id: string; data: Role },
+  { id: string },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchRolesId>>,
-    { id: string; data: Role }
+    { id: string }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id } = props ?? {};
 
-    return patchRolesId(id, data, axiosOptions);
+    return patchRolesId(id, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -185,7 +184,7 @@ export const getPatchRolesIdMutationOptions = <
 export type PatchRolesIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchRolesId>>
 >;
-export type PatchRolesIdMutationBody = Role;
+
 export type PatchRolesIdMutationError = AxiosError<
   | BadRequestResponse
   | UnauthorizedResponse
@@ -210,14 +209,14 @@ export const usePatchRolesId = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchRolesId>>,
     TError,
-    { id: string; data: Role },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchRolesId>>,
   TError,
-  { id: string; data: Role },
+  { id: string },
   TContext
 > => {
   const mutationOptions = getPatchRolesIdMutationOptions(options);
@@ -419,6 +418,94 @@ export const useGetRolesIdEntitlements = <
   return query;
 };
 
+/**
+ * @summary Update entitlements of a role
+ */
+export const patchRolesIdEntitlements = (
+  id: string,
+  entitlementsPatchRequest: EntitlementsPatchRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Response>> => {
+  return axios.patch(
+    `/roles/${id}/entitlements`,
+    entitlementsPatchRequest,
+    options,
+  );
+};
+
+export const getPatchRolesIdEntitlementsMutationOptions = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    TError,
+    { id: string; data: EntitlementsPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+  TError,
+  { id: string; data: EntitlementsPatchRequest },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    { id: string; data: EntitlementsPatchRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return patchRolesIdEntitlements(id, data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PatchRolesIdEntitlementsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof patchRolesIdEntitlements>>
+>;
+export type PatchRolesIdEntitlementsMutationBody = EntitlementsPatchRequest;
+export type PatchRolesIdEntitlementsMutationError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Update entitlements of a role
+ */
+export const usePatchRolesIdEntitlements = <
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+    TError,
+    { id: string; data: EntitlementsPatchRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof patchRolesIdEntitlements>>,
+  TError,
+  { id: string; data: EntitlementsPatchRequest },
+  TContext
+> => {
+  const mutationOptions = getPatchRolesIdEntitlementsMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary Remove an entitlement from a role
  */

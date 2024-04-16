@@ -35,9 +35,9 @@ import type {
   BadRequestResponse,
   DefaultResponse,
   GetGroups200,
-  GetGroupsParams,
-  Group,
+  GroupObject,
   NotFoundResponse,
+  Response,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -45,17 +45,13 @@ import type {
  * @summary Get all groups
  */
 export const getGroups = (
-  params?: GetGroupsParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<GetGroups200>> => {
-  return axios.get(`/groups`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  return axios.get(`/groups`, options);
 };
 
-export const getGetGroupsQueryKey = (params?: GetGroupsParams) => {
-  return [`/groups`, ...(params ? [params] : [])] as const;
+export const getGetGroupsQueryKey = () => {
+  return [`/groups`] as const;
 };
 
 export const getGetGroupsQueryOptions = <
@@ -66,22 +62,19 @@ export const getGetGroupsQueryOptions = <
     | NotFoundResponse
     | DefaultResponse
   >,
->(
-  params?: GetGroupsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
-) => {
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetGroupsQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getGetGroupsQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroups>>> = ({
     signal,
-  }) => getGroups(params, { signal, ...axiosOptions });
+  }) => getGroups({ signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getGroups>>,
@@ -108,16 +101,13 @@ export const useGetGroups = <
     | NotFoundResponse
     | DefaultResponse
   >,
->(
-  params?: GetGroupsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetGroupsQueryOptions(params, options);
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
+  >;
+  axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetGroupsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -132,10 +122,10 @@ export const useGetGroups = <
  * @summary Create a new group
  */
 export const postGroups = (
-  group: Group,
+  groupObject: GroupObject,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Group>> => {
-  return axios.post(`/groups`, group, options);
+): Promise<AxiosResponse<Response>> => {
+  return axios.post(`/groups`, groupObject, options);
 };
 
 export const getPostGroupsMutationOptions = <
@@ -150,21 +140,21 @@ export const getPostGroupsMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postGroups>>,
     TError,
-    { data: Group },
+    { data: GroupObject },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postGroups>>,
   TError,
-  { data: Group },
+  { data: GroupObject },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postGroups>>,
-    { data: Group }
+    { data: GroupObject }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -177,7 +167,7 @@ export const getPostGroupsMutationOptions = <
 export type PostGroupsMutationResult = NonNullable<
   Awaited<ReturnType<typeof postGroups>>
 >;
-export type PostGroupsMutationBody = Group;
+export type PostGroupsMutationBody = GroupObject;
 export type PostGroupsMutationError = AxiosError<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
@@ -197,14 +187,14 @@ export const usePostGroups = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postGroups>>,
     TError,
-    { data: Group },
+    { data: GroupObject },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
   Awaited<ReturnType<typeof postGroups>>,
   TError,
-  { data: Group },
+  { data: GroupObject },
   TContext
 > => {
   const mutationOptions = getPostGroupsMutationOptions(options);
