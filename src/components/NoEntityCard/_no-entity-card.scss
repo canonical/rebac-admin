@@ -2,13 +2,12 @@
 @include vanilla;
 @include vf-p-icon-plans;
 
-
 .no-entity-card {
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  .no-entity-card__icon {
+  &__icon {
     @media screen and (width < $breakpoint-small) {
       display: none;
     }
