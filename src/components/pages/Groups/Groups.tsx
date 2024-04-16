@@ -4,9 +4,9 @@ import {
   Button,
   ContextualMenu,
   Icon,
+  ButtonAppearance,
 } from "@canonical/react-components";
-import type { JSX } from "react";
-import { useMemo } from "react";
+import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetGroups } from "api/groups/groups";
@@ -14,8 +14,6 @@ import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
-
-import RolePanelButton from "../Roles/RolePanelButton";
 
 import AddGroupPanel from "./AddGroupPanel";
 import EditGroupPanel from "./EditGroupPanel";
@@ -93,7 +91,9 @@ const Groups = () => {
         <NoEntityCard
           title="No groups"
           message={Label.NO_GROUPS}
-          actionButton={<RolePanelButton />}
+          actionButton={
+            <Button appearance={ButtonAppearance.POSITIVE}>Create group</Button>
+          }
         />
       );
     } else {

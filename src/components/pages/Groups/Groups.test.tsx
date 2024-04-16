@@ -8,7 +8,7 @@ import {
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { renderComponent } from "test/utils";
+import { renderComponent, hasEmptyState } from "test/utils";
 
 import Groups from "./Groups";
 import { Label as GroupsLabel, Label } from "./types";
@@ -48,12 +48,13 @@ test("should display correct group data after fetching groups", async () => {
   expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
 });
 
+// eslint-disable-next-line vitest/expect-expect
 test("should display no groups data when no groups are available", async () => {
   mockApiServer.use(
     getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
   );
   renderComponent(<Groups />);
-  expect(await screen.findByText(GroupsLabel.NO_GROUPS)).toBeInTheDocument();
+  await hasEmptyState("No groups", GroupsLabel.NO_GROUPS, "Create group");
 });
 
 test("should display error notification and refetch data", async () => {
