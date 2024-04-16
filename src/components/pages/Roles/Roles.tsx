@@ -18,6 +18,8 @@ import AddRolePanel from "./AddRolePanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
+import "./_roles.scss";
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "role name",
@@ -87,10 +89,13 @@ const Roles = () => {
       );
     } else if (!tableData.length) {
       return (
-        <EmptyState image={null} title="No roles">
-          <p>{Label.NO_ROLES}</p>
-          <RolePanelButton />
-        </EmptyState>
+        <div className="roles--empty">
+          <Icon name="plans" className="roles__icon--empty" />
+          <EmptyState image={null} title="No roles">
+            <p>{Label.NO_ROLES}</p>
+            <RolePanelButton />
+          </EmptyState>
+        </div>
       );
     } else {
       return (

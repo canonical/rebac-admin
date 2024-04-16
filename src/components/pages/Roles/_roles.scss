@@ -1,0 +1,17 @@
+@import "vanilla-framework";
+@include vanilla;
+@include vf-p-icon-plans;
+
+
+.roles--empty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .roles__icon--empty {
+    height: 100px;
+    width: 100px;
+    margin-right: $sph--x-large;
+    opacity: 25%;
+  }
+}
