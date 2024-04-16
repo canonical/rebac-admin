@@ -3,15 +3,19 @@
 @include vf-p-icon-plans;
 
 
-.roles--empty {
+.no-entity-card {
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  .roles__icon--empty {
+  .no-entity-card__icon {
+    @media screen and (width < $breakpoint-small) {
+      display: none;
+    }
+
     height: 100px;
     width: 100px;
-    margin-right: $sph--x-large;
+    margin-right: $sp-xx-large;
     opacity: 25%;
   }
 }

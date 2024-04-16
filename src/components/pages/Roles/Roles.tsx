@@ -1,6 +1,5 @@
 import {
   ContextualMenu,
-  EmptyState,
   Icon,
   ModularTable,
   Spinner,
@@ -12,13 +11,12 @@ import type { Column } from "react-table";
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
+import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
 
 import AddRolePanel from "./AddRolePanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
-
-import "./_roles.scss";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -89,13 +87,11 @@ const Roles = () => {
       );
     } else if (!tableData.length) {
       return (
-        <div className="roles--empty">
-          <Icon name="plans" className="roles__icon--empty" />
-          <EmptyState image={null} title="No roles">
-            <p>{Label.NO_ROLES}</p>
-            <RolePanelButton />
-          </EmptyState>
-        </div>
+        <NoEntityCard
+          title="No roles"
+          message={Label.NO_ROLES}
+          actionButton={<RolePanelButton />}
+        />
       );
     } else {
       return (

@@ -12,7 +12,10 @@ import type { Column } from "react-table";
 import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
+import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
+
+import RolePanelButton from "../Roles/RolePanelButton";
 
 import AddGroupPanel from "./AddGroupPanel";
 import EditGroupPanel from "./EditGroupPanel";
@@ -83,6 +86,14 @@ const Groups = () => {
           message={Label.FETCHING_GROUPS_ERROR}
           error={error?.message ?? ""}
           onRefetch={() => void refetch()}
+        />
+      );
+    } else if (!tableData.length) {
+      return (
+        <NoEntityCard
+          title="No groups"
+          message={Label.NO_GROUPS}
+          actionButton={<RolePanelButton />}
         />
       );
     } else {
