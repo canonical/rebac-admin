@@ -5,3 +5,7 @@ export type Props = {
   message: string;
   actionButton?: ReactNode;
 };
+
+export enum TestId {
+  NO_ENTITY_CARD = "no-entity-card",
+}

@@ -3,17 +3,8 @@
 @include vf-p-icon-plans;
 
 .no-entity-card {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-
   &__icon {
-    @media screen and (width < $breakpoint-small) {
-      display: none;
-    }
-
     height: 100px;
-    margin-right: $sp-xx-large;
     opacity: 0.25;
     width: 100px;
   }

@@ -7,8 +7,9 @@ import {
   getGetGroupsMockHandler404,
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
+import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { renderComponent, hasEmptyState } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import Groups from "./Groups";
 import { Label as GroupsLabel, Label } from "./types";
@@ -54,7 +55,12 @@ test("should display no groups data when no groups are available", async () => {
     getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
   );
   renderComponent(<Groups />);
-  await hasEmptyState("No groups", GroupsLabel.NO_GROUPS, "Create group");
+  const noGroupsCard = await screen.findByTestId(
+    NoEntityCardTestId.NO_ENTITY_CARD,
+  );
+  expect(
+    within(noGroupsCard).getByText(GroupsLabel.NO_GROUPS),
+  ).toBeInTheDocument();
 });
 
 test("should display error notification and refetch data", async () => {

@@ -8,8 +8,9 @@ import {
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
 import { getGetRolesIdEntitlementsMockHandler } from "api/roles-id/roles-id.msw";
+import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { hasEmptyState, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import Roles from "./Roles";
 import { Label, Label as RolesLabel } from "./types";
@@ -58,7 +59,12 @@ test("should display no roles data when no roles are available", async () => {
     getGetRolesMockHandler(getGetRolesResponseMock({ data: [] })),
   );
   renderComponent(<Roles />);
-  await hasEmptyState("No roles", RolesLabel.NO_ROLES, "Create role");
+  const noRolesCard = await screen.findByTestId(
+    NoEntityCardTestId.NO_ENTITY_CARD,
+  );
+  expect(
+    within(noRolesCard).getByText(RolesLabel.NO_ROLES),
+  ).toBeInTheDocument();
 });
 
 test("should display error notification and refetch data", async () => {
