@@ -5,6 +5,7 @@ import { type Props } from "./types";
 
 const FormikSubmitButton = ({
   appearance = "positive",
+  enabled,
   disabled,
   ...props
 }: Props) => {
@@ -13,7 +14,7 @@ const FormikSubmitButton = ({
     <ActionButton
       {...props}
       appearance={appearance}
-      disabled={disabled || !isValid || !dirty}
+      disabled={enabled === true ? false : disabled || !isValid || !dirty}
       type="submit"
     />
   );

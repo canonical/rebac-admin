@@ -7,7 +7,10 @@ export type Entitlement = {
 export type Props = {
   addEntitlements: Entitlement[];
   error?: string | null;
+  existingEntitlements?: string[];
+  removeEntitlements: Entitlement[];
   setAddEntitlements: (addEntitlements: Entitlement[]) => void;
+  setRemoveEntitlements: (removeEntitlements: Entitlement[]) => void;
 };
 
 export enum Label {

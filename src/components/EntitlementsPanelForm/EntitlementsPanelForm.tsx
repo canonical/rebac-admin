@@ -9,6 +9,7 @@ import {
   Icon,
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { ReactNode } from "react";
 import { useMemo } from "react";
 import type { Column } from "react-table";
 import * as Yup from "yup";
@@ -45,39 +46,96 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
+type RowData = {
+  entity: ReactNode;
+  resource: ReactNode;
+  entitlement: ReactNode;
+  actions: ReactNode;
+};
+
+const parseEntitlement = (entitlement: string): Entitlement | null => {
+  const parts = entitlement.match(/(^.+)::(.+):(.+)/);
+  if (!parts) {
+    return null;
+  }
+  return {
+    entitlement: parts[1],
+    entity: parts[2],
+    resource: parts[3],
+  };
+};
+
+const entitlementMatches = (
+  entitlementA: Entitlement,
+  entitlementB: Entitlement,
+) =>
+  !Object.keys(entitlementA).some((key) => {
+    const entitlementKey = key as keyof Entitlement;
+    return entitlementA[entitlementKey] !== entitlementB[entitlementKey];
+  });
+
 const EntitlementsPanelForm = ({
   error,
+  existingEntitlements,
   addEntitlements,
   setAddEntitlements,
+  removeEntitlements,
+  setRemoveEntitlements,
 }: Props) => {
-  const tableData = useMemo(
-    () =>
-      addEntitlements.map((entitlement) => ({
-        ...entitlement,
-        actions: (
-          <Button
-            appearance="base"
-            hasIcon
-            onClick={() => {
-              setAddEntitlements(
-                addEntitlements.filter((addEntitlement) =>
-                  Object.keys(addEntitlement).some((key) => {
-                    const entitlementKey = key as keyof Entitlement;
-                    return (
-                      addEntitlement[entitlementKey] !==
-                      entitlement[entitlementKey]
-                    );
-                  }),
-                ),
-              );
-            }}
-          >
-            <Icon name="delete" aria-label={Label.REMOVE} />
-          </Button>
-        ),
-      })),
-    [addEntitlements, setAddEntitlements],
-  );
+  const tableData = useMemo(() => {
+    const add = addEntitlements.map((entitlement) => ({
+      ...entitlement,
+      actions: (
+        <Button
+          appearance="base"
+          hasIcon
+          onClick={() => {
+            setAddEntitlements(
+              addEntitlements.filter((addEntitlement) =>
+                entitlementMatches(addEntitlement, entitlement),
+              ),
+            );
+          }}
+        >
+          <Icon name="delete" aria-label={Label.REMOVE} />
+        </Button>
+      ),
+    }));
+    const existing =
+      existingEntitlements?.reduce<RowData[]>((filtered, id) => {
+        const entitlement = parseEntitlement(id);
+        if (
+          entitlement &&
+          !removeEntitlements.find((removed) =>
+            entitlementMatches(entitlement, removed),
+          )
+        ) {
+          filtered.push({
+            ...entitlement,
+            actions: (
+              <Button
+                appearance="base"
+                hasIcon
+                onClick={() => {
+                  setRemoveEntitlements([...removeEntitlements, entitlement]);
+                }}
+              >
+                <Icon name="delete" aria-label={Label.REMOVE} />
+              </Button>
+            ),
+          });
+        }
+        return filtered;
+      }, []) ?? [];
+
+    return [...add, ...existing];
+  }, [
+    addEntitlements,
+    existingEntitlements,
+    removeEntitlements,
+    setAddEntitlements,
+    setRemoveEntitlements,
+  ]);
   return (
     <>
       {error ? (
@@ -89,7 +147,6 @@ const EntitlementsPanelForm = ({
           </Col>
         </Row>
       ) : null}
-
       <Row>
         <Col size={12}>
           <Formik<Entitlement>
@@ -142,7 +199,6 @@ const EntitlementsPanelForm = ({
                   return {
                     className: "u-align--right",
                   };
-
                 default:
                   return {};
               }
@@ -153,7 +209,6 @@ const EntitlementsPanelForm = ({
                   return {
                     className: "u-align--right",
                   };
-
                 default:
                   return {};
               }

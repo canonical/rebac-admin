@@ -1,4 +1,4 @@
-import { FormikField } from "@canonical/react-components";
+import { FormikField, Spinner } from "@canonical/react-components";
 import { useState } from "react";
 import * as Yup from "yup";
 
@@ -13,26 +13,49 @@ const schema = Yup.object().shape({
   id: Yup.string().required("Required"),
 });
 
-const RolePanel = ({ close, error, roleId, onSubmit, isSaving }: Props) => {
+const RolePanel = ({
+  close,
+  error,
+  existingEntitlements,
+  isFetchingExisting,
+  roleId,
+  onSubmit,
+  isSaving,
+}: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
+  const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
+    [],
+  );
   const isEditing = !!roleId;
   return (
     <PanelForm<FormFields>
+      submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
       close={close}
       entity="role"
       error={error}
-      initialValues={{ id: "" }}
+      initialValues={{ id: roleId ?? "" }}
+      isEditing={isEditing}
       isSaving={isSaving}
-      onSubmit={async (values) => await onSubmit(values, addEntitlements)}
+      onSubmit={async (values) =>
+        await onSubmit(values, addEntitlements, removeEntitlements)
+      }
       subForms={[
         {
-          count: addEntitlements.length,
+          count:
+            (existingEntitlements?.length ?? 0) +
+            addEntitlements.length -
+            removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
-          view: (
+          view: isFetchingExisting ? (
+            <Spinner />
+          ) : (
             <EntitlementsPanelForm
               addEntitlements={addEntitlements}
+              existingEntitlements={existingEntitlements}
+              removeEntitlements={removeEntitlements}
               setAddEntitlements={setAddEntitlements}
+              setRemoveEntitlements={setRemoveEntitlements}
             />
           ),
         },

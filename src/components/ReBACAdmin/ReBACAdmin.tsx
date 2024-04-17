@@ -1,3 +1,5 @@
+import process from "process";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
@@ -12,6 +14,14 @@ import { ReBACAdminContext } from "context/ReBACAdminContext";
 import urls from "urls";
 
 import "scss/index.scss";
+
+// Webpack 5 no longer makes node variables available at runtime so we need to
+// attach `process` to the window:
+// https://github.com/facebook/create-react-app/issues/12212
+// This is used by the async limiter.
+if (!window.process) {
+  window.process = process;
+}
 
 export type Props = {
   // The absolute API URL.
