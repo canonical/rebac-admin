@@ -38,9 +38,10 @@ import type {
   GetRolesId200,
   GetRolesIdEntitlements200,
   GetRolesIdEntitlementsParams,
+  GetRolesIdGroups200,
+  GetRolesIdGroupsParams,
   NotFoundResponse,
   Response,
-  Role,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -138,10 +139,9 @@ export const useGetRolesId = <
  */
 export const patchRolesId = (
   id: string,
-  role: Role,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(`/roles/${id}`, role, options);
+): Promise<AxiosResponse<DefaultResponse>> => {
+  return axios.patch(`/roles/${id}`, undefined, options);
 };
 
 export const getPatchRolesIdMutationOptions = <
@@ -149,6 +149,7 @@ export const getPatchRolesIdMutationOptions = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -156,25 +157,25 @@ export const getPatchRolesIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchRolesId>>,
     TError,
-    { id: string; data: Role },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchRolesId>>,
   TError,
-  { id: string; data: Role },
+  { id: string },
   TContext
 > => {
   const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchRolesId>>,
-    { id: string; data: Role }
+    { id: string }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id } = props ?? {};
 
-    return patchRolesId(id, data, axiosOptions);
+    return patchRolesId(id, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -183,9 +184,13 @@ export const getPatchRolesIdMutationOptions = <
 export type PatchRolesIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchRolesId>>
 >;
-export type PatchRolesIdMutationBody = Role;
+
 export type PatchRolesIdMutationError = AxiosError<
-  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+  | BadRequestResponse
+  | UnauthorizedResponse
+  | NotFoundResponse
+  | Response
+  | DefaultResponse
 >;
 
 /**
@@ -196,6 +201,7 @@ export const usePatchRolesId = <
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
+    | Response
     | DefaultResponse
   >,
   TContext = unknown,
@@ -203,14 +209,14 @@ export const usePatchRolesId = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof patchRolesId>>,
     TError,
-    { id: string; data: Role },
+    { id: string },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchRolesId>>,
   TError,
-  { id: string; data: Role },
+  { id: string },
   TContext
 > => {
   const mutationOptions = getPatchRolesIdMutationOptions(options);
@@ -223,7 +229,7 @@ export const usePatchRolesId = <
 export const deleteRolesId = (
   id: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<Response>> => {
   return axios.delete(`/roles/${id}`, options);
 };
 
@@ -507,7 +513,7 @@ export const deleteRolesIdEntitlementsEntitlementId = (
   id: string,
   entitlementId: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
+): Promise<AxiosResponse<Response>> => {
   return axios.delete(`/roles/${id}/entitlements/${entitlementId}`, options);
 };
 
@@ -588,4 +594,110 @@ export const useDeleteRolesIdEntitlementsEntitlementId = <
     getDeleteRolesIdEntitlementsEntitlementIdMutationOptions(options);
 
   return useMutation(mutationOptions);
+};
+/**
+ * @summary Get the groups of a role
+ */
+export const getRolesIdGroups = (
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<GetRolesIdGroups200>> => {
+  return axios.get(`/roles/${id}/groups`, {
+    ...options,
+    params: { ...params, ...options?.params },
+  });
+};
+
+export const getGetRolesIdGroupsQueryKey = (
+  id: string,
+  params?: GetRolesIdGroupsParams,
+) => {
+  return [`/roles/${id}/groups`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetRolesIdGroupsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRolesIdGroups>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRolesIdGroups>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetRolesIdGroupsQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRolesIdGroups>>
+  > = ({ signal }) => getRolesIdGroups(id, params, { signal, ...axiosOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRolesIdGroups>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRolesIdGroupsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRolesIdGroups>>
+>;
+export type GetRolesIdGroupsQueryError = AxiosError<
+  BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
+>;
+
+/**
+ * @summary Get the groups of a role
+ */
+export const useGetRolesIdGroups = <
+  TData = Awaited<ReturnType<typeof getRolesIdGroups>>,
+  TError = AxiosError<
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | NotFoundResponse
+    | DefaultResponse
+  >,
+>(
+  id: string,
+  params?: GetRolesIdGroupsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRolesIdGroups>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRolesIdGroupsQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
 };
