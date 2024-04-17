@@ -53,7 +53,6 @@ test("should display correct role data after fetching roles", async () => {
   expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should display no roles data when no roles are available", async () => {
   mockApiServer.use(
     getGetRolesMockHandler(getGetRolesResponseMock({ data: [] })),

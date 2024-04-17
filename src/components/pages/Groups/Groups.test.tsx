@@ -49,7 +49,6 @@ test("should display correct group data after fetching groups", async () => {
   expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should display no groups data when no groups are available", async () => {
   mockApiServer.use(
     getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
