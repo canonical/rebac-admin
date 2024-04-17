@@ -17,6 +17,7 @@ import PanelFormNavigation from "./PanelFormNavigation";
 import { Label, TestId, type Props } from "./types";
 
 const PanelForm = <F extends FormikValues>({
+  submitEnabled,
   children,
   close,
   entity,
@@ -35,6 +36,7 @@ const PanelForm = <F extends FormikValues>({
       <div className="p-panel__header">
         <div className="p-panel__title">
           <PanelFormNavigation
+            isEditing={isEditing}
             panelEntity={entity}
             setView={setView}
             view={view}
@@ -89,7 +91,10 @@ const PanelForm = <F extends FormikValues>({
                   <Button appearance="base" onClick={close} type="button">
                     {Label.CANCEL}
                   </Button>
-                  <FormikSubmitButton loading={isSaving}>
+                  <FormikSubmitButton
+                    enabled={submitEnabled}
+                    loading={isSaving}
+                  >
                     {isEditing ? `Update ${entity}` : `Create ${entity}`}
                   </FormikSubmitButton>
                 </Col>

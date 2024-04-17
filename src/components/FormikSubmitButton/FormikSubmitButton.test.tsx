@@ -102,3 +102,57 @@ test("can be enabled", async () => {
   );
   expect(screen.getByRole("button", { name: "Go!" })).not.toBeDisabled();
 });
+
+test("can override disabled", async () => {
+  renderComponent(
+    <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Form>
+        <FormikSubmitButton enabled disabled>
+          Go!
+        </FormikSubmitButton>
+      </Form>
+    </Formik>,
+  );
+  expect(screen.getByRole("button", { name: "Go!" })).not.toBeDisabled();
+});
+
+test("can override disabled when the form is dirty", async () => {
+  const schema = Yup.object().shape({
+    resource: Yup.number(),
+  });
+  renderComponent(
+    <Formik
+      initialValues={{ resource: "" }}
+      onSubmit={vi.fn()}
+      validationSchema={schema}
+    >
+      <Form>
+        <FormikField name="resource" type="text" />
+        <FormikSubmitButton enabled>Go!</FormikSubmitButton>
+      </Form>
+    </Formik>,
+  );
+  expect(screen.getByRole("button", { name: "Go!" })).not.toBeDisabled();
+});
+
+test("can override disabled when there are errors", async () => {
+  const schema = Yup.object().shape({
+    resource: Yup.number(),
+  });
+  renderComponent(
+    <Formik
+      initialValues={{ resource: "" }}
+      onSubmit={vi.fn()}
+      validationSchema={schema}
+    >
+      <Form>
+        <FormikField name="resource" type="text" />
+        <FormikSubmitButton enabled>Go!</FormikSubmitButton>
+      </Form>
+    </Formik>,
+  );
+  await act(
+    async () => await userEvent.type(screen.getByRole("textbox"), "hello"),
+  );
+  expect(screen.getByRole("button", { name: "Go!" })).not.toBeDisabled();
+});

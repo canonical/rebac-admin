@@ -19,6 +19,8 @@ test("can add entitlements", async () => {
         },
       ]}
       setAddEntitlements={setAddEntitlements}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
     />,
   );
   await act(
@@ -61,7 +63,7 @@ test("can add entitlements", async () => {
 });
 
 test("can display entitlements", async () => {
-  const entitlements = [
+  const addEntitlements = [
     {
       entitlement: "can_view",
       entity: "admins",
@@ -73,19 +75,26 @@ test("can display entitlements", async () => {
       resource: "client",
     },
   ];
+  const existingEntitlements = [
+    "can_edit::moderators:collection",
+    "can_remove::staff:team",
+  ];
   renderComponent(
     <EntitlementsPanelForm
-      addEntitlements={entitlements}
+      addEntitlements={addEntitlements}
+      existingEntitlements={existingEntitlements}
       setAddEntitlements={vi.fn()}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
     />,
   );
   expect(
     screen.getByRole("row", {
       name: new RegExp(
         [
-          entitlements[0].entity,
-          entitlements[0].resource,
-          entitlements[0].entitlement,
+          addEntitlements[0].entity,
+          addEntitlements[0].resource,
+          addEntitlements[0].entitlement,
         ].join(" "),
       ),
     }),
@@ -94,16 +103,59 @@ test("can display entitlements", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          entitlements[1].entity,
-          entitlements[1].resource,
-          entitlements[1].entitlement,
+          addEntitlements[1].entity,
+          addEntitlements[1].resource,
+          addEntitlements[1].entitlement,
         ].join(" "),
       ),
     }),
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole("row", {
+      name: /moderators collection can_edit/,
+    }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("row", {
+      name: /staff team can_remove/,
+    }),
+  ).toBeInTheDocument();
 });
 
-test("can remove entitlements", async () => {
+test("does not display removed entitlements from the API", async () => {
+  const removeEntitlements = [
+    {
+      entitlement: "can_edit",
+      entity: "moderators",
+      resource: "collection",
+    },
+  ];
+  const existingEntitlements = [
+    "can_edit::moderators:collection",
+    "can_remove::staff:team",
+  ];
+  renderComponent(
+    <EntitlementsPanelForm
+      addEntitlements={[]}
+      existingEntitlements={existingEntitlements}
+      setAddEntitlements={vi.fn()}
+      removeEntitlements={removeEntitlements}
+      setRemoveEntitlements={vi.fn()}
+    />,
+  );
+  expect(
+    screen.queryByRole("row", {
+      name: /moderators collection can_edit/,
+    }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole("row", {
+      name: /staff team can_remove/,
+    }),
+  ).toBeInTheDocument();
+});
+
+test("can remove newly added entitlements", async () => {
   const entitlements = [
     {
       entitlement: "can_view",
@@ -121,12 +173,14 @@ test("can remove entitlements", async () => {
     <EntitlementsPanelForm
       addEntitlements={entitlements}
       setAddEntitlements={setAddEntitlements}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
     />,
   );
   await act(
     async () =>
       await userEvent.click(
-        screen.getAllByRole("button", { name: Label.REMOVE })[0],
+        screen.getAllByRole("button", { name: Label.REMOVE })[1],
       ),
   );
   expect(setAddEntitlements).toHaveBeenCalledWith([
@@ -138,6 +192,47 @@ test("can remove entitlements", async () => {
   ]);
 });
 
+test("can remove entitlements from the API", async () => {
+  const existingEntitlements = [
+    "can_edit::moderators:collection",
+    "can_remove::staff:team",
+  ];
+  const setRemoveEntitlements = vi.fn();
+  renderComponent(
+    <EntitlementsPanelForm
+      addEntitlements={[]}
+      existingEntitlements={existingEntitlements}
+      setAddEntitlements={vi.fn()}
+      removeEntitlements={[
+        {
+          entitlement: "can_remove",
+          entity: "staff",
+          resource: "team",
+        },
+      ]}
+      setRemoveEntitlements={setRemoveEntitlements}
+    />,
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: Label.REMOVE })[0],
+      ),
+  );
+  expect(setRemoveEntitlements).toHaveBeenCalledWith([
+    {
+      entitlement: "can_remove",
+      entity: "staff",
+      resource: "team",
+    },
+    {
+      entitlement: "can_edit",
+      entity: "moderators",
+      resource: "collection",
+    },
+  ]);
+});
+
 // eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
   renderComponent(
@@ -145,6 +240,8 @@ test("can display errors", async () => {
       error="Uh oh!"
       addEntitlements={[]}
       setAddEntitlements={vi.fn()}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
     />,
   );
   await hasNotification("Uh oh!");

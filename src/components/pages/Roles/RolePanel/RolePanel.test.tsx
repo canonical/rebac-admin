@@ -29,9 +29,7 @@ test("the input is disabled when editing", async () => {
 });
 
 test("the entitlement form can be displayed", async () => {
-  renderComponent(
-    <RolePanel close={vi.fn()} roleId="admin" onSubmit={vi.fn()} />,
-  );
+  renderComponent(<RolePanel close={vi.fn()} onSubmit={vi.fn()} />);
   await act(
     async () =>
       await userEvent.click(
@@ -41,4 +39,56 @@ test("the entitlement form can be displayed", async () => {
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
+});
+
+test("submit button is disabled when editing and there are no changes", async () => {
+  renderComponent(
+    <RolePanel
+      close={vi.fn()}
+      existingEntitlements={[
+        "can_edit::moderators:collection",
+        "can_remove::staff:team",
+      ]}
+      roleId="admin"
+      onSubmit={vi.fn()}
+    />,
+  );
+  expect(screen.getByRole("button", { name: "Update role" })).toBeDisabled();
+});
+
+test("submit button is enabled when editing and there are changes", async () => {
+  renderComponent(
+    <RolePanel
+      close={vi.fn()}
+      existingEntitlements={[
+        "can_edit::moderators:collection",
+        "can_remove::staff:team",
+      ]}
+      roleId="admin"
+      onSubmit={vi.fn()}
+    />,
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: /Edit entitlements/ }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", {
+          name: EntitlementsPanelFormLabel.REMOVE,
+        })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Update role" })[0],
+      ),
+  );
+  expect(
+    screen.getByRole("button", { name: "Update role" }),
+  ).not.toBeDisabled();
 });

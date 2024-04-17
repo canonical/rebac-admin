@@ -15,6 +15,7 @@ export type Props<F extends FormikValues> = {
   isEditing?: boolean;
   isSaving?: boolean;
   subForms: SubForm[];
+  submitEnabled?: boolean;
 } & PropsWithChildren &
   Omit<FormikConfig<F>, "children">;
 

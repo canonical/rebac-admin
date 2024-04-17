@@ -1925,6 +1925,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:4.2.1"
     "@vitest/coverage-v8": "npm:1.4.0"
     "@vitest/ui": "npm:1.3.1"
+    async-limiter: "npm:2.0.0"
     axios: "npm:1.6.7"
     classnames: "npm:2.5.1"
     clone-deep: "npm:4.0.1"
@@ -1948,6 +1949,7 @@ __metadata:
     orval: "npm:6.27.1"
     postcss: "npm:8.4.35"
     prettier: "npm:3.2.5"
+    process: "npm:0.11.10"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-hot-toast: "npm:2.4.1"
@@ -4894,6 +4896,13 @@ __metadata:
   bin:
     astring: bin/astring
   checksum: 10c0/31f09144597048c11072417959a412f208f8f95ba8dce408dfbc3367acb929f31fbcc00ed5eb61ccbf7c2f1173b9ac8bfcaaa37134a9455050c669b2b036ed88
+  languageName: node
+  linkType: hard
+
+"async-limiter@npm:2.0.0":
+  version: 2.0.0
+  resolution: "async-limiter@npm:2.0.0"
+  checksum: 10c0/ca56a29bc92b5d52cec7c342a7a28f1b1a755347d104f5c7d95a3d1af367962f009f9f439714810eb80faeba29f91d33dab736a2f8566259d56b85078a591c93
   languageName: node
   linkType: hard
 
@@ -10153,6 +10162,13 @@ __metadata:
   version: 3.0.0
   resolution: "proc-log@npm:3.0.0"
   checksum: 10c0/f66430e4ff947dbb996058f6fd22de2c66612ae1a89b097744e17fb18a4e8e7a86db99eda52ccf15e53f00b63f4ec0b0911581ff2aac0355b625c8eac509b0dc
+  languageName: node
+  linkType: hard
+
+"process@npm:0.11.10":
+  version: 0.11.10
+  resolution: "process@npm:0.11.10"
+  checksum: 10c0/40c3ce4b7e6d4b8c3355479df77aeed46f81b279818ccdc500124e6a5ab882c0cc81ff7ea16384873a95a74c4570b01b120f287abbdd4c877931460eca6084b3
   languageName: node
   linkType: hard
 
