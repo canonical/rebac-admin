@@ -92,6 +92,7 @@ const Groups = () => {
           title="No groups"
           message={Label.NO_GROUPS}
           actionButton={
+            // TODO: Add functionality to display the panel when clicked.
             <Button appearance={ButtonAppearance.POSITIVE}>Create group</Button>
           }
         />
