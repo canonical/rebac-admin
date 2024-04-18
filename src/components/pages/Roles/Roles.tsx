@@ -4,6 +4,7 @@ import {
   ModularTable,
   Spinner,
   Button,
+  ButtonAppearance,
 } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
@@ -73,6 +74,12 @@ const Roles = () => {
     }));
     return tableData;
   }, [data?.data.data, openPanel]);
+
+  const generateCreateRoleButton = () => (
+    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+      Create role
+    </Button>
+  );
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {

@@ -75,6 +75,12 @@ const Groups = () => {
     return tableData;
   }, [data?.data.data, openPanel]);
 
+  const generateCreateGroupButton = () => (
+    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+      Create group
+    </Button>
+  );
+
   const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text={Label.FETCHING_GROUPS} />;
@@ -91,10 +97,7 @@ const Groups = () => {
         <NoEntityCard
           title="No groups"
           message={Label.NO_GROUPS}
-          actionButton={
-            // TODO: Add functionality to display the panel when clicked.
-            <Button appearance={ButtonAppearance.POSITIVE}>Create group</Button>
-          }
+          actionButton={generateCreateGroupButton()}
         />
       );
     } else {
@@ -132,14 +135,7 @@ const Groups = () => {
   };
 
   return (
-    <Content
-      controls={
-        <Button appearance="positive" onClick={() => openPanel()}>
-          Create group
-        </Button>
-      }
-      title="Groups"
-    >
+    <Content controls={generateCreateGroupButton()} title="Groups">
       {generateContent()}
     </Content>
   );
