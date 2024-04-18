@@ -1,11 +1,17 @@
 import { useContext, useEffect } from "react";
+import type { UsePortalOptions } from "react-useportal";
 import usePortal from "react-useportal";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 
-export const usePanelPortal = (className?: string, labelledBy?: string) => {
+export const usePanelPortal = (
+  className?: string,
+  labelledBy?: string,
+  options?: UsePortalOptions,
+) => {
   const { asidePanelId } = useContext(ReBACAdminContext);
   const portal = usePortal({
+    ...options,
     bindTo: asidePanelId
       ? document.getElementById(asidePanelId) ?? undefined
       : undefined,

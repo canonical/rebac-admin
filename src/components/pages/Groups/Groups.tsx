@@ -1,14 +1,21 @@
-import { ModularTable, Spinner, Button } from "@canonical/react-components";
-import { useMemo, type JSX } from "react";
+import {
+  ModularTable,
+  Spinner,
+  Button,
+  ContextualMenu,
+  Icon,
+} from "@canonical/react-components";
+import type { JSX } from "react";
+import { useMemo } from "react";
 import type { Column } from "react-table";
 
 import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
-import { PanelFormNavigationTitleId } from "components/PanelForm/PanelFormNavigation/consts";
-import { usePanelPortal } from "hooks/usePanelPortal";
+import { usePanel } from "hooks/usePanel";
 
 import AddGroupPanel from "./AddGroupPanel";
+import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
 const COLUMN_DATA: Column[] = [
@@ -16,13 +23,22 @@ const COLUMN_DATA: Column[] = [
     Header: "group name",
     accessor: "groupName",
   },
+  {
+    Header: "actions",
+    accessor: "actions",
+  },
 ];
 
 const Groups = () => {
   const { data, isFetching, isError, error, refetch } = useGetGroups();
-  const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(
-    "is-medium",
-    PanelFormNavigationTitleId,
+  const { generatePanel, openPanel } = usePanel<{
+    editGroupId?: string | null;
+  }>((closePanel, data) =>
+    data?.editGroupId ? (
+      <EditGroupPanel groupId={data.editGroupId} close={closePanel} />
+    ) : (
+      <AddGroupPanel close={closePanel} />
+    ),
   );
 
   const tableData = useMemo(() => {
@@ -32,9 +48,31 @@ const Groups = () => {
     }
     const tableData = groups.map((group) => ({
       groupName: group,
+      actions: (
+        <ContextualMenu
+          links={[
+            {
+              appearance: "link",
+              children: (
+                <>
+                  <Icon name="edit" /> {Label.EDIT}
+                </>
+              ),
+              onClick: () => {
+                openPanel({ editGroupId: group });
+              },
+            },
+          ]}
+          position="right"
+          scrollOverflow
+          toggleAppearance="base"
+          toggleClassName="has-icon u-no-margin--bottom is-small"
+          toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
+        />
+      ),
     }));
     return tableData;
-  }, [data]);
+  }, [data?.data.data, openPanel]);
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {
@@ -54,12 +92,28 @@ const Groups = () => {
             columns={COLUMN_DATA}
             data={tableData}
             emptyMsg={Label.NO_GROUPS}
+            getCellProps={({ column }) => {
+              switch (column.id) {
+                case "actions":
+                  return {
+                    className: "u-align--right",
+                  };
+                default:
+                  return {};
+              }
+            }}
+            getHeaderProps={({ id }) => {
+              switch (id) {
+                case "actions":
+                  return {
+                    className: "u-align--right",
+                  };
+                default:
+                  return {};
+              }
+            }}
           />
-          {isOpen ? (
-            <Portal>
-              <AddGroupPanel close={closePortal} />
-            </Portal>
-          ) : null}
+          {generatePanel()}
         </>
       );
     }
@@ -68,7 +122,7 @@ const Groups = () => {
   return (
     <Content
       controls={
-        <Button appearance="positive" onClick={openPortal}>
+        <Button appearance="positive" onClick={() => openPanel()}>
           Create group
         </Button>
       }

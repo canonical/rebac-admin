@@ -55,3 +55,40 @@ test("submit button is disabled when editing and there are no changes", async ()
   );
   expect(screen.getByRole("button", { name: "Update group" })).toBeDisabled();
 });
+
+test("submit button is enabled when editing and there are changes", async () => {
+  renderComponent(
+    <GroupPanel
+      close={vi.fn()}
+      existingEntitlements={[
+        "can_edit::moderators:collection",
+        "can_remove::staff:team",
+      ]}
+      groupId="admin"
+      onSubmit={vi.fn()}
+    />,
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: /Edit entitlements/ }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", {
+          name: EntitlementsPanelFormLabel.REMOVE,
+        })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Update group" })[0],
+      ),
+  );
+  expect(
+    screen.getByRole("button", { name: "Update group" }),
+  ).not.toBeDisabled();
+});

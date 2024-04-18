@@ -2,44 +2,44 @@ import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
 import {
-  useDeleteRolesIdEntitlementsEntitlementId,
-  useGetRolesIdEntitlements,
-  usePatchRolesIdEntitlements,
-} from "api/roles-id/roles-id";
+  useDeleteGroupsIdEntitlementsEntitlementId,
+  useGetGroupsIdEntitlements,
+  usePatchGroupsIdEntitlements,
+} from "api/groups-id/groups-id";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 
-import RolePanel from "../RolePanel";
+import GroupPanel from "../GroupPanel";
 
 import type { Props } from "./types";
 
-const EditRolePanel = ({ close, roleId }: Props) => {
+const EditGroupPanel = ({ close, groupId }: Props) => {
   const {
-    error: getRolesIdEntitlementsError,
+    error: getGroupsIdEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExisting,
-  } = useGetRolesIdEntitlements(roleId);
+  } = useGetGroupsIdEntitlements(groupId);
   const {
-    mutateAsync: patchRolesIdEntitlements,
-    isPending: isPatchRolesIdEntitlementsPending,
-  } = usePatchRolesIdEntitlements();
+    mutateAsync: patchGroupsIdEntitlements,
+    isPending: isPatchGroupsIdEntitlementsPending,
+  } = usePatchGroupsIdEntitlements();
   const {
-    mutateAsync: deleteRolesIdEntitlementsEntitlementId,
-    isPending: isDeleteRolesIdEntitlementsEntitlementIdPending,
-  } = useDeleteRolesIdEntitlementsEntitlementId();
+    mutateAsync: deleteGroupsIdEntitlementsEntitlementId,
+    isPending: isDeleteGroupsIdEntitlementsEntitlementIdPending,
+  } = useDeleteGroupsIdEntitlementsEntitlementId();
   return (
-    <RolePanel
+    <GroupPanel
       close={close}
       error={
-        getRolesIdEntitlementsError
-          ? `Unable to get entitlements: ${getRolesIdEntitlementsError.response?.data.message}`
+        getGroupsIdEntitlementsError
+          ? `Unable to get entitlements: ${getGroupsIdEntitlementsError.response?.data.message}`
           : null
       }
       existingEntitlements={existingEntitlements?.data.data}
       isFetchingExisting={isFetchingExisting}
       isSaving={
-        isDeleteRolesIdEntitlementsEntitlementIdPending ||
-        isPatchRolesIdEntitlementsPending
+        isDeleteGroupsIdEntitlementsEntitlementIdPending ||
+        isPatchGroupsIdEntitlementsPending
       }
       onSubmit={async ({ id }, addEntitlements, removeEntitlements) => {
         let hasError = false;
@@ -47,7 +47,7 @@ const EditRolePanel = ({ close, roleId }: Props) => {
         if (addEntitlements.length) {
           queue.push(async (done) => {
             try {
-              await patchRolesIdEntitlements({
+              await patchGroupsIdEntitlements({
                 id,
                 data: {
                   permissions: addEntitlements.map(
@@ -68,7 +68,7 @@ const EditRolePanel = ({ close, roleId }: Props) => {
           removeEntitlements.forEach(({ resource, entitlement, entity }) => {
             queue.push(async (done) => {
               try {
-                await deleteRolesIdEntitlementsEntitlementId({
+                await deleteGroupsIdEntitlementsEntitlementId({
                   id,
                   entitlementId: `${entitlement}::${entity}:${resource}`,
                 });
@@ -90,15 +90,15 @@ const EditRolePanel = ({ close, roleId }: Props) => {
           } else {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`Role "${id}" was updated.`}
+                {`Group "${id}" was updated.`}
               </ToastCard>
             ));
           }
         });
       }}
-      roleId={roleId}
+      groupId={groupId}
     />
   );
 };
 
-export default EditRolePanel;
+export default EditGroupPanel;

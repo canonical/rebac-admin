@@ -5,14 +5,13 @@ import {
   Spinner,
   Button,
 } from "@canonical/react-components";
-import { useMemo, useState, type JSX } from "react";
+import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
-import { PanelFormNavigationTitleId } from "components/PanelForm/PanelFormNavigation/consts";
-import { usePanelPortal } from "hooks/usePanelPortal";
+import { usePanel } from "hooks/usePanel";
 
 import AddRolePanel from "./AddRolePanel";
 import EditRolePanel from "./EditRolePanel";
@@ -31,10 +30,14 @@ const COLUMN_DATA: Column[] = [
 
 const Roles = () => {
   const { data, isFetching, isError, error, refetch } = useGetRoles();
-  const [editRoleId, setEditRoleId] = useState<string | null>(null);
-  const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(
-    "is-medium",
-    PanelFormNavigationTitleId,
+  const { generatePanel, openPanel } = usePanel<{
+    editRoleId?: string | null;
+  }>((closePanel, data) =>
+    data?.editRoleId ? (
+      <EditRolePanel roleId={data.editRoleId} close={closePanel} />
+    ) : (
+      <AddRolePanel close={closePanel} />
+    ),
   );
 
   const tableData = useMemo(() => {
@@ -54,9 +57,8 @@ const Roles = () => {
                   <Icon name="edit" /> {Label.EDIT}
                 </>
               ),
-              onClick: (event) => {
-                setEditRoleId(role);
-                openPortal(event);
+              onClick: () => {
+                openPanel({ editRoleId: role });
               },
             },
           ]}
@@ -69,7 +71,7 @@ const Roles = () => {
       ),
     }));
     return tableData;
-  }, [data?.data.data, openPortal]);
+  }, [data?.data.data, openPanel]);
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {
@@ -110,21 +112,7 @@ const Roles = () => {
               }
             }}
           />
-          {isOpen ? (
-            <Portal>
-              {editRoleId ? (
-                <EditRolePanel
-                  roleId={editRoleId}
-                  close={() => {
-                    setEditRoleId(null);
-                    closePortal();
-                  }}
-                />
-              ) : (
-                <AddRolePanel close={closePortal} />
-              )}
-            </Portal>
-          ) : null}
+          {generatePanel()}
         </>
       );
     }
@@ -133,7 +121,7 @@ const Roles = () => {
   return (
     <Content
       controls={
-        <Button appearance="positive" onClick={openPortal}>
+        <Button appearance="positive" onClick={() => openPanel()}>
           Create role
         </Button>
       }

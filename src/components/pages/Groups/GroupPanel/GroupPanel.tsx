@@ -23,7 +23,9 @@ const GroupPanel = ({
   isSaving,
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
-  const [removeEntitlements] = useState<Entitlement[]>([]);
+  const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
+    [],
+  );
   const isEditing = !!groupId;
   return (
     <PanelForm<FormFields>
@@ -50,7 +52,10 @@ const GroupPanel = ({
           ) : (
             <EntitlementsPanelForm
               addEntitlements={addEntitlements}
+              existingEntitlements={existingEntitlements}
+              removeEntitlements={removeEntitlements}
               setAddEntitlements={setAddEntitlements}
+              setRemoveEntitlements={setRemoveEntitlements}
             />
           ),
         },
