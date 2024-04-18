@@ -85,3 +85,43 @@ test("can add and remove additional classes", async () => {
   await act(async () => await userEvent.click(toggle));
   expect(document.getElementById(containerId)).not.toHaveClass("extra-class");
 });
+
+test("should not close portal when clicking esc", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: containerId }}>
+      <div id={containerId}></div>
+      <TestComponent />
+    </ReBACAdminContext.Provider>,
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
+  );
+  expect(screen.getByText(content)).toBeInTheDocument();
+  const container = document.getElementById(containerId);
+  expect(container).toHaveClass("l-aside");
+  expect(container?.firstChild).toHaveClass("p-panel");
+  await act(async () => await userEvent.keyboard("{Escape}"));
+  expect(container).toHaveClass("l-aside");
+  expect(container?.firstChild).toHaveClass("p-panel");
+});
+
+test("should not close portal when clicking outside the panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: containerId }}>
+      <div id={containerId}></div>
+      <TestComponent />
+    </ReBACAdminContext.Provider>,
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
+  );
+  expect(screen.getByText(content)).toBeInTheDocument();
+  const container = document.getElementById(containerId);
+  expect(container).toHaveClass("l-aside");
+  expect(container?.firstChild).toHaveClass("p-panel");
+  await act(async () => await userEvent.click(document.body));
+  expect(container).toHaveClass("l-aside");
+  expect(container?.firstChild).toHaveClass("p-panel");
+});
