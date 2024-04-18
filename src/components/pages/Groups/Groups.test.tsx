@@ -7,10 +7,11 @@ import {
   getGetGroupsMockHandler404,
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
 
 import Groups from "./Groups";
-import { Label as GroupsLabel } from "./types";
+import { Label as GroupsLabel, Label } from "./types";
 
 const mockGroupsData = getGetGroupsResponseMock({
   data: ["global", "administrator", "viewer"],
@@ -36,9 +37,7 @@ test("should display spinner on mount", () => {
 
 test("should display correct group data after fetching groups", async () => {
   renderComponent(<Groups />);
-  const columnHeaders = await screen.findAllByRole("columnheader");
-  expect(columnHeaders).toHaveLength(1);
-  const rows = screen.getAllByRole("row");
+  const rows = await screen.findAllByRole("row");
   // The first row contains the column header and the next 3 rows contain
   // group data.
   expect(rows).toHaveLength(4);
@@ -74,4 +73,27 @@ test("should display error notification and refetch data", async () => {
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
   expect(rows).toHaveLength(4);
+});
+
+test("displays the edit panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Groups />
+    </ReBACAdminContext.Provider>,
+  );
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: Label.ACTION_MENU,
+    })
+  )[0];
+  await act(async () => await userEvent.click(contextMenu));
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: Label.EDIT })),
+  );
+  const panel = await screen.findByRole("complementary", {
+    name: "Edit group",
+  });
+  expect(panel).toBeInTheDocument();
 });

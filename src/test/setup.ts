@@ -7,7 +7,7 @@ declare global {
 }
 
 configure({
-  // Needs to be long enough to handle multiple requests that have the 900ms
+  // Needs to be long enough to handle multiple requests that have the 10ms
   // delay set in the Orval mocks.
-  asyncUtilTimeout: 5000,
+  asyncUtilTimeout: 2000,
 });
