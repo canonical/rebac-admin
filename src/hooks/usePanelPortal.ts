@@ -15,6 +15,8 @@ export const usePanelPortal = (
     bindTo: asidePanelId
       ? document.getElementById(asidePanelId) ?? undefined
       : undefined,
+    closeOnOutsideClick: false,
+    closeOnEsc: false,
   });
   const { isOpen, portalRef } = portal;
 
