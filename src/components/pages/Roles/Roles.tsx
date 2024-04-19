@@ -97,7 +97,7 @@ const Roles = () => {
         <NoEntityCard
           title="No roles"
           message={Label.NO_ROLES}
-          actionButton={<RolePanelButton />}
+          actionButton={generateCreateRoleButton()}
         />
       );
     } else {
@@ -135,14 +135,7 @@ const Roles = () => {
   };
 
   return (
-    <Content
-      controls={
-        <Button appearance="positive" onClick={() => openPanel()}>
-          Create role
-        </Button>
-      }
-      title="Roles"
-    >
+    <Content controls={generateCreateRoleButton()} title="Roles">
       {generateContent()}
     </Content>
   );
