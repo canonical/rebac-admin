@@ -4,6 +4,7 @@ import {
   ModularTable,
   Spinner,
   Button,
+  ButtonAppearance,
 } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
@@ -11,6 +12,7 @@ import type { Column } from "react-table";
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
+import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
 
 import AddRolePanel from "./AddRolePanel";
@@ -73,6 +75,12 @@ const Roles = () => {
     return tableData;
   }, [data?.data.data, openPanel]);
 
+  const generateCreateRoleButton = () => (
+    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+      Create role
+    </Button>
+  );
+
   const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text={Label.FETCHING_ROLES} />;
@@ -82,6 +90,14 @@ const Roles = () => {
           message={Label.FETCHING_ROLES_ERROR}
           error={error?.message ?? ""}
           onRefetch={() => void refetch()}
+        />
+      );
+    } else if (!tableData.length) {
+      return (
+        <NoEntityCard
+          title="No roles"
+          message={Label.NO_ROLES}
+          actionButton={generateCreateRoleButton()}
         />
       );
     } else {
@@ -119,14 +135,7 @@ const Roles = () => {
   };
 
   return (
-    <Content
-      controls={
-        <Button appearance="positive" onClick={() => openPanel()}>
-          Create role
-        </Button>
-      }
-      title="Roles"
-    >
+    <Content controls={generateCreateRoleButton()} title="Roles">
       {generateContent()}
     </Content>
   );

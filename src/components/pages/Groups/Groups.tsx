@@ -4,14 +4,15 @@ import {
   Button,
   ContextualMenu,
   Icon,
+  ButtonAppearance,
 } from "@canonical/react-components";
-import type { JSX } from "react";
-import { useMemo } from "react";
+import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
 import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
+import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
 
 import AddGroupPanel from "./AddGroupPanel";
@@ -74,6 +75,12 @@ const Groups = () => {
     return tableData;
   }, [data?.data.data, openPanel]);
 
+  const generateCreateGroupButton = () => (
+    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+      Create group
+    </Button>
+  );
+
   const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text={Label.FETCHING_GROUPS} />;
@@ -83,6 +90,14 @@ const Groups = () => {
           message={Label.FETCHING_GROUPS_ERROR}
           error={error?.message ?? ""}
           onRefetch={() => void refetch()}
+        />
+      );
+    } else if (!tableData.length) {
+      return (
+        <NoEntityCard
+          title="No groups"
+          message={Label.NO_GROUPS}
+          actionButton={generateCreateGroupButton()}
         />
       );
     } else {
@@ -120,14 +135,7 @@ const Groups = () => {
   };
 
   return (
-    <Content
-      controls={
-        <Button appearance="positive" onClick={() => openPanel()}>
-          Create group
-        </Button>
-      }
-      title="Groups"
-    >
+    <Content controls={generateCreateGroupButton()} title="Groups">
       {generateContent()}
     </Content>
   );

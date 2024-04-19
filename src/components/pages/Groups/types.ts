@@ -3,5 +3,5 @@ export enum Label {
   EDIT = "Edit",
   FETCHING_GROUPS = "Fetching groups data...",
   FETCHING_GROUPS_ERROR = "Couldn't fetch group data.",
-  NO_GROUPS = "No groups found!",
+  NO_GROUPS = "Groups are an easy way to manage the structured assignment of roles and entitlements",
 }
