@@ -8,12 +8,16 @@ export type Props = {
   close: () => void;
   error?: string | null;
   existingEntitlements?: string[];
-  isFetchingExisting?: boolean;
+  existingIdentities?: string[];
+  isFetchingExistingEntitlements?: boolean;
+  isFetchingExistingIdentities?: boolean;
   isSaving?: boolean;
   onSubmit: (
     values: FormFields,
     addEntitlements: Entitlement[],
+    addIdentities: string[],
     removeEntitlements?: Entitlement[],
+    removeIdentities?: string[],
   ) => Promise<void>;
   groupId?: string | null;
 };

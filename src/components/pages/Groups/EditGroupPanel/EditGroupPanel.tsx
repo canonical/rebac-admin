@@ -17,7 +17,7 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
   const {
     error: getGroupsIdEntitlementsError,
     data: existingEntitlements,
-    isFetching: isFetchingExisting,
+    isFetching: isFetchingExistingEntitlements,
   } = useGetGroupsIdEntitlements(groupId);
   const {
     mutateAsync: patchGroupsIdEntitlements,
@@ -36,12 +36,17 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
           : null
       }
       existingEntitlements={existingEntitlements?.data.data}
-      isFetchingExisting={isFetchingExisting}
+      isFetchingExistingEntitlements={isFetchingExistingEntitlements}
       isSaving={
         isDeleteGroupsIdEntitlementsEntitlementIdPending ||
         isPatchGroupsIdEntitlementsPending
       }
-      onSubmit={async ({ id }, addEntitlements, removeEntitlements) => {
+      onSubmit={async (
+        { id },
+        addEntitlements,
+        _addIdentities,
+        removeEntitlements,
+      ) => {
         let hasError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length) {

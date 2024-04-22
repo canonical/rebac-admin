@@ -5,6 +5,8 @@ import { vi } from "vitest";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
+import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
+
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
 
@@ -38,6 +40,17 @@ test("the entitlement form can be displayed", async () => {
   );
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
+  ).toBeInTheDocument();
+});
+
+test("the user form can be displayed", async () => {
+  renderComponent(<GroupPanel close={vi.fn()} onSubmit={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Add users/ })),
+  );
+  expect(
+    screen.getByRole("form", { name: IdentitiesPanelFormLabel.FORM }),
   ).toBeInTheDocument();
 });
 

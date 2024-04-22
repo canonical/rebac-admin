@@ -1,14 +1,19 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
 import { usePostGroups } from "api/groups/groups";
-import { usePatchGroupsIdEntitlements } from "api/groups-id/groups-id";
+import {
+  usePatchGroupsIdEntitlements,
+  usePatchGroupsIdIdentities,
+} from "api/groups-id/groups-id";
 import ToastCard from "components/ToastCard";
+import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
 import GroupPanel from "../GroupPanel";
 
+import { Label } from "./types";
 import type { Props } from "./types";
 
 const AddGroupPanel = ({ close }: Props) => {
@@ -22,6 +27,10 @@ const AddGroupPanel = ({ close }: Props) => {
     mutateAsync: patchGroupsIdEntitlements,
     isPending: isPatchGroupsIdEntitlementsPending,
   } = usePatchGroupsIdEntitlements();
+  const {
+    mutateAsync: patchGroupsIdIdentities,
+    isPending: isPatchGroupsIdIdentitiesPending,
+  } = usePatchGroupsIdIdentities();
 
   return (
     <GroupPanel
@@ -31,48 +40,81 @@ const AddGroupPanel = ({ close }: Props) => {
           ? `Unable to create group: ${postGroupsError.response?.data.message}`
           : null
       }
-      isSaving={isPostGroupsPending || isPatchGroupsIdEntitlementsPending}
-      onSubmit={async ({ id }, addEntitlements) => {
+      isSaving={
+        isPostGroupsPending ||
+        isPatchGroupsIdEntitlementsPending ||
+        isPatchGroupsIdIdentitiesPending
+      }
+      onSubmit={async ({ id }, addEntitlements, addIdentities) => {
         try {
           await postGroups({ data: { id } });
         } catch (error) {
           // These errors are handled by the errors returned by `usePostGroups`.
           return;
         }
+        let hasEntitlementsError = false;
+        let hasIdentitiesError = false;
+        const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length) {
-          try {
-            await patchGroupsIdEntitlements({
-              id,
-              data: {
-                permissions: addEntitlements.map(
-                  ({ resource, entitlement, entity }) => ({
-                    object: `${entity}:${resource}`,
-                    relation: entitlement,
-                  }),
-                ),
-              },
-            });
-          } catch (error) {
+          queue.push(async (done) => {
+            try {
+              await patchGroupsIdEntitlements({
+                id,
+                data: {
+                  permissions: addEntitlements.map(
+                    ({ resource, entitlement, entity }) => ({
+                      object: `${entity}:${resource}`,
+                      relation: entitlement,
+                    }),
+                  ),
+                },
+              });
+            } catch (error) {
+              hasEntitlementsError = true;
+            }
+            done();
+          });
+        }
+        if (addIdentities.length) {
+          queue.push(async (done) => {
+            try {
+              await patchGroupsIdIdentities({
+                id,
+                data: {
+                  identities: addIdentities,
+                },
+              });
+            } catch (error) {
+              hasIdentitiesError = true;
+            }
+            done();
+          });
+        }
+        queue.onDone(() => {
+          void queryClient.invalidateQueries({
+            queryKey: [Endpoint.GROUPS],
+          });
+          close();
+          if (hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
-                {`Entitlements couldn't be added: "${
-                  error instanceof AxiosError
-                    ? error.response?.data.message
-                    : "unknown error"
-                }".`}
+                {Label.ENTITLEMENTS_ERROR}
               </ToastCard>
             ));
           }
-        }
-        void queryClient.invalidateQueries({
-          queryKey: [Endpoint.GROUPS],
+          if (hasIdentitiesError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.IDENTITIES_ERROR}
+              </ToastCard>
+            ));
+          }
+          reactHotToast.custom((t) => (
+            <ToastCard toastInstance={t} type="positive">
+              {`Group "${id}" was created.`}
+            </ToastCard>
+          ));
         });
-        close();
-        reactHotToast.custom((t) => (
-          <ToastCard toastInstance={t} type="positive">
-            {`Group "${id}" was created.`}
-          </ToastCard>
-        ));
       }}
     />
   );

@@ -294,7 +294,7 @@ export type EntityEntitlementsDataItem = {
 };
 
 export interface IdentitiesPatchRequest {
-  permissions: string[];
+  identities: string[];
 }
 
 export type Identity = string;

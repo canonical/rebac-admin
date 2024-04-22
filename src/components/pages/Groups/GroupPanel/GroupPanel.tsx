@@ -6,6 +6,8 @@ import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import PanelForm from "components/PanelForm";
 
+import IdentitiesPanelForm from "../IdentitiesPanelForm";
+
 import type { FormFields } from "./types";
 import { Label, type Props } from "./types";
 
@@ -17,7 +19,9 @@ const GroupPanel = ({
   close,
   error,
   existingEntitlements,
-  isFetchingExisting,
+  existingIdentities,
+  isFetchingExistingEntitlements,
+  isFetchingExistingIdentities,
   groupId,
   onSubmit,
   isSaving,
@@ -26,6 +30,8 @@ const GroupPanel = ({
   const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
     [],
   );
+  const [addIdentities, setAddIdentities] = useState<string[]>([]);
+  const [removeIdentities, setRemoveIdentities] = useState<string[]>([]);
   const isEditing = !!groupId;
   return (
     <PanelForm<FormFields>
@@ -37,9 +43,34 @@ const GroupPanel = ({
       isEditing={isEditing}
       isSaving={isSaving}
       onSubmit={async (values) =>
-        await onSubmit(values, addEntitlements, removeEntitlements)
+        await onSubmit(
+          values,
+          addEntitlements,
+          addIdentities,
+          removeEntitlements,
+          removeIdentities,
+        )
       }
       subForms={[
+        {
+          count:
+            (existingIdentities?.length ?? 0) +
+            addIdentities.length -
+            removeIdentities.length,
+          entity: "user",
+          icon: "user",
+          view: isFetchingExistingIdentities ? (
+            <Spinner />
+          ) : (
+            <IdentitiesPanelForm
+              addIdentities={addIdentities}
+              existingIdentities={existingIdentities}
+              removeIdentities={removeIdentities}
+              setAddIdentities={setAddIdentities}
+              setRemoveIdentities={setRemoveIdentities}
+            />
+          ),
+        },
         {
           count:
             (existingEntitlements?.length ?? 0) +
@@ -47,7 +78,7 @@ const GroupPanel = ({
             removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
-          view: isFetchingExisting ? (
+          view: isFetchingExistingEntitlements ? (
             <Spinner />
           ) : (
             <EntitlementsPanelForm
