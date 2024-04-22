@@ -1250,9 +1250,9 @@ components:
     IdentitiesPatchRequest:
       type: object
       required:
-        - permissions
+        - identities
       properties:
-        permissions:
+        identities:
           type: array
           items:
             type: string

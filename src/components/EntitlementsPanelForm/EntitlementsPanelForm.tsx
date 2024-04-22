@@ -155,7 +155,7 @@ const EntitlementsPanelForm = ({
               setAddEntitlements([...addEntitlements, values]);
               helpers.resetForm();
               document
-                .querySelector<HTMLInputElement>("input[name='resource']")
+                .querySelector<HTMLInputElement>("input[name='entity']")
                 ?.focus();
             }}
             validationSchema={schema}
