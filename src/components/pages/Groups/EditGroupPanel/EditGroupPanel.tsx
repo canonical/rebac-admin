@@ -45,6 +45,7 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
         { id },
         addEntitlements,
         _addIdentities,
+        _addRoles,
         removeEntitlements,
       ) => {
         let hasError = false;

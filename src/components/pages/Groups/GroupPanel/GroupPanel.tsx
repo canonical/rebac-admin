@@ -7,6 +7,7 @@ import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import PanelForm from "components/PanelForm";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
+import RolesPanelForm from "../RolesPanelForm";
 
 import type { FormFields } from "./types";
 import { Label, type Props } from "./types";
@@ -22,6 +23,8 @@ const GroupPanel = ({
   existingIdentities,
   isFetchingExistingEntitlements,
   isFetchingExistingIdentities,
+  isFetchingExistingRoles,
+  existingRoles,
   groupId,
   onSubmit,
   isSaving,
@@ -32,6 +35,8 @@ const GroupPanel = ({
   );
   const [addIdentities, setAddIdentities] = useState<string[]>([]);
   const [removeIdentities, setRemoveIdentities] = useState<string[]>([]);
+  const [addRoles, setAddRoles] = useState<string[]>([]);
+  const [removeRoles, setRemoveRoles] = useState<string[]>([]);
   const isEditing = !!groupId;
   return (
     <PanelForm<FormFields>
@@ -47,8 +52,10 @@ const GroupPanel = ({
           values,
           addEntitlements,
           addIdentities,
+          addRoles,
           removeEntitlements,
           removeIdentities,
+          removeRoles,
         )
       }
       subForms={[
@@ -68,6 +75,23 @@ const GroupPanel = ({
               removeIdentities={removeIdentities}
               setAddIdentities={setAddIdentities}
               setRemoveIdentities={setRemoveIdentities}
+            />
+          ),
+        },
+        {
+          count:
+            (existingRoles?.length ?? 0) + addRoles.length - removeRoles.length,
+          entity: "role",
+          icon: "profile",
+          view: isFetchingExistingRoles ? (
+            <Spinner />
+          ) : (
+            <RolesPanelForm
+              addRoles={addRoles}
+              existingRoles={existingRoles}
+              removeRoles={removeRoles}
+              setAddRoles={setAddRoles}
+              setRemoveRoles={setRemoveRoles}
             />
           ),
         },
