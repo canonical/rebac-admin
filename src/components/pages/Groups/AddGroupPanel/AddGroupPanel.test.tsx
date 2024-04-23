@@ -15,12 +15,15 @@ import {
   getPatchGroupsIdEntitlementsMockHandler400,
   getPatchGroupsIdIdentitiesMockHandler,
   getPatchGroupsIdIdentitiesMockHandler400,
+  getPostGroupsIdRolesMockHandler,
+  getPostGroupsIdRolesMockHandler400,
 } from "api/groups-id/groups-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { Label as GroupPanelLabel } from "../GroupPanel";
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 
 import AddGroupPanel from "./AddGroupPanel";
 import { Label } from "./types";
@@ -30,6 +33,7 @@ const mockApiServer = setupServer(
   getPostGroupsMockHandler(mockGroupsData),
   getPatchGroupsIdEntitlementsMockHandler(),
   getPatchGroupsIdIdentitiesMockHandler(),
+  getPostGroupsIdRolesMockHandler(),
 );
 
 beforeAll(() => {
@@ -331,4 +335,111 @@ test("should handle errors when adding users", async () => {
       ),
   );
   await hasToast(Label.IDENTITIES_ERROR, NotificationSeverity.NEGATIVE);
+});
+
+test("should add roles", async () => {
+  let postResponseBody: string | null = null;
+  let postDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "POST" &&
+      requestClone.url.endsWith("/groups/group1/roles")
+    ) {
+      postResponseBody = await requestClone.text();
+      postDone = true;
+    }
+  });
+  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+        "group1",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Add roles/ })),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: RolesPanelFormLabel.ROLE,
+        }),
+        "admin",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Create group" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Create group" }),
+      ),
+  );
+  await waitFor(() => expect(postDone).toBeTruthy());
+  expect(postResponseBody).toBe('{"roles":["admin"]}');
+  await hasToast('Group "group1" was created.', "positive");
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when adding roles", async () => {
+  mockApiServer.use(
+    getPostGroupsMockHandler(mockGroupsData),
+    getPatchGroupsIdEntitlementsMockHandler(),
+    getPostGroupsIdRolesMockHandler400(),
+  );
+  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+        "group1",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Add roles/ })),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: RolesPanelFormLabel.ROLE,
+        }),
+        "admin",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Create group" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Create group" }),
+      ),
+  );
+  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
 });

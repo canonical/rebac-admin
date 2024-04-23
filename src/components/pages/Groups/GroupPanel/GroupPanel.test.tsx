@@ -6,6 +6,7 @@ import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPane
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
+import { Label as RolesPanelFormLabel } from "../RolesPanelForm";
 
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
@@ -51,6 +52,17 @@ test("the user form can be displayed", async () => {
   );
   expect(
     screen.getByRole("form", { name: IdentitiesPanelFormLabel.FORM }),
+  ).toBeInTheDocument();
+});
+
+test("the role form can be displayed", async () => {
+  renderComponent(<GroupPanel close={vi.fn()} onSubmit={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Add roles/ })),
+  );
+  expect(
+    screen.getByRole("form", { name: RolesPanelFormLabel.FORM }),
   ).toBeInTheDocument();
 });
 

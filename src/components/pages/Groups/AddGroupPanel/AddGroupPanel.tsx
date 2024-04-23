@@ -6,6 +6,7 @@ import { usePostGroups } from "api/groups/groups";
 import {
   usePatchGroupsIdEntitlements,
   usePatchGroupsIdIdentities,
+  usePostGroupsIdRoles,
 } from "api/groups-id/groups-id";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
@@ -31,6 +32,10 @@ const AddGroupPanel = ({ close }: Props) => {
     mutateAsync: patchGroupsIdIdentities,
     isPending: isPatchGroupsIdIdentitiesPending,
   } = usePatchGroupsIdIdentities();
+  const {
+    mutateAsync: postGroupsIdRoles,
+    isPending: isPostGroupsIdRolesPending,
+  } = usePostGroupsIdRoles();
 
   return (
     <GroupPanel
@@ -43,9 +48,10 @@ const AddGroupPanel = ({ close }: Props) => {
       isSaving={
         isPostGroupsPending ||
         isPatchGroupsIdEntitlementsPending ||
-        isPatchGroupsIdIdentitiesPending
+        isPatchGroupsIdIdentitiesPending ||
+        isPostGroupsIdRolesPending
       }
-      onSubmit={async ({ id }, addEntitlements, addIdentities) => {
+      onSubmit={async ({ id }, addEntitlements, addIdentities, addRoles) => {
         try {
           await postGroups({ data: { id } });
         } catch (error) {
@@ -54,6 +60,7 @@ const AddGroupPanel = ({ close }: Props) => {
         }
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
+        let hasRolesError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length) {
           queue.push(async (done) => {
@@ -90,6 +97,21 @@ const AddGroupPanel = ({ close }: Props) => {
             done();
           });
         }
+        if (addRoles.length) {
+          queue.push(async (done) => {
+            try {
+              await postGroupsIdRoles({
+                id,
+                data: {
+                  roles: addRoles,
+                },
+              });
+            } catch (error) {
+              hasRolesError = true;
+            }
+            done();
+          });
+        }
         queue.onDone(() => {
           void queryClient.invalidateQueries({
             queryKey: [Endpoint.GROUPS],
@@ -106,6 +128,13 @@ const AddGroupPanel = ({ close }: Props) => {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
                 {Label.IDENTITIES_ERROR}
+              </ToastCard>
+            ));
+          }
+          if (hasRolesError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.ROLES_ERROR}
               </ToastCard>
             ));
           }
