@@ -118,7 +118,7 @@ const Roles = () => {
             !!selectedRoles.length &&
             selectedRoles.length < (data?.data.data.length ?? -1)
           }
-          onChange={() => handleSelectAllRoles()}
+          onChange={handleSelectAllRoles}
         />
       ),
       accessor: "selectRole",

@@ -12,29 +12,29 @@ import Limiter from "async-limiter";
 import { useState } from "react";
 import reactHotToast from "react-hot-toast";
 
-import { useDeleteRolesId } from "api/roles-id/roles-id";
+import { useDeleteGroupsId } from "api/groups-id/groups-id";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-import "./_delete-roles-panel.scss";
+import "./_delete-groups-panel.scss";
 
-const DeleteRolePanel = ({ roles, close }: Props) => {
+const DeleteGroupPanel = ({ groups, close }: Props) => {
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteRolesId, isPending: isDeleteRolesIdPending } =
-    useDeleteRolesId();
+  const { mutateAsync: deleteGroupsId, isPending: isDeleteGroupsIdPending } =
+    useDeleteGroupsId();
   const [confirmationInput, setConfirmationInput] = useState("");
-  const rolesCount = `${roles.length} role${roles.length !== 1 ? "s" : ""}`;
+  const groupsCount = `${groups.length} group${groups.length !== 1 ? "s" : ""}`;
 
-  const handleDeleteRoles = async () => {
+  const handleDeleteGroups = async () => {
     let hasError = false;
     const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    roles.forEach((id) => {
+    groups.forEach((id) => {
       queue.push(async (done) => {
         try {
-          await deleteRolesId({
+          await deleteGroupsId({
             id,
           });
         } catch (error) {
@@ -45,19 +45,19 @@ const DeleteRolePanel = ({ roles, close }: Props) => {
     });
     queue.onDone(() => {
       void queryClient.invalidateQueries({
-        queryKey: [Endpoint.ROLES],
+        queryKey: [Endpoint.GROUPS],
       });
       close();
       if (hasError) {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative">
-            Some roles couldn't be deleted
+            Some groups couldn't be deleted
           </ToastCard>
         ));
       } else {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="positive">
-            Selected roles have been deleted
+            Selected groups have been deleted
           </ToastCard>
         ));
       }
@@ -69,22 +69,22 @@ const DeleteRolePanel = ({ roles, close }: Props) => {
       <div className="p-panel__header">
         <div className="p-panel__title">
           <span className="p-heading--4 panel-form-navigation__current-title">
-            Delete {rolesCount}
+            Delete {groupsCount}
           </span>
         </div>
       </div>
       <div className="p-panel__content u-no-padding--top">
         <Row>
-          <Col size={12}>Are you sure you want to delete {rolesCount}?</Col>
+          <Col size={12}>Are you sure you want to delete {groupsCount}?</Col>
           <Col size={12}>
-            The deletion of roles is irreversible and might adversely affect
+            The deletion of groups is irreversible and might adversely affect
             your system.
           </Col>
           <Col size={12}>
             <br />
           </Col>
           <Col size={12}>
-            Type <b>remove {rolesCount}</b> to confirm.
+            Type <b>remove {groupsCount}</b> to confirm.
           </Col>
           <Col size={12}>
             <Input
@@ -108,14 +108,16 @@ const DeleteRolePanel = ({ roles, close }: Props) => {
             </Button>
             <ActionButton
               appearance={ButtonAppearance.NEGATIVE}
-              disabled={confirmationInput !== `remove ${rolesCount}`}
-              loading={isDeleteRolesIdPending}
-              onClick={() => void handleDeleteRoles()}
+              disabled={confirmationInput !== `remove ${groupsCount}`}
+              loading={isDeleteGroupsIdPending}
+              onClick={() => void handleDeleteGroups()}
               type="button"
-              className="delete-roles-button"
+              className="delete-groups-button"
             >
               <Icon name="delete" className="is-light" />
-              <span className="delete-roles-button__label">{Label.DELETE}</span>
+              <span className="delete-groups-button__label">
+                {Label.DELETE}
+              </span>
             </ActionButton>
           </Col>
         </Row>
@@ -124,4 +126,4 @@ const DeleteRolePanel = ({ roles, close }: Props) => {
   );
 };
 
-export default DeleteRolePanel;
+export default DeleteGroupPanel;

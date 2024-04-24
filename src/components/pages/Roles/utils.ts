@@ -7,15 +7,19 @@ export const useRolesSelect = (roles: Role[]) => {
   const areAllRolesSelected = selectedRoles.length === roles.length;
 
   useEffect(() => {
-    setSelectedRoles((prevSelectedRoles) =>
-      prevSelectedRoles.filter((role) => roles.includes(role)),
-    );
-  }, [roles]);
+    if (selectedRoles.find((role) => !roles.includes(role)) !== undefined) {
+      setSelectedRoles((prevSelectedRoles) =>
+        prevSelectedRoles.filter((filteredRole) =>
+          roles.includes(filteredRole),
+        ),
+      );
+    }
+  }, [roles, selectedRoles]);
 
   const handleSelectRole = (role: Role) => {
     setSelectedRoles((prevSelectedRoles) =>
       prevSelectedRoles.includes(role)
-        ? prevSelectedRoles.filter((r) => r !== role)
+        ? prevSelectedRoles.filter((filteredRole) => filteredRole !== role)
         : [...prevSelectedRoles, role],
     );
   };
