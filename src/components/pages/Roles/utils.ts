@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { Role } from "api/api.schemas";
 
 export const useRolesSelect = (roles: Role[]) => {
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
   const areAllRolesSelected = selectedRoles.length === roles.length;
+
+  useEffect(() => {
+    setSelectedRoles((prevSelectedRoles) =>
+      prevSelectedRoles.filter((role) => roles.includes(role)),
+    );
+  }, [roles]);
 
   const handleSelectRole = (role: Role) => {
     setSelectedRoles((prevSelectedRoles) =>
