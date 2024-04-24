@@ -46,11 +46,11 @@ test("should display correct role data after fetching roles", async () => {
   // The first row contains the column header and the next 3 rows contain
   // role data.
   expect(rows).toHaveLength(4);
-  expect(within(rows[1]).getAllByRole("cell")[0]).toHaveTextContent("global");
-  expect(within(rows[2]).getAllByRole("cell")[0]).toHaveTextContent(
+  expect(within(rows[1]).getAllByRole("cell")[1]).toHaveTextContent("global");
+  expect(within(rows[2]).getAllByRole("cell")[1]).toHaveTextContent(
     "administrator",
   );
-  expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
+  expect(within(rows[3]).getAllByRole("cell")[1]).toHaveTextContent("viewer");
 });
 
 test("should display no roles data when no roles are available", async () => {
