@@ -5,10 +5,12 @@ import {
   Spinner,
   Button,
   ButtonAppearance,
+  CheckboxInput,
 } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
+import type { Role } from "api/api.schemas";
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
@@ -16,8 +18,10 @@ import NoEntityCard from "components/NoEntityCard";
 import { usePanel } from "hooks/usePanel";
 
 import AddRolePanel from "./AddRolePanel";
+import DeleteRolesPanel from "./DeleteRolesPanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
+import { useRolesSelect } from "./utils";
 
 const COLUMN_DATA: Column[] = [
   {
@@ -34,13 +38,26 @@ const Roles = () => {
   const { data, isFetching, isError, error, refetch } = useGetRoles();
   const { generatePanel, openPanel } = usePanel<{
     editRoleId?: string | null;
-  }>((closePanel, data) =>
-    data?.editRoleId ? (
-      <EditRolePanel roleId={data.editRoleId} close={closePanel} />
-    ) : (
-      <AddRolePanel close={closePanel} />
-    ),
+    deleteRoles?: Role[];
+  }>(
+    (closePanel, data) => {
+      if (data?.editRoleId) {
+        return <EditRolePanel roleId={data.editRoleId} close={closePanel} />;
+      } else if (data?.deleteRoles) {
+        return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
+      } else {
+        return <AddRolePanel close={closePanel} />;
+      }
+    },
+    (data) => !data?.deleteRoles,
   );
+
+  const {
+    handleSelectRole,
+    handleSelectAllRoles,
+    selectedRoles,
+    areAllRolesSelected,
+  } = useRolesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
     const roles = data?.data.data;
@@ -48,6 +65,14 @@ const Roles = () => {
       return [];
     }
     const tableData = roles.map((role) => ({
+      selectRole: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllRolesSelected || selectedRoles.includes(role)}
+          onChange={() => handleSelectRole(role)}
+        />
+      ),
       roleName: role,
       actions: (
         <ContextualMenu
@@ -73,7 +98,33 @@ const Roles = () => {
       ),
     }));
     return tableData;
-  }, [data?.data.data, openPanel]);
+  }, [
+    areAllRolesSelected,
+    data?.data.data,
+    handleSelectRole,
+    openPanel,
+    selectedRoles,
+  ]);
+
+  const generateColumns = () => [
+    {
+      Header: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllRolesSelected}
+          indeterminate={
+            !areAllRolesSelected &&
+            !!selectedRoles.length &&
+            selectedRoles.length < (data?.data.data.length ?? -1)
+          }
+          onChange={() => handleSelectAllRoles()}
+        />
+      ),
+      accessor: "selectRole",
+    },
+    ...COLUMN_DATA,
+  ];
 
   const generateCreateRoleButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
@@ -104,11 +155,15 @@ const Roles = () => {
       return (
         <>
           <ModularTable
-            columns={COLUMN_DATA}
+            columns={generateColumns()}
             data={tableData}
             emptyMsg={Label.NO_ROLES}
             getCellProps={({ column }) => {
               switch (column.id) {
+                case "selectRole":
+                  return {
+                    width: 32,
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -119,6 +174,10 @@ const Roles = () => {
             }}
             getHeaderProps={({ id }) => {
               switch (id) {
+                case "selectRole":
+                  return {
+                    width: 32,
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -135,7 +194,21 @@ const Roles = () => {
   };
 
   return (
-    <Content controls={generateCreateRoleButton()} title="Roles">
+    <Content
+      controls={
+        <>
+          <Button
+            appearance={ButtonAppearance.NEGATIVE}
+            disabled={!selectedRoles.length}
+            onClick={() => openPanel({ deleteRoles: selectedRoles })}
+          >
+            Delete
+          </Button>
+          {generateCreateRoleButton()}
+        </>
+      }
+      title="Roles"
+    >
       {generateContent()}
     </Content>
   );

@@ -6,10 +6,11 @@ import { usePanelPortal } from "hooks/usePanelPortal";
 
 export const usePanel = <D extends object>(
   getPanel: (closePanel: () => void, data: D | null) => ReactNode,
+  isMedium: (data: D | null) => boolean = () => true,
 ) => {
   const [data, setData] = useState<D | null>(null);
   const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(
-    "is-medium",
+    isMedium(data) ? "is-medium" : undefined,
     PanelFormNavigationTitleId,
     { programmaticallyOpen: true },
   );
