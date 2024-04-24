@@ -43,7 +43,7 @@ const PanelForm = <F extends FormikValues>({
           />
         </div>
       </div>
-      <div className="p-panel__content">
+      <div className="p-panel__content u-no-padding--top">
         {view
           ? subForms.find((subForm) => subForm.entity === view)?.view
           : null}

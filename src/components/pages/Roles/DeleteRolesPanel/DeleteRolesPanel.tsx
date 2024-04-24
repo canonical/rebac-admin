@@ -73,7 +73,7 @@ const AddRolePanel = ({ roles, close }: Props) => {
           </span>
         </div>
       </div>
-      <div className="p-panel__content">
+      <div className="p-panel__content u-no-padding--top">
         <Row>
           <Col size={12}>Are you sure you want to delete {rolesCount}?</Col>
           <Col size={12}>
