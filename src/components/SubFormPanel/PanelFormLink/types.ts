@@ -1,4 +1,4 @@
-import type { SubForm } from "components/PanelForm";
+import type { SubForm } from "../types";
 
 export type Props = {
   count: SubForm["count"];

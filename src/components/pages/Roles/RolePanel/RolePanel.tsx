@@ -4,7 +4,7 @@ import * as Yup from "yup";
 
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
-import PanelForm from "components/PanelForm";
+import SubFormPanel from "components/SubFormPanel";
 
 import type { FormFields } from "./types";
 import { Label, type Props } from "./types";
@@ -14,13 +14,12 @@ const schema = Yup.object().shape({
 });
 
 const RolePanel = ({
-  close,
-  error,
   existingEntitlements,
   isFetchingExisting,
   roleId,
   onSubmit,
   isSaving,
+  ...props
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
   const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
@@ -28,11 +27,10 @@ const RolePanel = ({
   );
   const isEditing = !!roleId;
   return (
-    <PanelForm<FormFields>
+    <SubFormPanel<FormFields>
+      {...props}
       submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
-      close={close}
       entity="role"
-      error={error}
       initialValues={{ id: roleId ?? "" }}
       isEditing={isEditing}
       isSaving={isSaving}
@@ -69,7 +67,7 @@ const RolePanel = ({
         takeFocus={!isEditing}
         type="text"
       />
-    </PanelForm>
+    </SubFormPanel>
   );
 };
 

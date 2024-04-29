@@ -4,7 +4,7 @@ import * as Yup from "yup";
 
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
-import PanelForm from "components/PanelForm";
+import SubFormPanel from "components/SubFormPanel";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
@@ -17,8 +17,6 @@ const schema = Yup.object().shape({
 });
 
 const GroupPanel = ({
-  close,
-  error,
   existingEntitlements,
   existingIdentities,
   isFetchingExistingEntitlements,
@@ -28,6 +26,7 @@ const GroupPanel = ({
   groupId,
   onSubmit,
   isSaving,
+  ...props
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
   const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
@@ -39,11 +38,10 @@ const GroupPanel = ({
   const [removeRoles, setRemoveRoles] = useState<string[]>([]);
   const isEditing = !!groupId;
   return (
-    <PanelForm<FormFields>
+    <SubFormPanel<FormFields>
+      {...props}
       submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
-      close={close}
       entity="group"
-      error={error}
       initialValues={{ id: groupId ?? "" }}
       isEditing={isEditing}
       isSaving={isSaving}
@@ -124,7 +122,7 @@ const GroupPanel = ({
         takeFocus={!isEditing}
         type="text"
       />
-    </PanelForm>
+    </SubFormPanel>
   );
 };
 
