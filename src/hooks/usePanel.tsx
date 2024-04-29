@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 
-import { PanelFormNavigationTitleId } from "components/PanelForm/PanelFormNavigation/consts";
+import { EmbeddedPanelLabelledById } from "components/EmbeddedPanel/consts";
 import { usePanelPortal } from "hooks/usePanelPortal";
 
 export const usePanel = <D extends object>(
@@ -11,7 +11,7 @@ export const usePanel = <D extends object>(
   const [data, setData] = useState<D | null>(null);
   const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(
     isMedium(data) ? "is-medium" : undefined,
-    PanelFormNavigationTitleId,
+    EmbeddedPanelLabelledById,
     { programmaticallyOpen: true },
   );
   const openPanel = useCallback(
