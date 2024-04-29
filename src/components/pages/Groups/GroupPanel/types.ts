@@ -1,12 +1,13 @@
 import type { Entitlement } from "components/EntitlementsPanelForm";
+import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 
 export type FormFields = {
   id: string;
 };
 
 export type Props = {
-  close: () => void;
-  error?: string | null;
+  close: SubFormPanelProps<FormFields>["close"];
+  error?: SubFormPanelProps<FormFields>["error"];
   existingEntitlements?: string[];
   existingIdentities?: string[];
   existingRoles?: string[];

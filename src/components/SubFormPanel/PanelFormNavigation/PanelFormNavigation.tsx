@@ -1,8 +1,9 @@
 import { Button, Icon } from "@canonical/react-components";
 
+import { EmbeddedPanelLabelledById } from "components/EmbeddedPanel/consts";
+
 import { generateTitle } from "../PanelFormLink/utils";
 
-import { PanelFormNavigationTitleId } from "./consts";
 import { type Props } from "./types";
 
 import "./_panel-form-navigation.scss";
@@ -30,7 +31,7 @@ const PanelFormNavigation = ({
         <li className="p-breadcrumbs__item">
           <span
             className="p-heading--4 panel-form-navigation__current-title"
-            id={PanelFormNavigationTitleId}
+            id={EmbeddedPanelLabelledById}
           >
             {viewTitle ?? panelTitle}
           </span>
