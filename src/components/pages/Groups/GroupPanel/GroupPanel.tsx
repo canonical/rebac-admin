@@ -40,7 +40,14 @@ const GroupPanel = ({
   return (
     <SubFormPanel<FormFields>
       {...props}
-      submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
+      submitEnabled={
+        !!addEntitlements.length ||
+        !!removeEntitlements.length ||
+        !!addIdentities.length ||
+        !!removeIdentities.length ||
+        !!addRoles.length ||
+        !!removeRoles.length
+      }
       entity="group"
       initialValues={{ id: groupId ?? "" }}
       isEditing={isEditing}
