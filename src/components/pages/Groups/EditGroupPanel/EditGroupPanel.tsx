@@ -6,10 +6,13 @@ import type { Response } from "api/api.schemas";
 import {
   useDeleteGroupsIdEntitlementsEntitlementId,
   useDeleteGroupsIdIdentitiesIdentityId,
+  useDeleteGroupsIdRolesRolesId,
   useGetGroupsIdEntitlements,
   useGetGroupsIdIdentities,
+  useGetGroupsIdRoles,
   usePatchGroupsIdEntitlements,
   usePatchGroupsIdIdentities,
+  usePostGroupsIdRoles,
 } from "api/groups-id/groups-id";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
@@ -22,12 +25,16 @@ import type { Props } from "./types";
 const generateError = (
   getGroupsIdEntitlementsError: AxiosError<Response> | null,
   getGroupsIdIdentitiesError: AxiosError<Response> | null,
+  getGroupsIdRolesError: AxiosError<Response> | null,
 ) => {
   if (getGroupsIdEntitlementsError) {
     return `Unable to get entitlements: ${getGroupsIdEntitlementsError.response?.data.message}`;
   }
   if (getGroupsIdIdentitiesError) {
     return `Unable to get identities: ${getGroupsIdIdentitiesError.response?.data.message}`;
+  }
+  if (getGroupsIdRolesError) {
+    return `Unable to get roles: ${getGroupsIdRolesError.response?.data.message}`;
   }
   return null;
 };
@@ -59,33 +66,53 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
     mutateAsync: deleteGroupsIdIdentitiesIdentityId,
     isPending: isDeleteGroupsIdIdentitiesIdentityIdPending,
   } = useDeleteGroupsIdIdentitiesIdentityId();
+  const {
+    error: getGroupsIdRolesError,
+    data: existingRoles,
+    isFetching: isFetchingExistingRoles,
+  } = useGetGroupsIdRoles(groupId);
+  const {
+    mutateAsync: postGroupsIdRoles,
+    isPending: isPostGroupsIdRolesPending,
+  } = usePostGroupsIdRoles();
+  const {
+    mutateAsync: deleteGroupsIdRolesIdentityId,
+    isPending: isDeleteGroupsIdRodeleteGroupsIdRolesIdentityIdPending,
+  } = useDeleteGroupsIdRolesRolesId();
   return (
     <GroupPanel
       close={close}
       error={generateError(
         getGroupsIdEntitlementsError,
         getGroupsIdIdentitiesError,
+        getGroupsIdRolesError,
       )}
       existingEntitlements={existingEntitlements?.data.data}
       existingIdentities={existingIdentities?.data.data}
+      existingRoles={existingRoles?.data.data}
       isFetchingExistingEntitlements={isFetchingExistingEntitlements}
       isFetchingExistingIdentities={isFetchingExistingIdentities}
+      isFetchingExistingRoles={isFetchingExistingRoles}
       isSaving={
         isDeleteGroupsIdEntitlementsEntitlementIdPending ||
         isPatchGroupsIdEntitlementsPending ||
         isPatchGroupsIdIdentitiesPending ||
-        isDeleteGroupsIdIdentitiesIdentityIdPending
+        isDeleteGroupsIdIdentitiesIdentityIdPending ||
+        isPostGroupsIdRolesPending ||
+        isDeleteGroupsIdRodeleteGroupsIdRolesIdentityIdPending
       }
       onSubmit={async (
         { id },
         addEntitlements,
         addIdentities,
-        _addRoles,
+        addRoles,
         removeEntitlements,
         removeIdentities,
+        removeRoles,
       ) => {
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
+        let hasRolesError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length) {
           queue.push(async (done) => {
@@ -152,6 +179,36 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
             });
           });
         }
+        if (addRoles.length) {
+          queue.push(async (done) => {
+            try {
+              await postGroupsIdRoles({
+                id,
+                data: {
+                  roles: addRoles,
+                },
+              });
+            } catch (error) {
+              hasRolesError = true;
+            }
+            done();
+          });
+        }
+        if (removeRoles?.length) {
+          removeRoles.forEach((rolesId) => {
+            queue.push(async (done) => {
+              try {
+                await deleteGroupsIdRolesIdentityId({
+                  id,
+                  rolesId,
+                });
+              } catch (error) {
+                hasRolesError = true;
+              }
+              done();
+            });
+          });
+        }
         queue.onDone(() => {
           close();
           if (hasEntitlementsError) {
@@ -165,6 +222,13 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
                 {Label.IDENTITIES_ERROR}
+              </ToastCard>
+            ));
+          }
+          if (hasRolesError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.ROLES_ERROR}
               </ToastCard>
             ));
           }
