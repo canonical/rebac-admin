@@ -78,7 +78,9 @@ test("should add and remove entitlements", async () => {
       deleteDone = true;
     }
   });
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
   await act(
@@ -158,7 +160,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchGroupsIdEntitlementsMockHandler400(),
     getGetGroupsIdEntitlementsMockHandler400(),
   );
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
   await act(
@@ -244,7 +248,9 @@ test("should add and remove users", async () => {
       deleteDone = true;
     }
   });
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
   await act(
@@ -297,7 +303,9 @@ test("should handle errors when updating users", async () => {
     getPatchGroupsIdIdentitiesMockHandler400(),
     getDeleteGroupsIdIdentitiesIdentityIdMockHandler400(),
   );
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
   await act(

@@ -13,7 +13,9 @@ import { Label } from "./types";
 
 test("can submit the form", async () => {
   const onSubmit = vi.fn();
-  renderComponent(<GroupPanel close={vi.fn()} onSubmit={onSubmit} />);
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
+  );
   await act(
     async () =>
       await userEvent.type(
@@ -26,13 +28,20 @@ test("can submit the form", async () => {
 
 test("the input is disabled when editing", async () => {
   renderComponent(
-    <GroupPanel close={vi.fn()} groupId="admin" onSubmit={vi.fn()} />,
+    <GroupPanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      groupId="admin"
+      onSubmit={vi.fn()}
+    />,
   );
   expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
 });
 
 test("the entitlement form can be displayed", async () => {
-  renderComponent(<GroupPanel close={vi.fn()} onSubmit={vi.fn()} />);
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
   await act(
     async () =>
       await userEvent.click(
@@ -45,7 +54,9 @@ test("the entitlement form can be displayed", async () => {
 });
 
 test("the user form can be displayed", async () => {
-  renderComponent(<GroupPanel close={vi.fn()} onSubmit={vi.fn()} />);
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
   await act(
     async () =>
       await userEvent.click(screen.getByRole("button", { name: /Add users/ })),
@@ -56,7 +67,9 @@ test("the user form can be displayed", async () => {
 });
 
 test("the role form can be displayed", async () => {
-  renderComponent(<GroupPanel close={vi.fn()} onSubmit={vi.fn()} />);
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
   await act(
     async () =>
       await userEvent.click(screen.getByRole("button", { name: /Add roles/ })),
@@ -70,6 +83,7 @@ test("submit button is disabled when editing and there are no changes", async ()
   renderComponent(
     <GroupPanel
       close={vi.fn()}
+      setPanelWidth={vi.fn()}
       existingEntitlements={[
         "can_edit::moderators:collection",
         "can_remove::staff:team",
@@ -85,6 +99,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   renderComponent(
     <GroupPanel
       close={vi.fn()}
+      setPanelWidth={vi.fn()}
       existingEntitlements={[
         "can_edit::moderators:collection",
         "can_remove::staff:team",

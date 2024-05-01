@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
+import { PanelWidth } from "hooks/usePanel";
 import { renderComponent } from "test/utils";
 
 import SubFormPanel from "./SubFormPanel";
@@ -15,6 +16,7 @@ test("can display contents", async () => {
       entity="role"
       initialValues={{ name: "" }}
       onSubmit={vi.fn()}
+      setPanelWidth={vi.fn()}
       subForms={[]}
     >
       Form content
@@ -30,6 +32,7 @@ test("can display add state", async () => {
       entity="role"
       initialValues={{ name: "" }}
       onSubmit={vi.fn()}
+      setPanelWidth={vi.fn()}
       subForms={[]}
     >
       Form content
@@ -49,6 +52,7 @@ test("can display edit state", async () => {
       initialValues={{ name: "" }}
       isEditing
       onSubmit={vi.fn()}
+      setPanelWidth={vi.fn()}
       subForms={[]}
     >
       Form content
@@ -60,7 +64,28 @@ test("can display edit state", async () => {
   ).toBeInTheDocument();
 });
 
+test("the initial width is set", async () => {
+  const setPanelWidth = vi.fn();
+  renderComponent(
+    <SubFormPanel<{ name: string }>
+      close={vi.fn()}
+      entity="role"
+      initialValues={{ name: "" }}
+      isEditing
+      onSubmit={vi.fn()}
+      panelWidth={PanelWidth.WIDE}
+      setPanelWidth={setPanelWidth}
+      subForms={[]}
+    >
+      Form content
+    </SubFormPanel>,
+  );
+  expect(screen.getByTestId(TestId.DEFAULT_VIEW)).toBeInTheDocument();
+  expect(setPanelWidth).toHaveBeenCalledWith(PanelWidth.WIDE);
+});
+
 test("can display a subform", async () => {
+  const setPanelWidth = vi.fn();
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
       <div id="aside-panel"></div>
@@ -69,11 +94,13 @@ test("can display a subform", async () => {
         entity="role"
         initialValues={{ name: "" }}
         onSubmit={vi.fn()}
+        setPanelWidth={setPanelWidth}
         subForms={[
           {
             count: 4,
             entity: "entitlement",
             icon: "user",
+            panelWidth: PanelWidth.NARROW,
             view: <div data-testid="subform" />,
           },
         ]}
@@ -90,4 +117,5 @@ test("can display a subform", async () => {
   );
   expect(screen.getByTestId("subform")).toBeInTheDocument();
   expect(screen.getByTestId(TestId.DEFAULT_VIEW)).toHaveClass("u-hide");
+  expect(setPanelWidth).toHaveBeenCalledWith(PanelWidth.NARROW);
 });

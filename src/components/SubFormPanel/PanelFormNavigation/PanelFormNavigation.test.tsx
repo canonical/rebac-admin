@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import { PanelWidth } from "hooks/usePanel";
 import { renderComponent } from "test/utils";
 
 import PanelFormNavigation from "./PanelFormNavigation";
@@ -30,10 +31,15 @@ test("displays the child navigation", async () => {
 test("handles navigating to the parent", async () => {
   const setView = vi.fn();
   renderComponent(
-    <PanelFormNavigation panelEntity="role" setView={setView} view="group" />,
+    <PanelFormNavigation
+      defaultPanelWidth={PanelWidth.WIDE}
+      panelEntity="role"
+      setView={setView}
+      view="group"
+    />,
   );
   await userEvent.click(screen.getByRole("button", { name: "Create role" }));
-  expect(setView).toHaveBeenCalled();
+  expect(setView).toHaveBeenCalledWith(null, PanelWidth.WIDE);
 });
 
 test("displays when editing", async () => {

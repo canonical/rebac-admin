@@ -5,7 +5,7 @@ import usePortal from "react-useportal";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 
 export const usePanelPortal = (
-  className?: string,
+  className?: string | null,
   labelledBy?: string,
   options?: UsePortalOptions,
 ) => {

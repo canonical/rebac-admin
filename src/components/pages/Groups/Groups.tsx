@@ -34,11 +34,15 @@ const Groups = () => {
   const { data, isFetching, isError, error, refetch } = useGetGroups();
   const { generatePanel, openPanel } = usePanel<{
     editGroupId?: string | null;
-  }>((closePanel, data) =>
+  }>((closePanel, data, setPanelWidth) =>
     data?.editGroupId ? (
-      <EditGroupPanel groupId={data.editGroupId} close={closePanel} />
+      <EditGroupPanel
+        groupId={data.editGroupId}
+        close={closePanel}
+        setPanelWidth={setPanelWidth}
+      />
     ) : (
-      <AddGroupPanel close={closePanel} />
+      <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />
     ),
   );
 

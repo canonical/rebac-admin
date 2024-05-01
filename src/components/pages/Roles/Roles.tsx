@@ -34,11 +34,15 @@ const Roles = () => {
   const { data, isFetching, isError, error, refetch } = useGetRoles();
   const { generatePanel, openPanel } = usePanel<{
     editRoleId?: string | null;
-  }>((closePanel, data) =>
+  }>((closePanel, data, setPanelWidth) =>
     data?.editRoleId ? (
-      <EditRolePanel roleId={data.editRoleId} close={closePanel} />
+      <EditRolePanel
+        close={closePanel}
+        roleId={data.editRoleId}
+        setPanelWidth={setPanelWidth}
+      />
     ) : (
-      <AddRolePanel close={closePanel} />
+      <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />
     ),
   );
 

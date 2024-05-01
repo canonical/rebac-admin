@@ -4,16 +4,23 @@ import userEvent from "@testing-library/user-event";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
 
-import { usePanel } from "./usePanel";
+import { PanelWidth, usePanel } from "./usePanel";
 
 const containerId = "portal-container";
 
 const TestComponent = () => {
   const { generatePanel, openPanel, closePanel } = usePanel<{
     state?: string | null;
-  }>((closePanel, data) => (
+  }>((closePanel, data, setPanelWidth) => (
     <div data-testid="panel">
       <button onClick={closePanel}>Exit</button>
+      <button
+        onClick={() => {
+          setPanelWidth(PanelWidth.NARROW);
+        }}
+      >
+        Change width
+      </button>
       {data?.state}
     </div>
   ));
@@ -39,6 +46,27 @@ test("opens the panel", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Open" })),
   );
   expect(screen.getByTestId("panel")).toBeInTheDocument();
+});
+
+test("sets the panel width", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: containerId }}>
+      <div id={containerId}></div>
+      <TestComponent />
+    </ReBACAdminContext.Provider>,
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: "Open" })),
+  );
+  expect(document.getElementById(containerId)).not.toHaveClass("is-narrow");
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Change width" }),
+      ),
+  );
+  expect(document.getElementById(containerId)).toHaveClass("is-narrow");
 });
 
 test("closes the panel", async () => {

@@ -32,7 +32,7 @@ const generateError = (
   return null;
 };
 
-const EditGroupPanel = ({ close, groupId }: Props) => {
+const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
   const {
     error: getGroupsIdEntitlementsError,
     data: existingEntitlements,
@@ -178,6 +178,7 @@ const EditGroupPanel = ({ close, groupId }: Props) => {
         });
       }}
       groupId={groupId}
+      setPanelWidth={setPanelWidth}
     />
   );
 };
