@@ -24,10 +24,9 @@ import {
   getPostGroupsIdRolesMockHandler400,
 } from "api/groups-id/groups-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
+import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
 import { hasToast, renderComponent } from "test/utils";
-
-import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
-import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
