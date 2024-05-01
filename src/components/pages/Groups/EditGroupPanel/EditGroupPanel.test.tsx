@@ -17,11 +17,17 @@ import {
   getPatchGroupsIdIdentitiesMockHandler,
   getPatchGroupsIdIdentitiesMockHandler400,
   getDeleteGroupsIdIdentitiesIdentityIdMockHandler400,
+  getPostGroupsIdRolesMockHandler,
+  getDeleteGroupsIdRolesRolesIdMockHandler,
+  getGetGroupsIdRolesMockHandler,
+  getGetGroupsIdRolesResponseMock,
+  getPostGroupsIdRolesMockHandler400,
 } from "api/groups-id/groups-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { hasToast, renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
@@ -39,6 +45,13 @@ const mockApiServer = setupServer(
   getGetGroupsIdIdentitiesMockHandler(
     getGetGroupsIdIdentitiesResponseMock({
       data: ["user1", "user2"],
+    }),
+  ),
+  getPostGroupsIdRolesMockHandler(),
+  getDeleteGroupsIdRolesRolesIdMockHandler(),
+  getGetGroupsIdRolesMockHandler(
+    getGetGroupsIdRolesResponseMock({
+      data: ["role1", "role2"],
     }),
   ),
 );
@@ -332,4 +345,115 @@ test("should handle errors when updating users", async () => {
       ),
   );
   await hasToast(Label.IDENTITIES_ERROR, NotificationSeverity.NEGATIVE);
+});
+
+test("should add and remove roles", async () => {
+  let postResponseBody: string | null = null;
+  let postDone = false;
+  let deleteDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "POST" &&
+      requestClone.url.endsWith("/groups/admin/roles")
+    ) {
+      postResponseBody = await requestClone.text();
+      postDone = true;
+    }
+    if (
+      requestClone.method === "DELETE" &&
+      requestClone.url.endsWith("/groups/admin/roles/role1")
+    ) {
+      deleteDone = true;
+    }
+  });
+  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  // Wait until the roles have loaded.
+  await screen.findByText("2 roles");
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Edit roles/ })),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", {
+          name: RolesPanelFormLabel.REMOVE,
+        })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: RolesPanelFormLabel.ROLE,
+        }),
+        "role3",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Edit group" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Update group" }),
+      ),
+  );
+  await waitFor(() => expect(postDone && deleteDone).toBeTruthy());
+  expect(postResponseBody).toBe('{"roles":["role3"]}');
+  await hasToast('Group "admin" was updated.', "positive");
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when updating roles", async () => {
+  mockApiServer.use(
+    getPostGroupsIdRolesMockHandler400(),
+    getDeleteGroupsIdRolesRolesIdMockHandler(),
+  );
+  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  // Wait until the roles have loaded.
+  await screen.findByText("2 roles");
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Edit roles/ })),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: RolesPanelFormLabel.ROLE,
+        }),
+        "admin",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Edit group" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Update group" }),
+      ),
+  );
+  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
 });
