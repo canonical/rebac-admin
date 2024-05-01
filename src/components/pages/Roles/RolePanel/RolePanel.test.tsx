@@ -10,7 +10,9 @@ import { Label } from "./types";
 
 test("can submit the form", async () => {
   const onSubmit = vi.fn();
-  renderComponent(<RolePanel close={vi.fn()} onSubmit={onSubmit} />);
+  renderComponent(
+    <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
+  );
   await act(
     async () =>
       await userEvent.type(
@@ -23,13 +25,20 @@ test("can submit the form", async () => {
 
 test("the input is disabled when editing", async () => {
   renderComponent(
-    <RolePanel close={vi.fn()} roleId="admin" onSubmit={vi.fn()} />,
+    <RolePanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      roleId="admin"
+      onSubmit={vi.fn()}
+    />,
   );
   expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
 });
 
 test("the entitlement form can be displayed", async () => {
-  renderComponent(<RolePanel close={vi.fn()} onSubmit={vi.fn()} />);
+  renderComponent(
+    <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
   await act(
     async () =>
       await userEvent.click(
@@ -45,6 +54,7 @@ test("submit button is disabled when editing and there are no changes", async ()
   renderComponent(
     <RolePanel
       close={vi.fn()}
+      setPanelWidth={vi.fn()}
       existingEntitlements={[
         "can_edit::moderators:collection",
         "can_remove::staff:team",
@@ -60,6 +70,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   renderComponent(
     <RolePanel
       close={vi.fn()}
+      setPanelWidth={vi.fn()}
       existingEntitlements={[
         "can_edit::moderators:collection",
         "can_remove::staff:team",

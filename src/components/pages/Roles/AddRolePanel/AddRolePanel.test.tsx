@@ -42,7 +42,7 @@ afterAll(() => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("should add a role", async () => {
-  renderComponent(<AddRolePanel close={vi.fn()} />);
+  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -67,7 +67,7 @@ test("should add a role and entitlements", async () => {
       done = true;
     }
   });
-  renderComponent(<AddRolePanel close={vi.fn()} />);
+  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -140,7 +140,7 @@ test("should handle errors when adding roles", async () => {
       getPostRolesResponseMock400({ message: "That role already exists" }),
     ),
   );
-  renderComponent(<AddRolePanel close={vi.fn()} />);
+  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -164,7 +164,7 @@ test("should handle errors when adding entitlements", async () => {
       }),
     ),
   );
-  renderComponent(<AddRolePanel close={vi.fn()} />);
+  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(

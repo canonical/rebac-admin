@@ -62,7 +62,9 @@ test("should add and remove entitlements", async () => {
       deleteDone = true;
     }
   });
-  renderComponent(<EditRolePanel roleId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditRolePanel roleId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
   await act(
@@ -142,7 +144,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchRolesIdEntitlementsMockHandler400(),
     getGetRolesIdEntitlementsMockHandler400(),
   );
-  renderComponent(<EditRolePanel roleId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditRolePanel roleId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
   await act(

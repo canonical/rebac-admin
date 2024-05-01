@@ -11,7 +11,7 @@ import RolePanel from "../RolePanel";
 
 import type { Props } from "./types";
 
-const AddRolePanel = ({ close }: Props) => {
+const AddRolePanel = ({ close, setPanelWidth }: Props) => {
   const queryClient = useQueryClient();
   const {
     error: postRolesError,
@@ -74,6 +74,7 @@ const AddRolePanel = ({ close }: Props) => {
           </ToastCard>
         ));
       }}
+      setPanelWidth={setPanelWidth}
     />
   );
 };

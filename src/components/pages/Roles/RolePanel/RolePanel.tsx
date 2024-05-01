@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
+import { PanelWidth } from "hooks/usePanel";
 
 import type { FormFields } from "./types";
 import { Label, type Props } from "./types";
@@ -16,9 +17,9 @@ const schema = Yup.object().shape({
 const RolePanel = ({
   existingEntitlements,
   isFetchingExisting,
-  roleId,
-  onSubmit,
   isSaving,
+  onSubmit,
+  roleId,
   ...props
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
@@ -37,6 +38,7 @@ const RolePanel = ({
       onSubmit={async (values) =>
         await onSubmit(values, addEntitlements, removeEntitlements)
       }
+      panelWidth={PanelWidth.DEFAULT}
       subForms={[
         {
           count:
@@ -45,6 +47,7 @@ const RolePanel = ({
             removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
+          panelWidth: PanelWidth.MEDIUM,
           view: isFetchingExisting ? (
             <Spinner />
           ) : (

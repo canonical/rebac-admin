@@ -1,5 +1,6 @@
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
+import type { SetPanelWidth } from "hooks/usePanel";
 
 export type FormFields = {
   id: string;
@@ -25,6 +26,7 @@ export type Props = {
     removeRoles?: string[],
   ) => Promise<void>;
   groupId?: string | null;
+  setPanelWidth: SetPanelWidth;
 };
 
 export enum Label {

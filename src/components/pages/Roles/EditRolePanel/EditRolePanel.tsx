@@ -13,7 +13,7 @@ import RolePanel from "../RolePanel";
 
 import type { Props } from "./types";
 
-const EditRolePanel = ({ close, roleId }: Props) => {
+const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
   const {
     error: getRolesIdEntitlementsError,
     data: existingEntitlements,
@@ -97,6 +97,7 @@ const EditRolePanel = ({ close, roleId }: Props) => {
         });
       }}
       roleId={roleId}
+      setPanelWidth={setPanelWidth}
     />
   );
 };
