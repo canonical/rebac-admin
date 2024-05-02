@@ -375,7 +375,9 @@ test("should add and remove roles", async () => {
       deleteDone = true;
     }
   });
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the roles have loaded.
   await screen.findByText("2 roles");
   await act(
@@ -428,7 +430,9 @@ test("should handle errors when updating roles", async () => {
     getPostGroupsIdRolesMockHandler400(),
     getDeleteGroupsIdRolesRolesIdMockHandler(),
   );
-  renderComponent(<EditGroupPanel groupId="admin" close={vi.fn()} />);
+  renderComponent(
+    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   // Wait until the roles have loaded.
   await screen.findByText("2 roles");
   await act(

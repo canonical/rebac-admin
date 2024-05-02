@@ -1,9 +1,28 @@
 import { screen } from "@testing-library/react";
 import axios from "axios";
+import { setupServer } from "msw/node";
 
 import { renderComponent } from "test/utils";
 
 import ReBACAdmin from "./ReBACAdmin";
+
+const mockApiServer = setupServer();
+
+beforeAll(() => {
+  mockApiServer.listen({
+    // Ignore unhandled requests in these tests as we're testing the entire app
+    // and don't need to provide mocks for each page that we render.
+    onUnhandledRequest: "bypass",
+  });
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("renders the component", () => {
   renderComponent(<ReBACAdmin apiURL="/api" />);
