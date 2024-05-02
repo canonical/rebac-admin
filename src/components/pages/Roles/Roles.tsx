@@ -23,6 +23,8 @@ import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 import { useRolesSelect } from "./utils";
 
+import "./_roles.scss";
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "role name",
@@ -36,7 +38,7 @@ const COLUMN_DATA: Column[] = [
 
 const Roles = () => {
   const { data, isFetching, isError, error, refetch } = useGetRoles();
-  const { generatePanel, openPanel } = usePanel<{
+  const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRoleId?: string | null;
     deleteRoles?: Role[];
   }>((closePanel, data, setPanelWidth) => {
@@ -74,6 +76,7 @@ const Roles = () => {
           inline
           checked={areAllRolesSelected || selectedRoles.includes(role)}
           onChange={() => handleSelectRole(role)}
+          disabled={isPanelOpen}
         />
       ),
       roleName: role,
@@ -105,23 +108,21 @@ const Roles = () => {
     areAllRolesSelected,
     data?.data.data,
     handleSelectRole,
+    isPanelOpen,
     openPanel,
     selectedRoles,
   ]);
 
-  const generateColumns = () => [
+  const columns = [
     {
       Header: (
         <CheckboxInput
           label=""
           inline
           checked={areAllRolesSelected}
-          indeterminate={
-            !areAllRolesSelected &&
-            !!selectedRoles.length &&
-            selectedRoles.length < (data?.data.data.length ?? -1)
-          }
+          indeterminate={!areAllRolesSelected && !!selectedRoles.length}
           onChange={handleSelectAllRoles}
+          disabled={isPanelOpen}
         />
       ),
       accessor: "selectRole",
@@ -158,14 +159,14 @@ const Roles = () => {
       return (
         <>
           <ModularTable
-            columns={generateColumns()}
+            columns={columns}
             data={tableData}
             emptyMsg={Label.NO_ROLES}
             getCellProps={({ column }) => {
               switch (column.id) {
                 case "selectRole":
                   return {
-                    width: 32,
+                    className: "select-role-checkbox",
                   };
                 case "actions":
                   return {
@@ -179,7 +180,7 @@ const Roles = () => {
               switch (id) {
                 case "selectRole":
                   return {
-                    width: 32,
+                    className: "select-role-checkbox",
                   };
                 case "actions":
                   return {

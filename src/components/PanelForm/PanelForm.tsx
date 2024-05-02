@@ -19,6 +19,7 @@ const PanelForm = <F extends FormikValues>({
   isSaving,
   submitEnabled,
   submitLabel,
+  submitButtonAppearance = "positive",
   ...props
 }: Props<F>) => {
   return (
@@ -43,7 +44,11 @@ const PanelForm = <F extends FormikValues>({
               <Button appearance="base" onClick={close} type="button">
                 {Label.CANCEL}
               </Button>
-              <FormikSubmitButton enabled={submitEnabled} loading={isSaving}>
+              <FormikSubmitButton
+                enabled={submitEnabled}
+                loading={isSaving}
+                appearance={submitButtonAppearance}
+              >
                 {submitLabel}
               </FormikSubmitButton>
             </Col>

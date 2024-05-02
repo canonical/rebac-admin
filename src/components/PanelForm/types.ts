@@ -7,6 +7,7 @@ export type Props<F extends FormikValues> = {
   isSaving?: boolean;
   submitEnabled?: boolean;
   submitLabel: ReactNode;
+  submitButtonAppearance?: "positive" | "negative";
 } & PropsWithChildren &
   Omit<FormikConfig<F>, "children">;
 

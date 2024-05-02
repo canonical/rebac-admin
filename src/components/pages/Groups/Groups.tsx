@@ -23,6 +23,8 @@ import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 import { useGroupsSelect } from "./utils";
 
+import "./_groups.scss";
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "group name",
@@ -36,7 +38,7 @@ const COLUMN_DATA: Column[] = [
 
 const Groups = () => {
   const { data, isFetching, isError, error, refetch } = useGetGroups();
-  const { generatePanel, openPanel } = usePanel<{
+  const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroupId?: string | null;
     deleteGroups?: Group[];
   }>((closePanel, data, setPanelWidth) => {
@@ -76,6 +78,7 @@ const Groups = () => {
           inline
           checked={areAllGroupsSelected || selectedGroups.includes(group)}
           onChange={() => handleSelectGroup(group)}
+          disabled={isPanelOpen}
         />
       ),
       groupName: group,
@@ -107,23 +110,21 @@ const Groups = () => {
     areAllGroupsSelected,
     data?.data.data,
     handleSelectGroup,
+    isPanelOpen,
     openPanel,
     selectedGroups,
   ]);
 
-  const generateColumns = () => [
+  const columns = [
     {
       Header: (
         <CheckboxInput
           label=""
           inline
           checked={areAllGroupsSelected}
-          indeterminate={
-            !areAllGroupsSelected &&
-            !!selectedGroups.length &&
-            selectedGroups.length < (data?.data.data.length ?? -1)
-          }
+          indeterminate={!areAllGroupsSelected && !!selectedGroups.length}
           onChange={handleSelectAllGroups}
+          disabled={isPanelOpen}
         />
       ),
       accessor: "selectGroup",
@@ -160,14 +161,14 @@ const Groups = () => {
       return (
         <>
           <ModularTable
-            columns={generateColumns()}
+            columns={columns}
             data={tableData}
             emptyMsg={Label.NO_GROUPS}
             getCellProps={({ column }) => {
               switch (column.id) {
                 case "selectGroup":
                   return {
-                    width: 32,
+                    className: "select-group-checkbox",
                   };
                 case "actions":
                   return {
@@ -181,7 +182,7 @@ const Groups = () => {
               switch (id) {
                 case "selectGroup":
                   return {
-                    width: 32,
+                    className: "select-group-checkbox",
                   };
                 case "actions":
                   return {
