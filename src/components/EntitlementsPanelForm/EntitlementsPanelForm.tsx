@@ -15,6 +15,7 @@ import type { Column } from "react-table";
 import * as Yup from "yup";
 
 import FormikSubmitButton from "components/FormikSubmitButton";
+import NoEntityCard from "components/NoEntityCard";
 
 import type { Entitlement } from "./types";
 import { Label, type Props } from "./types";
@@ -192,31 +193,37 @@ const EntitlementsPanelForm = ({
       </Row>
       <Row>
         <Col size={12}>
-          <ModularTable
-            getCellProps={({ column }) => {
-              switch (column.id) {
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            getHeaderProps={({ id }) => {
-              switch (id) {
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            columns={COLUMN_DATA}
-            data={tableData}
-            emptyMsg="No entitlements have been added."
-          />
+          {tableData.length ? (
+            <ModularTable
+              getCellProps={({ column }) => {
+                switch (column.id) {
+                  case "actions":
+                    return {
+                      className: "u-align--right",
+                    };
+                  default:
+                    return {};
+                }
+              }}
+              getHeaderProps={({ id }) => {
+                switch (id) {
+                  case "actions":
+                    return {
+                      className: "u-align--right",
+                    };
+                  default:
+                    return {};
+                }
+              }}
+              columns={COLUMN_DATA}
+              data={tableData}
+            />
+          ) : (
+            <NoEntityCard
+              title={Label.EMPTY}
+              message="Add entitlements using the form above."
+            />
+          )}
         </Col>
       </Row>
     </>

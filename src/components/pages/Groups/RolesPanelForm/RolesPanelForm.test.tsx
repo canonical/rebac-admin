@@ -7,6 +7,20 @@ import { hasNotification, renderComponent } from "test/utils";
 import RolesPanelForm from "./RolesPanelForm";
 import { Label } from "./types";
 
+test("displays the empty state", async () => {
+  renderComponent(
+    <RolesPanelForm
+      addRoles={[]}
+      setAddRoles={vi.fn()}
+      removeRoles={[]}
+      setRemoveRoles={vi.fn()}
+    />,
+  );
+  expect(
+    screen.getByRole("heading", { name: Label.EMPTY }),
+  ).toBeInTheDocument();
+});
+
 test("can add roles", async () => {
   const setAddRoles = vi.fn();
   renderComponent(
