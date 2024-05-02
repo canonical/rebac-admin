@@ -10,7 +10,7 @@ import { Endpoint } from "types/api";
 
 import type { Props } from "./types";
 
-const DeleteGroupPanel = ({ groups, close }: Props) => {
+const DeleteGroupsPanel = ({ groups, close }: Props) => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteGroupsId, isPending: isDeleteGroupsIdPending } =
     useDeleteGroupsId();
@@ -62,4 +62,4 @@ const DeleteGroupPanel = ({ groups, close }: Props) => {
   );
 };
 
-export default DeleteGroupPanel;
+export default DeleteGroupsPanel;

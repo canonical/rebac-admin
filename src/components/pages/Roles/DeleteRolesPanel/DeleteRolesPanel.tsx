@@ -10,7 +10,7 @@ import { Endpoint } from "types/api";
 
 import { type Props } from "./types";
 
-const DeleteRolePanel = ({ roles, close }: Props) => {
+const DeleteRolesPanel = ({ roles, close }: Props) => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteRolesId, isPending: isDeleteRolesIdPending } =
     useDeleteRolesId();
@@ -62,4 +62,4 @@ const DeleteRolePanel = ({ roles, close }: Props) => {
   );
 };
 
-export default DeleteRolePanel;
+export default DeleteRolesPanel;
