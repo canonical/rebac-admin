@@ -15,6 +15,7 @@ import type { Column } from "react-table";
 import * as Yup from "yup";
 
 import FormikSubmitButton from "components/FormikSubmitButton";
+import NoEntityCard from "components/NoEntityCard";
 
 import { Label, type Props } from "./types";
 
@@ -135,31 +136,37 @@ const IdentitiesPanelForm = ({
       </Row>
       <Row>
         <Col size={12}>
-          <ModularTable
-            getCellProps={({ column }) => {
-              switch (column.id) {
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            getHeaderProps={({ id }) => {
-              switch (id) {
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            columns={COLUMN_DATA}
-            data={tableData}
-            emptyMsg="No users have been added."
-          />
+          {tableData.length ? (
+            <ModularTable
+              getCellProps={({ column }) => {
+                switch (column.id) {
+                  case "actions":
+                    return {
+                      className: "u-align--right",
+                    };
+                  default:
+                    return {};
+                }
+              }}
+              getHeaderProps={({ id }) => {
+                switch (id) {
+                  case "actions":
+                    return {
+                      className: "u-align--right",
+                    };
+                  default:
+                    return {};
+                }
+              }}
+              columns={COLUMN_DATA}
+              data={tableData}
+            />
+          ) : (
+            <NoEntityCard
+              title={Label.EMPTY}
+              message="Add users using the form above."
+            />
+          )}
         </Col>
       </Row>
     </>

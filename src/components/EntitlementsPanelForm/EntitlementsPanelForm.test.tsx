@@ -7,6 +7,21 @@ import { hasNotification, renderComponent } from "test/utils";
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
 import { Label } from "./types";
 
+test("displays the empty state", async () => {
+  renderComponent(
+    <EntitlementsPanelForm
+      addEntitlements={[]}
+      existingEntitlements={[]}
+      setAddEntitlements={vi.fn()}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
+    />,
+  );
+  expect(
+    screen.getByRole("heading", { name: Label.EMPTY }),
+  ).toBeInTheDocument();
+});
+
 test("can add entitlements", async () => {
   const setAddEntitlements = vi.fn();
   renderComponent(
