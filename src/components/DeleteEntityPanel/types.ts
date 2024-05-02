@@ -4,7 +4,6 @@ export type FormFields = {
 
 export type Props = {
   entityName: string;
-  entitiesName: string;
   entities: string[];
   close: () => void;
   onDelete: () => Promise<void>;

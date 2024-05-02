@@ -15,8 +15,7 @@ import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
-import { useEntitiesSelect } from "components/pages/utils";
-import { usePanel } from "hooks/usePanel";
+import { useEntitiesSelect, usePanel } from "hooks";
 
 import AddGroupPanel from "./AddGroupPanel";
 import DeleteGroupsPanel from "./DeleteGroupsPanel";

@@ -15,8 +15,7 @@ import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
-import { useEntitiesSelect } from "components/pages/utils";
-import { usePanel } from "hooks/usePanel";
+import { useEntitiesSelect, usePanel } from "hooks";
 
 import AddRolePanel from "./AddRolePanel";
 import DeleteRolesPanel from "./DeleteRolesPanel";
