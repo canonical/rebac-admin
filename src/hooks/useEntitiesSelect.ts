@@ -4,6 +4,8 @@ export const useEntitiesSelect = (entities: string[]) => {
   const [selectedEntities, setSelectedEntities] = useState<string[]>([]);
   const areAllEntitiesSelected = selectedEntities.length === entities.length;
 
+  // Ensures that the selected entities are always a subset of the entities list
+  // and removes any entities that are no longer present in the entities list.
   useEffect(() => {
     if (selectedEntities.find((entity) => !entities.includes(entity))) {
       setSelectedEntities((prevSelectedEntities) =>
