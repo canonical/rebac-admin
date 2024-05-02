@@ -15,13 +15,13 @@ import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
+import { useEntitiesSelect } from "components/pages/utils";
 import { usePanel } from "hooks/usePanel";
 
 import AddRolePanel from "./AddRolePanel";
 import DeleteRolesPanel from "./DeleteRolesPanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
-import { useRolesSelect } from "./utils";
 
 import "./_roles.scss";
 
@@ -58,11 +58,11 @@ const Roles = () => {
   });
 
   const {
-    handleSelectRole,
-    handleSelectAllRoles,
-    selectedRoles,
-    areAllRolesSelected,
-  } = useRolesSelect(data?.data.data ?? []);
+    handleSelectEntity: handleSelectRole,
+    handleSelectAllEntities: handleSelectAllRoles,
+    selectedEntities: selectedRoles,
+    areAllEntitiesSelected: areAllRolesSelected,
+  } = useEntitiesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
     const roles = data?.data.data;

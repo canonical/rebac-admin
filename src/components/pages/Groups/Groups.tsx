@@ -15,13 +15,13 @@ import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
+import { useEntitiesSelect } from "components/pages/utils";
 import { usePanel } from "hooks/usePanel";
 
 import AddGroupPanel from "./AddGroupPanel";
 import DeleteGroupsPanel from "./DeleteGroupsPanel";
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
-import { useGroupsSelect } from "./utils";
 
 import "./_groups.scss";
 
@@ -60,11 +60,11 @@ const Groups = () => {
   });
 
   const {
-    handleSelectGroup,
-    handleSelectAllGroups,
-    selectedGroups,
-    areAllGroupsSelected,
-  } = useGroupsSelect(data?.data.data ?? []);
+    handleSelectEntity: handleSelectGroup,
+    handleSelectAllEntities: handleSelectAllGroups,
+    selectedEntities: selectedGroups,
+    areAllEntitiesSelected: areAllGroupsSelected,
+  } = useEntitiesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
     const groups = data?.data.data;
