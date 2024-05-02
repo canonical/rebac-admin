@@ -39,20 +39,23 @@ const Groups = () => {
   const { generatePanel, openPanel } = usePanel<{
     editGroupId?: string | null;
     deleteGroups?: Group[];
-  }>(
-    (closePanel, data) => {
-      if (data?.editGroupId) {
-        return <EditGroupPanel groupId={data.editGroupId} close={closePanel} />;
-      } else if (data?.deleteGroups) {
-        return (
-          <DeleteGroupsPanel groups={data.deleteGroups} close={closePanel} />
-        );
-      } else {
-        return <AddGroupPanel close={closePanel} />;
-      }
-    },
-    (data) => !data?.deleteGroups,
-  );
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editGroupId) {
+      return (
+        <EditGroupPanel
+          groupId={data.editGroupId}
+          close={closePanel}
+          setPanelWidth={setPanelWidth}
+        />
+      );
+    } else if (data?.deleteGroups) {
+      return (
+        <DeleteGroupsPanel groups={data.deleteGroups} close={closePanel} />
+      );
+    } else {
+      return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
 
   const {
     handleSelectGroup,

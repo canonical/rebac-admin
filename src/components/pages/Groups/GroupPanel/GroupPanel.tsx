@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
+import { PanelWidth } from "hooks/usePanel";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
@@ -40,7 +41,14 @@ const GroupPanel = ({
   return (
     <SubFormPanel<FormFields>
       {...props}
-      submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
+      submitEnabled={
+        !!addEntitlements.length ||
+        !!removeEntitlements.length ||
+        !!addIdentities.length ||
+        !!removeIdentities.length ||
+        !!addRoles.length ||
+        !!removeRoles.length
+      }
       entity="group"
       initialValues={{ id: groupId ?? "" }}
       isEditing={isEditing}
@@ -56,6 +64,7 @@ const GroupPanel = ({
           removeRoles,
         )
       }
+      panelWidth={PanelWidth.DEFAULT}
       subForms={[
         {
           count:
@@ -100,6 +109,7 @@ const GroupPanel = ({
             removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
+          panelWidth: PanelWidth.MEDIUM,
           view: isFetchingExistingEntitlements ? (
             <Spinner />
           ) : (

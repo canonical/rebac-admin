@@ -9,6 +9,7 @@ import { type Props } from "./types";
 import "./_panel-form-navigation.scss";
 
 const PanelFormNavigation = ({
+  defaultPanelWidth,
   isEditing,
   panelEntity,
   setView,
@@ -23,7 +24,11 @@ const PanelFormNavigation = ({
       <ol className="p-breadcrumbs__items">
         {view ? (
           <li className="p-breadcrumbs__item">
-            <Button appearance="link" onClick={() => setView(null)}>
+            <Button
+              className="u-no-margin--bottom"
+              appearance="link"
+              onClick={() => setView(null, defaultPanelWidth)}
+            >
               <Icon name="chevron-left" /> {panelTitle}
             </Button>
           </li>

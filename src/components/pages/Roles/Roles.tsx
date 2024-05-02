@@ -39,18 +39,21 @@ const Roles = () => {
   const { generatePanel, openPanel } = usePanel<{
     editRoleId?: string | null;
     deleteRoles?: Role[];
-  }>(
-    (closePanel, data) => {
-      if (data?.editRoleId) {
-        return <EditRolePanel roleId={data.editRoleId} close={closePanel} />;
-      } else if (data?.deleteRoles) {
-        return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
-      } else {
-        return <AddRolePanel close={closePanel} />;
-      }
-    },
-    (data) => !data?.deleteRoles,
-  );
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editRoleId) {
+      return (
+        <EditRolePanel
+          roleId={data.editRoleId}
+          close={closePanel}
+          setPanelWidth={setPanelWidth}
+        />
+      );
+    } else if (data?.deleteRoles) {
+      return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
+    } else {
+      return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
 
   const {
     handleSelectRole,

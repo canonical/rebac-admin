@@ -7,7 +7,11 @@ import {
   getGetGroupsMockHandler404,
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
-import { getGetGroupsIdEntitlementsMockHandler } from "api/groups-id/groups-id.msw";
+import {
+  getGetGroupsIdEntitlementsMockHandler,
+  getGetGroupsIdIdentitiesMockHandler,
+  getGetGroupsIdRolesMockHandler,
+} from "api/groups-id/groups-id.msw";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
@@ -21,6 +25,8 @@ const mockGroupsData = getGetGroupsResponseMock({
 const mockApiServer = setupServer(
   getGetGroupsMockHandler(mockGroupsData),
   getGetGroupsIdEntitlementsMockHandler(),
+  getGetGroupsIdIdentitiesMockHandler(),
+  getGetGroupsIdRolesMockHandler(),
 );
 
 beforeAll(() => {

@@ -17,7 +17,7 @@ import GroupPanel from "../GroupPanel";
 import { Label } from "./types";
 import type { Props } from "./types";
 
-const AddGroupPanel = ({ close }: Props) => {
+const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
   const queryClient = useQueryClient();
   const {
     error: postGroupsError,
@@ -145,6 +145,7 @@ const AddGroupPanel = ({ close }: Props) => {
           ));
         });
       }}
+      setPanelWidth={setPanelWidth}
     />
   );
 };

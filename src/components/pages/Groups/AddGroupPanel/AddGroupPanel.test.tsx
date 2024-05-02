@@ -50,7 +50,7 @@ afterAll(() => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("should add a group", async () => {
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -68,7 +68,7 @@ test("should handle errors when adding groups", async () => {
       getPostGroupsResponseMock400({ message: "That group already exists" }),
     ),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -96,7 +96,7 @@ test("should add entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -168,7 +168,7 @@ test("should handle errors when adding entitlements", async () => {
     getPostGroupsMockHandler(mockGroupsData),
     getPatchGroupsIdEntitlementsMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -244,7 +244,7 @@ test("should add users", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -295,7 +295,7 @@ test("should handle errors when adding users", async () => {
     getPatchGroupsIdEntitlementsMockHandler(),
     getPatchGroupsIdIdentitiesMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -351,7 +351,7 @@ test("should add roles", async () => {
       postDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(
@@ -402,7 +402,7 @@ test("should handle errors when adding roles", async () => {
     getPatchGroupsIdEntitlementsMockHandler(),
     getPostGroupsIdRolesMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} />);
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await act(
     async () =>
       await userEvent.type(

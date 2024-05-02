@@ -1,10 +1,11 @@
 import { Col, Row } from "@canonical/react-components";
 import classNames from "classnames";
 import type { FormikValues } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import EmbeddedPanel from "components/EmbeddedPanel";
 import PanelForm from "components/PanelForm";
+import type { PanelWidth } from "hooks/usePanel";
 
 import PanelFormLink from "./PanelFormLink";
 import PanelFormNavigation from "./PanelFormNavigation";
@@ -14,17 +15,30 @@ const SubFormPanel = <F extends FormikValues>({
   children,
   entity,
   isEditing,
+  panelWidth,
+  setPanelWidth,
   subForms,
   ...props
 }: Props<F>) => {
   const [view, setView] = useState<string | null>();
+  const changeView = (view: string | null, panelWidth?: PanelWidth | null) => {
+    setView(view);
+    setPanelWidth(panelWidth);
+  };
+
+  useEffect(() => {
+    // Set the width of the default form panel.
+    setPanelWidth(panelWidth);
+  }, [panelWidth, setPanelWidth]);
+
   return (
     <EmbeddedPanel
       title={
         <PanelFormNavigation
+          defaultPanelWidth={panelWidth}
           isEditing={isEditing}
           panelEntity={entity}
-          setView={setView}
+          setView={changeView}
           view={view}
         />
       }
@@ -47,14 +61,14 @@ const SubFormPanel = <F extends FormikValues>({
           </Row>
           <Row>
             <Col size={12}>
-              {subForms.map(({ count, entity, icon }) => (
+              {subForms.map(({ count, entity, icon, panelWidth }) => (
                 <PanelFormLink
                   entity={entity}
                   count={count}
                   icon={icon}
                   isEditing={isEditing}
                   key={entity}
-                  onClick={() => setView(entity)}
+                  onClick={() => changeView(entity, panelWidth)}
                 />
               ))}
             </Col>
