@@ -54,6 +54,7 @@ const DeleteGroupPanel = ({ groups, close }: Props) => {
   return (
     <DeleteEntityPanel
       entityName="group"
+      entitiesName="groups"
       entities={groups}
       onDelete={handleDeleteGroups}
       isDeletePending={isDeleteGroupsIdPending}

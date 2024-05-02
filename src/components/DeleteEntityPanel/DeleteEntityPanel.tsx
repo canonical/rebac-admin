@@ -10,13 +10,14 @@ import "./_delete-entity-panel.scss";
 
 const DeleteEntityPanel = ({
   entityName,
+  entitiesName,
   entities,
   close,
   onDelete,
   isDeletePending,
 }: Props) => {
-  const entityCount = `${entities.length} ${entityName}${entities.length !== 1 ? "s" : ""}`;
-  const confirmationMessage = `remove ${entityCount}`;
+  const entitiesCount = `${entities.length} ${entities.length === 1 ? entityName : entitiesName}`;
+  const confirmationMessage = `remove ${entitiesCount}`;
 
   const schema = Yup.object().shape({
     confirmationMessage: Yup.string().oneOf(
@@ -29,7 +30,7 @@ const DeleteEntityPanel = ({
     <FormPanel<FormFields>
       title={
         <span className="p-heading--4 panel-form-navigation__current-title">
-          Delete {entityCount}
+          Delete {entitiesCount}
         </span>
       }
       close={close}
@@ -48,8 +49,8 @@ const DeleteEntityPanel = ({
       <Row>
         <Col size={12}>
           <p>
-            Are you sure you want to delete {entityCount}?<br />
-            The deletion of {entityName}s is irreversible and might adversely
+            Are you sure you want to delete {entitiesCount}?<br />
+            The deletion of {entitiesName} is irreversible and might adversely
             affect your system.
           </p>
         </Col>
