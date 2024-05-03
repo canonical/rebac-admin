@@ -43,5 +43,5 @@ export const usePanel = <D extends object>(
       <Portal>{getPanel(closePanel, data, setPanelWidth)}</Portal>
     ) : null;
   }, [Portal, closePanel, data, getPanel, isOpen]);
-  return { generatePanel, openPanel, closePanel };
+  return { generatePanel, openPanel, closePanel, isPanelOpen: isOpen };
 };

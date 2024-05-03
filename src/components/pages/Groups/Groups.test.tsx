@@ -52,11 +52,11 @@ test("should display correct group data after fetching groups", async () => {
   // The first row contains the column header and the next 3 rows contain
   // group data.
   expect(rows).toHaveLength(4);
-  expect(within(rows[1]).getAllByRole("cell")[0]).toHaveTextContent("global");
-  expect(within(rows[2]).getAllByRole("cell")[0]).toHaveTextContent(
+  expect(within(rows[1]).getAllByRole("cell")[1]).toHaveTextContent("global");
+  expect(within(rows[2]).getAllByRole("cell")[1]).toHaveTextContent(
     "administrator",
   );
-  expect(within(rows[3]).getAllByRole("cell")[0]).toHaveTextContent("viewer");
+  expect(within(rows[3]).getAllByRole("cell")[1]).toHaveTextContent("viewer");
 });
 
 test("should display no groups data when no groups are available", async () => {
@@ -110,6 +110,27 @@ test("displays the edit panel", async () => {
   );
   const panel = await screen.findByRole("complementary", {
     name: "Edit group",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
+test("displays the delete panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Groups />
+    </ReBACAdminContext.Provider>,
+  );
+  const rows = await screen.findAllByRole("row");
+  await act(
+    async () => await userEvent.click(within(rows[1]).getByRole("checkbox")),
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: Label.DELETE })),
+  );
+  const panel = await screen.findByRole("complementary", {
+    name: "Delete 1 group",
   });
   expect(panel).toBeInTheDocument();
 });

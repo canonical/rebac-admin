@@ -5,17 +5,20 @@ import {
   Spinner,
   Button,
   ButtonAppearance,
+  CheckboxInput,
 } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
+import type { Role } from "api/api.schemas";
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
-import { usePanel } from "hooks/usePanel";
+import { useEntitiesSelect, usePanel } from "hooks";
 
 import AddRolePanel from "./AddRolePanel";
+import DeleteRolesPanel from "./DeleteRolesPanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
@@ -32,19 +35,31 @@ const COLUMN_DATA: Column[] = [
 
 const Roles = () => {
   const { data, isFetching, isError, error, refetch } = useGetRoles();
-  const { generatePanel, openPanel } = usePanel<{
+  const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRoleId?: string | null;
-  }>((closePanel, data, setPanelWidth) =>
-    data?.editRoleId ? (
-      <EditRolePanel
-        close={closePanel}
-        roleId={data.editRoleId}
-        setPanelWidth={setPanelWidth}
-      />
-    ) : (
-      <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />
-    ),
-  );
+    deleteRoles?: Role[];
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editRoleId) {
+      return (
+        <EditRolePanel
+          roleId={data.editRoleId}
+          close={closePanel}
+          setPanelWidth={setPanelWidth}
+        />
+      );
+    } else if (data?.deleteRoles) {
+      return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
+    } else {
+      return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
+
+  const {
+    handleSelectEntity: handleSelectRole,
+    handleSelectAllEntities: handleSelectAllRoles,
+    selectedEntities: selectedRoles,
+    areAllEntitiesSelected: areAllRolesSelected,
+  } = useEntitiesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
     const roles = data?.data.data;
@@ -52,6 +67,15 @@ const Roles = () => {
       return [];
     }
     const tableData = roles.map((role) => ({
+      selectRole: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllRolesSelected || selectedRoles.includes(role)}
+          onChange={() => handleSelectRole(role)}
+          disabled={isPanelOpen}
+        />
+      ),
       roleName: role,
       actions: (
         <ContextualMenu
@@ -67,6 +91,17 @@ const Roles = () => {
                 openPanel({ editRoleId: role });
               },
             },
+            {
+              appearance: "link",
+              children: (
+                <>
+                  <Icon name="delete" /> {Label.DELETE}
+                </>
+              ),
+              onClick: () => {
+                openPanel({ deleteRoles: [role] });
+              },
+            },
           ]}
           position="right"
           scrollOverflow
@@ -77,7 +112,31 @@ const Roles = () => {
       ),
     }));
     return tableData;
-  }, [data?.data.data, openPanel]);
+  }, [
+    areAllRolesSelected,
+    data?.data.data,
+    handleSelectRole,
+    isPanelOpen,
+    openPanel,
+    selectedRoles,
+  ]);
+
+  const columns = [
+    {
+      Header: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllRolesSelected}
+          indeterminate={!areAllRolesSelected && !!selectedRoles.length}
+          onChange={handleSelectAllRoles}
+          disabled={isPanelOpen}
+        />
+      ),
+      accessor: "selectRole",
+    },
+    ...COLUMN_DATA,
+  ];
 
   const generateCreateRoleButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
@@ -108,11 +167,15 @@ const Roles = () => {
       return (
         <>
           <ModularTable
-            columns={COLUMN_DATA}
+            columns={columns}
             data={tableData}
             emptyMsg={Label.NO_ROLES}
             getCellProps={({ column }) => {
               switch (column.id) {
+                case "selectRole":
+                  return {
+                    className: "select-entity-checkbox",
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -123,6 +186,10 @@ const Roles = () => {
             }}
             getHeaderProps={({ id }) => {
               switch (id) {
+                case "selectRole":
+                  return {
+                    className: "select-entity-checkbox",
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -139,7 +206,21 @@ const Roles = () => {
   };
 
   return (
-    <Content controls={generateCreateRoleButton()} title="Roles">
+    <Content
+      controls={
+        <>
+          <Button
+            appearance={ButtonAppearance.NEGATIVE}
+            disabled={!selectedRoles.length}
+            onClick={() => openPanel({ deleteRoles: selectedRoles })}
+          >
+            {Label.DELETE}
+          </Button>
+          {generateCreateRoleButton()}
+        </>
+      }
+      title="Roles"
+    >
       {generateContent()}
     </Content>
   );

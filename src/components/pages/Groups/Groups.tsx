@@ -5,17 +5,20 @@ import {
   ContextualMenu,
   Icon,
   ButtonAppearance,
+  CheckboxInput,
 } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
 import type { Column } from "react-table";
 
+import type { Group } from "api/api.schemas";
 import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
-import { usePanel } from "hooks/usePanel";
+import { useEntitiesSelect, usePanel } from "hooks";
 
 import AddGroupPanel from "./AddGroupPanel";
+import DeleteGroupsPanel from "./DeleteGroupsPanel";
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
@@ -32,19 +35,33 @@ const COLUMN_DATA: Column[] = [
 
 const Groups = () => {
   const { data, isFetching, isError, error, refetch } = useGetGroups();
-  const { generatePanel, openPanel } = usePanel<{
+  const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroupId?: string | null;
-  }>((closePanel, data, setPanelWidth) =>
-    data?.editGroupId ? (
-      <EditGroupPanel
-        groupId={data.editGroupId}
-        close={closePanel}
-        setPanelWidth={setPanelWidth}
-      />
-    ) : (
-      <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />
-    ),
-  );
+    deleteGroups?: Group[];
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editGroupId) {
+      return (
+        <EditGroupPanel
+          groupId={data.editGroupId}
+          close={closePanel}
+          setPanelWidth={setPanelWidth}
+        />
+      );
+    } else if (data?.deleteGroups) {
+      return (
+        <DeleteGroupsPanel groups={data.deleteGroups} close={closePanel} />
+      );
+    } else {
+      return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
+
+  const {
+    handleSelectEntity: handleSelectGroup,
+    handleSelectAllEntities: handleSelectAllGroups,
+    selectedEntities: selectedGroups,
+    areAllEntitiesSelected: areAllGroupsSelected,
+  } = useEntitiesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
     const groups = data?.data.data;
@@ -52,6 +69,15 @@ const Groups = () => {
       return [];
     }
     const tableData = groups.map((group) => ({
+      selectGroup: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllGroupsSelected || selectedGroups.includes(group)}
+          onChange={() => handleSelectGroup(group)}
+          disabled={isPanelOpen}
+        />
+      ),
       groupName: group,
       actions: (
         <ContextualMenu
@@ -67,6 +93,17 @@ const Groups = () => {
                 openPanel({ editGroupId: group });
               },
             },
+            {
+              appearance: "link",
+              children: (
+                <>
+                  <Icon name="delete" /> {Label.DELETE}
+                </>
+              ),
+              onClick: () => {
+                openPanel({ deleteGroups: [group] });
+              },
+            },
           ]}
           position="right"
           scrollOverflow
@@ -77,7 +114,31 @@ const Groups = () => {
       ),
     }));
     return tableData;
-  }, [data?.data.data, openPanel]);
+  }, [
+    areAllGroupsSelected,
+    data?.data.data,
+    handleSelectGroup,
+    isPanelOpen,
+    openPanel,
+    selectedGroups,
+  ]);
+
+  const columns = [
+    {
+      Header: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={areAllGroupsSelected}
+          indeterminate={!areAllGroupsSelected && !!selectedGroups.length}
+          onChange={handleSelectAllGroups}
+          disabled={isPanelOpen}
+        />
+      ),
+      accessor: "selectGroup",
+    },
+    ...COLUMN_DATA,
+  ];
 
   const generateCreateGroupButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
@@ -108,11 +169,15 @@ const Groups = () => {
       return (
         <>
           <ModularTable
-            columns={COLUMN_DATA}
+            columns={columns}
             data={tableData}
             emptyMsg={Label.NO_GROUPS}
             getCellProps={({ column }) => {
               switch (column.id) {
+                case "selectGroup":
+                  return {
+                    className: "select-entity-checkbox",
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -123,6 +188,10 @@ const Groups = () => {
             }}
             getHeaderProps={({ id }) => {
               switch (id) {
+                case "selectGroup":
+                  return {
+                    className: "select-entity-checkbox",
+                  };
                 case "actions":
                   return {
                     className: "u-align--right",
@@ -139,7 +208,21 @@ const Groups = () => {
   };
 
   return (
-    <Content controls={generateCreateGroupButton()} title="Groups">
+    <Content
+      controls={
+        <>
+          <Button
+            appearance={ButtonAppearance.NEGATIVE}
+            disabled={!selectedGroups.length}
+            onClick={() => openPanel({ deleteGroups: selectedGroups })}
+          >
+            {Label.DELETE}
+          </Button>
+          {generateCreateGroupButton()}
+        </>
+      }
+      title="Groups"
+    >
       {generateContent()}
     </Content>
   );
