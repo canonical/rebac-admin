@@ -22,8 +22,6 @@ import DeleteRolesPanel from "./DeleteRolesPanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
-import "./_roles.scss";
-
 const COLUMN_DATA: Column[] = [
   {
     Header: "role name",
@@ -91,6 +89,17 @@ const Roles = () => {
               ),
               onClick: () => {
                 openPanel({ editRoleId: role });
+              },
+            },
+            {
+              appearance: "link",
+              children: (
+                <>
+                  <Icon name="delete" /> {Label.DELETE}
+                </>
+              ),
+              onClick: () => {
+                openPanel({ deleteRoles: [role] });
               },
             },
           ]}
@@ -165,7 +174,7 @@ const Roles = () => {
               switch (column.id) {
                 case "selectRole":
                   return {
-                    className: "select-role-checkbox",
+                    className: "select-entity-checkbox",
                   };
                 case "actions":
                   return {
@@ -179,7 +188,7 @@ const Roles = () => {
               switch (id) {
                 case "selectRole":
                   return {
-                    className: "select-role-checkbox",
+                    className: "select-entity-checkbox",
                   };
                 case "actions":
                   return {

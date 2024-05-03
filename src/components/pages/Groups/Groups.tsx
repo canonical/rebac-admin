@@ -22,8 +22,6 @@ import DeleteGroupsPanel from "./DeleteGroupsPanel";
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
-import "./_groups.scss";
-
 const COLUMN_DATA: Column[] = [
   {
     Header: "group name",
@@ -93,6 +91,17 @@ const Groups = () => {
               ),
               onClick: () => {
                 openPanel({ editGroupId: group });
+              },
+            },
+            {
+              appearance: "link",
+              children: (
+                <>
+                  <Icon name="delete" /> {Label.DELETE}
+                </>
+              ),
+              onClick: () => {
+                openPanel({ deleteGroups: [group] });
               },
             },
           ]}
@@ -167,7 +176,7 @@ const Groups = () => {
               switch (column.id) {
                 case "selectGroup":
                   return {
-                    className: "select-group-checkbox",
+                    className: "select-entity-checkbox",
                   };
                 case "actions":
                   return {
@@ -181,7 +190,7 @@ const Groups = () => {
               switch (id) {
                 case "selectGroup":
                   return {
-                    className: "select-group-checkbox",
+                    className: "select-entity-checkbox",
                   };
                 case "actions":
                   return {

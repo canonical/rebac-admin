@@ -53,8 +53,8 @@ const DeleteRolesPanel = ({ roles, close }: Props) => {
 
   return (
     <DeleteEntityPanel
-      entityName="role"
-      entities={roles}
+      entity="role"
+      count={roles.length}
       onDelete={handleDeleteRoles}
       isDeletePending={isDeleteRolesIdPending}
       close={close}

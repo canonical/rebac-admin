@@ -3,8 +3,8 @@ export type FormFields = {
 };
 
 export type Props = {
-  entityName: string;
-  entities: string[];
+  entity: string;
+  count: number;
   close: () => void;
   onDelete: () => Promise<void>;
   isDeletePending: boolean;

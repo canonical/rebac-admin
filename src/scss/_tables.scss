@@ -1,0 +1,5 @@
+th, td {
+  &.select-entity-checkbox {
+    width: $sph--large + $form-tick-box-size;
+  }
+}

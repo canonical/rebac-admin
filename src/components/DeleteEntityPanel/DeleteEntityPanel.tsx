@@ -6,16 +6,14 @@ import FormPanel from "components/FormPanel";
 import type { Props, FormFields } from "./types";
 import { Label } from "./types";
 
-import "./_delete-entity-panel.scss";
-
 const DeleteEntityPanel = ({
-  entityName,
-  entities,
+  entity,
+  count,
   close,
   onDelete,
   isDeletePending,
 }: Props) => {
-  const entityCount = `${entities.length} ${entityName}${entities.length !== 1 ? "s" : ""}`;
+  const entityCount = `${count} ${entity}${count !== 1 ? "s" : ""}`;
   const confirmationMessage = `remove ${entityCount}`;
 
   const schema = Yup.object().shape({
@@ -34,10 +32,9 @@ const DeleteEntityPanel = ({
       }
       close={close}
       submitLabel={
-        <div className="delete-entity-button">
-          <Icon name="delete" className="is-light" />
-          <span className="delete-roles-button__label">{Label.DELETE}</span>
-        </div>
+        <>
+          <Icon name="delete" className="is-light" /> {Label.DELETE}
+        </>
       }
       validationSchema={schema}
       isSaving={isDeletePending}
@@ -49,8 +46,8 @@ const DeleteEntityPanel = ({
         <Col size={12}>
           <p>
             Are you sure you want to delete {entityCount}?<br />
-            The deletion of {entityName}s is irreversible and might adversely
-            affect your system.
+            The deletion of {entity}s is irreversible and might adversely affect
+            your system.
           </p>
         </Col>
         <Col size={12}>
