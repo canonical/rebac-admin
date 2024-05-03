@@ -1,8 +1,8 @@
-import { FormikField } from "@canonical/react-components";
 import { screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import CleanFormikField from "components/CleanFormikField";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { hasNotification, renderComponent } from "test/utils";
 
@@ -69,7 +69,7 @@ test("can submit the form", async () => {
         onSubmit={onSubmit}
         submitLabel="Submit!"
       >
-        <FormikField label="name" name="name" type="text" />
+        <CleanFormikField label="name" name="name" type="text" />
       </PanelForm>
     </ReBACAdminContext.Provider>,
   );

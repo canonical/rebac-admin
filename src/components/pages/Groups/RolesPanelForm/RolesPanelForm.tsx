@@ -3,7 +3,6 @@ import {
   Notification,
   NotificationSeverity,
   Row,
-  FormikField,
   ModularTable,
   Button,
   Icon,
@@ -14,6 +13,7 @@ import { useMemo } from "react";
 import type { Column } from "react-table";
 import * as Yup from "yup";
 
+import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import NoEntityCard from "components/NoEntityCard";
 
@@ -113,7 +113,11 @@ const RolesPanelForm = ({
               <fieldset>
                 <h5>Add roles</h5>
                 <div className="entitlements-panel-form__fields">
-                  <FormikField label={Label.ROLE} name="roleName" type="text" />
+                  <CleanFormikField
+                    label={Label.ROLE}
+                    name="roleName"
+                    type="text"
+                  />
                   <div className="entitlements-panel-form__submit">
                     <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
                   </div>
