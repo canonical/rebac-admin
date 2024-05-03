@@ -1,5 +1,7 @@
 th, td {
   &.select-entity-checkbox {
+    // Width of the checkbox was taken from Vanilla Framework:
+    // https://github.com/canonical/vanilla-framework/blob/2ef3a13a6b8b9743c7a1f8f354d1453ebb4a8d11/scss/_patterns_form-tick-elements.scss#L15
     width: $sph--large + $form-tick-box-size;
   }
 }
