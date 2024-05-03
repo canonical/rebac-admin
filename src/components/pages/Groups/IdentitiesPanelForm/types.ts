@@ -8,7 +8,6 @@ export type Props = {
 };
 
 export enum Label {
-  EMPTY = "No users",
   USER = "Username",
   FORM = "Add user",
   REMOVE = "Remove user",
