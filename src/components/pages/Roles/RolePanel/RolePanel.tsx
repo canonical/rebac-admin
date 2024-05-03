@@ -1,7 +1,8 @@
-import { FormikField, Spinner } from "@canonical/react-components";
+import { Spinner } from "@canonical/react-components";
 import { useState } from "react";
 import * as Yup from "yup";
 
+import CleanFormikField from "components/CleanFormikField";
 import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
@@ -63,7 +64,7 @@ const RolePanel = ({
       ]}
       validationSchema={schema}
     >
-      <FormikField
+      <CleanFormikField
         disabled={isEditing}
         label={Label.NAME}
         name="id"
