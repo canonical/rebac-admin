@@ -8,7 +8,7 @@ import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
-import { type Props } from "./types";
+import { Label, type Props } from "./types";
 
 const DeleteRolesPanel = ({ roles, close }: Props) => {
   const queryClient = useQueryClient();
@@ -38,13 +38,13 @@ const DeleteRolesPanel = ({ roles, close }: Props) => {
       if (hasError) {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative">
-            Some roles couldn't be deleted
+            {Label.DELETE_ERROR_MESSAGE}
           </ToastCard>
         ));
       } else {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="positive">
-            Selected roles have been deleted
+            {Label.DEELTE_SUCCESS_MESSAGE}
           </ToastCard>
         ));
       }

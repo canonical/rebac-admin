@@ -6,3 +6,8 @@ export type Props = {
   roles: Role[];
   close: RolePanelProps["close"];
 };
+
+export enum Label {
+  DELETE_ERROR_MESSAGE = "Some roles couldn't be deleted",
+  DEELTE_SUCCESS_MESSAGE = "Selected roles have been deleted",
+}
