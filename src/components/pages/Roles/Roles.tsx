@@ -214,7 +214,7 @@ const Roles = () => {
             disabled={!selectedRoles.length}
             onClick={() => openPanel({ deleteRoles: selectedRoles })}
           >
-            Delete
+            {Label.DELETE}
           </Button>
           {generateCreateRoleButton()}
         </>

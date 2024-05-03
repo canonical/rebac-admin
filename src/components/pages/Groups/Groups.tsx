@@ -216,7 +216,7 @@ const Groups = () => {
             disabled={!selectedGroups.length}
             onClick={() => openPanel({ deleteGroups: selectedGroups })}
           >
-            Delete
+            {Label.DELETE}
           </Button>
           {generateCreateGroupButton()}
         </>
