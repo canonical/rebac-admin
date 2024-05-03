@@ -28,7 +28,12 @@ const generateRow = <E,>(
 ) => ({
   ...generateCells(entity),
   actions: (
-    <Button appearance="base" hasIcon onClick={() => onRemove(entity)}>
+    <Button
+      appearance="base"
+      className="u-no-margin--bottom is-small"
+      hasIcon
+      onClick={() => onRemove(entity)}
+    >
       <Icon name="delete">Remove {entityName}</Icon>
     </Button>
   ),
