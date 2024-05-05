@@ -14,7 +14,6 @@ export type Props = {
 };
 
 export enum Label {
-  EMPTY = "No entitlements",
   ENTITLEMENT = "Entitlement",
   ENTITY = "Resource type",
   FORM = "Add entitlement",
