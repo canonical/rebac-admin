@@ -1184,11 +1184,11 @@ components:
     GroupObject:
       type: object
       required:
-        - id
+        - name
       properties:
-        id:
+        name:
           type: string
-      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+      examples: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }]
     Roles:
       type: object
       required:
@@ -1214,10 +1214,18 @@ components:
       type: object
       required:
         - id
+        - name
       properties:
         id:
           type: string
-      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+        name:
+          type: string
+      examples:
+        [
+          { id: "global", name: "global" },
+          { id: "administrator", name: "administrator" },
+          { id: "viewer", name: "viewer" },
+        ]
     EntitlementsPatchRequest:
       type: object
       required:

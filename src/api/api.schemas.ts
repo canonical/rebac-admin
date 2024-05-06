@@ -314,6 +314,7 @@ export interface EntitlementsPatchRequest {
 
 export interface RoleObject {
   id: string;
+  name: string;
 }
 
 export type Role = string;
@@ -327,7 +328,7 @@ export interface Roles {
 }
 
 export interface GroupObject {
-  id: string;
+  name: string;
 }
 
 export type Group = string;

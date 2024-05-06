@@ -41,7 +41,10 @@ const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
         isDeleteRolesIdEntitlementsEntitlementIdPending ||
         isPatchRolesIdEntitlementsPending
       }
-      onSubmit={async ({ id }, addEntitlements, removeEntitlements) => {
+      onSubmit={async ({ name }, addEntitlements, removeEntitlements) => {
+        // Currently the role name and ID are equivalent. This may change in
+        // the backend, at which time this will need to change.
+        const id = name;
         let hasError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length) {

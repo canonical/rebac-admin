@@ -32,9 +32,12 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
           : null
       }
       isSaving={isPostRolesPending || isPatchRolesIdEntitlementsPending}
-      onSubmit={async ({ id }, addEntitlements) => {
+      onSubmit={async ({ name }, addEntitlements) => {
+        // Currently the role name and ID are equivalent. This may change in
+        // the backend, at which time this will need to change.
+        const id = name;
         try {
-          await postRoles({ data: { id } });
+          await postRoles({ data: { id, name } });
         } catch (error) {
           // These errors are handled by the errors returned by `usePostRoles`.
           return;

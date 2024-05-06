@@ -12,10 +12,10 @@ import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
 
 import type { FormFields } from "./types";
-import { Label, type Props } from "./types";
+import { FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  id: Yup.string().required("Required"),
+  [FieldName.NAME]: Yup.string().required("Required"),
 });
 
 const GroupPanel = ({
@@ -51,7 +51,11 @@ const GroupPanel = ({
         !!removeRoles.length
       }
       entity="group"
-      initialValues={{ id: groupId ?? "" }}
+      initialValues={{
+        // Currently the group name and ID are equivalent. This may change in
+        // the backend, at which time this will need to change.
+        name: groupId ?? "",
+      }}
       isEditing={isEditing}
       isSaving={isSaving}
       onSubmit={async (values) =>
@@ -129,7 +133,7 @@ const GroupPanel = ({
       <CleanFormikField
         disabled={isEditing}
         label={Label.NAME}
-        name="id"
+        name={FieldName.NAME}
         takeFocus={!isEditing}
         type="text"
       />

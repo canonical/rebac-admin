@@ -2,8 +2,12 @@ import type { Entitlement } from "components/EntitlementsPanelForm";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
+export enum FieldName {
+  NAME = "name",
+}
+
 export type FormFields = {
-  id: string;
+  [FieldName.NAME]: string;
 };
 
 export type Props = {

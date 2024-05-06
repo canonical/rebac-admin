@@ -102,7 +102,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         isDeleteGroupsIdRodeleteGroupsIdRolesIdentityIdPending
       }
       onSubmit={async (
-        { id },
+        { name },
         addEntitlements,
         addIdentities,
         addRoles,
@@ -110,6 +110,9 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         removeIdentities,
         removeRoles,
       ) => {
+        // Currently the group name and ID are equivalent. This may change in
+        // the backend, at which time this will need to change.
+        const id = name;
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
         let hasRolesError = false;

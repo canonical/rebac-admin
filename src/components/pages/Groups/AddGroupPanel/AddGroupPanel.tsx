@@ -51,9 +51,12 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
         isPatchGroupsIdIdentitiesPending ||
         isPostGroupsIdRolesPending
       }
-      onSubmit={async ({ id }, addEntitlements, addIdentities, addRoles) => {
+      onSubmit={async ({ name }, addEntitlements, addIdentities, addRoles) => {
+        // Currently the group name and ID are equivalent. This may change in
+        // the backend, at which time this will need to change.
+        const id = name;
         try {
-          await postGroups({ data: { id } });
+          await postGroups({ data: { name } });
         } catch (error) {
           // These errors are handled by the errors returned by `usePostGroups`.
           return;

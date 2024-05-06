@@ -9,10 +9,10 @@ import SubFormPanel from "components/SubFormPanel";
 import { PanelWidth } from "hooks/usePanel";
 
 import type { FormFields } from "./types";
-import { Label, type Props } from "./types";
+import { FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  id: Yup.string().required("Required"),
+  [FieldName.NAME]: Yup.string().required("Required"),
 });
 
 const RolePanel = ({
@@ -33,7 +33,7 @@ const RolePanel = ({
       {...props}
       submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
       entity="role"
-      initialValues={{ id: roleId ?? "" }}
+      initialValues={{ name: roleId ?? "" }}
       isEditing={isEditing}
       isSaving={isSaving}
       onSubmit={async (values) =>
@@ -67,7 +67,7 @@ const RolePanel = ({
       <CleanFormikField
         disabled={isEditing}
         label={Label.NAME}
-        name="id"
+        name={FieldName.NAME}
         takeFocus={!isEditing}
         type="text"
       />
