@@ -15,6 +15,7 @@ export type SubForm = {
 export type Props<F extends FormikValues> = {
   entity: string;
   isEditing?: boolean;
+  isFetching?: boolean;
   panelWidth?: PanelWidth;
   setPanelWidth: SetPanelWidth;
   subForms: SubForm[];

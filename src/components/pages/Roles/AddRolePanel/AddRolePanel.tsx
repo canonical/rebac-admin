@@ -33,38 +33,48 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
       }
       isSaving={isPostRolesPending || isPatchRolesIdEntitlementsPending}
       onSubmit={async ({ name }, addEntitlements) => {
-        // Currently the role name and ID are equivalent. This may change in
-        // the backend, at which time this will need to change.
-        const id = name;
+        let id: string | null = null;
         try {
-          await postRoles({ data: { id, name } });
+          const roles = await postRoles({ data: { name } });
+          const role = roles?.data.data.find(
+            (newRole) => newRole.name === name,
+          );
+          id = role?.id ?? null;
         } catch (error) {
           // These errors are handled by the errors returned by `usePostRoles`.
           return;
         }
         if (addEntitlements.length) {
-          try {
-            await patchRolesIdEntitlements({
-              id,
-              data: {
-                permissions: addEntitlements.map(
-                  ({ resource, entitlement, entity }) => ({
-                    object: `${entity}:${resource}`,
-                    relation: entitlement,
-                  }),
-                ),
-              },
-            });
-          } catch (error) {
+          if (!id) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
-                {`Entitlements couldn't be added: "${
-                  error instanceof AxiosError
-                    ? error.response?.data.message
-                    : "unknown error"
-                }".`}
+                {`Entitlements couldn't be added to role "${name}".`}
               </ToastCard>
             ));
+          } else {
+            try {
+              await patchRolesIdEntitlements({
+                id,
+                data: {
+                  permissions: addEntitlements.map(
+                    ({ resource, entitlement, entity }) => ({
+                      object: `${entity}:${resource}`,
+                      relation: entitlement,
+                    }),
+                  ),
+                },
+              });
+            } catch (error) {
+              reactHotToast.custom((t) => (
+                <ToastCard toastInstance={t} type="negative">
+                  {`Entitlements couldn't be added: "${
+                    error instanceof AxiosError
+                      ? error.response?.data.message
+                      : "unknown error"
+                  }".`}
+                </ToastCard>
+              ));
+            }
           }
         }
         void queryClient.invalidateQueries({
@@ -73,7 +83,7 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
         close();
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="positive">
-            {`Role "${id}" was created.`}
+            {`Role "${name}" was created.`}
           </ToastCard>
         ));
       }}

@@ -7,7 +7,10 @@ import {
   getGetRolesMockHandler404,
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
-import { getGetRolesIdEntitlementsMockHandler } from "api/roles-id/roles-id.msw";
+import {
+  getGetRolesIdEntitlementsMockHandler,
+  getGetRolesIdMockHandler,
+} from "api/roles-id/roles-id.msw";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
@@ -20,6 +23,7 @@ const mockRolesData = getGetRolesResponseMock({
 });
 const mockApiServer = setupServer(
   getGetRolesMockHandler(mockRolesData),
+  getGetRolesIdMockHandler(),
   getGetRolesIdEntitlementsMockHandler(),
 );
 

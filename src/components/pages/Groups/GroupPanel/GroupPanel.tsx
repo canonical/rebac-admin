@@ -21,11 +21,13 @@ const schema = Yup.object().shape({
 const GroupPanel = ({
   existingEntitlements,
   existingIdentities,
+  isEditing,
   isFetchingExistingEntitlements,
   isFetchingExistingIdentities,
   isFetchingExistingRoles,
+  isFetchingGroup,
   existingRoles,
-  groupId,
+  group,
   onSubmit,
   isSaving,
   ...props
@@ -38,7 +40,6 @@ const GroupPanel = ({
   const [removeIdentities, setRemoveIdentities] = useState<string[]>([]);
   const [addRoles, setAddRoles] = useState<string[]>([]);
   const [removeRoles, setRemoveRoles] = useState<string[]>([]);
-  const isEditing = !!groupId;
   return (
     <SubFormPanel<FormFields>
       {...props}
@@ -52,11 +53,10 @@ const GroupPanel = ({
       }
       entity="group"
       initialValues={{
-        // Currently the group name and ID are equivalent. This may change in
-        // the backend, at which time this will need to change.
-        name: groupId ?? "",
+        name: group?.name ?? "",
       }}
       isEditing={isEditing}
+      isFetching={isFetchingGroup}
       isSaving={isSaving}
       onSubmit={async (values) =>
         await onSubmit(

@@ -22,11 +22,15 @@ import {
   getGetGroupsIdRolesMockHandler,
   getGetGroupsIdRolesResponseMock,
   getPostGroupsIdRolesMockHandler400,
+  getGetGroupsIdMockHandler400,
+  getGetGroupsIdResponseMock400,
+  getGetGroupsIdMockHandler,
+  getGetGroupsIdResponseMock,
 } from "api/groups-id/groups-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
 import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
-import { hasToast, renderComponent } from "test/utils";
+import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
@@ -53,6 +57,11 @@ const mockApiServer = setupServer(
       data: ["role1", "role2"],
     }),
   ),
+  getGetGroupsIdMockHandler(
+    getGetGroupsIdResponseMock({
+      data: [{ id: "admin1", name: "admin" }],
+    }),
+  ),
 );
 
 beforeAll(() => {
@@ -67,6 +76,37 @@ afterAll(() => {
   mockApiServer.close();
 });
 
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when getting the group", async () => {
+  mockApiServer.use(
+    getGetGroupsIdMockHandler400(
+      getGetGroupsIdResponseMock400({ message: "group not found" }),
+    ),
+  );
+  renderComponent(
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
+  await hasNotification(
+    "Unable to get group: group not found",
+    NotificationSeverity.NEGATIVE,
+  );
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle the group not in the reponse", async () => {
+  mockApiServer.use(
+    getGetGroupsIdMockHandler(
+      getGetGroupsIdResponseMock({
+        data: [],
+      }),
+    ),
+  );
+  renderComponent(
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
+  await hasNotification("Unable to get group", NotificationSeverity.NEGATIVE);
+});
+
 test("should add and remove entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -76,7 +116,7 @@ test("should add and remove entitlements", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/admin/entitlements")
+      requestClone.url.endsWith("/groups/admin1/entitlements")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -84,14 +124,14 @@ test("should add and remove entitlements", async () => {
     if (
       requestClone.method === "DELETE" &&
       requestClone.url.endsWith(
-        "/groups/admin/entitlements/can_edit::moderators:collection",
+        "/groups/admin1/entitlements/can_edit::moderators:collection",
       )
     ) {
       deleteDone = true;
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -173,7 +213,7 @@ test("should handle errors when updating entitlements", async () => {
     getGetGroupsIdEntitlementsMockHandler400(),
   );
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -248,20 +288,20 @@ test("should add and remove users", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/admin/identities")
+      requestClone.url.endsWith("/groups/admin1/identities")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
     }
     if (
       requestClone.method === "DELETE" &&
-      requestClone.url.endsWith("/groups/admin/identities/user1")
+      requestClone.url.endsWith("/groups/admin1/identities/user1")
     ) {
       deleteDone = true;
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
@@ -316,7 +356,7 @@ test("should handle errors when updating users", async () => {
     getDeleteGroupsIdIdentitiesIdentityIdMockHandler400(),
   );
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
@@ -363,20 +403,20 @@ test("should add and remove roles", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "POST" &&
-      requestClone.url.endsWith("/groups/admin/roles")
+      requestClone.url.endsWith("/groups/admin1/roles")
     ) {
       postResponseBody = await requestClone.text();
       postDone = true;
     }
     if (
       requestClone.method === "DELETE" &&
-      requestClone.url.endsWith("/groups/admin/roles/role1")
+      requestClone.url.endsWith("/groups/admin1/roles/role1")
     ) {
       deleteDone = true;
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the roles have loaded.
   await screen.findByText("2 roles");
@@ -431,7 +471,7 @@ test("should handle errors when updating roles", async () => {
     getDeleteGroupsIdRolesRolesIdMockHandler(),
   );
   renderComponent(
-    <EditGroupPanel groupId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the roles have loaded.
   await screen.findByText("2 roles");

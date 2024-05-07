@@ -7,6 +7,7 @@ import {
   useDeleteGroupsIdEntitlementsEntitlementId,
   useDeleteGroupsIdIdentitiesIdentityId,
   useDeleteGroupsIdRolesRolesId,
+  useGetGroupsId,
   useGetGroupsIdEntitlements,
   useGetGroupsIdIdentities,
   useGetGroupsIdRoles,
@@ -26,7 +27,15 @@ const generateError = (
   getGroupsIdEntitlementsError: AxiosError<Response> | null,
   getGroupsIdIdentitiesError: AxiosError<Response> | null,
   getGroupsIdRolesError: AxiosError<Response> | null,
+  getGroupsIdError: AxiosError<Response> | null,
+  noGroup: boolean,
 ) => {
+  if (getGroupsIdError) {
+    return `Unable to get group: ${getGroupsIdError.response?.data.message}`;
+  }
+  if (noGroup) {
+    return "Unable to get group";
+  }
   if (getGroupsIdEntitlementsError) {
     return `Unable to get entitlements: ${getGroupsIdEntitlementsError.response?.data.message}`;
   }
@@ -40,6 +49,12 @@ const generateError = (
 };
 
 const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
+  const {
+    error: getGroupsIdError,
+    data: groupDetails,
+    isFetching: isFetchingGroup,
+    isFetched: isFetchedGroup,
+  } = useGetGroupsId(groupId);
   const {
     error: getGroupsIdEntitlementsError,
     data: existingEntitlements,
@@ -79,6 +94,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     mutateAsync: deleteGroupsIdRolesIdentityId,
     isPending: isDeleteGroupsIdRodeleteGroupsIdRolesIdentityIdPending,
   } = useDeleteGroupsIdRolesRolesId();
+  const group = groupDetails?.data.data.find(({ id }) => id === groupId);
   return (
     <GroupPanel
       close={close}
@@ -86,13 +102,17 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         getGroupsIdEntitlementsError,
         getGroupsIdIdentitiesError,
         getGroupsIdRolesError,
+        getGroupsIdError,
+        isFetchedGroup && !group,
       )}
       existingEntitlements={existingEntitlements?.data.data}
       existingIdentities={existingIdentities?.data.data}
       existingRoles={existingRoles?.data.data}
+      isEditing
       isFetchingExistingEntitlements={isFetchingExistingEntitlements}
       isFetchingExistingIdentities={isFetchingExistingIdentities}
       isFetchingExistingRoles={isFetchingExistingRoles}
+      isFetchingGroup={isFetchingGroup}
       isSaving={
         isDeleteGroupsIdEntitlementsEntitlementIdPending ||
         isPatchGroupsIdEntitlementsPending ||
@@ -102,7 +122,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         isDeleteGroupsIdRodeleteGroupsIdRolesIdentityIdPending
       }
       onSubmit={async (
-        { name },
+        _values,
         addEntitlements,
         addIdentities,
         addRoles,
@@ -110,9 +130,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         removeIdentities,
         removeRoles,
       ) => {
-        // Currently the group name and ID are equivalent. This may change in
-        // the backend, at which time this will need to change.
-        const id = name;
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
         let hasRolesError = false;
@@ -121,7 +138,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
           queue.push(async (done) => {
             try {
               await patchGroupsIdEntitlements({
-                id,
+                id: groupId,
                 data: {
                   permissions: addEntitlements.map(
                     ({ resource, entitlement, entity }) => ({
@@ -142,7 +159,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             queue.push(async (done) => {
               try {
                 await deleteGroupsIdEntitlementsEntitlementId({
-                  id,
+                  id: groupId,
                   entitlementId: `${entitlement}::${entity}:${resource}`,
                 });
               } catch (error) {
@@ -156,7 +173,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
           queue.push(async (done) => {
             try {
               await patchGroupsIdIdentities({
-                id,
+                id: groupId,
                 data: {
                   identities: addIdentities,
                 },
@@ -172,7 +189,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             queue.push(async (done) => {
               try {
                 await deleteGroupsIdIdentitiesIdentityId({
-                  id,
+                  id: groupId,
                   identityId,
                 });
               } catch (error) {
@@ -186,7 +203,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
           queue.push(async (done) => {
             try {
               await postGroupsIdRoles({
-                id,
+                id: groupId,
                 data: {
                   roles: addRoles,
                 },
@@ -202,7 +219,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             queue.push(async (done) => {
               try {
                 await deleteGroupsIdRolesIdentityId({
-                  id,
+                  id: groupId,
                   rolesId,
                 });
               } catch (error) {
@@ -238,13 +255,13 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
           if (!hasIdentitiesError && !hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`Group "${id}" was updated.`}
+                {`Group "${group?.name}" was updated.`}
               </ToastCard>
             ));
           }
         });
       }}
-      groupId={groupId}
+      group={group}
       setPanelWidth={setPanelWidth}
     />
   );

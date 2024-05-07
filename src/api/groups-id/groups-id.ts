@@ -49,7 +49,7 @@ import type {
 } from "../api.schemas";
 
 /**
- * @summary Get a single user.
+ * @summary Get a single group.
  */
 export const getGroupsId = (
   id: string,
@@ -107,7 +107,7 @@ export type GetGroupsIdQueryError = AxiosError<
 >;
 
 /**
- * @summary Get a single user.
+ * @summary Get a single group.
  */
 export const useGetGroupsId = <
   TData = Awaited<ReturnType<typeof getGroupsId>>,

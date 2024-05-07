@@ -37,7 +37,7 @@ import type {
   GetGroups200,
   GroupObject,
   NotFoundResponse,
-  Response,
+  PostGroups201,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -124,7 +124,7 @@ export const useGetGroups = <
 export const postGroups = (
   groupObject: GroupObject,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Response>> => {
+): Promise<AxiosResponse<PostGroups201>> => {
   return axios.post(`/groups`, groupObject, options);
 };
 

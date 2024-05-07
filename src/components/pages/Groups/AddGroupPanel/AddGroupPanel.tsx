@@ -52,68 +52,79 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
         isPostGroupsIdRolesPending
       }
       onSubmit={async ({ name }, addEntitlements, addIdentities, addRoles) => {
-        // Currently the group name and ID are equivalent. This may change in
-        // the backend, at which time this will need to change.
-        const id = name;
-        try {
-          await postGroups({ data: { name } });
-        } catch (error) {
-          // These errors are handled by the errors returned by `usePostGroups`.
-          return;
-        }
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
         let hasRolesError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
-        if (addEntitlements.length) {
-          queue.push(async (done) => {
-            try {
-              await patchGroupsIdEntitlements({
-                id,
-                data: {
-                  permissions: addEntitlements.map(
-                    ({ resource, entitlement, entity }) => ({
-                      object: `${entity}:${resource}`,
-                      relation: entitlement,
-                    }),
-                  ),
-                },
+        try {
+          const groups = await postGroups({ data: { name } });
+          const group = groups?.data.data.find(
+            (newGroup) => newGroup.name === name,
+          );
+          if (
+            !group &&
+            (addEntitlements.length || addIdentities.length || addRoles.length)
+          ) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {`Couldn't finish setting up group "${name}".`}
+              </ToastCard>
+            ));
+          } else if (group) {
+            if (addEntitlements.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchGroupsIdEntitlements({
+                    id: group.id,
+                    data: {
+                      permissions: addEntitlements.map(
+                        ({ resource, entitlement, entity }) => ({
+                          object: `${entity}:${resource}`,
+                          relation: entitlement,
+                        }),
+                      ),
+                    },
+                  });
+                } catch (error) {
+                  hasEntitlementsError = true;
+                }
+                done();
               });
-            } catch (error) {
-              hasEntitlementsError = true;
             }
-            done();
-          });
-        }
-        if (addIdentities.length) {
-          queue.push(async (done) => {
-            try {
-              await patchGroupsIdIdentities({
-                id,
-                data: {
-                  identities: addIdentities,
-                },
+            if (addIdentities.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchGroupsIdIdentities({
+                    id: group.id,
+                    data: {
+                      identities: addIdentities,
+                    },
+                  });
+                } catch (error) {
+                  hasIdentitiesError = true;
+                }
+                done();
               });
-            } catch (error) {
-              hasIdentitiesError = true;
             }
-            done();
-          });
-        }
-        if (addRoles.length) {
-          queue.push(async (done) => {
-            try {
-              await postGroupsIdRoles({
-                id,
-                data: {
-                  roles: addRoles,
-                },
+            if (addRoles.length) {
+              queue.push(async (done) => {
+                try {
+                  await postGroupsIdRoles({
+                    id: group.id,
+                    data: {
+                      roles: addRoles,
+                    },
+                  });
+                } catch (error) {
+                  hasRolesError = true;
+                }
+                done();
               });
-            } catch (error) {
-              hasRolesError = true;
             }
-            done();
-          });
+          }
+        } catch (error) {
+          // These errors are handled by the errors returned by `usePostGroups`.
+          return;
         }
         queue.onDone(() => {
           void queryClient.invalidateQueries({
@@ -143,7 +154,7 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
           }
           reactHotToast.custom((t) => (
             <ToastCard toastInstance={t} type="positive">
-              {`Group "${id}" was created.`}
+              {`Group "${name}" was created.`}
             </ToastCard>
           ));
         });

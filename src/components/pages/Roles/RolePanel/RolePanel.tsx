@@ -17,24 +17,26 @@ const schema = Yup.object().shape({
 
 const RolePanel = ({
   existingEntitlements,
+  isEditing,
   isFetchingExisting,
+  isFetchingRole,
   isSaving,
   onSubmit,
-  roleId,
+  role,
   ...props
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
   const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
     [],
   );
-  const isEditing = !!roleId;
   return (
     <SubFormPanel<FormFields>
       {...props}
       submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
       entity="role"
-      initialValues={{ name: roleId ?? "" }}
+      initialValues={{ name: role?.name ?? "" }}
       isEditing={isEditing}
+      isFetching={isFetchingRole}
       isSaving={isSaving}
       onSubmit={async (values) =>
         await onSubmit(values, addEntitlements, removeEntitlements)

@@ -9,6 +9,8 @@ import {
   getPostRolesMockHandler,
   getPostRolesMockHandler400,
   getPostRolesResponseMock400,
+  getPostRolesMockHandler201,
+  getPostRolesResponseMock201,
 } from "api/roles/roles.msw";
 import {
   getPatchRolesIdEntitlementsMockHandler,
@@ -22,7 +24,9 @@ import { Label as RolePanelLabel } from "../RolePanel";
 
 import AddRolePanel from "./AddRolePanel";
 
-const mockRolesData = getPostRolesResponseMock();
+const mockRolesData = getPostRolesResponseMock({
+  data: [{ id: "role123", name: "role1" }],
+});
 const mockApiServer = setupServer(
   getPostRolesMockHandler(mockRolesData),
   getPatchRolesIdEntitlementsMockHandler(),
@@ -61,7 +65,7 @@ test("should add a role and entitlements", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/roles/role1/entitlements")
+      requestClone.url.endsWith("/roles/role123/entitlements")
     ) {
       responseBody = await requestClone.text();
       done = true;
@@ -151,6 +155,76 @@ test("should handle errors when adding roles", async () => {
   await hasNotification(
     "Unable to create role: That role already exists",
     "negative",
+  );
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("handles the role not in the response", async () => {
+  mockApiServer.use(
+    getPostRolesMockHandler201(getPostRolesResponseMock201({ data: [] })),
+  );
+  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+        "role1",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: /Add entitlements/ }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: EntitlementsPanelFormLabel.ENTITY,
+        }),
+        "client",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: EntitlementsPanelFormLabel.RESOURCE,
+        }),
+        "editors",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: EntitlementsPanelFormLabel.ENTITLEMENT,
+        }),
+        "can_read",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: EntitlementsPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Create role" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Create role" }),
+      ),
+  );
+  await hasToast(
+    'Entitlements couldn\'t be added to role "role1".',
+    NotificationSeverity.NEGATIVE,
   );
 });
 

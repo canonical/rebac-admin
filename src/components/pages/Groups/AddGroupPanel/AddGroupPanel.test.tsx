@@ -9,6 +9,8 @@ import {
   getPostGroupsMockHandler,
   getPostGroupsMockHandler400,
   getPostGroupsResponseMock400,
+  getPostGroupsMockHandler201,
+  getPostGroupsResponseMock201,
 } from "api/groups/groups.msw";
 import {
   getPatchGroupsIdEntitlementsMockHandler,
@@ -28,7 +30,9 @@ import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 import AddGroupPanel from "./AddGroupPanel";
 import { Label } from "./types";
 
-const mockGroupsData = getPostGroupsResponseMock();
+const mockGroupsData = getPostGroupsResponseMock({
+  data: [{ id: "group123", name: "group1" }],
+});
 const mockApiServer = setupServer(
   getPostGroupsMockHandler(mockGroupsData),
   getPatchGroupsIdEntitlementsMockHandler(),
@@ -82,6 +86,58 @@ test("should handle errors when adding groups", async () => {
   );
 });
 
+// eslint-disable-next-line vitest/expect-expect
+test("handles the group not in the response", async () => {
+  mockApiServer.use(
+    getPostGroupsMockHandler201(getPostGroupsResponseMock201({ data: [] })),
+    getPatchGroupsIdEntitlementsMockHandler(),
+    getPatchGroupsIdIdentitiesMockHandler(),
+  );
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+        "group1",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: /Add users/ })),
+  );
+  await act(
+    async () =>
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: IdentitiesPanelFormLabel.USER,
+        }),
+        "joe",
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getAllByRole("button", { name: "Create group" })[0],
+      ),
+  );
+  await act(
+    async () =>
+      await userEvent.click(
+        screen.getByRole("button", { name: "Create group" }),
+      ),
+  );
+  await hasToast(
+    'Couldn\'t finish setting up group "group1".',
+    NotificationSeverity.NEGATIVE,
+  );
+});
+
 test("should add entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -90,7 +146,7 @@ test("should add entitlements", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/group1/entitlements")
+      requestClone.url.endsWith("/groups/group123/entitlements")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -238,7 +294,7 @@ test("should add users", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/group1/identities")
+      requestClone.url.endsWith("/groups/group123/identities")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -345,7 +401,7 @@ test("should add roles", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "POST" &&
-      requestClone.url.endsWith("/groups/group1/roles")
+      requestClone.url.endsWith("/groups/group123/roles")
     ) {
       postResponseBody = await requestClone.text();
       postDone = true;
