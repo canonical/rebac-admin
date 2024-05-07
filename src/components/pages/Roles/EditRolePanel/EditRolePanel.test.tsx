@@ -11,9 +11,13 @@ import {
   getGetRolesIdEntitlementsResponseMock,
   getDeleteRolesIdEntitlementsEntitlementIdMockHandler,
   getGetRolesIdEntitlementsMockHandler400,
+  getGetRolesIdMockHandler,
+  getGetRolesIdResponseMock,
+  getGetRolesIdMockHandler400,
+  getGetRolesIdResponseMock400,
 } from "api/roles-id/roles-id.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
-import { hasToast, renderComponent } from "test/utils";
+import { hasToast, renderComponent, hasNotification } from "test/utils";
 
 import EditRolePanel from "./EditRolePanel";
 
@@ -23,6 +27,11 @@ const mockApiServer = setupServer(
   getGetRolesIdEntitlementsMockHandler(
     getGetRolesIdEntitlementsResponseMock({
       data: ["can_edit::moderators:collection", "can_remove::staff:team"],
+    }),
+  ),
+  getGetRolesIdMockHandler(
+    getGetRolesIdResponseMock({
+      data: [{ id: "admin123", name: "admin1" }],
     }),
   ),
 );
@@ -39,6 +48,37 @@ afterAll(() => {
   mockApiServer.close();
 });
 
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when getting the role", async () => {
+  mockApiServer.use(
+    getGetRolesIdMockHandler400(
+      getGetRolesIdResponseMock400({ message: "role not found" }),
+    ),
+  );
+  renderComponent(
+    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
+  await hasNotification(
+    "Unable to get role: role not found",
+    NotificationSeverity.NEGATIVE,
+  );
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle the role not in the response", async () => {
+  mockApiServer.use(
+    getGetRolesIdMockHandler(
+      getGetRolesIdResponseMock({
+        data: [],
+      }),
+    ),
+  );
+  renderComponent(
+    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
+  await hasNotification("Unable to get role", NotificationSeverity.NEGATIVE);
+});
+
 test("should add and remove entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -48,7 +88,7 @@ test("should add and remove entitlements", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/roles/admin/entitlements")
+      requestClone.url.endsWith("/roles/admin123/entitlements")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -56,14 +96,14 @@ test("should add and remove entitlements", async () => {
     if (
       requestClone.method === "DELETE" &&
       requestClone.url.endsWith(
-        "/roles/admin/entitlements/can_edit::moderators:collection",
+        "/roles/admin123/entitlements/can_edit::moderators:collection",
       )
     ) {
       deleteDone = true;
     }
   });
   renderComponent(
-    <EditRolePanel roleId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -130,7 +170,7 @@ test("should add and remove entitlements", async () => {
   expect(patchResponseBody).toBe(
     '{"permissions":[{"object":"client:editors","relation":"can_read"}]}',
   );
-  await hasToast('Role "admin" was updated.', "positive");
+  await hasToast('Role "admin1" was updated.', "positive");
 });
 
 // eslint-disable-next-line vitest/expect-expect
@@ -145,7 +185,7 @@ test("should handle errors when updating entitlements", async () => {
     getGetRolesIdEntitlementsMockHandler400(),
   );
   renderComponent(
-    <EditRolePanel roleId="admin" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");

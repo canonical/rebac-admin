@@ -1,4 +1,4 @@
-import { Col, Row } from "@canonical/react-components";
+import { Col, Row, Spinner } from "@canonical/react-components";
 import classNames from "classnames";
 import type { FormikValues } from "formik";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ const SubFormPanel = <F extends FormikValues>({
   children,
   entity,
   isEditing,
+  isFetching,
   panelWidth,
   setPanelWidth,
   subForms,
@@ -52,28 +53,32 @@ const SubFormPanel = <F extends FormikValues>({
         })}
         data-testid={TestId.DEFAULT_VIEW}
       >
-        <PanelForm<F>
-          {...props}
-          submitLabel={isEditing ? `Update ${entity}` : `Create ${entity}`}
-        >
-          <Row>
-            <Col size={12}>{children}</Col>
-          </Row>
-          <Row>
-            <Col size={12}>
-              {subForms.map(({ count, entity, icon, panelWidth }) => (
-                <PanelFormLink
-                  entity={entity}
-                  count={count}
-                  icon={icon}
-                  isEditing={isEditing}
-                  key={entity}
-                  onClick={() => changeView(entity, panelWidth)}
-                />
-              ))}
-            </Col>
-          </Row>
-        </PanelForm>
+        {isFetching ? (
+          <Spinner text={`Loading ${entity}`} />
+        ) : (
+          <PanelForm<F>
+            {...props}
+            submitLabel={isEditing ? `Update ${entity}` : `Create ${entity}`}
+          >
+            <Row>
+              <Col size={12}>{children}</Col>
+            </Row>
+            <Row>
+              <Col size={12}>
+                {subForms.map(({ count, entity, icon, panelWidth }) => (
+                  <PanelFormLink
+                    entity={entity}
+                    count={count}
+                    icon={icon}
+                    isEditing={isEditing}
+                    key={entity}
+                    onClick={() => changeView(entity, panelWidth)}
+                  />
+                ))}
+              </Col>
+            </Row>
+          </PanelForm>
+        )}
       </div>
     </EmbeddedPanel>
   );

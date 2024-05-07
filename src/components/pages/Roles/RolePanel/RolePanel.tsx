@@ -9,32 +9,34 @@ import SubFormPanel from "components/SubFormPanel";
 import { PanelWidth } from "hooks/usePanel";
 
 import type { FormFields } from "./types";
-import { Label, type Props } from "./types";
+import { FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  id: Yup.string().required("Required"),
+  [FieldName.NAME]: Yup.string().required("Required"),
 });
 
 const RolePanel = ({
   existingEntitlements,
+  isEditing,
   isFetchingExisting,
+  isFetchingRole,
   isSaving,
   onSubmit,
-  roleId,
+  role,
   ...props
 }: Props) => {
   const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
   const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
     [],
   );
-  const isEditing = !!roleId;
   return (
     <SubFormPanel<FormFields>
       {...props}
       submitEnabled={!!addEntitlements.length || !!removeEntitlements.length}
       entity="role"
-      initialValues={{ id: roleId ?? "" }}
+      initialValues={{ name: role?.name ?? "" }}
       isEditing={isEditing}
+      isFetching={isFetchingRole}
       isSaving={isSaving}
       onSubmit={async (values) =>
         await onSubmit(values, addEntitlements, removeEntitlements)
@@ -67,7 +69,7 @@ const RolePanel = ({
       <CleanFormikField
         disabled={isEditing}
         label={Label.NAME}
-        name="id"
+        name={FieldName.NAME}
         takeFocus={!isEditing}
         type="text"
       />

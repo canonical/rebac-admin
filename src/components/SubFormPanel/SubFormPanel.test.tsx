@@ -9,6 +9,24 @@ import { renderComponent } from "test/utils";
 import SubFormPanel from "./SubFormPanel";
 import { TestId } from "./types";
 
+test("can display the loading state", async () => {
+  renderComponent(
+    <SubFormPanel<{ name: string }>
+      close={vi.fn()}
+      entity="role"
+      initialValues={{ name: "" }}
+      isFetching
+      onSubmit={vi.fn()}
+      setPanelWidth={vi.fn()}
+      subForms={[]}
+    >
+      Form content
+    </SubFormPanel>,
+  );
+  expect(screen.getByText("Loading role")).toBeInTheDocument();
+  expect(screen.queryByText("Form content")).not.toBeInTheDocument();
+});
+
 test("can display contents", async () => {
   renderComponent(
     <SubFormPanel<{ name: string }>

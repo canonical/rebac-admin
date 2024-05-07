@@ -10,6 +10,7 @@ import {
 import {
   getGetGroupsIdEntitlementsMockHandler,
   getGetGroupsIdIdentitiesMockHandler,
+  getGetGroupsIdMockHandler,
   getGetGroupsIdRolesMockHandler,
 } from "api/groups-id/groups-id.msw";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
@@ -23,6 +24,7 @@ const mockGroupsData = getGetGroupsResponseMock({
   data: ["global", "administrator", "viewer"],
 });
 const mockApiServer = setupServer(
+  getGetGroupsIdMockHandler(),
   getGetGroupsMockHandler(mockGroupsData),
   getGetGroupsIdEntitlementsMockHandler(),
   getGetGroupsIdIdentitiesMockHandler(),

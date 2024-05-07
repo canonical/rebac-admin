@@ -26,7 +26,7 @@ import type {
   DefaultResponse,
   GetRoles200,
   NotFoundResponse,
-  Response,
+  PostRoles201,
   UnauthorizedResponse,
 } from "../api.schemas";
 
@@ -150,7 +150,7 @@ export const getGetRolesResponseMockDefault = (
 
 export const getPostRolesResponseMock = (
   overrideResponse: any = {},
-): Response => ({
+): PostRoles201 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -164,11 +164,20 @@ export const getPostRolesResponseMock = (
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    id: faker.word.sample(),
+    name: faker.word.sample(),
+    ...overrideResponse,
+  })),
+  ...overrideResponse,
 });
 
 export const getPostRolesResponseMock201 = (
   overrideResponse: any = {},
-): Response => ({
+): PostRoles201 => ({
   _links: {
     next: { href: faker.word.sample(), ...overrideResponse },
     ...overrideResponse,
@@ -181,6 +190,15 @@ export const getPostRolesResponseMock201 = (
   },
   message: faker.word.sample(),
   status: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+  data: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    id: faker.word.sample(),
+    name: faker.word.sample(),
+    ...overrideResponse,
+  })),
   ...overrideResponse,
 });
 
@@ -366,7 +384,7 @@ export const getGetRolesMockHandlerDefault = (
   });
 };
 
-export const getPostRolesMockHandler = (overrideResponse?: Response) => {
+export const getPostRolesMockHandler = (overrideResponse?: PostRoles201) => {
   return http.post("*/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
@@ -383,7 +401,7 @@ export const getPostRolesMockHandler = (overrideResponse?: Response) => {
   });
 };
 
-export const getPostRolesMockHandler201 = (overrideResponse?: Response) => {
+export const getPostRolesMockHandler201 = (overrideResponse?: PostRoles201) => {
   return http.post("*/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(

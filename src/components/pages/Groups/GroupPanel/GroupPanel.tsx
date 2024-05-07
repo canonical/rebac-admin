@@ -12,20 +12,22 @@ import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
 
 import type { FormFields } from "./types";
-import { Label, type Props } from "./types";
+import { FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  id: Yup.string().required("Required"),
+  [FieldName.NAME]: Yup.string().required("Required"),
 });
 
 const GroupPanel = ({
   existingEntitlements,
   existingIdentities,
+  isEditing,
   isFetchingExistingEntitlements,
   isFetchingExistingIdentities,
   isFetchingExistingRoles,
+  isFetchingGroup,
   existingRoles,
-  groupId,
+  group,
   onSubmit,
   isSaving,
   ...props
@@ -38,7 +40,6 @@ const GroupPanel = ({
   const [removeIdentities, setRemoveIdentities] = useState<string[]>([]);
   const [addRoles, setAddRoles] = useState<string[]>([]);
   const [removeRoles, setRemoveRoles] = useState<string[]>([]);
-  const isEditing = !!groupId;
   return (
     <SubFormPanel<FormFields>
       {...props}
@@ -51,8 +52,11 @@ const GroupPanel = ({
         !!removeRoles.length
       }
       entity="group"
-      initialValues={{ id: groupId ?? "" }}
+      initialValues={{
+        name: group?.name ?? "",
+      }}
       isEditing={isEditing}
+      isFetching={isFetchingGroup}
       isSaving={isSaving}
       onSubmit={async (values) =>
         await onSubmit(
@@ -129,7 +133,7 @@ const GroupPanel = ({
       <CleanFormikField
         disabled={isEditing}
         label={Label.NAME}
-        name="id"
+        name={FieldName.NAME}
         takeFocus={!isEditing}
         type="text"
       />

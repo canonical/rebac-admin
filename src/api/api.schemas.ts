@@ -20,11 +20,6 @@
  */
 export type GetResources200 = Response & Resources;
 
-/**
- * The number of records to return per response
- */
-export type PaginationSizeParameter = number;
-
 export type GetResourcesParams = {
   /**
    * The number of records to return per response
@@ -79,7 +74,9 @@ export type GetRolesIdEntitlementsParams = {
   page?: PaginationPageParameter;
 };
 
-export type GetRolesId200 = Response & Roles;
+export type GetRolesId200 = Response & RoleDetails;
+
+export type PostRoles201 = Response & RoleDetails;
 
 export type GetRoles200 = Response & Roles;
 
@@ -126,7 +123,9 @@ export type GetGroupsIdEntitlementsParams = {
 
 export type GetGroupsIdRoles200 = Response & Roles;
 
-export type GetGroupsId200 = Response & Groups;
+export type GetGroupsId200 = Response & GroupDetails;
+
+export type PostGroups201 = Response & GroupDetails;
 
 export type GetGroups200 = Response & Groups;
 
@@ -224,6 +223,11 @@ export type FilterParamParameter = string;
  */
 export type PaginationPageParameter = number;
 
+/**
+ * The number of records to return per response
+ */
+export type PaginationSizeParameter = number;
+
 export type _ResponseMeta = {
   page: number;
   size: number;
@@ -276,22 +280,22 @@ export interface Resources {
   data: Resource[];
 }
 
+export type Entitlement = string;
+
+export type EntityEntitlementsDataItem = {
+  entitlement?: Entitlement;
+  entity?: Entity;
+};
+
 export interface EntityEntitlements {
   data: EntityEntitlementsDataItem[];
 }
-
-export type Entitlement = string;
 
 export interface Entitlements {
   data: Entitlement[];
 }
 
 export type Entity = string;
-
-export type EntityEntitlementsDataItem = {
-  entitlement?: Entitlement;
-  entity?: Entity;
-};
 
 export interface IdentitiesPatchRequest {
   identities: string[];
@@ -313,7 +317,7 @@ export interface EntitlementsPatchRequest {
 }
 
 export interface RoleObject {
-  id: string;
+  name: string;
 }
 
 export type Role = string;
@@ -322,15 +326,33 @@ export interface RolesPostRequest {
   roles: string[];
 }
 
+export interface RoleDetail {
+  id: string;
+  name: string;
+}
+
+export interface RoleDetails {
+  data: RoleDetail[];
+}
+
 export interface Roles {
   data: Role[];
 }
 
 export interface GroupObject {
-  id: string;
+  name: string;
 }
 
 export type Group = string;
+
+export interface GroupDetail {
+  id: string;
+  name: string;
+}
+
+export interface GroupDetails {
+  data: GroupDetail[];
+}
 
 export interface Groups {
   data: Group[];

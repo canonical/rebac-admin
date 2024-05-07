@@ -402,7 +402,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response'
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - $ref: '#/components/schemas/GroupDetails'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -421,7 +423,7 @@ paths:
     get:
       tags:
         - groups/{id}
-      summary: Get a single user.
+      summary: Get a single group.
       responses:
         '200':
           description: OK
@@ -430,7 +432,7 @@ paths:
               schema:
                 allOf:
                   - $ref: "#/components/schemas/Response"
-                  - $ref: '#/components/schemas/Groups'
+                  - $ref: '#/components/schemas/GroupDetails'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -785,7 +787,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response'
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - $ref: '#/components/schemas/RoleDetails'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -813,7 +817,7 @@ paths:
               schema:
                 allOf:
                   - $ref: "#/components/schemas/Response"
-                  - $ref: '#/components/schemas/Roles'
+                  - $ref: '#/components/schemas/RoleDetails'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1178,17 +1182,36 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+    GroupDetails:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDetail'
+    GroupDetail:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
     Group:
       type: string
       examples: ["global", "administrator", "viewer"]
     GroupObject:
       type: object
       required:
-        - id
+        - name
       properties:
-        id:
+        name:
           type: string
-      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+      examples: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }]
     Roles:
       type: object
       required:
@@ -1198,6 +1221,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
+    RoleDetails:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleDetail'
+    RoleDetail:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
     RolesPostRequest:
       type: object
       required:
@@ -1213,11 +1255,16 @@ components:
     RoleObject:
       type: object
       required:
-        - id
+        - name
       properties:
-        id:
+        name:
           type: string
-      examples: [{ id: "global" }, { id: "administrator" }, { id: "viewer" }]
+      examples:
+        [
+          { name: "global" },
+          { name: "administrator" },
+          { name: "viewer" },
+        ]
     EntitlementsPatchRequest:
       type: object
       required:

@@ -37,7 +37,7 @@ import type {
   GetRoles200,
   GetRolesParams,
   NotFoundResponse,
-  Response,
+  PostRoles201,
   RoleObject,
   UnauthorizedResponse,
 } from "../api.schemas";
@@ -135,7 +135,7 @@ export const useGetRoles = <
 export const postRoles = (
   roleObject: RoleObject,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Response>> => {
+): Promise<AxiosResponse<PostRoles201>> => {
   return axios.post(`/roles`, roleObject, options);
 };
 
