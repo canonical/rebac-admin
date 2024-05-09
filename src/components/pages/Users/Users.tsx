@@ -1,6 +1,5 @@
 import { ModularTable, Spinner } from "@canonical/react-components";
 import { useMemo, type JSX } from "react";
-import type { Column } from "react-table";
 
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
@@ -9,7 +8,7 @@ import { Endpoint } from "types/api";
 
 import { Label } from "./types";
 
-const COLUMN_DATA: Column[] = [
+const COLUMN_DATA = [
   {
     Header: "first name",
     accessor: "firstName",
@@ -35,7 +34,7 @@ const COLUMN_DATA: Column[] = [
 const Users = () => {
   const { data, isFetching, isError, error, refetch } = useGetIdentities();
 
-  const tableData = useMemo(() => {
+  const tableData = useMemo<Record<string, string>[]>(() => {
     const users = data?.data.data;
     if (!users) {
       return [];
