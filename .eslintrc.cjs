@@ -5,7 +5,6 @@ module.exports = {
     "react-app",
     "eslint:recommended",
     "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:vitest/recommended",
     "plugin:promise/recommended",
     "plugin:import/typescript",
