@@ -23,9 +23,9 @@
       "require": "./dist/rebac-admin.umd.cjs"
     },
     "./dist/rebac-admin.css": {
-        "import": "./dist/rebac-admin.css",
-        "require": "./dist/rebac-admin.css"
-      }
+      "import": "./dist/rebac-admin.css",
+      "require": "./dist/rebac-admin.css"
+    }
   },
   "scripts": {
     "build": "yarn run tsc && vite build",
@@ -90,7 +90,7 @@
     "axios": "1.6.7",
     "cors": "2.8.5",
     "dotenv": "16.4.5",
-    "eslint": "9.2.0",
+    "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-plugin-import": "2.29.1",
