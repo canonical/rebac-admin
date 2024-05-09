@@ -23,9 +23,9 @@
       "require": "./dist/rebac-admin.umd.cjs"
     },
     "./dist/rebac-admin.css": {
-        "import": "./dist/rebac-admin.css",
-        "require": "./dist/rebac-admin.css"
-      }
+      "import": "./dist/rebac-admin.css",
+      "require": "./dist/rebac-admin.css"
+    }
   },
   "scripts": {
     "build": "yarn run tsc && vite build",
@@ -70,9 +70,9 @@
     "@mswjs/http-middleware": "0.9.2",
     "@tanstack/eslint-plugin-query": "5.20.1",
     "@tanstack/react-query": "5.24.7",
-    "@testing-library/dom": "9.3.4",
+    "@testing-library/dom": "10.1.0",
     "@testing-library/jest-dom": "6.4.2",
-    "@testing-library/react": "14.2.1",
+    "@testing-library/react": "15.0.7",
     "@testing-library/user-event": "14.5.2",
     "@types/clone-deep": "4.0.4",
     "@types/cors": "2.8.17",
@@ -101,7 +101,7 @@
     "eslint-plugin-vitest": "0.3.22",
     "express": "4.19.2",
     "formik": "2.4.5",
-    "happy-dom": "13.6.2",
+    "happy-dom": "14.10.1",
     "ip": "2.0.1",
     "msw": "2.2.2",
     "npm-package-json-lint": "7.1.0",
