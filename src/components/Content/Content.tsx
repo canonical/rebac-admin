@@ -1,8 +1,8 @@
+import { Panel } from "@canonical/react-components";
 import type { PropsWithChildren, ReactNode } from "react";
 import { type JSX } from "react";
 
 import CheckCapability from "components/CheckCapability";
-import Panel from "components/Panel";
 import { CapabilityAction } from "hooks/capabilities";
 import type { Endpoint } from "types/api";
 
