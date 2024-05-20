@@ -54,7 +54,11 @@ const SubFormPanel = <F extends FormikValues>({
         data-testid={TestId.DEFAULT_VIEW}
       >
         {isFetching ? (
-          <Spinner text={`Loading ${entity}`} />
+          <Row>
+            <Col size={12}>
+              <Spinner text={`Loading ${entity}`} />
+            </Col>
+          </Row>
         ) : (
           <PanelForm<F>
             {...props}
