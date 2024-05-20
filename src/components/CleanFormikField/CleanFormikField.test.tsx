@@ -28,7 +28,7 @@ test("does not display errors when the form is not dirty", async () => {
     await userEvent.type(input, "{tab}");
   });
   expect(input).not.toBeInvalid();
-  expect(input).not.toHaveAccessibleErrorMessage("Error: Too small!");
+  expect(input).not.toHaveAccessibleErrorMessage("Too small!");
 });
 
 test("displays errors when the form is dirty", async () => {
@@ -51,5 +51,5 @@ test("displays errors when the form is dirty", async () => {
     await userEvent.type(input, "99{tab}");
   });
   expect(input).toBeInvalid();
-  expect(input).toHaveAccessibleErrorMessage("Error: Too small!");
+  expect(input).toHaveAccessibleErrorMessage("Too small!");
 });

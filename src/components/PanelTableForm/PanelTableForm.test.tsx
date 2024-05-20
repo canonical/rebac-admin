@@ -63,9 +63,7 @@ test("displays the empty state", async () => {
       setRemoveEntities={vi.fn()}
     />,
   );
-  expect(
-    screen.getByRole("heading", { name: "No entitlements" }),
-  ).toBeInTheDocument();
+  expect(screen.getByText("No entitlements")).toHaveClass("p-heading--4");
 });
 
 test("can display entities", async () => {
