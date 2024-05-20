@@ -45,9 +45,9 @@ test("can display a portal", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
   );
   expect(screen.getByText(content)).toBeInTheDocument();
-  const container = document.getElementById(containerId);
+  const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
-  expect(container?.firstChild).toHaveClass("p-panel");
+  expect(container).toHaveAttribute("role", "complementary");
 });
 
 test("can remove a portal", async () => {
@@ -67,9 +67,9 @@ test("can remove a portal", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
   );
   expect(screen.queryByText(content)).not.toBeInTheDocument();
-  let container = document.getElementById(containerId);
+  let container = document.getElementById(containerId)?.firstChild;
   expect(container).not.toHaveClass("l-aside");
-  expect(container?.firstChild).not.toHaveClass("p-panel");
+  expect(container).not.toHaveAttribute("role");
 });
 
 test("can add and remove additional classes", async () => {
@@ -81,9 +81,13 @@ test("can add and remove additional classes", async () => {
   );
   const toggle = screen.getByRole("button", { name: "Toggle" });
   await act(async () => await userEvent.click(toggle));
-  expect(document.getElementById(containerId)).toHaveClass("extra-class");
+  expect(document.getElementById(containerId)?.firstChild).toHaveClass(
+    "extra-class",
+  );
   await act(async () => await userEvent.click(toggle));
-  expect(document.getElementById(containerId)).not.toHaveClass("extra-class");
+  expect(document.getElementById(containerId)?.firstChild).not.toHaveClass(
+    "extra-class",
+  );
 });
 
 test("should not close portal when clicking esc", async () => {
@@ -98,12 +102,10 @@ test("should not close portal when clicking esc", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
   );
   expect(screen.getByText(content)).toBeInTheDocument();
-  const container = document.getElementById(containerId);
+  const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
-  expect(container?.firstChild).toHaveClass("p-panel");
   await act(async () => await userEvent.keyboard("{Escape}"));
   expect(container).toHaveClass("l-aside");
-  expect(container?.firstChild).toHaveClass("p-panel");
 });
 
 test("should not close portal when clicking outside the panel", async () => {
@@ -118,10 +120,8 @@ test("should not close portal when clicking outside the panel", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
   );
   expect(screen.getByText(content)).toBeInTheDocument();
-  const container = document.getElementById(containerId);
+  const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
-  expect(container?.firstChild).toHaveClass("p-panel");
   await act(async () => await userEvent.click(document.body));
   expect(container).toHaveClass("l-aside");
-  expect(container?.firstChild).toHaveClass("p-panel");
 });

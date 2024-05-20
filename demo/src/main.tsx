@@ -24,7 +24,7 @@ const defferRender = async () => {
 const admin = () => (
   <ReBACAdmin
     apiURL={import.meta.env.VITE_DEMO_API_URL}
-    asidePanelId="aside-panel"
+    asidePanelId="app-layout"
     authToken={import.meta.env.VITE_DEMO_AUTH_TOKEN}
   />
 );

@@ -59,14 +59,14 @@ test("sets the panel width", async () => {
     async () =>
       await userEvent.click(screen.getByRole("button", { name: "Open" })),
   );
-  expect(document.getElementById(containerId)).not.toHaveClass("is-narrow");
+  expect(document.querySelector(".l-aside")).not.toHaveClass("is-narrow");
   await act(
     async () =>
       await userEvent.click(
         screen.getByRole("button", { name: "Change width" }),
       ),
   );
-  expect(document.getElementById(containerId)).toHaveClass("is-narrow");
+  expect(document.querySelector(".l-aside")).toHaveClass("is-narrow");
 });
 
 test("closes the panel", async () => {

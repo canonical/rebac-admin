@@ -1,6 +1,6 @@
 import { Button, Icon } from "@canonical/react-components";
 
-import { EmbeddedPanelLabelledById } from "components/EmbeddedPanel/consts";
+import { SidePanelLabelledById } from "consts";
 
 import { generateTitle } from "../PanelFormLink/utils";
 
@@ -36,7 +36,7 @@ const PanelFormNavigation = ({
         <li className="p-breadcrumbs__item">
           <span
             className="p-heading--4 panel-form-navigation__current-title"
-            id={EmbeddedPanelLabelledById}
+            id={SidePanelLabelledById}
           >
             {viewTitle ?? panelTitle}
           </span>
