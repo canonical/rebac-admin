@@ -1,16 +1,16 @@
 import type { FormikValues } from "formik";
 
-import EmbeddedPanel from "components/EmbeddedPanel";
-import { EmbeddedPanelLabelledById } from "components/EmbeddedPanel/consts";
+import Panel from "components/Panel";
 import PanelForm from "components/PanelForm";
+import { SidePanelLabelledById } from "consts";
 
 import { type Props } from "./types";
 
 const FormPanel = <F extends FormikValues>({ title, ...props }: Props<F>) => {
   return (
-    <EmbeddedPanel title={title} titleId={EmbeddedPanelLabelledById}>
+    <Panel title={title} titleId={SidePanelLabelledById}>
       <PanelForm<F> {...props} />
-    </EmbeddedPanel>
+    </Panel>
   );
 };
 

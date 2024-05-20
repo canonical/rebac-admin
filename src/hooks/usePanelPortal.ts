@@ -22,35 +22,32 @@ export const usePanelPortal = (
 
   useEffect(() => {
     const portalNode = portalRef.current;
-    if (isOpen && asidePanelId) {
-      // The portal container needs to be the aside element as Vanilla
-      // does not allow the aside to be nested.
-      const asideNode = document.getElementById(asidePanelId);
-      asideNode?.classList.add("l-aside");
+    if (isOpen) {
+      // The portal node needs to be the aside element as Vanilla
+      // does not allow the aside to be nested (and usePortal creates a wrapping
+      // div to insert the portal contents into).
+      portalNode?.classList.add("l-aside");
+      // usePortal creates a div so to mimic an aside we need to manually set
+      // the role.
+      portalNode?.setAttribute("role", "complementary");
       if (className) {
-        asideNode?.classList.add(className);
+        portalNode?.classList.add(className);
       }
       if (labelledBy) {
-        asideNode?.setAttribute("aria-labelledby", labelledBy);
+        portalNode?.setAttribute("aria-labelledby", labelledBy);
       }
-      // The portal node must have the panel class as Vanilla requires the panel
-      // to be a direct descendent of the aside.
-      portalNode.classList.add("p-panel");
     }
     return () => {
-      if (asidePanelId) {
-        const asideNode = document.getElementById(asidePanelId);
-        asideNode?.classList.remove("l-aside");
-        if (className) {
-          asideNode?.classList.remove(className);
-        }
-        if (labelledBy) {
-          asideNode?.removeAttribute("aria-labelledby");
-        }
-        portalNode.classList.remove("p-panel");
+      portalNode?.classList.remove("l-aside");
+      portalNode?.removeAttribute("role");
+      if (className) {
+        portalNode?.classList.remove(className);
+      }
+      if (labelledBy) {
+        portalNode?.removeAttribute("aria-labelledby");
       }
     };
-  }, [isOpen, asidePanelId, portalRef, className, labelledBy]);
+  }, [isOpen, portalRef, className, labelledBy]);
 
   return portal;
 };

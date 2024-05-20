@@ -26,6 +26,7 @@ const App = () => {
 
   return (
     <ApplicationLayout
+      id="app-layout"
       logo={{
         component: Link,
         icon: "https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg",
@@ -153,9 +154,7 @@ const App = () => {
               </Row>
             </Form>
           </AppAside>
-        ) : (
-          <aside id="aside-panel" />
-        )
+        ) : null
       }
       status={
         <Button

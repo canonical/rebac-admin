@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 
-import { EmbeddedPanelLabelledById } from "components/EmbeddedPanel/consts";
+import { SidePanelLabelledById } from "consts";
 import { usePanelPortal } from "hooks/usePanelPortal";
 
 export enum PanelWidth {
@@ -24,7 +24,7 @@ export const usePanel = <D extends object>(
   const [panelWidth, setPanelWidth] = useState<PanelWidth | null | undefined>();
   const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(
     panelWidth,
-    EmbeddedPanelLabelledById,
+    SidePanelLabelledById,
     { programmaticallyOpen: true },
   );
   const openPanel = useCallback(

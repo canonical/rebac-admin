@@ -3,7 +3,7 @@ import classNames from "classnames";
 import type { FormikValues } from "formik";
 import { useEffect, useState } from "react";
 
-import EmbeddedPanel from "components/EmbeddedPanel";
+import Panel from "components/Panel";
 import PanelForm from "components/PanelForm";
 import type { PanelWidth } from "hooks/usePanel";
 
@@ -33,7 +33,7 @@ const SubFormPanel = <F extends FormikValues>({
   }, [panelWidth, setPanelWidth]);
 
   return (
-    <EmbeddedPanel
+    <Panel
       title={
         <PanelFormNavigation
           defaultPanelWidth={panelWidth}
@@ -80,7 +80,7 @@ const SubFormPanel = <F extends FormikValues>({
           </PanelForm>
         )}
       </div>
-    </EmbeddedPanel>
+    </Panel>
   );
 };
 
