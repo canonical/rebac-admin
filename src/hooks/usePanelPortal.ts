@@ -6,7 +6,7 @@ import { ReBACAdminContext } from "context/ReBACAdminContext";
 
 export const usePanelPortal = (
   className?: string | null,
-  labelledBy?: string,
+  labelledBy?: string | null,
   options?: UsePortalOptions,
 ) => {
   const { asidePanelId } = useContext(ReBACAdminContext);
