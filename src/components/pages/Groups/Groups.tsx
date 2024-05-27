@@ -64,7 +64,7 @@ const Groups = () => {
   } = useEntitiesSelect(data?.data.data ?? []);
 
   const tableData = useMemo(() => {
-    const groups = [];
+    const groups = data?.data.data;
     if (!groups) {
       return [];
     }
