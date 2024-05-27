@@ -11,7 +11,7 @@ const NoEntityCard = ({ title, message, actionButton }: Props) => (
     className="no-entity-card"
     data-testid={TestId.NO_ENTITY_CARD}
   >
-    <p className="u-no-margin--bottom">{message}</p>
+    <p>{message}</p>
     {actionButton}
   </EmptyState>
 );
