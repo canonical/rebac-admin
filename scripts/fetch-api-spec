@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# In order to download the raw openapi.yaml file, a valid github
+# personal access token, that has read access to
+# https://github.com/canonical/openfga-admin-openapi-spec repository,
+# is required to be passed, either via GITHUB_ACCESS_TOKEN in .env.local or
+# as the sole argument to this bash script.
+
 API_SPEC_VERSION="main"
 if [ -f .env ]
 then
@@ -16,10 +22,23 @@ then
   exit 1
 fi
 
+if [ -n "$1" ]
+then
+  GITHUB_ACCESS_TOKEN="$1"
+fi
+
+if [ -z "$GITHUB_ACCESS_TOKEN" ]
+then
+  echo "Error: A valid github personal access token was not found!"
+  echo "Pass it via GITHUB_ACCESS_TOKEN in .env.local or as the sole argument of this script."
+  exit 1
+fi
+
 OUTPUT_FILE="openapi.yaml"
 API_SPEC_URL="https://raw.githubusercontent.com/canonical/openfga-admin-openapi-spec/$API_SPEC_VERSION/openapi.yaml"
 
-OPENAPI_YAML_CONTENT=$(curl -H "Accept: application/vnd.github.v3.raw" \
+OPENAPI_YAML_CONTENT=$(curl -H "Authorization: token $GITHUB_ACCESS_TOKEN" \
+  -H "Accept: application/vnd.github.v3.raw" \
   -L $API_SPEC_URL)
 
 if [[ "$OPENAPI_YAML_CONTENT" =~ ^(404: Not Found|400: Invalid request) ]]
