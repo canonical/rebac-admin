@@ -36,7 +36,7 @@
     "lint": "npmPkgJsonLint . && yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "eslint-check": "eslint src demo --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prepack": "yarn build",
-    "prettier-check": "prettier --check src/**/* demo/src/**/*",
+    "prettier-check": "prettier --check src demo/src",
     "serve-demo": "vite preview -c vite-demo.config.ts",
     "serve-mock-api": "tsx watch ./scripts/serve-mock-api.ts",
     "start": "vite",
@@ -62,7 +62,8 @@
   "dependencies": {
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",
-    "loglevel": "1.9.1"
+    "loglevel": "1.9.1",
+    "react-hot-toast": "2.4.1"
   },
   "devDependencies": {
     "@canonical/react-components": "0.52.0",

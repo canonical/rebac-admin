@@ -34,6 +34,7 @@ type LogoProps<L = LogoDefaultElement> = {
 
 type TitleProps = {
   title: ReactNode;
+  titleId?: string;
 };
 
 type HeaderProps<L = LogoDefaultElement> = ExclusiveProps<
@@ -87,6 +88,7 @@ const Panel = <L = LogoDefaultElement,>({
   logo,
   stickyHeader,
   title,
+  titleId,
   toggle,
   wrapContent = true,
 }: Props<L>) => {
@@ -105,7 +107,9 @@ const Panel = <L = LogoDefaultElement,>({
           {logo ? (
             generateLogo<L>(logo)
           ) : (
-            <h4 className="p-panel__title">{title}</h4>
+            <h4 className="p-panel__title" id={titleId}>
+              {title}
+            </h4>
           )}
           <div className={classNames("p-panel__controls", controlsClassName)}>
             {toggle ? (

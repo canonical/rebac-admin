@@ -78,6 +78,7 @@ The following props can be provided to the `ReBACAdmin` component to configure t
 | Prop     | Description                                                                          | Examples                       |
 | :------- | :----------------------------------------------------------------------------------- | :----------------------------- |
 | apiURL   | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| asidePanelId | The element ID to use to render aside panels into. Should not begin with "#".        | app-aside                      |
 | logLevel | The level of logging to be used by the logger. (optional; default value: "silent")   | trace, debug, error, silent    |
 
 The available `logLevel` options are `trace`, `debug`, `info`, `warn`, `error`

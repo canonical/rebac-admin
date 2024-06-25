@@ -1,4 +1,4 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -19,6 +19,6 @@ test("should render correctly and be able to refetch", async () => {
   expect(errorNotification.childElementCount).toBe(1);
   const refetchButton = errorNotification.children[0];
   expect(refetchButton).toHaveTextContent("refetch");
-  await act(() => userEvent.click(refetchButton));
+  await userEvent.click(refetchButton);
   expect(onRefetch).toHaveBeenCalledTimes(1);
 });
