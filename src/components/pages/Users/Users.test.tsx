@@ -1,4 +1,4 @@
-import { act, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
@@ -93,7 +93,7 @@ test("should display error notification and refetch data", async () => {
     ),
   );
   expect(refetchButton).toHaveTextContent("refetch");
-  await act(() => userEvent.click(refetchButton));
+  await userEvent.click(refetchButton);
   expect(
     await screen.findByText(UsersLabel.FETCHING_USERS),
   ).toBeInTheDocument();

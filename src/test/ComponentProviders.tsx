@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import type { ReactNode, PropsWithChildren } from "react";
+import { type ReactNode, type PropsWithChildren, useEffect } from "react";
+import reactHotToast, { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export type ComponentProps = {
@@ -20,18 +21,28 @@ const ComponentProviders = ({
       },
     },
   }),
-}: ComponentProps) => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <Routes>
-        <Route path={path} element={children}>
-          {routeChildren}
-        </Route>
-        {/* Capture other paths to prevent warnings when navigating in tests. */}
-        <Route path="*" element={<span />} />
-      </Routes>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+}: ComponentProps) => {
+  useEffect(
+    () => () => {
+      // Clean up all toast messages to prevent bleed between tests.
+      reactHotToast.remove();
+    },
+    [],
+  );
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path={path} element={children}>
+            {routeChildren}
+          </Route>
+          {/* Capture other paths to prevent warnings when navigating in tests. */}
+          <Route path="*" element={<span />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster toastOptions={{ duration: 1 }} />
+    </QueryClientProvider>
+  );
+};
 
 export default ComponentProviders;

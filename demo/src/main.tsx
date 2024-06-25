@@ -25,6 +25,7 @@ const defferRender = async () => {
 const admin = () => (
   <ReBACAdmin
     apiURL={import.meta.env.VITE_DEMO_API_URL}
+    asidePanelId="app-layout"
     logLevel={logger.levels.TRACE}
   />
 );

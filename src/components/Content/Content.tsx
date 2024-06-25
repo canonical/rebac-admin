@@ -9,12 +9,18 @@ import type { Endpoint } from "types/api";
 import "./_content.scss";
 
 type Props = {
-  title: ReactNode;
+  controls?: ReactNode;
   endpoint: Endpoint;
+  title: ReactNode;
 } & PropsWithChildren;
 
-const Content = ({ children, title, endpoint }: Props): JSX.Element => (
-  <Panel title={title}>
+const Content = ({
+  children,
+  controls,
+  title,
+  endpoint,
+}: Props): JSX.Element => (
+  <Panel controls={controls} title={title}>
     <div className="l-content">
       <CheckCapability endpoint={endpoint} action={CapabilityAction.READ}>
         {children}

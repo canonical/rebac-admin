@@ -1,4 +1,4 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
@@ -70,6 +70,6 @@ test("should display error notification and refetch capability", async () => {
   const refetchButton = capabilityErrorNotification.children[0];
   mockApiServer.use(...getGetActualCapabilitiesMock());
   expect(refetchButton).toHaveTextContent("refetch");
-  await act(() => userEvent.click(refetchButton));
+  await userEvent.click(refetchButton);
   expect(await screen.findByText("Mocked META data")).toBeInTheDocument();
 });
