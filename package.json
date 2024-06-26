@@ -47,7 +47,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^0.52.0 || ^0.56.0",
+    "@canonical/react-components": "^0.56.0",
     "@tanstack/react-query": "^5.24.7",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
