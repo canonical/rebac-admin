@@ -1,5 +1,5 @@
 import { Button } from "@canonical/react-components";
-import { screen, act } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
@@ -40,10 +40,7 @@ test("can display a portal", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
   expect(screen.getByText(content)).toBeInTheDocument();
   const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
@@ -57,15 +54,9 @@ test("can remove a portal", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
   expect(screen.getByText(content)).toBeInTheDocument();
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
   expect(screen.queryByText(content)).not.toBeInTheDocument();
   let container = document.getElementById(containerId)?.firstChild;
   expect(container).not.toHaveClass("l-aside");
@@ -80,11 +71,11 @@ test("can add and remove additional classes", async () => {
     </ReBACAdminContext.Provider>,
   );
   const toggle = screen.getByRole("button", { name: "Toggle" });
-  await act(async () => await userEvent.click(toggle));
+  await userEvent.click(toggle);
   expect(document.getElementById(containerId)?.firstChild).toHaveClass(
     "extra-class",
   );
-  await act(async () => await userEvent.click(toggle));
+  await userEvent.click(toggle);
   expect(document.getElementById(containerId)?.firstChild).not.toHaveClass(
     "extra-class",
   );
@@ -97,14 +88,11 @@ test("should not close portal when clicking esc", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
   expect(screen.getByText(content)).toBeInTheDocument();
   const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
-  await act(async () => await userEvent.keyboard("{Escape}"));
+  await userEvent.keyboard("{Escape}");
   expect(container).toHaveClass("l-aside");
 });
 
@@ -115,13 +103,10 @@ test("should not close portal when clicking outside the panel", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
   expect(screen.getByText(content)).toBeInTheDocument();
   const container = document.getElementById(containerId)?.firstChild;
   expect(container).toHaveClass("l-aside");
-  await act(async () => await userEvent.click(document.body));
+  await userEvent.click(document.body);
   expect(container).toHaveClass("l-aside");
 });
