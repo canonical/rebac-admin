@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router-dom";
 
 import Panel from "components/Panel";
 import Groups from "components/pages/Groups";
+import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import urls from "urls";
@@ -66,7 +67,7 @@ const ReBACAdmin = ({
             path={urls.resources.index}
             element={<Panel title="Resources" />}
           />
-          <Route path={urls.roles.index} element={<Panel title="Roles" />} />
+          <Route path={urls.roles.index} element={<Roles />} />
           <Route path={urls.users.index} element={<Users />} />
         </Routes>
       </QueryClientProvider>
