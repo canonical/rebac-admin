@@ -4,23 +4,32 @@ import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
 import {
+  getGetGroupsItemEntitlementsMockHandler,
+  getGetGroupsItemIdentitiesMockHandler,
+  getGetGroupsItemMockHandler,
+  getGetGroupsItemRolesMockHandler,
   getGetGroupsMockHandler,
   getGetGroupsMockHandler404,
   getGetGroupsResponseMock,
 } from "api/groups/groups.msw";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
 import Groups from "./Groups";
-import { Label as GroupsLabel } from "./types";
+import { Label as GroupsLabel, Label } from "./types";
 
 const mockGroupsData = getGetGroupsResponseMock({
   data: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }],
 });
 const mockApiServer = setupServer(
+  getGetGroupsItemMockHandler(),
   getGetGroupsMockHandler(mockGroupsData),
+  getGetGroupsItemEntitlementsMockHandler(),
+  getGetGroupsItemIdentitiesMockHandler(),
+  getGetGroupsItemRolesMockHandler(),
   ...getGetActualCapabilitiesMock(),
 );
 
@@ -91,4 +100,18 @@ test("should display error notification and refetch data", async () => {
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
   expect(rows).toHaveLength(4);
+});
+
+test("displays the add panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Groups />
+    </ReBACAdminContext.Provider>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: Label.ADD }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Create group",
+  });
+  expect(panel).toBeInTheDocument();
 });

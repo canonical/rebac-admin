@@ -1,4 +1,4 @@
-import { screen, act } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
@@ -41,10 +41,7 @@ test("opens the panel", async () => {
     </ReBACAdminContext.Provider>,
   );
   expect(screen.queryByTestId("panel")).not.toBeInTheDocument();
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Open" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Open" }));
   expect(screen.getByTestId("panel")).toBeInTheDocument();
 });
 
@@ -55,17 +52,9 @@ test("sets the panel width", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Open" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Open" }));
   expect(document.querySelector(".l-aside")).not.toHaveClass("is-narrow");
-  await act(
-    async () =>
-      await userEvent.click(
-        screen.getByRole("button", { name: "Change width" }),
-      ),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Change width" }));
   expect(document.querySelector(".l-aside")).toHaveClass("is-narrow");
 });
 
@@ -76,15 +65,9 @@ test("closes the panel", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Open" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Open" }));
   expect(screen.getByTestId("panel")).toBeInTheDocument();
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Close" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Close" }));
   expect(screen.queryByTestId("panel")).not.toBeInTheDocument();
 });
 
@@ -95,15 +78,9 @@ test("closes via the panel", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Open" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Open" }));
   expect(screen.getByTestId("panel")).toBeInTheDocument();
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Exit" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Exit" }));
   expect(screen.queryByTestId("panel")).not.toBeInTheDocument();
 });
 
@@ -114,9 +91,6 @@ test("displays data", async () => {
       <TestComponent />
     </ReBACAdminContext.Provider>,
   );
-  await act(
-    async () =>
-      await userEvent.click(screen.getByRole("button", { name: "Open" })),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Open" }));
   expect(screen.getByText("panel state")).toBeInTheDocument();
 });

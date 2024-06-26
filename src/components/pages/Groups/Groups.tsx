@@ -18,6 +18,7 @@ import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
 
+import AddGroupPanel from "./AddGroupPanel";
 import { Label } from "./types";
 
 const COLUMN_DATA = [
@@ -36,8 +37,15 @@ const Groups = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroupId?: string | null;
     deleteGroups?: Group["name"][];
-    // TODO: display panels.
-  }>(() => null);
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editGroupId) {
+      // TODO: display edit panel.
+    } else if (data?.deleteGroups) {
+      // TODO: display delete panel.
+    } else {
+      return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
 
   const {
     handleSelectEntity: handleSelectGroup,
@@ -125,7 +133,7 @@ const Groups = () => {
 
   const generateCreateGroupButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
-      Create group
+      {Label.ADD}
     </Button>
   );
 

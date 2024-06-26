@@ -1,0 +1,13 @@
+.panel-form-navigation {
+  &__current-title {
+    vertical-align: sub;
+  }
+
+  .p-breadcrumbs__item {
+    font-variant-caps: unset;
+
+    button {
+      text-transform: uppercase;
+    }
+  }
+}
