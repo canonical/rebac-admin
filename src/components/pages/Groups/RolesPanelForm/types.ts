@@ -1,10 +1,12 @@
+import type { Role } from "api/api.schemas";
+
 export type Props = {
-  addRoles: string[];
+  addRoles: Role[];
   error?: string | null;
-  existingRoles?: string[];
-  removeRoles: string[];
-  setAddRoles: (addRoles: string[]) => void;
-  setRemoveRoles: (removeRoles: string[]) => void;
+  existingRoles?: Role[];
+  removeRoles: Role[];
+  setAddRoles: (addRoles: Role[]) => void;
+  setRemoveRoles: (removeRoles: Role[]) => void;
 };
 
 export enum Label {

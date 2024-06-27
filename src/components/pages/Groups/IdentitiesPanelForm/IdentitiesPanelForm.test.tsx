@@ -11,7 +11,9 @@ test("can add identities", async () => {
   const setAddIdentities = vi.fn();
   renderComponent(
     <IdentitiesPanelForm
-      addIdentities={["johndoe"]}
+      addIdentities={[
+        { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+      ]}
       setAddIdentities={setAddIdentities}
       removeIdentities={[]}
       setRemoveIdentities={vi.fn()}
@@ -19,15 +21,24 @@ test("can add identities", async () => {
   );
   await userEvent.type(
     screen.getByRole("textbox", { name: Label.USER }),
-    "joe",
+    "joe@example.com",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
-  expect(setAddIdentities).toHaveBeenCalledWith(["johndoe", "joe"]);
+  expect(setAddIdentities).toHaveBeenCalledWith([
+    { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+    { email: "joe@example.com", addedBy: "", source: "" },
+  ]);
 });
 
 test("can display identities", async () => {
-  const addIdentities = ["johndoe", "joe"];
-  const existingIdentities = ["user:existing1", "user:existing2"];
+  const addIdentities = [
+    { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+    { email: "joe@example.com", addedBy: "admin", source: "local" },
+  ];
+  const existingIdentities = [
+    { email: "existing1@example.com", addedBy: "admin", source: "local" },
+    { email: "existing2@example.com", addedBy: "admin", source: "local" },
+  ];
   renderComponent(
     <IdentitiesPanelForm
       addIdentities={addIdentities}
@@ -39,12 +50,12 @@ test("can display identities", async () => {
   );
   expect(
     screen.getByRole("row", {
-      name: new RegExp(addIdentities[0]),
+      name: new RegExp(addIdentities[0].email),
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: new RegExp(addIdentities[1]),
+      name: new RegExp(addIdentities[1].email),
     }),
   ).toBeInTheDocument();
   expect(
@@ -60,8 +71,13 @@ test("can display identities", async () => {
 });
 
 test("does not display removed identities from the API", async () => {
-  const removeIdentities = ["existing1"];
-  const existingIdentities = ["user:existing1", "user:existing2"];
+  const removeIdentities = [
+    { email: "existing1@example.com", addedBy: "admin", source: "local" },
+  ];
+  const existingIdentities = [
+    { email: "existing1@example.com", addedBy: "admin", source: "local" },
+    { email: "existing2@example.com", addedBy: "admin", source: "local" },
+  ];
   renderComponent(
     <IdentitiesPanelForm
       addIdentities={[]}
@@ -84,7 +100,10 @@ test("does not display removed identities from the API", async () => {
 });
 
 test("can remove newly added identities", async () => {
-  const identities = ["joe", "johndoe"];
+  const identities = [
+    { email: "joe@example.com", addedBy: "admin", source: "local" },
+    { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+  ];
   const setAddIdentities = vi.fn();
   renderComponent(
     <IdentitiesPanelForm
@@ -97,25 +116,35 @@ test("can remove newly added identities", async () => {
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[1],
   );
-  expect(setAddIdentities).toHaveBeenCalledWith(["joe"]);
+  expect(setAddIdentities).toHaveBeenCalledWith([
+    { email: "joe@example.com", addedBy: "admin", source: "local" },
+  ]);
 });
 
 test("can remove identities from the API", async () => {
-  const existingIdentities = ["user:existing1", "user:existing2"];
+  const existingIdentities = [
+    { email: "existing1@example.com", addedBy: "admin", source: "local" },
+    { email: "existing2@example.com", addedBy: "admin", source: "local" },
+  ];
   const setRemoveIdentities = vi.fn();
   renderComponent(
     <IdentitiesPanelForm
       addIdentities={[]}
       existingIdentities={existingIdentities}
       setAddIdentities={vi.fn()}
-      removeIdentities={["johndoe"]}
+      removeIdentities={[
+        { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+      ]}
       setRemoveIdentities={setRemoveIdentities}
     />,
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
-  expect(setRemoveIdentities).toHaveBeenCalledWith(["johndoe", "existing1"]);
+  expect(setRemoveIdentities).toHaveBeenCalledWith([
+    { email: "johndoe@example.com", addedBy: "admin", source: "local" },
+    { email: "existing1@example.com", addedBy: "admin", source: "local" },
+  ]);
 });
 
 // eslint-disable-next-line vitest/expect-expect

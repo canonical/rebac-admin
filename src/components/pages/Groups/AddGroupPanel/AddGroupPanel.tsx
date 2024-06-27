@@ -69,16 +69,10 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                 await patchGroupsItemEntitlements({
                   id: group.name,
                   data: {
-                    patches: addEntitlements.map(
-                      ({ resource, entitlement, entity }) => ({
-                        entitlement: {
-                          entitlement_type: entitlement,
-                          entity_name: entity,
-                          entity_type: resource,
-                        },
-                        op: GroupEntitlementsPatchItemAllOfOp.add,
-                      }),
-                    ),
+                    patches: addEntitlements.map((entitlement) => ({
+                      entitlement,
+                      op: GroupEntitlementsPatchItemAllOfOp.add,
+                    })),
                   },
                 });
               } catch (error) {
@@ -94,7 +88,7 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                   id: group.name,
                   data: {
                     patches: addIdentities.map((identity) => ({
-                      identity,
+                      identity: identity.email,
                       op: GroupIdentitiesPatchItemOp.add,
                     })),
                   },
@@ -112,7 +106,7 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                   id: group.name,
                   data: {
                     patches: addRoles.map((role) => ({
-                      role,
+                      role: role.name,
                       op: GroupRolesPatchItemOp.add,
                     })),
                   },

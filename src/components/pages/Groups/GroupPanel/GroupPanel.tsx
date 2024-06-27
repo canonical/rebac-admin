@@ -2,8 +2,8 @@ import { Spinner } from "@canonical/react-components";
 import { useState } from "react";
 import * as Yup from "yup";
 
+import type { EntityEntitlement, Identity, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
-import type { Entitlement } from "components/EntitlementsPanelForm";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 import { PanelWidth } from "hooks/usePanel";
@@ -32,14 +32,16 @@ const GroupPanel = ({
   isSaving,
   ...props
 }: Props) => {
-  const [addEntitlements, setAddEntitlements] = useState<Entitlement[]>([]);
-  const [removeEntitlements, setRemoveEntitlements] = useState<Entitlement[]>(
+  const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
   );
-  const [addIdentities, setAddIdentities] = useState<string[]>([]);
-  const [removeIdentities, setRemoveIdentities] = useState<string[]>([]);
-  const [addRoles, setAddRoles] = useState<string[]>([]);
-  const [removeRoles, setRemoveRoles] = useState<string[]>([]);
+  const [removeEntitlements, setRemoveEntitlements] = useState<
+    EntityEntitlement[]
+  >([]);
+  const [addIdentities, setAddIdentities] = useState<Identity[]>([]);
+  const [removeIdentities, setRemoveIdentities] = useState<Identity[]>([]);
+  const [addRoles, setAddRoles] = useState<Role[]>([]);
+  const [removeRoles, setRemoveRoles] = useState<Role[]>([]);
   return (
     <SubFormPanel<FormFields>
       {...props}

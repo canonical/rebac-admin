@@ -90,8 +90,16 @@ test("submit button is disabled when editing and there are no changes", async ()
       isEditing
       setPanelWidth={vi.fn()}
       existingEntitlements={[
-        "can_edit::moderators:collection",
-        "can_remove::staff:team",
+        {
+          entitlement_type: "can_edit",
+          entity_name: "moderators",
+          entity_type: "collection",
+        },
+        {
+          entitlement_type: "can_remove",
+          entity_name: "staff",
+          entity_type: "team",
+        },
       ]}
       group={{ id: "group1", name: "admin" }}
       onSubmit={vi.fn()}
@@ -107,8 +115,16 @@ test("submit button is enabled when editing and there are changes", async () => 
       isEditing
       setPanelWidth={vi.fn()}
       existingEntitlements={[
-        "can_edit::moderators:collection",
-        "can_remove::staff:team",
+        {
+          entitlement_type: "can_edit",
+          entity_name: "moderators",
+          entity_type: "collection",
+        },
+        {
+          entitlement_type: "can_remove",
+          entity_name: "staff",
+          entity_type: "team",
+        },
       ]}
       group={{ id: "group1", name: "admin" }}
       onSubmit={vi.fn()}
