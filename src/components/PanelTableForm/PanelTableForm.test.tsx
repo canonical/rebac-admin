@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import type { Entitlement } from "components/EntitlementsPanelForm";
+import type { EntityEntitlement } from "api/api.schemas";
 import { hasNotification, renderComponent } from "test/utils";
 
 import PanelTableForm from "./PanelTableForm";
@@ -10,35 +10,37 @@ import PanelTableForm from "./PanelTableForm";
 const COLUMNS = [
   {
     Header: "Entity",
-    accessor: "entity",
+    accessor: "entity_name",
   },
   {
     Header: "Resource",
-    accessor: "resource",
+    accessor: "entity_type",
   },
   {
     Header: "Entitlement",
-    accessor: "entitlement",
+    accessor: "entitlement_type",
   },
 ];
 
 test("displays the form", async () => {
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={[
         {
-          entitlement: "can_view",
-          entity: "admins",
-          resource: "group",
+          entitlement_type: "can_view",
+          entity_name: "admins",
+          entity_type: "group",
         },
       ]}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={[]}
       form={<form aria-label="Add form"></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -49,15 +51,17 @@ test("displays the form", async () => {
 
 test("displays the empty state", async () => {
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={[]}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -69,38 +73,40 @@ test("displays the empty state", async () => {
 test("can display entities", async () => {
   const addEntities = [
     {
-      entitlement: "can_view",
-      entity: "admins",
-      resource: "group",
+      entitlement_type: "can_view",
+      entity_name: "admins",
+      entity_type: "group",
     },
     {
-      entitlement: "can_read",
-      entity: "editors",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "editors",
+      entity_type: "client",
     },
   ];
   const existingEntities = [
     {
-      entitlement: "can_edit",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_edit",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
     {
-      entitlement: "can_remove",
-      entity: "staff",
-      resource: "team",
+      entitlement_type: "can_remove",
+      entity_name: "staff",
+      entity_type: "team",
     },
   ];
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={existingEntities}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -110,9 +116,9 @@ test("can display entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[0].entity,
-          addEntities[0].resource,
-          addEntities[0].entitlement,
+          addEntities[0].entity_name,
+          addEntities[0].entity_type,
+          addEntities[0].entitlement_type,
         ].join(" "),
       ),
     }),
@@ -121,9 +127,9 @@ test("can display entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[1].entity,
-          addEntities[1].resource,
-          addEntities[1].entitlement,
+          addEntities[1].entity_name,
+          addEntities[1].entity_type,
+          addEntities[1].entitlement_type,
         ].join(" "),
       ),
     }),
@@ -143,38 +149,40 @@ test("can display entities", async () => {
 test("can filter entities", async () => {
   const addEntities = [
     {
-      entitlement: "can_view",
-      entity: "admins",
-      resource: "group",
+      entitlement_type: "can_view",
+      entity_name: "admins",
+      entity_type: "group",
     },
     {
-      entitlement: "can_read",
-      entity: "editors",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "editors",
+      entity_type: "client",
     },
   ];
   const existingEntities = [
     {
-      entitlement: "can_view",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_view",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
     {
-      entitlement: "can_remove",
-      entity: "staff",
-      resource: "team",
+      entitlement_type: "can_remove",
+      entity_name: "staff",
+      entity_type: "team",
     },
   ];
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={existingEntities}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -185,9 +193,9 @@ test("can filter entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[0].entity,
-          addEntities[0].resource,
-          addEntities[0].entitlement,
+          addEntities[0].entity_name,
+          addEntities[0].entity_type,
+          addEntities[0].entitlement_type,
         ].join(" "),
       ),
     }),
@@ -196,9 +204,9 @@ test("can filter entities", async () => {
     screen.queryByRole("row", {
       name: new RegExp(
         [
-          addEntities[1].entity,
-          addEntities[1].resource,
-          addEntities[1].entitlement,
+          addEntities[1].entity_name,
+          addEntities[1].entity_type,
+          addEntities[1].entitlement_type,
         ].join(" "),
       ),
     }),
@@ -218,26 +226,28 @@ test("can filter entities", async () => {
 test("displays a message when there are no matches", async () => {
   const addEntities = [
     {
-      entitlement: "can_view",
-      entity: "admins",
-      resource: "group",
+      entitlement_type: "can_view",
+      entity_name: "admins",
+      entity_type: "group",
     },
     {
-      entitlement: "can_read",
-      entity: "editors",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "editors",
+      entity_type: "client",
     },
   ];
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={[]}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -252,33 +262,35 @@ test("displays a message when there are no matches", async () => {
 test("does not display removed entities", async () => {
   const removeEntities = [
     {
-      entitlement: "can_edit",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_edit",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
   ];
   const existingEntities = [
     {
-      entitlement: "can_edit",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_edit",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
     {
-      entitlement: "can_remove",
-      entity: "staff",
-      resource: "team",
+      entitlement_type: "can_remove",
+      entity_name: "staff",
+      entity_type: "team",
     },
   ];
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={existingEntities}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={removeEntities}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
@@ -299,32 +311,34 @@ test("does not display removed entities", async () => {
 test("can remove newly added entities", async () => {
   const entities = [
     {
-      entitlement: "can_view",
-      entity: "admins",
-      resource: "group",
+      entitlement_type: "can_view",
+      entity_name: "admins",
+      entity_type: "group",
     },
     {
-      entitlement: "can_read",
-      entity: "editors",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "editors",
+      entity_type: "client",
     },
     {
-      entitlement: "can_read",
-      entity: "admins",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "admins",
+      entity_type: "client",
     },
   ];
   const setAddEntities = vi.fn();
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={entities}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={[]}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={setAddEntities}
       setRemoveEntities={vi.fn()}
@@ -335,14 +349,14 @@ test("can remove newly added entities", async () => {
   );
   expect(setAddEntities).toHaveBeenCalledWith([
     {
-      entitlement: "can_read",
-      entity: "editors",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "editors",
+      entity_type: "client",
     },
     {
-      entitlement: "can_read",
-      entity: "admins",
-      resource: "client",
+      entitlement_type: "can_read",
+      entity_name: "admins",
+      entity_type: "client",
     },
   ]);
 });
@@ -350,36 +364,38 @@ test("can remove newly added entities", async () => {
 test("can remove existing entities", async () => {
   const existingEntities = [
     {
-      entitlement: "can_edit",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_edit",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
     {
-      entitlement: "can_remove",
-      entity: "staff",
-      resource: "team",
+      entitlement_type: "can_remove",
+      entity_name: "staff",
+      entity_type: "team",
     },
   ];
   const setRemoveEntities = vi.fn();
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={[]}
       existingEntities={existingEntities}
       setAddEntities={vi.fn()}
       removeEntities={[
         {
-          entitlement: "can_remove",
-          entity: "staff",
-          resource: "team",
+          entitlement_type: "can_remove",
+          entity_name: "staff",
+          entity_type: "team",
         },
       ]}
       setRemoveEntities={setRemoveEntities}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
     />,
   );
   await userEvent.click(
@@ -387,14 +403,14 @@ test("can remove existing entities", async () => {
   );
   expect(setRemoveEntities).toHaveBeenCalledWith([
     {
-      entitlement: "can_remove",
-      entity: "staff",
-      resource: "team",
+      entitlement_type: "can_remove",
+      entity_name: "staff",
+      entity_type: "team",
     },
     {
-      entitlement: "can_edit",
-      entity: "moderators",
-      resource: "collection",
+      entitlement_type: "can_edit",
+      entity_name: "moderators",
+      entity_type: "collection",
     },
   ]);
 });
@@ -402,16 +418,18 @@ test("can remove existing entities", async () => {
 // eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
   renderComponent(
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       error="Uh oh!"
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      entityMatches={(entity, search) =>
+        entity.entitlement_type.includes(search)
+      }
       existingEntities={[]}
       form={<form></form>}
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={[]}
       setAddEntities={vi.fn()}
       setRemoveEntities={vi.fn()}
