@@ -115,3 +115,23 @@ test("displays the add panel", async () => {
   });
   expect(panel).toBeInTheDocument();
 });
+
+test("displays the edit panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Groups />
+    </ReBACAdminContext.Provider>,
+  );
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: Label.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  await userEvent.click(screen.getByRole("button", { name: Label.EDIT }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Edit group",
+  });
+  expect(panel).toBeInTheDocument();
+});

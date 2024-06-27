@@ -1,56 +1,44 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
+import type { EntityEntitlement } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import PanelTableForm from "components/PanelTableForm";
 
-import type { Entitlement } from "./types";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  entity: Yup.string().required("Required"),
-  resource: Yup.string().required("Required"),
-  entitlement: Yup.string().required("Required"),
+  entity_name: Yup.string().required("Required"),
+  entity_type: Yup.string().required("Required"),
+  entitlement_type: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
   {
     Header: "Entity",
-    accessor: "entity",
+    accessor: "entity_name",
   },
   {
     Header: "Resource",
-    accessor: "resource",
+    accessor: "entity_type",
   },
   {
     Header: "Entitlement",
-    accessor: "entitlement",
+    accessor: "entitlement_type",
   },
 ];
 
-const parseEntitlement = (entitlement: string): Entitlement | null => {
-  const parts = entitlement.match(/(^.+)::(.+):(.+)/);
-  if (!parts) {
-    return null;
-  }
-  return {
-    entitlement: parts[1],
-    entity: parts[2],
-    resource: parts[3],
-  };
-};
-
 const entitlementEqual = (
-  entitlementA: Entitlement,
-  entitlementB: Entitlement,
+  entitlementA: EntityEntitlement,
+  entitlementB: EntityEntitlement,
 ) =>
   !Object.keys(entitlementA).some((key) => {
-    const entitlementKey = key as keyof Entitlement;
+    const entitlementKey = key as keyof EntityEntitlement;
     return entitlementA[entitlementKey] !== entitlementB[entitlementKey];
   });
 
-const entitlementMatches = (entitlement: Entitlement, search: string) =>
+const entitlementMatches = (entitlement: EntityEntitlement, search: string) =>
   Object.values(entitlement).some((value) => value.includes(search));
 
 const EntitlementsPanelForm = ({
@@ -62,31 +50,26 @@ const EntitlementsPanelForm = ({
   setRemoveEntitlements,
 }: Props) => {
   return (
-    <PanelTableForm<Entitlement>
+    <PanelTableForm<EntityEntitlement>
       addEntities={addEntitlements}
       columns={COLUMN_DATA}
       entityEqual={entitlementEqual}
       entityMatches={entitlementMatches}
       entityName="entitlement"
       error={error}
-      existingEntities={existingEntitlements?.reduce<Entitlement[]>(
-        (entitlements, entitlement) => {
-          const parsed = parseEntitlement(entitlement);
-          if (parsed) {
-            entitlements.push(parsed);
-          }
-          return entitlements;
-        },
-        [],
-      )}
+      existingEntities={existingEntitlements}
       form={
-        <Formik<Entitlement>
-          initialValues={{ resource: "", entitlement: "", entity: "" }}
+        <Formik<EntityEntitlement>
+          initialValues={{
+            entity_type: "",
+            entitlement_type: "",
+            entity_name: "",
+          }}
           onSubmit={(values, helpers) => {
             setAddEntitlements([...addEntitlements, values]);
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='entity']")
+              .querySelector<HTMLInputElement>("input[name='entity_name']")
               ?.focus();
           }}
           validationSchema={schema}
@@ -103,17 +86,17 @@ const EntitlementsPanelForm = ({
               <div className="panel-table-form__fields">
                 <CleanFormikField
                   label={Label.ENTITY}
-                  name="entity"
+                  name="entity_name"
                   type="text"
                 />
                 <CleanFormikField
                   label={Label.RESOURCE}
-                  name="resource"
+                  name="entity_type"
                   type="text"
                 />
                 <CleanFormikField
                   label={Label.ENTITLEMENT}
-                  name="entitlement"
+                  name="entitlement_type"
                   type="text"
                 />
                 <div className="panel-table-form__submit">
@@ -124,7 +107,7 @@ const EntitlementsPanelForm = ({
           </Form>
         </Formik>
       }
-      generateCells={(entitlement) => entitlement}
+      generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={removeEntitlements}
       setAddEntities={setAddEntitlements}
       setRemoveEntities={setRemoveEntitlements}

@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
+import type { Identity } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import PanelTableForm from "components/PanelTableForm";
@@ -8,17 +9,24 @@ import PanelTableForm from "components/PanelTableForm";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  user: Yup.string().required("Required"),
+  email: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
   {
-    Header: "Username",
-    accessor: "username",
+    Header: "Email",
+    accessor: "email",
   },
 ];
 
-const parseUser = (user: string): string => user.replace(/^user:/, "");
+const identityEqual = (identityA: Identity, identityB: Identity) =>
+  !Object.keys(identityA).some((key) => {
+    const identityKey = key as keyof Identity;
+    return identityA[identityKey] !== identityB[identityKey];
+  });
+
+const identityMatches = (identity: Identity, search: string) =>
+  Object.values(identity).some((value) => value.includes(search));
 
 const IdentitiesPanelForm = ({
   error,
@@ -32,21 +40,24 @@ const IdentitiesPanelForm = ({
     <PanelTableForm
       addEntities={addIdentities}
       columns={COLUMN_DATA}
-      entityEqual={(identityA, identityB) => identityA === identityB}
-      entityMatches={(identity, search) => identity.includes(search)}
+      entityEqual={identityEqual}
+      entityMatches={identityMatches}
       entityName="user"
       error={error}
-      existingEntities={existingIdentities?.map((identity) =>
-        parseUser(identity),
-      )}
+      existingEntities={existingIdentities}
       form={
-        <Formik<{ user: string }>
-          initialValues={{ user: "" }}
-          onSubmit={({ user }, helpers) => {
-            setAddIdentities([...addIdentities, user]);
+        <Formik<{ email: string }>
+          initialValues={{ email: "" }}
+          onSubmit={({ email }, helpers) => {
+            setAddIdentities([
+              ...addIdentities,
+              // TODO: This user should be selected from a list of existing users:
+              // https://warthogs.atlassian.net/browse/WD-12647
+              { email, addedBy: "", source: "" },
+            ]);
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='username']")
+              .querySelector<HTMLInputElement>("input[name='email']")
               ?.focus();
           }}
           validationSchema={schema}
@@ -54,7 +65,7 @@ const IdentitiesPanelForm = ({
           <Form aria-label={Label.FORM}>
             <h5>Add users</h5>
             <div className="panel-table-form__fields">
-              <CleanFormikField label={Label.USER} name="user" type="text" />
+              <CleanFormikField label={Label.USER} name="email" type="text" />
               <div className="panel-table-form__submit">
                 <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
               </div>
@@ -62,7 +73,7 @@ const IdentitiesPanelForm = ({
           </Form>
         </Formik>
       }
-      generateCells={(username) => ({ username })}
+      generateCells={({ email }) => ({ email })}
       removeEntities={removeIdentities}
       setAddEntities={setAddIdentities}
       setRemoveEntities={setRemoveIdentities}

@@ -11,7 +11,7 @@ test("can add roles", async () => {
   const setAddRoles = vi.fn();
   renderComponent(
     <RolesPanelForm
-      addRoles={["viewer"]}
+      addRoles={[{ name: "viewer" }]}
       setAddRoles={setAddRoles}
       removeRoles={[]}
       setRemoveRoles={vi.fn()}
@@ -22,12 +22,15 @@ test("can add roles", async () => {
     "devops",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
-  expect(setAddRoles).toHaveBeenCalledWith(["viewer", "devops"]);
+  expect(setAddRoles).toHaveBeenCalledWith([
+    { name: "viewer" },
+    { name: "devops" },
+  ]);
 });
 
 test("can display roles", async () => {
-  const addRoles = ["viewer", "devops"];
-  const existingRoles = ["existing1", "existing2"];
+  const addRoles = [{ name: "viewer" }, { name: "devops" }];
+  const existingRoles = [{ name: "existing1" }, { name: "existing2" }];
   renderComponent(
     <RolesPanelForm
       addRoles={addRoles}
@@ -39,12 +42,12 @@ test("can display roles", async () => {
   );
   expect(
     screen.getByRole("row", {
-      name: new RegExp(addRoles[0]),
+      name: new RegExp(addRoles[0].name),
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: new RegExp(addRoles[1]),
+      name: new RegExp(addRoles[1].name),
     }),
   ).toBeInTheDocument();
   expect(
@@ -60,8 +63,8 @@ test("can display roles", async () => {
 });
 
 test("does not display removed roles from the API", async () => {
-  const removeRoles = ["existing1"];
-  const existingRoles = ["existing1", "existing2"];
+  const removeRoles = [{ name: "existing1" }];
+  const existingRoles = [{ name: "existing1" }, { name: "existing2" }];
   renderComponent(
     <RolesPanelForm
       addRoles={[]}
@@ -84,7 +87,7 @@ test("does not display removed roles from the API", async () => {
 });
 
 test("can remove newly added roles", async () => {
-  const roles = ["devops", "viewer"];
+  const roles = [{ name: "devops" }, { name: "viewer" }];
   const setAddRoles = vi.fn();
   renderComponent(
     <RolesPanelForm
@@ -97,25 +100,28 @@ test("can remove newly added roles", async () => {
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[1],
   );
-  expect(setAddRoles).toHaveBeenCalledWith(["devops"]);
+  expect(setAddRoles).toHaveBeenCalledWith([{ name: "devops" }]);
 });
 
 test("can remove roles from the API", async () => {
-  const existingRoles = ["existing1", "existing2"];
+  const existingRoles = [{ name: "existing1" }, { name: "existing2" }];
   const setRemoveRoles = vi.fn();
   renderComponent(
     <RolesPanelForm
       addRoles={[]}
       existingRoles={existingRoles}
       setAddRoles={vi.fn()}
-      removeRoles={["viewer"]}
+      removeRoles={[{ name: "viewer" }]}
       setRemoveRoles={setRemoveRoles}
     />,
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
-  expect(setRemoveRoles).toHaveBeenCalledWith(["viewer", "existing1"]);
+  expect(setRemoveRoles).toHaveBeenCalledWith([
+    { name: "viewer" },
+    { name: "existing1" },
+  ]);
 });
 
 // eslint-disable-next-line vitest/expect-expect

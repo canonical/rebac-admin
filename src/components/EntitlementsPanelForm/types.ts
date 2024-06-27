@@ -1,16 +1,12 @@
-export type Entitlement = {
-  entitlement: string;
-  entity: string;
-  resource: string;
-};
+import type { EntityEntitlement } from "api/api.schemas";
 
 export type Props = {
-  addEntitlements: Entitlement[];
+  addEntitlements: EntityEntitlement[];
   error?: string | null;
-  existingEntitlements?: string[];
-  removeEntitlements: Entitlement[];
-  setAddEntitlements: (addEntitlements: Entitlement[]) => void;
-  setRemoveEntitlements: (removeEntitlements: Entitlement[]) => void;
+  existingEntitlements?: EntityEntitlement[];
+  removeEntitlements: EntityEntitlement[];
+  setAddEntitlements: (addEntitlements: EntityEntitlement[]) => void;
+  setRemoveEntitlements: (removeEntitlements: EntityEntitlement[]) => void;
 };
 
 export enum Label {

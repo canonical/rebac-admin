@@ -125,7 +125,7 @@ test("should add entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe(
-    '{"patches":[{"entitlement":{"entitlement_type":"can_read","entity_name":"client","entity_type":"editors"},"op":"add"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"}]}',
   );
   await hasToast('Group "group1" was created.', "positive");
 });
