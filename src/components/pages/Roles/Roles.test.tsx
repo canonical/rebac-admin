@@ -9,6 +9,7 @@ import {
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
@@ -91,4 +92,18 @@ test("should display error notification and refetch data", async () => {
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
   expect(rows).toHaveLength(4);
+});
+
+test("displays the add panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Roles />
+    </ReBACAdminContext.Provider>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: RolesLabel.ADD }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Create role",
+  });
+  expect(panel).toBeInTheDocument();
 });

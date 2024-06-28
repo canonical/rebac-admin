@@ -1,4 +1,5 @@
 export enum Label {
+  ADD = "Create role",
   ACTION_MENU = "Action menu",
   EDIT = "Edit",
   DELETE = "Delete",
