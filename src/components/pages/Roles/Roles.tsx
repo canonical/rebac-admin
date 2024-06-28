@@ -18,6 +18,7 @@ import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
 
+import AddRolePanel from "./AddRolePanel";
 import { Label } from "./types";
 
 const COLUMN_DATA = [
@@ -36,8 +37,15 @@ const Roles = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRoleId?: string | null;
     deleteRoles?: Role["name"][];
-    // TODO: display roles
-  }>(() => null);
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editRoleId) {
+      // TODO: display edit panel.
+    } else if (data?.deleteRoles) {
+      // TODO: display delete panel.
+    } else {
+      return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
+    }
+  });
 
   const {
     handleSelectEntity: handleSelectRole,
@@ -125,7 +133,7 @@ const Roles = () => {
 
   const generateCreateRoleButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
-      Create role
+      {Label.ADD}
     </Button>
   );
 
