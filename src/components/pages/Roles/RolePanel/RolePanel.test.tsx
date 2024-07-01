@@ -1,4 +1,4 @@
-import { screen, act } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -27,12 +27,9 @@ test("can submit the form", async () => {
   renderComponent(
     <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
   );
-  await act(
-    async () =>
-      await userEvent.type(
-        screen.getByRole("textbox", { name: Label.NAME }),
-        "role1{Enter}",
-      ),
+  await userEvent.type(
+    screen.getByRole("textbox", { name: Label.NAME }),
+    "role1{Enter}",
   );
   expect(onSubmit).toHaveBeenCalled();
 });
@@ -54,11 +51,8 @@ test("the entitlement form can be displayed", async () => {
   renderComponent(
     <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
-  await act(
-    async () =>
-      await userEvent.click(
-        screen.getByRole("button", { name: /Add entitlements/ }),
-      ),
+  await userEvent.click(
+    screen.getByRole("button", { name: /Add entitlements/ }),
   );
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
@@ -112,25 +106,16 @@ test("submit button is enabled when editing and there are changes", async () => 
       onSubmit={vi.fn()}
     />,
   );
-  await act(
-    async () =>
-      await userEvent.click(
-        screen.getByRole("button", { name: /Edit entitlements/ }),
-      ),
+  await userEvent.click(
+    screen.getByRole("button", { name: /Edit entitlements/ }),
   );
-  await act(
-    async () =>
-      await userEvent.click(
-        screen.getAllByRole("button", {
-          name: EntitlementsPanelFormLabel.REMOVE,
-        })[0],
-      ),
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: EntitlementsPanelFormLabel.REMOVE,
+    })[0],
   );
-  await act(
-    async () =>
-      await userEvent.click(
-        screen.getAllByRole("button", { name: "Update role" })[0],
-      ),
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Update role" })[0],
   );
   expect(
     screen.getByRole("button", { name: "Update role" }),
