@@ -4,6 +4,8 @@ import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
 import {
+  getGetRolesItemEntitlementsMockHandler,
+  getGetRolesItemMockHandler,
   getGetRolesMockHandler,
   getGetRolesMockHandler404,
   getGetRolesResponseMock,
@@ -15,13 +17,15 @@ import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
 import Roles from "./Roles";
-import { Label as RolesLabel } from "./types";
+import { Label, Label as RolesLabel } from "./types";
 
 const mockRolesData = getGetRolesResponseMock({
   data: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }],
 });
 const mockApiServer = setupServer(
   getGetRolesMockHandler(mockRolesData),
+  getGetRolesItemMockHandler(),
+  getGetRolesItemEntitlementsMockHandler(),
   ...getGetActualCapabilitiesMock(),
 );
 
@@ -104,6 +108,26 @@ test("displays the add panel", async () => {
   await userEvent.click(screen.getByRole("button", { name: RolesLabel.ADD }));
   const panel = await screen.findByRole("complementary", {
     name: "Create role",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
+test("displays the edit panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Roles />
+    </ReBACAdminContext.Provider>,
+  );
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: Label.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  await userEvent.click(screen.getByRole("button", { name: Label.EDIT }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Edit role",
   });
   expect(panel).toBeInTheDocument();
 });

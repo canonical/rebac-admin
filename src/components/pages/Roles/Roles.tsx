@@ -19,6 +19,7 @@ import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
 
 import AddRolePanel from "./AddRolePanel";
+import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
 const COLUMN_DATA = [
@@ -39,7 +40,13 @@ const Roles = () => {
     deleteRoles?: Role["name"][];
   }>((closePanel, data, setPanelWidth) => {
     if (data?.editRoleId) {
-      // TODO: display edit panel.
+      return (
+        <EditRolePanel
+          roleId={data.editRoleId}
+          close={closePanel}
+          setPanelWidth={setPanelWidth}
+        />
+      );
     } else if (data?.deleteRoles) {
       // TODO: display delete panel.
     } else {
