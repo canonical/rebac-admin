@@ -35,7 +35,18 @@ const mockApiServer = setupServer(
   getPatchGroupsItemEntitlementsMockHandler(),
   getGetGroupsItemEntitlementsMockHandler(
     getGetGroupsItemEntitlementsResponseMock({
-      data: ["can_edit::moderators:collection", "can_remove::staff:team"],
+      data: [
+        {
+          entitlement_type: "can_edit",
+          entity_name: "moderators",
+          entity_type: "collection",
+        },
+        {
+          entitlement_type: "can_remove",
+          entity_name: "staff",
+          entity_type: "team",
+        },
+      ],
     }),
   ),
   getPatchGroupsItemIdentitiesMockHandler(),
@@ -86,7 +97,7 @@ test("should handle errors when getting the group", async () => {
 });
 
 // eslint-disable-next-line vitest/expect-expect
-test("should handle the group not in the reponse", async () => {
+test("should handle the group not in the response", async () => {
   mockApiServer.use(
     getGetGroupsItemMockHandler(
       getGetGroupsItemResponseMock({
@@ -155,7 +166,7 @@ test("should add and remove entitlements", async () => {
   await waitFor(() => expect(patchDone).toBe(2));
   expect(patchResponseBody).toStrictEqual([
     '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"}]}',
-    '{"patches":[{"entitlement":"can_edit::moderators:collection","op":"remove"}]}',
+    '{"patches":[{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
   ]);
   await hasToast('Group "admin" was updated.', "positive");
 });
