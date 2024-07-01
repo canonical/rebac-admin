@@ -19,7 +19,7 @@ import {
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
-import { Label as GroupPanelLabel } from "../GroupPanel";
+import { GroupPanelLabel } from "../GroupPanel";
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
 import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 

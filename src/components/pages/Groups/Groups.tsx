@@ -19,6 +19,7 @@ import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
 
 import AddGroupPanel from "./AddGroupPanel";
+import DeleteGroupsPanel from "./DeleteGroupsPanel";
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
@@ -48,7 +49,9 @@ const Groups = () => {
         />
       );
     } else if (data?.deleteGroups) {
-      // TODO: display delete panel.
+      return (
+        <DeleteGroupsPanel groups={data.deleteGroups} close={closePanel} />
+      );
     } else {
       return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
