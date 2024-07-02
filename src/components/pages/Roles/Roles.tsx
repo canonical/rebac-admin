@@ -19,6 +19,7 @@ import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
 
 import AddRolePanel from "./AddRolePanel";
+import DeleteRolesPanel from "./DeleteRolesPanel";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
@@ -48,7 +49,7 @@ const Roles = () => {
         />
       );
     } else if (data?.deleteRoles) {
-      // TODO: display delete panel.
+      return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
     } else {
       return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }

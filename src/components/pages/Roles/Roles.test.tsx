@@ -131,3 +131,19 @@ test("displays the edit panel", async () => {
   });
   expect(panel).toBeInTheDocument();
 });
+
+test("displays the delete panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Roles />
+    </ReBACAdminContext.Provider>,
+  );
+  const rows = await screen.findAllByRole("row");
+  await userEvent.click(within(rows[1]).getByRole("checkbox"));
+  await userEvent.click(screen.getByRole("button", { name: Label.DELETE }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Delete 1 role",
+  });
+  expect(panel).toBeInTheDocument();
+});
