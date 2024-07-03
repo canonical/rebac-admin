@@ -1,6 +1,6 @@
+import { Panel } from "@canonical/react-components";
 import type { FormikValues } from "formik";
 
-import Panel from "components/Panel";
 import PanelForm from "components/PanelForm";
 import { SidePanelLabelledById } from "consts";
 

@@ -1,10 +1,10 @@
+import { Panel } from "@canonical/react-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import type { LogLevelDesc } from "loglevel";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import Panel from "components/Panel";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
