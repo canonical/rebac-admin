@@ -1,9 +1,8 @@
-import { Col, Row, Spinner } from "@canonical/react-components";
+import { Col, Panel, Row, Spinner } from "@canonical/react-components";
 import classNames from "classnames";
 import type { FormikValues } from "formik";
 import { useEffect, useState } from "react";
 
-import Panel from "components/Panel";
 import PanelForm from "components/PanelForm";
 import type { PanelWidth } from "hooks/usePanel";
 
