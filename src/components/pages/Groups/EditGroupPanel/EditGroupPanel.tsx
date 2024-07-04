@@ -4,6 +4,7 @@ import reactHotToast from "react-hot-toast";
 
 import type {
   GroupEntitlementsPatchItem,
+  GroupIdentitiesPatchItem,
   GroupRolesPatchItem,
   Response,
 } from "api/api.schemas";
@@ -80,10 +81,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     isPending: isPatchGroupsItemIdentitiesPending,
   } = usePatchGroupsItemIdentities();
   const {
-    mutateAsync: deleteGroupsItemIdentities,
-    isPending: isDeleteGroupsItemIdentitiesPending,
-  } = usePatchGroupsItemIdentities();
-  const {
     error: getGroupsItemRolesError,
     data: existingRoles,
     isFetching: isFetchingExistingRoles,
@@ -114,7 +111,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
       isSaving={
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
-        isDeleteGroupsItemIdentitiesPending ||
         isPatchGroupsItemRolesPending
       }
       onSubmit={async (
@@ -162,34 +158,30 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             done();
           });
         }
-        if (addIdentities.length) {
+        if (addIdentities.length || removeIdentities?.length) {
+          let patches: GroupIdentitiesPatchItem[] = [];
+          if (addIdentities.length) {
+            patches = patches.concat(
+              addIdentities.map(({ email }) => ({
+                identity: email,
+                op: GroupIdentitiesPatchItemOp.add,
+              })),
+            );
+          }
+          if (removeIdentities?.length) {
+            patches = patches.concat(
+              removeIdentities.map(({ email }) => ({
+                identity: email,
+                op: GroupIdentitiesPatchItemOp.remove,
+              })),
+            );
+          }
           queue.push(async (done) => {
             try {
               await patchGroupsItemIdentities({
                 id: groupId,
                 data: {
-                  patches: addIdentities.map(({ email }) => ({
-                    identity: email,
-                    op: GroupIdentitiesPatchItemOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasIdentitiesError = true;
-            }
-            done();
-          });
-        }
-        if (removeIdentities?.length) {
-          queue.push(async (done) => {
-            try {
-              await deleteGroupsItemIdentities({
-                id: groupId,
-                data: {
-                  patches: removeIdentities.map(({ email }) => ({
-                    identity: email,
-                    op: GroupIdentitiesPatchItemOp.remove,
-                  })),
+                  patches,
                 },
               });
             } catch (error) {
