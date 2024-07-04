@@ -93,6 +93,26 @@ test("should display error notification and refetch data", async () => {
   expect(rows).toHaveLength(4);
 });
 
+test("displays the add panel", async () => {
+  mockApiServer.use(
+    getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
+  );
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Groups />
+    </ReBACAdminContext.Provider>,
+  );
+  await act(
+    async () =>
+      await userEvent.click(screen.getByRole("button", { name: Label.ADD })),
+  );
+  const panel = await screen.findByRole("complementary", {
+    name: "Create group",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
 test("displays the edit panel", async () => {
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
