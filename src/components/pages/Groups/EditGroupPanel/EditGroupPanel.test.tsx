@@ -52,7 +52,7 @@ const mockApiServer = setupServer(
   getPatchGroupsItemIdentitiesMockHandler(),
   getGetGroupsItemIdentitiesMockHandler(
     getGetGroupsItemIdentitiesResponseMock({
-      data: ["user1", "user2"],
+      data: [{ email: "user1@example.com" }, { email: "user2@example.com" }],
     }),
   ),
   getPatchGroupsItemRolesMockHandler(),
@@ -223,8 +223,8 @@ test("should handle errors when updating entitlements", async () => {
 });
 
 test("should add and remove users", async () => {
-  let patchResponseBody: string[] = [];
-  let patchDone = 0;
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
     const requestClone = request.clone();
@@ -232,8 +232,8 @@ test("should add and remove users", async () => {
       requestClone.method === "PATCH" &&
       requestClone.url.endsWith("/groups/admin1/identities")
     ) {
-      patchResponseBody.push(await requestClone.text());
-      patchDone++;
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
     }
   });
   renderComponent(
@@ -260,11 +260,10 @@ test("should add and remove users", async () => {
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
-  await waitFor(() => expect(patchDone).toBe(2));
-  expect(patchResponseBody).toStrictEqual([
-    '{"patches":[{"identity":"joe@example.com","op":"add"}]}',
-    '{"patches":[{"op":"remove"}]}',
-  ]);
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(patchResponseBody).toBe(
+    '{"patches":[{"identity":"joe@example.com","op":"add"},{"identity":"user1@example.com","op":"remove"}]}',
+  );
   await hasToast('Group "admin" was updated.', "positive");
 });
 
