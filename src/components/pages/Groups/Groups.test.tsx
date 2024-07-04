@@ -103,6 +103,9 @@ test("should display error notification and refetch data", async () => {
 });
 
 test("displays the add panel", async () => {
+  mockApiServer.use(
+    getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
+  );
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
       <aside id="aside-panel"></aside>
