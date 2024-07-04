@@ -2,7 +2,7 @@ import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
 
-import type { Response } from "api/api.schemas";
+import type { GroupEntitlementsPatchItem, Response } from "api/api.schemas";
 import {
   GroupEntitlementsPatchItemAllOfOp,
   GroupIdentitiesPatchItemOp,
@@ -67,10 +67,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     isPending: isPatchGroupsItemEntitlementsPending,
   } = usePatchGroupsItemEntitlements();
   const {
-    mutateAsync: deleteGroupsItemEntitlements,
-    isPending: isDeleteGroupsItemEntitlementsPending,
-  } = usePatchGroupsItemEntitlements();
-  const {
     error: getGroupsItemIdentitiesError,
     data: existingIdentities,
     isFetching: isFetchingExistingIdentities,
@@ -116,7 +112,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
       isFetchingExistingRoles={isFetchingExistingRoles}
       isFetchingGroup={isFetchingGroup}
       isSaving={
-        isDeleteGroupsItemEntitlementsPending ||
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
         isDeleteGroupsItemIdentitiesPending ||
@@ -136,34 +131,30 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         let hasIdentitiesError = false;
         let hasRolesError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
-        if (addEntitlements.length) {
+        if (addEntitlements.length || removeEntitlements?.length) {
+          let patches: GroupEntitlementsPatchItem[] = [];
+          if (addEntitlements.length) {
+            patches = patches.concat(
+              addEntitlements.map((entitlement) => ({
+                entitlement,
+                op: GroupEntitlementsPatchItemAllOfOp.add,
+              })),
+            );
+          }
+          if (removeEntitlements?.length) {
+            patches = patches.concat(
+              removeEntitlements.map((entitlement) => ({
+                entitlement,
+                op: GroupEntitlementsPatchItemAllOfOp.remove,
+              })),
+            );
+          }
           queue.push(async (done) => {
             try {
               await patchGroupsItemEntitlements({
                 id: groupId,
                 data: {
-                  patches: addEntitlements.map((entitlement) => ({
-                    entitlement,
-                    op: GroupEntitlementsPatchItemAllOfOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasEntitlementsError = true;
-            }
-            done();
-          });
-        }
-        if (removeEntitlements?.length) {
-          queue.push(async (done) => {
-            try {
-              await deleteGroupsItemEntitlements({
-                id: groupId,
-                data: {
-                  patches: removeEntitlements.map((entitlement) => ({
-                    entitlement,
-                    op: GroupEntitlementsPatchItemAllOfOp.remove,
-                  })),
+                  patches,
                 },
               });
             } catch (error) {
