@@ -2,7 +2,7 @@ import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
 
-import type { Response } from "api/api.schemas";
+import type { Response, RoleEntitlementsPatchItem } from "api/api.schemas";
 import { RoleEntitlementsPatchItemAllOfOp } from "api/api.schemas";
 import {
   useGetRolesItem,
@@ -49,10 +49,6 @@ const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
     mutateAsync: patchRolesItemEntitlements,
     isPending: isPatchRolesItemEntitlementsPending,
   } = usePatchRolesItemEntitlements();
-  const {
-    mutateAsync: deleteRolesItemEntitlements,
-    isPending: isDeleteRolesItemEntitlementsPending,
-  } = usePatchRolesItemEntitlements();
   const role = roleDetails?.data;
   return (
     <RolePanel
@@ -66,41 +62,34 @@ const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
       isEditing
       isFetchingExisting={isFetchingExisting}
       isFetchingRole={isFetchingRole}
-      isSaving={
-        isDeleteRolesItemEntitlementsPending ||
-        isPatchRolesItemEntitlementsPending
-      }
+      isSaving={isPatchRolesItemEntitlementsPending}
       onSubmit={async (_values, addEntitlements, removeEntitlements) => {
         let hasError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
-        if (addEntitlements.length) {
+        if (addEntitlements.length || removeEntitlements?.length) {
+          let patches: RoleEntitlementsPatchItem[] = [];
+          if (addEntitlements.length) {
+            patches = patches.concat(
+              addEntitlements.map((entitlement) => ({
+                entitlement,
+                op: RoleEntitlementsPatchItemAllOfOp.add,
+              })),
+            );
+          }
+          if (removeEntitlements?.length) {
+            patches = patches.concat(
+              removeEntitlements.map((entitlement) => ({
+                entitlement,
+                op: RoleEntitlementsPatchItemAllOfOp.remove,
+              })),
+            );
+          }
           queue.push(async (done) => {
             try {
               await patchRolesItemEntitlements({
                 id: roleId,
                 data: {
-                  patches: addEntitlements.map((entitlement) => ({
-                    entitlement,
-                    op: RoleEntitlementsPatchItemAllOfOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasError = true;
-            }
-            done();
-          });
-        }
-        if (removeEntitlements?.length) {
-          queue.push(async (done) => {
-            try {
-              await deleteRolesItemEntitlements({
-                id: roleId,
-                data: {
-                  patches: removeEntitlements.map((entitlement) => ({
-                    entitlement,
-                    op: RoleEntitlementsPatchItemAllOfOp.remove,
-                  })),
+                  patches,
                 },
               });
             } catch (error) {

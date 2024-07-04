@@ -112,8 +112,8 @@ test("should handle the group not in the response", async () => {
 });
 
 test("should add and remove entitlements", async () => {
-  let patchResponseBody: string[] = [];
-  let patchDone = 0;
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
     const requestClone = request.clone();
@@ -121,8 +121,8 @@ test("should add and remove entitlements", async () => {
       requestClone.method === "PATCH" &&
       requestClone.url.endsWith("/groups/admin1/entitlements")
     ) {
-      patchResponseBody.push(await requestClone.text());
-      patchDone++;
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
     }
   });
   renderComponent(
@@ -163,11 +163,10 @@ test("should add and remove entitlements", async () => {
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
-  await waitFor(() => expect(patchDone).toBe(2));
-  expect(patchResponseBody).toStrictEqual([
-    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"}]}',
-    '{"patches":[{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
-  ]);
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(patchResponseBody).toStrictEqual(
+    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"},{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
+  );
   await hasToast('Group "admin" was updated.', "positive");
 });
 
