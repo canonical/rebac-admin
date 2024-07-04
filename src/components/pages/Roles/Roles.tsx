@@ -166,42 +166,39 @@ const Roles = () => {
       );
     } else {
       return (
-        <>
-          <ModularTable
-            columns={columns}
-            data={tableData}
-            emptyMsg={Label.NO_ROLES}
-            getCellProps={({ column }) => {
-              switch (column.id) {
-                case "selectRole":
-                  return {
-                    className: "select-entity-checkbox",
-                  };
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            getHeaderProps={({ id }) => {
-              switch (id) {
-                case "selectRole":
-                  return {
-                    className: "select-entity-checkbox",
-                  };
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-          />
-          {generatePanel()}
-        </>
+        <ModularTable
+          columns={columns}
+          data={tableData}
+          emptyMsg={Label.NO_ROLES}
+          getCellProps={({ column }) => {
+            switch (column.id) {
+              case "selectRole":
+                return {
+                  className: "select-entity-checkbox",
+                };
+              case "actions":
+                return {
+                  className: "u-align--right",
+                };
+              default:
+                return {};
+            }
+          }}
+          getHeaderProps={({ id }) => {
+            switch (id) {
+              case "selectRole":
+                return {
+                  className: "select-entity-checkbox",
+                };
+              case "actions":
+                return {
+                  className: "u-align--right",
+                };
+              default:
+                return {};
+            }
+          }}
+        />
       );
     }
   };
@@ -224,6 +221,7 @@ const Roles = () => {
       title="Roles"
     >
       {generateContent()}
+      {generatePanel()}
     </Content>
   );
 };

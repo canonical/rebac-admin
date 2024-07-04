@@ -168,42 +168,39 @@ const Groups = () => {
       );
     } else {
       return (
-        <>
-          <ModularTable
-            columns={columns}
-            data={tableData}
-            emptyMsg={Label.NO_GROUPS}
-            getCellProps={({ column }) => {
-              switch (column.id) {
-                case "selectGroup":
-                  return {
-                    className: "select-entity-checkbox",
-                  };
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-            getHeaderProps={({ id }) => {
-              switch (id) {
-                case "selectGroup":
-                  return {
-                    className: "select-entity-checkbox",
-                  };
-                case "actions":
-                  return {
-                    className: "u-align--right",
-                  };
-                default:
-                  return {};
-              }
-            }}
-          />
-          {generatePanel()}
-        </>
+        <ModularTable
+          columns={columns}
+          data={tableData}
+          emptyMsg={Label.NO_GROUPS}
+          getCellProps={({ column }) => {
+            switch (column.id) {
+              case "selectGroup":
+                return {
+                  className: "select-entity-checkbox",
+                };
+              case "actions":
+                return {
+                  className: "u-align--right",
+                };
+              default:
+                return {};
+            }
+          }}
+          getHeaderProps={({ id }) => {
+            switch (id) {
+              case "selectGroup":
+                return {
+                  className: "select-entity-checkbox",
+                };
+              case "actions":
+                return {
+                  className: "u-align--right",
+                };
+              default:
+                return {};
+            }
+          }}
+        />
       );
     }
   };
@@ -226,6 +223,7 @@ const Groups = () => {
       title="Groups"
     >
       {generateContent()}
+      {generatePanel()}
     </Content>
   );
 };
