@@ -2,7 +2,11 @@ import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
 
-import type { GroupEntitlementsPatchItem, Response } from "api/api.schemas";
+import type {
+  GroupEntitlementsPatchItem,
+  GroupRolesPatchItem,
+  Response,
+} from "api/api.schemas";
 import {
   GroupEntitlementsPatchItemAllOfOp,
   GroupIdentitiesPatchItemOp,
@@ -88,10 +92,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     mutateAsync: patchGroupsItemRoles,
     isPending: isPatchGroupsItemRolesPending,
   } = usePatchGroupsItemRoles();
-  const {
-    mutateAsync: deleteGroupsItemRoles,
-    isPending: isDeleteGroupsItemRodeleteGroupsItemRolesPending,
-  } = usePatchGroupsItemRoles();
   const group = groupDetails?.data.data.find(({ id }) => id === groupId);
   return (
     <GroupPanel
@@ -115,8 +115,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
         isDeleteGroupsItemIdentitiesPending ||
-        isPatchGroupsItemRolesPending ||
-        isDeleteGroupsItemRodeleteGroupsItemRolesPending
+        isPatchGroupsItemRolesPending
       }
       onSubmit={async (
         _values,
@@ -199,34 +198,30 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             done();
           });
         }
-        if (addRoles.length) {
+        if (addRoles.length || removeRoles?.length) {
           queue.push(async (done) => {
+            let patches: GroupRolesPatchItem[] = [];
+            if (addRoles.length) {
+              patches = patches.concat(
+                addRoles.map(({ name }) => ({
+                  role: name,
+                  op: GroupRolesPatchItemOp.add,
+                })),
+              );
+            }
+            if (removeRoles?.length) {
+              patches = patches.concat(
+                removeRoles.map(({ name }) => ({
+                  role: name,
+                  op: GroupRolesPatchItemOp.remove,
+                })),
+              );
+            }
             try {
               await patchGroupsItemRoles({
                 id: groupId,
                 data: {
-                  patches: addRoles.map(({ name }) => ({
-                    role: name,
-                    op: GroupRolesPatchItemOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasRolesError = true;
-            }
-            done();
-          });
-        }
-        if (removeRoles?.length) {
-          queue.push(async (done) => {
-            try {
-              await deleteGroupsItemRoles({
-                id: groupId,
-                data: {
-                  patches: removeRoles.map(({ name }) => ({
-                    role: name,
-                    op: GroupRolesPatchItemOp.remove,
-                  })),
+                  patches,
                 },
               });
             } catch (error) {
