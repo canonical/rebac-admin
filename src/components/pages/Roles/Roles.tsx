@@ -140,7 +140,7 @@ const Roles = () => {
 
   const generateCreateRoleButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
-      Create role
+      {Label.ADD}
     </Button>
   );
 

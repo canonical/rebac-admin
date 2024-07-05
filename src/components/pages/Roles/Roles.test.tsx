@@ -101,9 +101,7 @@ test("displays the add panel", async () => {
   );
   await act(
     async () =>
-      await userEvent.click(
-        screen.getByRole("button", { name: "Create role" }),
-      ),
+      await userEvent.click(screen.getByRole("button", { name: Label.ADD })),
   );
   const panel = await screen.findByRole("complementary", {
     name: "Create role",
