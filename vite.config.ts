@@ -49,6 +49,11 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       port: Number(env.PORT),
+      proxy: {
+        [env.VITE_DEMO_API_URL ?? "/api"]: {
+          target: env.VITE_DEMO_PROXY_API_URL ?? "/",
+        },
+      },
     },
     test: {
       coverage: {
