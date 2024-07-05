@@ -4,6 +4,7 @@
 
 - [Development setup](#development-setup)
 - [Develop with external API](#develop-with-external-api)
+  - [Proxied requests](#proxied-requests)
 - [Testing in host projects](#testing-in-host-projects)
 - [Serving mock API](#serving-mock-api)
 - [Download openapi.yaml](#download-openapiyaml)
@@ -45,6 +46,21 @@ variables:
 ```
 VITE_DEMO_API_MOCKED=false
 VITE_DEMO_API_URL=http://example.com/api
+```
+
+### Proxied requests
+
+When working with the production API you may need to proxy requests to prevent
+CORS errors.
+
+To do this you will need to set the server address to proxy requests to:
+
+```
+VITE_DEMO_API_MOCKED=false
+# Set the API URL to the path that the API is served on:
+VITE_DEMO_API_URL=/api/v0
+# Set the proxy URL to the address of the API server:
+VITE_DEMO_PROXY_API_URL=http://1.2.3.4:1234/
 ```
 
 ## Testing in host projects
