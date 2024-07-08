@@ -19,6 +19,7 @@ import { Label, Label as UsersLabel } from "./types";
 const mockUserData = getGetIdentitiesResponseMock({
   data: [
     getGetIdentitiesItemResponseMock({
+      id: "user1",
       addedBy: "within",
       email: "pfft",
       firstName: "really",
