@@ -22,7 +22,11 @@ import Groups from "./Groups";
 import { Label as GroupsLabel, Label } from "./types";
 
 const mockGroupsData = getGetGroupsResponseMock({
-  data: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }],
+  data: [
+    { id: "group1", name: "global" },
+    { id: "group2", name: "administrator" },
+    { id: "group3", name: "viewer" },
+  ],
 });
 const mockApiServer = setupServer(
   getGetGroupsItemMockHandler(),

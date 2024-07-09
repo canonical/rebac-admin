@@ -1,8 +1,11 @@
+import type { Group } from "api/api.schemas";
+
 import type { GroupPanelProps } from "../GroupPanel";
 
 export type Props = {
   close: GroupPanelProps["close"];
-  groupId: string;
+  group: Group;
+  groupId: NonNullable<Group["id"]>;
   setPanelWidth: GroupPanelProps["setPanelWidth"];
 };
 

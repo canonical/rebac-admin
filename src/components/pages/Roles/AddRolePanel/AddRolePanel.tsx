@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
 
+import type { Role } from "api/api.schemas";
 import { RoleEntitlementsPatchItemAllOfOp } from "api/api.schemas";
 import { usePatchRolesItemEntitlements, usePostRoles } from "api/roles/roles";
 import ToastCard from "components/ToastCard";
@@ -33,7 +34,7 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
       }
       isSaving={isPostRolesPending || isPatchRolesItemEntitlementsPending}
       onSubmit={async ({ name }, addEntitlements) => {
-        let id: string | null = null;
+        let id: Role["id"] | null = null;
         try {
           const { data: role } = await postRoles({ data: { name } });
           id = role?.id ?? null;

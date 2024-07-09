@@ -20,7 +20,11 @@ import Roles from "./Roles";
 import { Label, Label as RolesLabel } from "./types";
 
 const mockRolesData = getGetRolesResponseMock({
-  data: [{ name: "global" }, { name: "administrator" }, { name: "viewer" }],
+  data: [
+    { id: "role1", name: "global" },
+    { id: "role2", name: "administrator" },
+    { id: "role3", name: "viewer" },
+  ],
 });
 const mockApiServer = setupServer(
   getGetRolesMockHandler(mockRolesData),

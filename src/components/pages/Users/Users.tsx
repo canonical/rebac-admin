@@ -18,6 +18,7 @@ import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
 import { Endpoint } from "types/api";
 import urls from "urls";
+import { getIds } from "utils/getIds";
 
 import AddUserPanel from "./AddUserPanel";
 import DeleteUsersPanel from "./DeleteUsersPanel";
@@ -75,14 +76,7 @@ const Users = () => {
     handleSelectAllEntities: handleSelectAllIdentities,
     selectedEntities: selectedIdentities,
     areAllEntitiesSelected: areAllIdentitiesSelected,
-  } = useEntitiesSelect(
-    data?.data.data.reduce<NonNullable<Identity["id"]>[]>((ids, { id }) => {
-      if (id) {
-        ids.push(id);
-      }
-      return ids;
-    }, []) ?? [],
-  );
+  } = useEntitiesSelect(getIds(data?.data.data));
 
   const tableData = useMemo<Record<string, ReactNode>[]>(() => {
     const users = data?.data.data;

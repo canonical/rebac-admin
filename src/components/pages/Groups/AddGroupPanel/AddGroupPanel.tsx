@@ -16,6 +16,7 @@ import {
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
+import { getIds } from "utils/getIds";
 
 import GroupPanel from "../GroupPanel";
 
@@ -60,62 +61,68 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
         let hasRolesError = false;
+        let hasGroupIdError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         try {
           const { data: group } = await postGroups({ data: { name } });
-          if (addEntitlements.length) {
-            queue.push(async (done) => {
-              try {
-                await patchGroupsItemEntitlements({
-                  id: group.name,
-                  data: {
-                    patches: addEntitlements.map((entitlement) => ({
-                      entitlement,
-                      op: GroupEntitlementsPatchItemAllOfOp.add,
-                    })),
-                  },
-                });
-              } catch (error) {
-                hasEntitlementsError = true;
-              }
-              done();
-            });
-          }
-          if (addIdentities.length) {
-            queue.push(async (done) => {
-              try {
-                await patchGroupsItemIdentities({
-                  id: group.name,
-                  data: {
-                    patches: addIdentities.map((identity) => ({
-                      identity: identity.email,
-                      op: GroupIdentitiesPatchItemOp.add,
-                    })),
-                  },
-                });
-              } catch (error) {
-                hasIdentitiesError = true;
-              }
-              done();
-            });
-          }
-          if (addRoles.length) {
-            queue.push(async (done) => {
-              try {
-                await postGroupsItemRoles({
-                  id: group.name,
-                  data: {
-                    patches: addRoles.map((role) => ({
-                      role: role.name,
-                      op: GroupRolesPatchItemOp.add,
-                    })),
-                  },
-                });
-              } catch (error) {
-                hasRolesError = true;
-              }
-              done();
-            });
+          const groupId = group.id;
+          if (groupId) {
+            if (addEntitlements.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchGroupsItemEntitlements({
+                    id: groupId,
+                    data: {
+                      patches: addEntitlements.map((entitlement) => ({
+                        entitlement,
+                        op: GroupEntitlementsPatchItemAllOfOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasEntitlementsError = true;
+                }
+                done();
+              });
+            }
+            if (addIdentities.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchGroupsItemIdentities({
+                    id: groupId,
+                    data: {
+                      patches: getIds(addIdentities).map((id) => ({
+                        identity: id,
+                        op: GroupIdentitiesPatchItemOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasIdentitiesError = true;
+                }
+                done();
+              });
+            }
+            if (addRoles.length) {
+              queue.push(async (done) => {
+                try {
+                  await postGroupsItemRoles({
+                    id: groupId,
+                    data: {
+                      patches: getIds(addRoles).map((id) => ({
+                        role: id,
+                        op: GroupRolesPatchItemOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasRolesError = true;
+                }
+                done();
+              });
+            }
+          } else {
+            hasGroupIdError = true;
           }
         } catch (error) {
           // These errors are handled by the errors returned by `usePostGroups`.
@@ -126,6 +133,13 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
             queryKey: [Endpoint.GROUPS],
           });
           close();
+          if (hasGroupIdError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.GROUP_ID_ERROR}
+              </ToastCard>
+            ));
+          }
           if (hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
