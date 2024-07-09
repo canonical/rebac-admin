@@ -27,6 +27,7 @@ import AddGroupPanel from "./AddGroupPanel";
 import { Label } from "./types";
 
 const mockGroupsData = getPostGroupsResponseMock({
+  id: "group123",
   name: "group1",
 });
 const mockApiServer = setupServer(
@@ -76,6 +77,24 @@ test("should handle errors when adding groups", async () => {
   );
 });
 
+// eslint-disable-next-line vitest/expect-expect
+test("should handle no id in the group response", async () => {
+  mockApiServer.use(
+    getPostGroupsMockHandler(
+      getPostGroupsResponseMock({
+        id: null,
+        name: "group1",
+      }),
+    ),
+  );
+  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await userEvent.type(
+    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    "group1{Enter}",
+  );
+  await hasToast(Label.GROUP_ID_ERROR, NotificationSeverity.NEGATIVE);
+});
+
 test("should add entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -84,7 +103,7 @@ test("should add entitlements", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/group1/entitlements")
+      requestClone.url.endsWith("/groups/group123/entitlements")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -180,7 +199,7 @@ test("should add users", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/group1/identities")
+      requestClone.url.endsWith("/groups/group123/identities")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;
@@ -247,7 +266,7 @@ test("should add roles", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "PATCH" &&
-      requestClone.url.endsWith("/groups/group1/roles")
+      requestClone.url.endsWith("/groups/group123/roles")
     ) {
       patchResponseBody = await requestClone.text();
       patchDone = true;

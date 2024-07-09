@@ -5,7 +5,6 @@ import reactHotToast from "react-hot-toast";
 import type { Response, RoleEntitlementsPatchItem } from "api/api.schemas";
 import { RoleEntitlementsPatchItemAllOfOp } from "api/api.schemas";
 import {
-  useGetRolesItem,
   useGetRolesItemEntitlements,
   usePatchRolesItemEntitlements,
 } from "api/roles/roles";
@@ -18,28 +17,14 @@ import type { Props } from "./types";
 
 const generateError = (
   getRolesItemEntitlementsError: AxiosError<Response> | null,
-  getRolesItemError: AxiosError<Response> | null,
-  noRole: boolean,
 ) => {
-  if (getRolesItemError) {
-    return `Unable to get role: ${getRolesItemError.response?.data.message}`;
-  }
-  if (noRole) {
-    return "Unable to get role";
-  }
   if (getRolesItemEntitlementsError) {
     return `Unable to get entitlements: ${getRolesItemEntitlementsError.response?.data.message}`;
   }
   return null;
 };
 
-const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
-  const {
-    error: getRolesItemError,
-    data: roleDetails,
-    isFetching: isFetchingRole,
-    isFetched: isFetchedRole,
-  } = useGetRolesItem(roleId);
+const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
   const {
     error: getRolesItemEntitlementsError,
     data: existingEntitlements,
@@ -49,19 +34,13 @@ const EditRolePanel = ({ close, roleId, setPanelWidth }: Props) => {
     mutateAsync: patchRolesItemEntitlements,
     isPending: isPatchRolesItemEntitlementsPending,
   } = usePatchRolesItemEntitlements();
-  const role = roleDetails?.data;
   return (
     <RolePanel
       close={close}
-      error={generateError(
-        getRolesItemEntitlementsError,
-        getRolesItemError,
-        isFetchedRole && !role,
-      )}
+      error={generateError(getRolesItemEntitlementsError)}
       existingEntitlements={existingEntitlements?.data.data}
       isEditing
       isFetchingExisting={isFetchingExisting}
-      isFetchingRole={isFetchingRole}
       isSaving={isPatchRolesItemEntitlementsPending}
       onSubmit={async (_values, addEntitlements, removeEntitlements) => {
         let hasError = false;

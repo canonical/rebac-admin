@@ -14,7 +14,6 @@ import {
   GroupRolesPatchItemOp,
 } from "api/api.schemas";
 import {
-  useGetGroupsItem,
   useGetGroupsItemEntitlements,
   useGetGroupsItemIdentities,
   useGetGroupsItemRoles,
@@ -24,6 +23,7 @@ import {
 } from "api/groups/groups";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
+import { getIds } from "utils/getIds";
 
 import GroupPanel from "../GroupPanel";
 
@@ -34,15 +34,7 @@ const generateError = (
   getGroupsItemEntitlementsError: AxiosError<Response> | null,
   getGroupsItemIdentitiesError: AxiosError<Response> | null,
   getGroupsItemRolesError: AxiosError<Response> | null,
-  getGroupsItemError: AxiosError<Response> | null,
-  noGroup: boolean,
 ) => {
-  if (getGroupsItemError) {
-    return `Unable to get group: ${getGroupsItemError.response?.data.message}`;
-  }
-  if (noGroup) {
-    return "Unable to get group";
-  }
   if (getGroupsItemEntitlementsError) {
     return `Unable to get entitlements: ${getGroupsItemEntitlementsError.response?.data.message}`;
   }
@@ -55,13 +47,7 @@ const generateError = (
   return null;
 };
 
-const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
-  const {
-    error: getGroupsItemError,
-    data: groupDetails,
-    isFetching: isFetchingGroup,
-    isFetched: isFetchedGroup,
-  } = useGetGroupsItem(groupId);
+const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
   const {
     error: getGroupsItemEntitlementsError,
     data: existingEntitlements,
@@ -89,7 +75,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     mutateAsync: patchGroupsItemRoles,
     isPending: isPatchGroupsItemRolesPending,
   } = usePatchGroupsItemRoles();
-  const group = groupDetails?.data;
   return (
     <GroupPanel
       close={close}
@@ -97,8 +82,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
         getGroupsItemEntitlementsError,
         getGroupsItemIdentitiesError,
         getGroupsItemRolesError,
-        getGroupsItemError,
-        isFetchedGroup && !group,
       )}
       existingEntitlements={existingEntitlements?.data.data}
       existingIdentities={existingIdentities?.data.data}
@@ -107,7 +90,6 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
       isFetchingExistingEntitlements={isFetchingExistingEntitlements}
       isFetchingExistingIdentities={isFetchingExistingIdentities}
       isFetchingExistingRoles={isFetchingExistingRoles}
-      isFetchingGroup={isFetchingGroup}
       isSaving={
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
@@ -162,16 +144,16 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
           let patches: GroupIdentitiesPatchItem[] = [];
           if (addIdentities.length) {
             patches = patches.concat(
-              addIdentities.map(({ email }) => ({
-                identity: email,
+              getIds(addIdentities).map((id) => ({
+                identity: id,
                 op: GroupIdentitiesPatchItemOp.add,
               })),
             );
           }
           if (removeIdentities?.length) {
             patches = patches.concat(
-              removeIdentities.map(({ email }) => ({
-                identity: email,
+              getIds(removeIdentities).map((id) => ({
+                identity: id,
                 op: GroupIdentitiesPatchItemOp.remove,
               })),
             );
@@ -195,16 +177,16 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
             let patches: GroupRolesPatchItem[] = [];
             if (addRoles.length) {
               patches = patches.concat(
-                addRoles.map(({ name }) => ({
-                  role: name,
+                getIds(addRoles).map((id) => ({
+                  role: id,
                   op: GroupRolesPatchItemOp.add,
                 })),
               );
             }
             if (removeRoles?.length) {
               patches = patches.concat(
-                removeRoles.map(({ name }) => ({
-                  role: name,
+                getIds(removeRoles).map((id) => ({
+                  role: id,
                   op: GroupRolesPatchItemOp.remove,
                 })),
               );

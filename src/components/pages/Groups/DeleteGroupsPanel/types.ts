@@ -3,7 +3,7 @@ import type { Group } from "api/api.schemas";
 import type { GroupPanelProps } from "../GroupPanel";
 
 export type Props = {
-  groups: Group["name"][];
+  groups: NonNullable<Group["id"]>[];
   close: GroupPanelProps["close"];
 };
 
