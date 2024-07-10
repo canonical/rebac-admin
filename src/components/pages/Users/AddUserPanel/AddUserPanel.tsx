@@ -28,7 +28,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
       isSaving={isPostIdentitiesPending}
       error={
         postIdentitiesError
-          ? `Unable to create group: ${postIdentitiesError.response?.data.message}`
+          ? `Unable to create local user: ${postIdentitiesError.response?.data.message}`
           : null
       }
       onSubmit={async ({ email, firstName, lastName }) => {
@@ -43,7 +43,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
             },
           });
         } catch {
-          // These errors are handled by the errors returned by `usePostGroups`.
+          // These errors are handled by the errors returned by `usePostIdentities`.
           return;
         }
         void queryClient.invalidateQueries({
