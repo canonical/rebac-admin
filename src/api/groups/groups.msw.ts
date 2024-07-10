@@ -307,69 +307,17 @@ export const getPostGroupsResponseMockDefault = (
 
 export const getGetGroupsItemResponseMock = (
   overrideResponse: any = {},
-): GetGroupsResponse => ({
-  _links: {
-    next: { href: faker.word.sample(), ...overrideResponse },
-    ...overrideResponse,
-  },
-  _meta: {
-    page: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    size: faker.number.int({ min: undefined, max: undefined }),
-    total: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    ...overrideResponse,
-  },
-  message: faker.word.sample(),
-  status: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  })),
+): Group => ({
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.word.sample(),
   ...overrideResponse,
 });
 
 export const getGetGroupsItemResponseMock200 = (
   overrideResponse: any = {},
-): GetGroupsResponse => ({
-  _links: {
-    next: { href: faker.word.sample(), ...overrideResponse },
-    ...overrideResponse,
-  },
-  _meta: {
-    page: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    pageToken: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    size: faker.number.int({ min: undefined, max: undefined }),
-    total: faker.helpers.arrayElement([
-      faker.number.int({ min: undefined, max: undefined }),
-      undefined,
-    ]),
-    ...overrideResponse,
-  },
-  message: faker.word.sample(),
-  status: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
-  data: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  })),
+): Group => ({
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.word.sample(),
   ...overrideResponse,
 });
 
@@ -1825,9 +1773,7 @@ export const getPostGroupsMockHandlerDefault = (
   });
 };
 
-export const getGetGroupsItemMockHandler = (
-  overrideResponse?: GetGroupsResponse,
-) => {
+export const getGetGroupsItemMockHandler = (overrideResponse?: Group) => {
   return http.get("*/groups/:id", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
@@ -1846,9 +1792,7 @@ export const getGetGroupsItemMockHandler = (
   });
 };
 
-export const getGetGroupsItemMockHandler200 = (
-  overrideResponse?: GetGroupsResponse,
-) => {
+export const getGetGroupsItemMockHandler200 = (overrideResponse?: Group) => {
   return http.get("*/groups/:id", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(

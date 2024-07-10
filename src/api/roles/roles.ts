@@ -127,7 +127,7 @@ export const useGetRoles = <
 export const postRoles = (
   role: Role,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Role[]>> => {
+): Promise<AxiosResponse<Role>> => {
   return axios.post(`/roles`, role, options);
 };
 

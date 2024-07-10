@@ -217,7 +217,7 @@ export const usePostGroups = <
 export const getGroupsItem = (
   id: string,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupsResponse>> => {
+): Promise<AxiosResponse<Group>> => {
   return axios.get(`/groups/${id}`, options);
 };
 
