@@ -8,6 +8,7 @@ import {
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { renderComponent } from "test/utils";
@@ -99,4 +100,21 @@ test("should display error notification and refetch data", async () => {
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
   expect(rows).toHaveLength(7);
+});
+
+test("should display the add panel", async () => {
+  mockApiServer.use(
+    getGetIdentitiesMockHandler(getGetIdentitiesResponseMock({ data: [] })),
+  );
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Users />
+    </ReBACAdminContext.Provider>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: UsersLabel.ADD }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Create local user",
+  });
+  expect(panel).toBeInTheDocument();
 });
