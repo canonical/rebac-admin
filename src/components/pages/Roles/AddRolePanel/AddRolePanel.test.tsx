@@ -4,13 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import type { Role } from "api/api.schemas";
 import {
   getPostRolesResponseMock,
   getPostRolesMockHandler,
   getPostRolesMockHandler400,
   getPostRolesResponseMock400,
   getPostRolesMockHandler200,
-  getPostRolesResponseMock200,
   getPatchRolesItemEntitlementsMockHandler,
   getPatchRolesItemEntitlementsMockHandler400,
   getPatchRolesItemEntitlementsResponseMock400,
@@ -127,9 +127,8 @@ test("should handle errors when adding roles", async () => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("handles the role not in the response", async () => {
-  mockApiServer.use(
-    getPostRolesMockHandler200(getPostRolesResponseMock200({ data: [] })),
-  );
+  // Handle a role not returned by the API which is not a valid type.
+  mockApiServer.use(getPostRolesMockHandler200(null as unknown as Role));
   renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
