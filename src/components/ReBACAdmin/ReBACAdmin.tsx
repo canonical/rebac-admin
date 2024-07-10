@@ -8,6 +8,7 @@ import Panel from "components/Panel";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
+import User from "components/pages/Users/User";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import urls from "urls";
 import { logger } from "utils";
@@ -46,29 +47,59 @@ const ReBACAdmin = ({
     <ReBACAdminContext.Provider value={{ asidePanelId }}>
       <QueryClientProvider client={queryClient}>
         <Routes>
-          <Route
-            path={urls.index}
-            element={<Panel title="Canonical ReBAC Admin" />}
-          />
-          <Route
-            path={urls.accessGovernance.index}
-            element={<Panel title="Access Governance" />}
-          />
-          <Route
-            path={urls.authentication.index}
-            element={<Panel title="Authentication" />}
-          />
-          <Route
-            path={urls.entitlements}
-            element={<Panel title="Entitlements" />}
-          />
-          <Route path={urls.groups.index} element={<Groups />} />
-          <Route
-            path={urls.resources.index}
-            element={<Panel title="Resources" />}
-          />
-          <Route path={urls.roles.index} element={<Roles />} />
-          <Route path={urls.users.index} element={<Users />} />
+          <Route path={urls.index}>
+            <Route
+              path={urls.index}
+              element={<Panel title="Canonical ReBAC Admin" />}
+            />
+            <Route
+              path={urls.accessGovernance.index}
+              element={<Panel title="Access Governance" />}
+            />
+            <Route
+              path={urls.authentication.index}
+              element={<Panel title="Authentication" />}
+            />
+            <Route
+              path={urls.entitlements}
+              element={<Panel title="Entitlements" />}
+            />
+            <Route path={urls.groups.index} element={<Groups />} />
+            <Route
+              path={urls.resources.index}
+              element={<Panel title="Resources" />}
+            />
+            <Route path={urls.roles.index} element={<Roles />} />
+            <Route path={urls.users.user.index(null)} element={<User />}>
+              <Route
+                path={urls.users.user.index(null)}
+                element={<>Summary{/* TODO: display user summary */}</>}
+              />
+              <Route
+                path={urls.users.user.groups(null)}
+                element={<>Groups{/* TODO: display user groups */}</>}
+              />
+              <Route
+                path={urls.users.user.roles(null)}
+                element={<>Roles{/* TODO: display user roles */}</>}
+              />
+              <Route
+                path={urls.users.user.entitlements(null)}
+                element={
+                  <>Entitlements{/* TODO: display user entitlements */}</>
+                }
+              />
+              <Route
+                path={urls.users.user.accountManagement(null)}
+                element={
+                  <>
+                    Account management{/* TODO: display account management */}
+                  </>
+                }
+              />
+            </Route>
+            <Route path={urls.users.index} element={<Users />} />
+          </Route>
         </Routes>
       </QueryClientProvider>
     </ReBACAdminContext.Provider>

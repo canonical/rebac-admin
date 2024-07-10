@@ -9,6 +9,7 @@ import {
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useMemo, type JSX } from "react";
+import { Link } from "react-router-dom";
 
 import type { Identity } from "api/api.schemas";
 import { useGetIdentities } from "api/identities/identities";
@@ -16,6 +17,7 @@ import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
 import { Endpoint } from "types/api";
+import urls from "urls";
 
 import DeleteUsersPanel from "./DeleteUsersPanel";
 import { Label } from "./types";
@@ -86,57 +88,66 @@ const Users = () => {
     if (!users) {
       return [];
     }
-    const tableData = users.map((user) => ({
-      selectIdentity: (
-        <CheckboxInput
-          label=""
-          inline
-          checked={
-            areAllIdentitiesSelected ||
-            (!!user.id && selectedIdentities.includes(user.id))
-          }
-          onChange={() => user.id && handleSelectIdentity(user.id)}
-          disabled={isPanelOpen}
-        />
-      ),
-      firstName: user?.firstName ?? "Unknown",
-      lastName: user?.lastName ?? "Unknown",
-      addedBy: user.addedBy,
-      email: user.email,
-      source: user.source,
-      actions: (
-        <ContextualMenu
-          links={[
-            {
-              appearance: "link",
-              children: (
-                <>
-                  <Icon name="edit" /> {Label.EDIT}
-                </>
-              ),
-              onClick: () => {
-                openPanel({ editIdentityId: user.id });
+    const tableData = users.map((user) => {
+      const firstName = user.firstName ?? "Unknown";
+      return {
+        selectIdentity: (
+          <CheckboxInput
+            label=""
+            inline
+            checked={
+              areAllIdentitiesSelected ||
+              (!!user.id && selectedIdentities.includes(user.id))
+            }
+            onChange={() => user.id && handleSelectIdentity(user.id)}
+            disabled={isPanelOpen}
+          />
+        ),
+        firstName: user.id ? (
+          <Link to={`..${urls.users.user.index({ id: user.id })}`}>
+            {firstName}
+          </Link>
+        ) : (
+          firstName
+        ),
+        lastName: user.lastName ?? "Unknown",
+        addedBy: user.addedBy,
+        email: user.email,
+        source: user.source,
+        actions: (
+          <ContextualMenu
+            links={[
+              {
+                appearance: "link",
+                children: (
+                  <>
+                    <Icon name="edit" /> {Label.EDIT}
+                  </>
+                ),
+                onClick: () => {
+                  openPanel({ editIdentityId: user.id });
+                },
               },
-            },
-            {
-              appearance: "link",
-              children: (
-                <>
-                  <Icon name="delete" /> {Label.DELETE}
-                </>
-              ),
-              onClick: () =>
-                user.id && openPanel({ deleteIdentities: [user.id] }),
-            },
-          ]}
-          position="right"
-          scrollOverflow
-          toggleAppearance="base"
-          toggleClassName="has-icon u-no-margin--bottom is-small"
-          toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
-        />
-      ),
-    }));
+              {
+                appearance: "link",
+                children: (
+                  <>
+                    <Icon name="delete" /> {Label.DELETE}
+                  </>
+                ),
+                onClick: () =>
+                  user.id && openPanel({ deleteIdentities: [user.id] }),
+              },
+            ]}
+            position="right"
+            scrollOverflow
+            toggleAppearance="base"
+            toggleClassName="has-icon u-no-margin--bottom is-small"
+            toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
+          />
+        ),
+      };
+    });
     return tableData;
   }, [
     areAllIdentitiesSelected,

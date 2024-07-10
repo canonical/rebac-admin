@@ -1,0 +1,16 @@
+@import "vanilla-framework/scss/vanilla";
+
+.breadcrumb-navigation {
+  .p-breadcrumbs__item {
+    font-variant-caps: unset;
+
+    button {
+      margin-right: $sph--x-small;
+      text-transform: uppercase;
+
+      .p-icon--chevron-left {
+        vertical-align: text-top;
+      }
+    }
+  }
+}

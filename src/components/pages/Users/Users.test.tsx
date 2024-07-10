@@ -12,6 +12,7 @@ import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { renderComponent } from "test/utils";
+import urls from "urls";
 
 import Users from "./Users";
 import { Label, Label as UsersLabel } from "./types";
@@ -117,4 +118,12 @@ test("displays the delete panel", async () => {
     name: "Delete 1 user",
   });
   expect(panel).toBeInTheDocument();
+});
+
+test("links to user details", async () => {
+  renderComponent(<Users />);
+  expect(await screen.findByRole("link", { name: "really" })).toHaveAttribute(
+    "href",
+    urls.users.user.index({ id: "user1" }),
+  );
 });

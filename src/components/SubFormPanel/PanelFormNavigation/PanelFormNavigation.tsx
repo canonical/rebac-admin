@@ -1,12 +1,9 @@
-import { Button, Icon } from "@canonical/react-components";
-
+import BreadcrumbNavigation from "components/BreadcrumbNavigation";
 import { SidePanelLabelledById } from "consts";
 
 import { generateTitle } from "../PanelFormLink/utils";
 
 import { type Props } from "./types";
-
-import "./_panel-form-navigation.scss";
 
 const PanelFormNavigation = ({
   defaultPanelWidth,
@@ -20,29 +17,12 @@ const PanelFormNavigation = ({
     : `Create ${panelEntity}`;
   const viewTitle = view ? generateTitle(view, isEditing) : null;
   return (
-    <nav className="p-breadcrumbs panel-form-navigation">
-      <ol className="p-breadcrumbs__items">
-        {view ? (
-          <li className="p-breadcrumbs__item">
-            <Button
-              className="u-no-margin--bottom"
-              appearance="link"
-              onClick={() => setView(null, defaultPanelWidth)}
-            >
-              <Icon name="chevron-left" /> {panelTitle}
-            </Button>
-          </li>
-        ) : null}
-        <li className="p-breadcrumbs__item">
-          <span
-            className="p-heading--4 panel-form-navigation__current-title"
-            id={SidePanelLabelledById}
-          >
-            {viewTitle ?? panelTitle}
-          </span>
-        </li>
-      </ol>
-    </nav>
+    <BreadcrumbNavigation
+      backTitle={view ? panelTitle : null}
+      onBack={() => setView(null, defaultPanelWidth)}
+      title={viewTitle ?? panelTitle}
+      titleId={SidePanelLabelledById}
+    />
   );
 };
 

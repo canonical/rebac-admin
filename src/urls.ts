@@ -34,8 +34,15 @@ const urls = {
   users: {
     index: "/users",
     add: "/users/add",
-    edit: argPath<{ id: string }>("/users/:id/edit"),
-    delete: argPath<{ id: string }>("/users/:id/delete"),
+    user: {
+      index: argPath<{ id: string }>("/users/:id/"),
+      accountManagement: argPath<{ id: string }>(
+        "/users/:id/account-management",
+      ),
+      entitlements: argPath<{ id: string }>("/users/:id/entitlements"),
+      groups: argPath<{ id: string }>("/users/:id/groups"),
+      roles: argPath<{ id: string }>("/users/:id/roles"),
+    },
   },
 };
 
