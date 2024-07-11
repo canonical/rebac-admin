@@ -9,16 +9,18 @@ import {
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { renderComponent } from "test/utils";
 
 import Users from "./Users";
-import { Label as UsersLabel } from "./types";
+import { Label, Label as UsersLabel } from "./types";
 
 const mockUserData = getGetIdentitiesResponseMock({
   data: [
     getGetIdentitiesItemResponseMock({
+      id: "user1",
       addedBy: "within",
       email: "pfft",
       firstName: "really",
@@ -53,18 +55,18 @@ test("should display spinner on mount", () => {
 test("should display correct user data after fetching users", async () => {
   renderComponent(<Users />);
   const columnHeaders = await screen.findAllByRole("columnheader");
-  expect(columnHeaders).toHaveLength(5);
+  expect(columnHeaders).toHaveLength(7);
   const rows = screen.getAllByRole("row");
   // The first row contains the column headers and the next 7 rows contain
   // user data.
   expect(rows).toHaveLength(8);
   const firstUserCells = within(rows[1]).getAllByRole("cell");
-  expect(firstUserCells).toHaveLength(5);
-  expect(firstUserCells[0]).toHaveTextContent("really");
-  expect(firstUserCells[1]).toHaveTextContent("Unknown");
-  expect(firstUserCells[2]).toHaveTextContent("within");
-  expect(firstUserCells[3]).toHaveTextContent("pfft");
-  expect(firstUserCells[4]).toHaveTextContent("noteworthy");
+  expect(firstUserCells).toHaveLength(7);
+  expect(firstUserCells[1]).toHaveTextContent("really");
+  expect(firstUserCells[2]).toHaveTextContent("Unknown");
+  expect(firstUserCells[3]).toHaveTextContent("within");
+  expect(firstUserCells[4]).toHaveTextContent("pfft");
+  expect(firstUserCells[5]).toHaveTextContent("noteworthy");
 });
 
 test("should display no users data when no users are available", async () => {
@@ -115,6 +117,22 @@ test("should display the add panel", async () => {
   await userEvent.click(screen.getByRole("button", { name: UsersLabel.ADD }));
   const panel = await screen.findByRole("complementary", {
     name: "Create local user",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
+test("displays the delete panel", async () => {
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Users />
+    </ReBACAdminContext.Provider>,
+  );
+  const rows = await screen.findAllByRole("row");
+  await userEvent.click(within(rows[1]).getByRole("checkbox"));
+  await userEvent.click(screen.getByRole("button", { name: Label.DELETE }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Delete 1 user",
   });
   expect(panel).toBeInTheDocument();
 });

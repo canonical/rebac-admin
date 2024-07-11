@@ -89,7 +89,7 @@ const EditGroupPanel = ({ close, groupId, setPanelWidth }: Props) => {
     mutateAsync: patchGroupsItemRoles,
     isPending: isPatchGroupsItemRolesPending,
   } = usePatchGroupsItemRoles();
-  const group = groupDetails?.data.data.find(({ id }) => id === groupId);
+  const group = groupDetails?.data;
   return (
     <GroupPanel
       close={close}

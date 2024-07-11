@@ -231,71 +231,57 @@ export const getGetRolesResponseMockDefault = (
   ...overrideResponse,
 });
 
-export const getPostRolesResponseMock = (overrideResponse: any = {}): Role[] =>
-  Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    entitlements: faker.helpers.arrayElement([
-      Array.from(
-        { length: faker.number.int({ min: 1, max: 10 }) },
-        (_, i) => i + 1,
-      ).map(() => ({
-        entitlement: faker.helpers.arrayElement([
-          faker.word.sample(),
-          undefined,
-        ]),
-        entity: faker.helpers.arrayElement([
-          {
-            id: faker.word.sample(),
-            type: faker.word.sample(),
-            ...overrideResponse,
-          },
-          undefined,
-        ]),
-        resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-        ...overrideResponse,
-      })),
-      undefined,
-    ]),
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  }));
+export const getPostRolesResponseMock = (overrideResponse: any = {}): Role => ({
+  entitlements: faker.helpers.arrayElement([
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+      entity: faker.helpers.arrayElement([
+        {
+          id: faker.word.sample(),
+          type: faker.word.sample(),
+          ...overrideResponse,
+        },
+        undefined,
+      ]),
+      resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+      ...overrideResponse,
+    })),
+    undefined,
+  ]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.word.sample(),
+  ...overrideResponse,
+});
 
 export const getPostRolesResponseMock200 = (
   overrideResponse: any = {},
-): Role[] =>
-  Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    entitlements: faker.helpers.arrayElement([
-      Array.from(
-        { length: faker.number.int({ min: 1, max: 10 }) },
-        (_, i) => i + 1,
-      ).map(() => ({
-        entitlement: faker.helpers.arrayElement([
-          faker.word.sample(),
-          undefined,
-        ]),
-        entity: faker.helpers.arrayElement([
-          {
-            id: faker.word.sample(),
-            type: faker.word.sample(),
-            ...overrideResponse,
-          },
-          undefined,
-        ]),
-        resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-        ...overrideResponse,
-      })),
-      undefined,
-    ]),
-    id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-    name: faker.word.sample(),
-    ...overrideResponse,
-  }));
+): Role => ({
+  entitlements: faker.helpers.arrayElement([
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      entitlement: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+      entity: faker.helpers.arrayElement([
+        {
+          id: faker.word.sample(),
+          type: faker.word.sample(),
+          ...overrideResponse,
+        },
+        undefined,
+      ]),
+      resource: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+      ...overrideResponse,
+    })),
+    undefined,
+  ]),
+  id: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.word.sample(),
+  ...overrideResponse,
+});
 
 export const getPostRolesResponseMock400 = (
   overrideResponse: any = {},
@@ -1199,7 +1185,7 @@ export const getGetRolesMockHandlerDefault = (
   });
 };
 
-export const getPostRolesMockHandler = (overrideResponse?: Role[]) => {
+export const getPostRolesMockHandler = (overrideResponse?: Role) => {
   return http.post("*/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(
@@ -1218,7 +1204,7 @@ export const getPostRolesMockHandler = (overrideResponse?: Role[]) => {
   });
 };
 
-export const getPostRolesMockHandler200 = (overrideResponse?: Role[]) => {
+export const getPostRolesMockHandler200 = (overrideResponse?: Role) => {
   return http.post("*/roles", async () => {
     await delay((() => (process.env.NODE_ENV === "development" ? 1e3 : 10))());
     return new HttpResponse(

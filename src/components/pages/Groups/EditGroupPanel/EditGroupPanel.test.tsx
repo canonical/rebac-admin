@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import type { Group } from "api/api.schemas";
 import {
   getPatchGroupsItemEntitlementsMockHandler,
   getPatchGroupsItemEntitlementsMockHandler400,
@@ -62,9 +63,7 @@ const mockApiServer = setupServer(
     }),
   ),
   getGetGroupsItemMockHandler(
-    getGetGroupsItemResponseMock({
-      data: [{ id: "admin1", name: "admin" }],
-    }),
+    getGetGroupsItemResponseMock({ id: "admin1", name: "admin" }),
   ),
 );
 
@@ -98,13 +97,8 @@ test("should handle errors when getting the group", async () => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("should handle the group not in the response", async () => {
-  mockApiServer.use(
-    getGetGroupsItemMockHandler(
-      getGetGroupsItemResponseMock({
-        data: [],
-      }),
-    ),
-  );
+  // Mock the group not in the response, which is not a valid type.
+  mockApiServer.use(getGetGroupsItemMockHandler(null as unknown as Group));
   renderComponent(
     <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
