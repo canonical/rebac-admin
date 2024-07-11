@@ -89,7 +89,7 @@ const Users = () => {
       return [];
     }
     const tableData = users.map((user) => {
-      const firstName = user.firstName ?? "Unknown";
+      const firstName = user.firstName || "Unknown";
       return {
         selectIdentity: (
           <CheckboxInput
@@ -110,7 +110,7 @@ const Users = () => {
         ) : (
           firstName
         ),
-        lastName: user.lastName ?? "Unknown",
+        lastName: user.lastName || "Unknown",
         addedBy: user.addedBy,
         email: user.email,
         source: user.source,
