@@ -64,7 +64,7 @@ const Users = () => {
         />
       );
     } else {
-      <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
+      return <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
 

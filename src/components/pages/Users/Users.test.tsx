@@ -9,7 +9,6 @@ import {
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { renderComponent } from "test/utils";
