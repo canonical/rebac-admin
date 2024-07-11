@@ -9,8 +9,8 @@ export enum FieldName {
 
 export type FormFields = {
   [FieldName.EMAIL]: string;
-  [FieldName.FIRST_NAME]: string;
-  [FieldName.LAST_NAME]: string;
+  [FieldName.FIRST_NAME]?: string;
+  [FieldName.LAST_NAME]?: string;
 };
 
 export type Props = {
