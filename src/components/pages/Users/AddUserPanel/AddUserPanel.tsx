@@ -36,8 +36,8 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           await postIdentities({
             data: {
               email,
-              firstName,
-              lastName,
+              firstName: firstName || undefined,
+              lastName: lastName || undefined,
               addedBy: "admin",
               source: "local",
             },

@@ -18,6 +18,8 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
       entity="local user"
       initialValues={{
         [FieldName.EMAIL]: "",
+        [FieldName.FIRST_NAME]: "",
+        [FieldName.LAST_NAME]: "",
       }}
       onSubmit={async (values) => await onSubmit(values)}
       panelWidth={PanelWidth.MEDIUM}
