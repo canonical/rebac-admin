@@ -19,9 +19,10 @@ const Content = ({
   controls,
   title,
   endpoint,
+  ...props
 }: Props): JSX.Element => (
   <Panel controls={controls} title={title}>
-    <div className="l-content">
+    <div className="l-content" {...props}>
       <CheckCapability endpoint={endpoint} action={CapabilityAction.READ}>
         {children}
       </CheckCapability>
