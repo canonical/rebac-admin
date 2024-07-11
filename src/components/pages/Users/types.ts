@@ -1,4 +1,5 @@
 export enum Label {
+  ADD = "Create local user",
   ACTION_MENU = "Action menu",
   DELETE = "Delete",
   EDIT = "Edit",

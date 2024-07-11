@@ -19,6 +19,7 @@ import { usePanel, useEntitiesSelect } from "hooks";
 import { Endpoint } from "types/api";
 import urls from "urls";
 
+import AddUserPanel from "./AddUserPanel";
 import DeleteUsersPanel from "./DeleteUsersPanel";
 import { Label } from "./types";
 
@@ -54,7 +55,7 @@ const Users = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editIdentityId?: string | null;
     deleteIdentities?: NonNullable<Identity["id"]>[];
-  }>((closePanel, data) => {
+  }>((closePanel, data, setPanelWidth) => {
     if (data?.editIdentityId) {
       // TODO: Edit user panel.
     } else if (data?.deleteIdentities) {
@@ -65,7 +66,7 @@ const Users = () => {
         />
       );
     } else {
-      // TODO: Add user panel.
+      return <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
 
@@ -177,6 +178,12 @@ const Users = () => {
     ...COLUMN_DATA,
   ];
 
+  const generateCreateUserButton = () => (
+    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+      {Label.ADD}
+    </Button>
+  );
+
   const generateContent = (): JSX.Element => {
     if (isFetching) {
       return <Spinner text={Label.FETCHING_USERS} />;
@@ -239,6 +246,7 @@ const Users = () => {
           >
             {Label.DELETE}
           </Button>
+          {generateCreateUserButton()}
         </>
       }
       title="Users"

@@ -104,6 +104,23 @@ test("should display error notification and refetch data", async () => {
   expect(rows).toHaveLength(7);
 });
 
+test("should display the add panel", async () => {
+  mockApiServer.use(
+    getGetIdentitiesMockHandler(getGetIdentitiesResponseMock({ data: [] })),
+  );
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Users />
+    </ReBACAdminContext.Provider>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: UsersLabel.ADD }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Create local user",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
 test("displays the delete panel", async () => {
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
