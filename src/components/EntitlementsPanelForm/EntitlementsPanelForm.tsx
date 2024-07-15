@@ -2,10 +2,10 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import type { EntityEntitlement } from "api/api.schemas";
-import CleanFormikField from "components/CleanFormikField";
-import FormikSubmitButton from "components/FormikSubmitButton";
+import { useGetEntitlements } from "api/entitlements/entitlements";
 import PanelTableForm from "components/PanelTableForm";
 
+import Fields from "./Fields";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
@@ -49,6 +49,12 @@ const EntitlementsPanelForm = ({
   removeEntitlements,
   setRemoveEntitlements,
 }: Props) => {
+  const {
+    data,
+    isFetching,
+    error: getEntitlementsError,
+  } = useGetEntitlements();
+
   return (
     <PanelTableForm<EntityEntitlement>
       addEntities={addEntitlements}
@@ -56,8 +62,13 @@ const EntitlementsPanelForm = ({
       entityEqual={entitlementEqual}
       entityMatches={entitlementMatches}
       entityName="entitlement"
-      error={error}
+      error={
+        getEntitlementsError
+          ? `${error}. ${getEntitlementsError.message}`
+          : error
+      }
       existingEntities={existingEntitlements}
+      isFetching={isFetching}
       form={
         <Formik<EntityEntitlement>
           initialValues={{
@@ -83,26 +94,7 @@ const EntitlementsPanelForm = ({
                 and entitlement below and add it to the list of entitlements for
                 this role.{" "}
               </p>
-              <div className="panel-table-form__fields">
-                <CleanFormikField
-                  label={Label.ENTITY}
-                  name="entity_name"
-                  type="text"
-                />
-                <CleanFormikField
-                  label={Label.RESOURCE}
-                  name="entity_type"
-                  type="text"
-                />
-                <CleanFormikField
-                  label={Label.ENTITLEMENT}
-                  name="entitlement_type"
-                  type="text"
-                />
-                <div className="panel-table-form__submit">
-                  <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
-                </div>
-              </div>
+              <Fields entitlements={data ? data.data.data : []} />
             </fieldset>
           </Form>
         </Formik>

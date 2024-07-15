@@ -7,6 +7,7 @@ import {
   Button,
   Icon,
   SearchBox,
+  Spinner,
 } from "@canonical/react-components";
 import { useMemo, useState } from "react";
 import type { Column } from "react-table";
@@ -50,6 +51,7 @@ const PanelTableForm = <E,>({
   removeEntities,
   setAddEntities,
   setRemoveEntities,
+  isFetching,
 }: Props<E>) => {
   const [search, setSearch] = useState("");
   const tableColumns: Column<RowData>[] = [
@@ -118,54 +120,68 @@ const PanelTableForm = <E,>({
           </Col>
         </Row>
       ) : null}
-      <Row>
-        <Col size={12}>{form}</Col>
-      </Row>
-      <Row>
-        <Col size={12}>
-          <SearchBox externallyControlled onChange={setSearch} value={search} />
-        </Col>
-      </Row>
-      <Row>
-        <Col size={12}>
-          {tableData.length || search ? (
-            <ModularTable
-              getCellProps={({ column }) => {
-                switch (column.id) {
-                  case "actions":
-                    return {
-                      className: "u-align--right",
-                    };
-                  default:
-                    return {};
-                }
-              }}
-              getHeaderProps={({ id }) => {
-                switch (id) {
-                  case "actions":
-                    return {
-                      className: "u-align--right",
-                    };
-                  default:
-                    return {};
-                }
-              }}
-              columns={tableColumns}
-              data={tableData}
-              emptyMsg={
-                search
-                  ? `No ${entityName}s match the search criteria.`
-                  : undefined
-              }
-            />
-          ) : (
-            <NoEntityCard
-              title={`No ${entityName}s`}
-              message={`Add ${entityName}s using the form above.`}
-            />
-          )}
-        </Col>
-      </Row>
+      {isFetching ? (
+        <Row>
+          <Col size={12}>
+            <Spinner text={`Loading ${entityName}`} />
+          </Col>
+        </Row>
+      ) : (
+        <>
+          <Row>
+            <Col size={12}>{form}</Col>
+          </Row>
+          <Row>
+            <Col size={12}>
+              <SearchBox
+                externallyControlled
+                onChange={setSearch}
+                value={search}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col size={12}>
+              {tableData.length || search ? (
+                <ModularTable
+                  getCellProps={({ column }) => {
+                    switch (column.id) {
+                      case "actions":
+                        return {
+                          className: "u-align--right",
+                        };
+                      default:
+                        return {};
+                    }
+                  }}
+                  getHeaderProps={({ id }) => {
+                    switch (id) {
+                      case "actions":
+                        return {
+                          className: "u-align--right",
+                        };
+                      default:
+                        return {};
+                    }
+                  }}
+                  columns={tableColumns}
+                  data={tableData}
+                  emptyMsg={
+                    search
+                      ? `No ${entityName}s match the search criteria.`
+                      : undefined
+                  }
+                />
+              ) : (
+                <NoEntityCard
+                  title={`No ${entityName}s`}
+                  message={`Add ${entityName}s using the form above.`}
+                />
+              )}
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   );
 };
