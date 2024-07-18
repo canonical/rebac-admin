@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
+import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import urls from "urls";
@@ -34,6 +35,8 @@ const ReBACAdmin = ({
       queries: {
         refetchOnWindowFocus: false,
         retry: false,
+        // Cache queries for 30 seconds by default.
+        staleTime: 30000,
       },
     },
   });
@@ -73,7 +76,7 @@ const ReBACAdmin = ({
             <Route path={urls.users.user.index(null)} element={<User />}>
               <Route
                 path={urls.users.user.index(null)}
-                element={<>Summary{/* TODO: display user summary */}</>}
+                element={<SummaryTab />}
               />
               <Route
                 path={urls.users.user.groups(null)}

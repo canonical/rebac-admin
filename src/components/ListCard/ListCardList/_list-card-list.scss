@@ -1,0 +1,17 @@
+@import "vanilla-framework/scss/vanilla";
+
+.p-list--divided .list-card-list {
+  &__title {
+    font-weight: normal;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-bottom: $spv--small;
+  }
+
+  &__col {
+    word-break: break-all;
+  }
+}
