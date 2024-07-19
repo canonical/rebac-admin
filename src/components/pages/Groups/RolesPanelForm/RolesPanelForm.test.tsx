@@ -1,30 +1,63 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import {
+  getGetRolesMockHandler,
+  getGetRolesResponseMock,
+} from "api/roles/roles.msw";
 import { hasNotification, renderComponent } from "test/utils";
 
 import RolesPanelForm from "./RolesPanelForm";
 import { Label } from "./types";
 
+const mockApiServer = setupServer(
+  getGetRolesMockHandler(
+    getGetRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+        { id: "role345", name: "role3" },
+      ],
+    }),
+  ),
+);
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
+
 test("can add roles", async () => {
   const setAddRoles = vi.fn();
   renderComponent(
     <RolesPanelForm
-      addRoles={[{ name: "viewer" }]}
+      addRoles={[{ id: "1", name: "viewer" }]}
       setAddRoles={setAddRoles}
       removeRoles={[]}
       setRemoveRoles={vi.fn()}
     />,
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.ROLE }),
-    "devops",
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "role3",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.ROLE }),
+    "role3",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
   expect(setAddRoles).toHaveBeenCalledWith([
-    { name: "viewer" },
-    { name: "devops" },
+    { id: "1", name: "viewer" },
+    { id: "role345", name: "role3" },
   ]);
 });
 
