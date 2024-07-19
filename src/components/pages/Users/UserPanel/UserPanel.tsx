@@ -2,7 +2,6 @@ import * as Yup from "yup";
 
 import CleanFormikField from "components/CleanFormikField";
 import SubFormPanel from "components/SubFormPanel";
-import { PanelWidth } from "hooks/usePanel";
 
 import { FieldName, Label } from "./types";
 import type { FormFields, Props } from "./types";
@@ -22,7 +21,6 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
         [FieldName.LAST_NAME]: "",
       }}
       onSubmit={async (values) => await onSubmit(values)}
-      panelWidth={PanelWidth.MEDIUM}
       subForms={[]}
       validationSchema={schema}
     >

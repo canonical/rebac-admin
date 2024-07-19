@@ -6,7 +6,6 @@ import type { EntityEntitlement, Identity, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
-import { PanelWidth } from "hooks/usePanel";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
@@ -71,7 +70,6 @@ const GroupPanel = ({
           removeRoles,
         )
       }
-      panelWidth={PanelWidth.DEFAULT}
       subForms={[
         {
           count:
@@ -116,7 +114,6 @@ const GroupPanel = ({
             removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
-          panelWidth: PanelWidth.MEDIUM,
           view: isFetchingExistingEntitlements ? (
             <Spinner />
           ) : (
