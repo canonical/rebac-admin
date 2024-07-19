@@ -16,6 +16,14 @@ import {
   getPatchGroupsItemRolesMockHandler,
   getPatchGroupsItemRolesMockHandler400,
 } from "api/groups/groups.msw";
+import {
+  getGetIdentitiesMockHandler,
+  getGetIdentitiesResponseMock,
+} from "api/identities/identities.msw";
+import {
+  getGetRolesMockHandler,
+  getGetRolesResponseMock,
+} from "api/roles/roles.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
@@ -31,6 +39,23 @@ const mockGroupsData = getPostGroupsResponseMock({
   name: "group1",
 });
 const mockApiServer = setupServer(
+  getGetIdentitiesMockHandler(
+    getGetIdentitiesResponseMock({
+      data: [
+        { id: "user1", email: "user1@example.com" },
+        { id: "user2", email: "user2@example.com" },
+      ],
+    }),
+  ),
+  getGetRolesMockHandler(
+    getGetRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+        { id: "role345", name: "role3" },
+      ],
+    }),
+  ),
   getPostGroupsMockHandler(mockGroupsData),
   getPatchGroupsItemEntitlementsMockHandler(),
   getPatchGroupsItemIdentitiesMockHandler(),
@@ -211,11 +236,15 @@ test("should add users", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "user2@example.com",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: IdentitiesPanelFormLabel.USER,
     }),
-    "joe",
+    "user2@example.com",
   );
   await userEvent.click(
     screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
@@ -225,7 +254,9 @@ test("should add users", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
-  expect(patchResponseBody).toBe('{"patches":[{"identity":"joe","op":"add"}]}');
+  expect(patchResponseBody).toBe(
+    '{"patches":[{"identity":"user2","op":"add"}]}',
+  );
   await hasToast('Group "group1" was created.', "positive");
 });
 
@@ -242,11 +273,15 @@ test("should handle errors when adding users", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "user2@example.com",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: IdentitiesPanelFormLabel.USER,
     }),
-    "joe",
+    "user2@example.com",
   );
   await userEvent.click(
     screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
@@ -278,11 +313,15 @@ test("should add roles", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "role3",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: RolesPanelFormLabel.ROLE,
     }),
-    "admin",
+    "role3",
   );
   await userEvent.click(
     screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
@@ -292,7 +331,7 @@ test("should add roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
-  expect(patchResponseBody).toBe('{"patches":[{"role":"admin","op":"add"}]}');
+  expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
   await hasToast('Group "group1" was created.', "positive");
 });
 
@@ -309,11 +348,15 @@ test("should handle errors when adding roles", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "role3",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: RolesPanelFormLabel.ROLE,
     }),
-    "admin",
+    "role3",
   );
   await userEvent.click(
     screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),

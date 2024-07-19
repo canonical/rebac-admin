@@ -1,11 +1,39 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import {
+  getGetIdentitiesMockHandler,
+  getGetIdentitiesResponseMock,
+} from "api/identities/identities.msw";
 import { hasNotification, renderComponent } from "test/utils";
 
 import IdentitiesPanelForm from "./IdentitiesPanelForm";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(
+  getGetIdentitiesMockHandler(
+    getGetIdentitiesResponseMock({
+      data: [
+        { id: "user1", email: "user1@example.com" },
+        { id: "user2", email: "user2@example.com" },
+      ],
+    }),
+  ),
+);
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("can add identities", async () => {
   const setAddIdentities = vi.fn();
@@ -19,14 +47,20 @@ test("can add identities", async () => {
       setRemoveIdentities={vi.fn()}
     />,
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.USER }),
-    "joe@example.com",
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "user1@example.com",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
+      name: Label.USER,
+    }),
+    "user1@example.com",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
   expect(setAddIdentities).toHaveBeenCalledWith([
     { email: "johndoe@example.com", addedBy: "admin", source: "local" },
-    { email: "joe@example.com", addedBy: "", source: "" },
+    { email: "user1@example.com", id: "user1" },
   ]);
 });
 

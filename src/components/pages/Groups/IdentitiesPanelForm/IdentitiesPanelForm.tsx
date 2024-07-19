@@ -1,7 +1,10 @@
+import type { SelectProps } from "@canonical/react-components";
+import { Select } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import type { Identity } from "api/api.schemas";
+import { useGetIdentities } from "api/identities/identities";
 import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import PanelTableForm from "components/PanelTableForm";
@@ -9,7 +12,7 @@ import PanelTableForm from "components/PanelTableForm";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  email: Yup.string().required("Required"),
+  id: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
@@ -36,6 +39,25 @@ const IdentitiesPanelForm = ({
   removeIdentities,
   setRemoveIdentities,
 }: Props) => {
+  const { data } = useGetIdentities();
+  const users = data?.data.data;
+  let options: NonNullable<SelectProps["options"]> = [
+    { value: "", label: "Select user" },
+  ];
+  options = options.concat(
+    users?.reduce<NonNullable<SelectProps["options"]>>(
+      (options, { id, email }) => {
+        if (id) {
+          options.push({
+            value: id,
+            label: email,
+          });
+        }
+        return options;
+      },
+      [],
+    ) ?? [],
+  );
   return (
     <PanelTableForm
       addEntities={addIdentities}
@@ -46,18 +68,16 @@ const IdentitiesPanelForm = ({
       error={error}
       existingEntities={existingIdentities}
       form={
-        <Formik<{ email: string }>
-          initialValues={{ email: "" }}
-          onSubmit={({ email }, helpers) => {
-            setAddIdentities([
-              ...addIdentities,
-              // TODO: This user should be selected from a list of existing users:
-              // https://warthogs.atlassian.net/browse/WD-12647
-              { email, addedBy: "", source: "" },
-            ]);
+        <Formik<{ id: string }>
+          initialValues={{ id: "" }}
+          onSubmit={({ id }, helpers) => {
+            const user = users?.find((user) => user.id === id);
+            if (user) {
+              setAddIdentities([...addIdentities, user]);
+            }
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='email']")
+              .querySelector<HTMLInputElement>("input[name='id']")
               ?.focus();
           }}
           validationSchema={schema}
@@ -65,7 +85,12 @@ const IdentitiesPanelForm = ({
           <Form aria-label={Label.FORM}>
             <h5>Add users</h5>
             <div className="panel-table-form__fields">
-              <CleanFormikField label={Label.USER} name="email" type="text" />
+              <CleanFormikField
+                component={Select}
+                label={Label.USER}
+                name="id"
+                options={options}
+              />
               <div className="panel-table-form__submit">
                 <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
               </div>
