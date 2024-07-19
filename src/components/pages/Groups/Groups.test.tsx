@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
@@ -72,6 +72,23 @@ test("should display correct group data after fetching groups", async () => {
     "administrator",
   );
   expect(within(rows[3]).getAllByRole("cell")[1]).toHaveTextContent("viewer");
+});
+
+test("search groups", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/groups?filter=group1")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(<Groups />);
+  await userEvent.type(screen.getByRole("searchbox"), "group1{enter}");
+  await waitFor(() => expect(getDone).toBeTruthy());
 });
 
 test("should display no groups data when no groups are available", async () => {

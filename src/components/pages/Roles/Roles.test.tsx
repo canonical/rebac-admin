@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
@@ -68,6 +68,23 @@ test("should display correct role data after fetching roles", async () => {
     "administrator",
   );
   expect(within(rows[3]).getAllByRole("cell")[1]).toHaveTextContent("viewer");
+});
+
+test("search roles", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/roles?filter=role1")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(<Roles />);
+  await userEvent.type(screen.getByRole("searchbox"), "role1{enter}");
+  await waitFor(() => expect(getDone).toBeTruthy());
 });
 
 test("should display no roles data when no roles are available", async () => {
