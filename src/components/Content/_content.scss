@@ -2,4 +2,16 @@
 
 .l-content {
   padding: 0 $sph--x-large;
+
+  &__controls {
+    display: flex;
+    flex: 1;
+    gap: $spv--large;
+    margin-left: 0;
+    padding-left: $spv--large;
+
+    &-search {
+      flex: 1;
+    }
+  }
 }

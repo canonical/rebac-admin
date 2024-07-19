@@ -7,8 +7,8 @@ import {
   ButtonAppearance,
   CheckboxInput,
 } from "@canonical/react-components";
-import type { ReactNode } from "react";
-import { useMemo, type JSX } from "react";
+import type { ReactNode, JSX } from "react";
+import { useMemo, useState } from "react";
 
 import type { Group } from "api/api.schemas";
 import { useGetGroups } from "api/groups/groups";
@@ -35,7 +35,10 @@ const COLUMN_DATA = [
 ];
 
 const Groups = () => {
-  const { data, isFetching, isError, error, refetch } = useGetGroups();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetGroups({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroupId?: string | null;
     deleteGroups?: Group["name"][];
@@ -220,6 +223,7 @@ const Groups = () => {
           {generateCreateGroupButton()}
         </>
       }
+      onSearch={setFilter}
       title="Groups"
     >
       {generateContent()}

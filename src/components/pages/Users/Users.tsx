@@ -8,7 +8,7 @@ import {
   ButtonAppearance,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
-import { useMemo, type JSX } from "react";
+import { useMemo, useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
 import type { Identity } from "api/api.schemas";
@@ -51,7 +51,10 @@ const COLUMN_DATA = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error, refetch } = useGetIdentities();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetIdentities({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editIdentityId?: string | null;
     deleteIdentities?: NonNullable<Identity["id"]>[];
@@ -179,7 +182,7 @@ const Users = () => {
   ];
 
   const generateCreateUserButton = () => (
-    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+    <Button appearance={ButtonAppearance.DEFAULT} onClick={openPanel}>
       {Label.ADD}
     </Button>
   );
@@ -249,6 +252,7 @@ const Users = () => {
           {generateCreateUserButton()}
         </>
       }
+      onSearch={setFilter}
       title="Users"
       endpoint={Endpoint.IDENTITIES}
     >

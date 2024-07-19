@@ -8,7 +8,7 @@ import {
   CheckboxInput,
 } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { Role } from "api/api.schemas";
 import { useGetRoles } from "api/roles/roles";
@@ -35,7 +35,10 @@ const COLUMN_DATA = [
 ];
 
 const Roles = () => {
-  const { data, isFetching, isError, error, refetch } = useGetRoles();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetRoles({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRoleId?: string | null;
     deleteRoles?: Role["name"][];
@@ -218,6 +221,7 @@ const Roles = () => {
         </>
       }
       endpoint={Endpoint.ROLES}
+      onSearch={setFilter}
       title="Roles"
     >
       {generateContent()}

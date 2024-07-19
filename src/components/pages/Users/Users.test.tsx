@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
@@ -67,6 +67,23 @@ test("should display correct user data after fetching users", async () => {
   expect(firstUserCells[3]).toHaveTextContent("within");
   expect(firstUserCells[4]).toHaveTextContent("pfft");
   expect(firstUserCells[5]).toHaveTextContent("noteworthy");
+});
+
+test("search users", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/identities?filter=joe")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(<Users />);
+  await userEvent.type(screen.getByRole("searchbox"), "joe{enter}");
+  await waitFor(() => expect(getDone).toBeTruthy());
 });
 
 test("should display no users data when no users are available", async () => {
