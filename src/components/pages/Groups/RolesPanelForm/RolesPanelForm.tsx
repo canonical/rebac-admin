@@ -1,7 +1,10 @@
+import type { SelectProps } from "@canonical/react-components";
+import { Select } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import type { Role } from "api/api.schemas";
+import { useGetRoles } from "api/roles/roles";
 import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import PanelTableForm from "components/PanelTableForm";
@@ -9,7 +12,7 @@ import PanelTableForm from "components/PanelTableForm";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  name: Yup.string().required("Required"),
+  id: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
@@ -36,6 +39,25 @@ const RolesPanelForm = ({
   removeRoles,
   setRemoveRoles,
 }: Props) => {
+  const { data } = useGetRoles();
+  const roles = data?.data.data;
+  let options: NonNullable<SelectProps["options"]> = [
+    { value: "", label: "Select role" },
+  ];
+  options = options.concat(
+    roles?.reduce<NonNullable<SelectProps["options"]>>(
+      (options, { id, name }) => {
+        if (id) {
+          options.push({
+            value: id,
+            label: name,
+          });
+        }
+        return options;
+      },
+      [],
+    ) ?? [],
+  );
   return (
     <PanelTableForm
       addEntities={addRoles}
@@ -46,13 +68,16 @@ const RolesPanelForm = ({
       error={error}
       existingEntities={existingRoles}
       form={
-        <Formik<{ name: string }>
-          initialValues={{ name: "" }}
-          onSubmit={({ name }, helpers) => {
-            setAddRoles([...addRoles, { name }]);
+        <Formik<{ id: string }>
+          initialValues={{ id: "" }}
+          onSubmit={({ id }, helpers) => {
+            const role = roles?.find((role) => role.id === id);
+            if (role) {
+              setAddRoles([...addRoles, role]);
+            }
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='name']")
+              .querySelector<HTMLSelectElement>("input[name='id']")
               ?.focus();
           }}
           validationSchema={schema}
@@ -60,7 +85,12 @@ const RolesPanelForm = ({
           <Form aria-label={Label.FORM}>
             <h5>Add roles</h5>
             <div className="panel-table-form__fields">
-              <CleanFormikField label={Label.ROLE} name="name" type="text" />
+              <CleanFormikField
+                component={Select}
+                label={Label.ROLE}
+                name="id"
+                options={options}
+              />
               <div className="panel-table-form__submit">
                 <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
               </div>

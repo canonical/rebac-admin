@@ -1,5 +1,7 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
+import { vi } from "vitest";
 
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
@@ -61,4 +63,30 @@ test("should not display content if capability is disabled", async () => {
     await screen.findByText(CheckCapabilityLabel.DISABLED_FEATURE),
   ).toBeInTheDocument();
   expect(screen.queryByText(content)).not.toBeInTheDocument();
+});
+
+test("displays a search box", async () => {
+  mockApiServer.use(...getGetActualCapabilitiesMock([]));
+  renderComponent(
+    <Content
+      title="Mock content title"
+      endpoint={Endpoint.META}
+      onSearch={vi.fn()}
+    />,
+  );
+  expect(screen.getByRole("searchbox")).toBeInTheDocument();
+});
+
+test("calls the search callback", async () => {
+  mockApiServer.use(...getGetActualCapabilitiesMock([]));
+  const onSearch = vi.fn();
+  renderComponent(
+    <Content
+      title="Mock content title"
+      endpoint={Endpoint.META}
+      onSearch={onSearch}
+    />,
+  );
+  await userEvent.type(screen.getByRole("searchbox"), " group1 {enter}");
+  expect(onSearch).toHaveBeenCalledWith("group1");
 });

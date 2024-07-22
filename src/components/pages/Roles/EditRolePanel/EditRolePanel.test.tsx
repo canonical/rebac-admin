@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
-import type { Role } from "api/api.schemas";
 import {
   getGetEntitlementsMockHandler,
   getGetEntitlementsResponseMock,
@@ -21,11 +20,9 @@ import {
   getGetRolesItemEntitlementsMockHandler400,
   getGetRolesItemMockHandler,
   getGetRolesItemResponseMock,
-  getGetRolesItemMockHandler400,
-  getGetRolesItemResponseMock400,
 } from "api/roles/roles.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
-import { hasToast, renderComponent, hasNotification } from "test/utils";
+import { hasToast, renderComponent } from "test/utils";
 
 import EditRolePanel from "./EditRolePanel";
 
@@ -92,36 +89,6 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
-test("should handle errors when getting the role", async () => {
-  mockApiServer.use(
-    getGetRolesItemMockHandler400(
-      getGetRolesItemResponseMock400({ message: "role not found" }),
-    ),
-  );
-  renderComponent(
-    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
-  );
-  await hasNotification(
-    "Unable to get role: role not found",
-    NotificationSeverity.NEGATIVE,
-  );
-});
-
-// eslint-disable-next-line vitest/expect-expect
-test("should handle the role not in the response", async () => {
-  mockApiServer.use(
-    getGetRolesItemMockHandler(
-      // Mimic something wrong with the response, that is not allowed by the type.
-      null as unknown as Role,
-    ),
-  );
-  renderComponent(
-    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
-  );
-  await hasNotification("Unable to get role", NotificationSeverity.NEGATIVE);
-});
-
 test("should add and remove entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -137,7 +104,15 @@ test("should add and remove entitlements", async () => {
     }
   });
   renderComponent(
-    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditRolePanel
+      role={{
+        id: "admin123",
+        name: "admin1",
+      }}
+      roleId="admin123"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -206,7 +181,15 @@ test("should handle errors when updating entitlements", async () => {
     getGetRolesItemEntitlementsMockHandler400(),
   );
   renderComponent(
-    <EditRolePanel roleId="admin123" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditRolePanel
+      role={{
+        id: "admin123",
+        name: "admin1",
+      }}
+      roleId="admin123"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");

@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
-import type { Group } from "api/api.schemas";
 import {
   getGetEntitlementsMockHandler,
   getGetEntitlementsResponseMock,
@@ -23,24 +22,47 @@ import {
   getGetGroupsItemRolesMockHandler,
   getGetGroupsItemRolesResponseMock,
   getPatchGroupsItemRolesMockHandler400,
-  getGetGroupsItemMockHandler400,
-  getGetGroupsItemResponseMock400,
   getGetGroupsItemMockHandler,
   getGetGroupsItemResponseMock,
 } from "api/groups/groups.msw";
 import {
+  getGetIdentitiesMockHandler,
+  getGetIdentitiesResponseMock,
+} from "api/identities/identities.msw";
+import {
   getGetResourcesMockHandler,
   getGetResourcesResponseMock,
 } from "api/resources/resources.msw";
+import {
+  getGetRolesMockHandler,
+  getGetRolesResponseMock,
+} from "api/roles/roles.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
 import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
-import { hasNotification, hasToast, renderComponent } from "test/utils";
+import { hasToast, renderComponent } from "test/utils";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
 const mockApiServer = setupServer(
+  getGetIdentitiesMockHandler(
+    getGetIdentitiesResponseMock({
+      data: [
+        { id: "user1", email: "user1@example.com" },
+        { id: "user2", email: "user2@example.com" },
+      ],
+    }),
+  ),
+  getGetRolesMockHandler(
+    getGetRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+        { id: "role345", name: "role3" },
+      ],
+    }),
+  ),
   getPatchGroupsItemEntitlementsMockHandler(),
   getGetGroupsItemEntitlementsMockHandler(
     getGetGroupsItemEntitlementsResponseMock({
@@ -61,13 +83,19 @@ const mockApiServer = setupServer(
   getPatchGroupsItemIdentitiesMockHandler(),
   getGetGroupsItemIdentitiesMockHandler(
     getGetGroupsItemIdentitiesResponseMock({
-      data: [{ email: "user1@example.com" }, { email: "user2@example.com" }],
+      data: [
+        { id: "user1", email: "user1@example.com" },
+        { id: "user2", email: "user2@example.com" },
+      ],
     }),
   ),
   getPatchGroupsItemRolesMockHandler(),
   getGetGroupsItemRolesMockHandler(
     getGetGroupsItemRolesResponseMock({
-      data: [{ name: "role1" }, { name: "role2" }],
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+      ],
     }),
   ),
   getGetGroupsItemMockHandler(
@@ -112,32 +140,6 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
-test("should handle errors when getting the group", async () => {
-  mockApiServer.use(
-    getGetGroupsItemMockHandler400(
-      getGetGroupsItemResponseMock400({ message: "group not found" }),
-    ),
-  );
-  renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
-  );
-  await hasNotification(
-    "Unable to get group: group not found",
-    NotificationSeverity.NEGATIVE,
-  );
-});
-
-// eslint-disable-next-line vitest/expect-expect
-test("should handle the group not in the response", async () => {
-  // Mock the group not in the response, which is not a valid type.
-  mockApiServer.use(getGetGroupsItemMockHandler(null as unknown as Group));
-  renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
-  );
-  await hasNotification("Unable to get group", NotificationSeverity.NEGATIVE);
-});
-
 test("should add and remove entitlements", async () => {
   let patchResponseBody: string | null = null;
   let patchDone = false;
@@ -153,7 +155,12 @@ test("should add and remove entitlements", async () => {
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -211,7 +218,12 @@ test("should handle errors when updating entitlements", async () => {
     getGetGroupsItemEntitlementsMockHandler400(),
   );
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the entitlements have loaded.
   await screen.findByText("2 entitlements");
@@ -268,7 +280,12 @@ test("should add and remove users", async () => {
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
@@ -278,11 +295,15 @@ test("should add and remove users", async () => {
       name: IdentitiesPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "user1@example.com",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: IdentitiesPanelFormLabel.USER,
     }),
-    "joe@example.com",
+    "user2@example.com",
   );
   await userEvent.click(
     screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
@@ -293,7 +314,7 @@ test("should add and remove users", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toBe(
-    '{"patches":[{"identity":"joe@example.com","op":"add"},{"identity":"user1@example.com","op":"remove"}]}',
+    '{"patches":[{"identity":"user2","op":"add"},{"identity":"user1","op":"remove"}]}',
   );
   await hasToast('Group "admin" was updated.', "positive");
 });
@@ -302,16 +323,25 @@ test("should add and remove users", async () => {
 test("should handle errors when updating users", async () => {
   mockApiServer.use(getPatchGroupsItemIdentitiesMockHandler400());
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the users have loaded.
   await screen.findByText("2 users");
   await userEvent.click(screen.getByRole("button", { name: /Edit users/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "user1@example.com",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: IdentitiesPanelFormLabel.USER,
     }),
-    "joe@example.com",
+    "user1@example.com",
   );
   await userEvent.click(
     screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
@@ -338,18 +368,23 @@ test("should add and remove roles", async () => {
     }
   });
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the roles have loaded.
-  await screen.findByText("2 roles");
+  await screen.findByText("3 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
     screen.getAllByRole("button", {
       name: RolesPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: RolesPanelFormLabel.ROLE,
     }),
     "role3",
@@ -363,7 +398,7 @@ test("should add and remove roles", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toBe(
-    '{"patches":[{"role":"role3","op":"add"},{"role":"role1","op":"remove"}]}',
+    '{"patches":[{"role":"role345","op":"add"},{"role":"role123","op":"remove"}]}',
   );
   await hasToast('Group "admin" was updated.', "positive");
 });
@@ -372,16 +407,25 @@ test("should add and remove roles", async () => {
 test("should handle errors when updating roles", async () => {
   mockApiServer.use(getPatchGroupsItemRolesMockHandler400());
   renderComponent(
-    <EditGroupPanel groupId="admin1" close={vi.fn()} setPanelWidth={vi.fn()} />,
+    <EditGroupPanel
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
   );
   // Wait until the roles have loaded.
-  await screen.findByText("2 roles");
+  await screen.findByText("3 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  // Wait for the options to load.
+  await screen.findByRole("option", {
+    name: "role3",
+  });
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: RolesPanelFormLabel.ROLE,
     }),
-    "admin",
+    "role3",
   );
   await userEvent.click(
     screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),

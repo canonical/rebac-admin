@@ -8,7 +8,7 @@ import {
   ButtonAppearance,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
-import { useMemo, type JSX } from "react";
+import { useMemo, useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
 import type { Identity } from "api/api.schemas";
@@ -18,6 +18,7 @@ import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
 import { Endpoint } from "types/api";
 import urls from "urls";
+import { getIds } from "utils/getIds";
 
 import AddUserPanel from "./AddUserPanel";
 import DeleteUsersPanel from "./DeleteUsersPanel";
@@ -51,7 +52,10 @@ const COLUMN_DATA = [
 ];
 
 const Users = () => {
-  const { data, isFetching, isError, error, refetch } = useGetIdentities();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetIdentities({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editIdentityId?: string | null;
     deleteIdentities?: NonNullable<Identity["id"]>[];
@@ -75,14 +79,7 @@ const Users = () => {
     handleSelectAllEntities: handleSelectAllIdentities,
     selectedEntities: selectedIdentities,
     areAllEntitiesSelected: areAllIdentitiesSelected,
-  } = useEntitiesSelect(
-    data?.data.data.reduce<NonNullable<Identity["id"]>[]>((ids, { id }) => {
-      if (id) {
-        ids.push(id);
-      }
-      return ids;
-    }, []) ?? [],
-  );
+  } = useEntitiesSelect(getIds(data?.data.data));
 
   const tableData = useMemo<Record<string, ReactNode>[]>(() => {
     const users = data?.data.data;
@@ -179,7 +176,7 @@ const Users = () => {
   ];
 
   const generateCreateUserButton = () => (
-    <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
+    <Button appearance={ButtonAppearance.DEFAULT} onClick={openPanel}>
       {Label.ADD}
     </Button>
   );
@@ -249,6 +246,7 @@ const Users = () => {
           {generateCreateUserButton()}
         </>
       }
+      onSearch={setFilter}
       title="Users"
       endpoint={Endpoint.IDENTITIES}
     >

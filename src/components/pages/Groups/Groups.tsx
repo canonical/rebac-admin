@@ -7,8 +7,8 @@ import {
   ButtonAppearance,
   CheckboxInput,
 } from "@canonical/react-components";
-import type { ReactNode } from "react";
-import { useMemo, type JSX } from "react";
+import type { ReactNode, JSX } from "react";
+import { useMemo, useState } from "react";
 
 import type { Group } from "api/api.schemas";
 import { useGetGroups } from "api/groups/groups";
@@ -17,6 +17,7 @@ import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
+import { getIds } from "utils/getIds";
 
 import AddGroupPanel from "./AddGroupPanel";
 import DeleteGroupsPanel from "./DeleteGroupsPanel";
@@ -35,15 +36,19 @@ const COLUMN_DATA = [
 ];
 
 const Groups = () => {
-  const { data, isFetching, isError, error, refetch } = useGetGroups();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetGroups({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
-    editGroupId?: string | null;
-    deleteGroups?: Group["name"][];
+    editGroup?: Group | null;
+    deleteGroups?: NonNullable<Group["id"]>[];
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editGroupId) {
+    if (data?.editGroup && data?.editGroup.id) {
       return (
         <EditGroupPanel
-          groupId={data.editGroupId}
+          group={data.editGroup}
+          groupId={data.editGroup.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}
         />
@@ -62,10 +67,10 @@ const Groups = () => {
     handleSelectAllEntities: handleSelectAllGroups,
     selectedEntities: selectedGroups,
     areAllEntitiesSelected: areAllGroupsSelected,
-  } = useEntitiesSelect(data?.data.data.map(({ name }) => name) ?? []);
+  } = useEntitiesSelect(getIds(data?.data.data));
 
   const tableData = useMemo<Record<string, ReactNode>[]>(() => {
-    const groups = data?.data.data.map(({ name }) => name);
+    const groups = data?.data.data;
     if (!groups) {
       return [];
     }
@@ -74,12 +79,15 @@ const Groups = () => {
         <CheckboxInput
           label=""
           inline
-          checked={areAllGroupsSelected || selectedGroups.includes(group)}
-          onChange={() => handleSelectGroup(group)}
+          checked={
+            areAllGroupsSelected ||
+            (!!group.id && selectedGroups.includes(group.id))
+          }
+          onChange={() => group.id && handleSelectGroup(group.id)}
           disabled={isPanelOpen}
         />
       ),
-      groupName: group,
+      groupName: group.name,
       actions: (
         <ContextualMenu
           links={[
@@ -91,7 +99,7 @@ const Groups = () => {
                 </>
               ),
               onClick: () => {
-                openPanel({ editGroupId: group });
+                openPanel({ editGroup: group });
               },
             },
             {
@@ -102,7 +110,7 @@ const Groups = () => {
                 </>
               ),
               onClick: () => {
-                openPanel({ deleteGroups: [group] });
+                group.id && openPanel({ deleteGroups: [group.id] });
               },
             },
           ]}
@@ -220,6 +228,7 @@ const Groups = () => {
           {generateCreateGroupButton()}
         </>
       }
+      onSearch={setFilter}
       title="Groups"
     >
       {generateContent()}

@@ -8,7 +8,7 @@ import {
   CheckboxInput,
 } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { Role } from "api/api.schemas";
 import { useGetRoles } from "api/roles/roles";
@@ -17,6 +17,7 @@ import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { Endpoint } from "types/api";
+import { getIds } from "utils/getIds";
 
 import AddRolePanel from "./AddRolePanel";
 import DeleteRolesPanel from "./DeleteRolesPanel";
@@ -35,15 +36,19 @@ const COLUMN_DATA = [
 ];
 
 const Roles = () => {
-  const { data, isFetching, isError, error, refetch } = useGetRoles();
+  const [filter, setFilter] = useState("");
+  const { data, isFetching, isError, error, refetch } = useGetRoles({
+    filter: filter || undefined,
+  });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
-    editRoleId?: string | null;
-    deleteRoles?: Role["name"][];
+    editRole?: Role | null;
+    deleteRoles?: NonNullable<Role["id"]>[];
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editRoleId) {
+    if (data?.editRole && data.editRole.id) {
       return (
         <EditRolePanel
-          roleId={data.editRoleId}
+          role={data.editRole}
+          roleId={data.editRole.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}
         />
@@ -60,10 +65,10 @@ const Roles = () => {
     handleSelectAllEntities: handleSelectAllRoles,
     selectedEntities: selectedRoles,
     areAllEntitiesSelected: areAllRolesSelected,
-  } = useEntitiesSelect(data?.data.data.map(({ name }) => name) ?? []);
+  } = useEntitiesSelect(getIds(data?.data.data));
 
   const tableData = useMemo<Record<string, ReactNode>[]>(() => {
-    const roles = data?.data.data.map(({ name }) => name);
+    const roles = data?.data.data;
     if (!roles) {
       return [];
     }
@@ -72,12 +77,15 @@ const Roles = () => {
         <CheckboxInput
           label=""
           inline
-          checked={areAllRolesSelected || selectedRoles.includes(role)}
-          onChange={() => handleSelectRole(role)}
+          checked={
+            areAllRolesSelected ||
+            (!!role.id && selectedRoles.includes(role.id))
+          }
+          onChange={() => role.id && handleSelectRole(role.id)}
           disabled={isPanelOpen}
         />
       ),
-      roleName: role,
+      roleName: role.name,
       actions: (
         <ContextualMenu
           links={[
@@ -89,7 +97,7 @@ const Roles = () => {
                 </>
               ),
               onClick: () => {
-                openPanel({ editRoleId: role });
+                openPanel({ editRole: role });
               },
             },
             {
@@ -100,7 +108,7 @@ const Roles = () => {
                 </>
               ),
               onClick: () => {
-                openPanel({ deleteRoles: [role] });
+                role.id && openPanel({ deleteRoles: [role.id] });
               },
             },
           ]}
@@ -218,6 +226,7 @@ const Roles = () => {
         </>
       }
       endpoint={Endpoint.ROLES}
+      onSearch={setFilter}
       title="Roles"
     >
       {generateContent()}

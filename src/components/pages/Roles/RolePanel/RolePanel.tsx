@@ -6,7 +6,6 @@ import type { EntityEntitlement } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
-import { PanelWidth } from "hooks/usePanel";
 
 import type { FormFields } from "./types";
 import { FieldName, Label, type Props } from "./types";
@@ -43,7 +42,6 @@ const RolePanel = ({
       onSubmit={async (values) =>
         await onSubmit(values, addEntitlements, removeEntitlements)
       }
-      panelWidth={PanelWidth.DEFAULT}
       subForms={[
         {
           count:
@@ -52,7 +50,6 @@ const RolePanel = ({
             removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
-          panelWidth: PanelWidth.MEDIUM,
           view: isFetchingExisting ? (
             <Spinner />
           ) : (

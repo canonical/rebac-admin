@@ -4,7 +4,7 @@ import type { FormikValues } from "formik";
 import { useEffect, useState } from "react";
 
 import PanelForm from "components/PanelForm";
-import type { PanelWidth } from "hooks/usePanel";
+import { PanelWidth } from "hooks/usePanel";
 
 import PanelFormLink from "./PanelFormLink";
 import PanelFormNavigation from "./PanelFormNavigation";
@@ -15,7 +15,7 @@ const SubFormPanel = <F extends FormikValues>({
   entity,
   isEditing,
   isFetching,
-  panelWidth,
+  panelWidth = PanelWidth.MEDIUM,
   setPanelWidth,
   subForms,
   ...props
@@ -68,16 +68,23 @@ const SubFormPanel = <F extends FormikValues>({
             </Row>
             <Row>
               <Col size={12}>
-                {subForms.map(({ count, entity, icon, panelWidth }) => (
-                  <PanelFormLink
-                    entity={entity}
-                    count={count}
-                    icon={icon}
-                    isEditing={isEditing}
-                    key={entity}
-                    onClick={() => changeView(entity, panelWidth)}
-                  />
-                ))}
+                {subForms.map(
+                  ({
+                    count,
+                    entity,
+                    icon,
+                    panelWidth: subPanelWidth = panelWidth,
+                  }) => (
+                    <PanelFormLink
+                      entity={entity}
+                      count={count}
+                      icon={icon}
+                      isEditing={isEditing}
+                      key={entity}
+                      onClick={() => changeView(entity, subPanelWidth)}
+                    />
+                  ),
+                )}
               </Col>
             </Row>
           </PanelForm>
