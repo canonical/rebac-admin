@@ -49,7 +49,7 @@ test("the input is disabled when editing", async () => {
   expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
 });
 
-test.only("the entitlement form can be displayed", async () => {
+test("the entitlement form can be displayed", async () => {
   const mockApiServer = setupServer(getGetEntitlementsMockHandler());
   mockApiServer.listen();
   renderComponent(
@@ -91,6 +91,8 @@ test("submit button is disabled when editing and there are no changes", async ()
 });
 
 test("submit button is enabled when editing and there are changes", async () => {
+  const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+  mockApiServer.listen();
   renderComponent(
     <RolePanel
       close={vi.fn()}
@@ -115,6 +117,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
@@ -126,4 +129,5 @@ test("submit button is enabled when editing and there are changes", async () => 
   expect(
     screen.getByRole("button", { name: "Update role" }),
   ).not.toBeDisabled();
+  mockApiServer.close();
 });

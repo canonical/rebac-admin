@@ -4,6 +4,8 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
+import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
@@ -13,7 +15,11 @@ import { Label as RolesPanelFormLabel } from "../RolesPanelForm";
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
 
-const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+const mockApiServer = setupServer(
+  getGetEntitlementsMockHandler(),
+  getGetIdentitiesMockHandler(),
+  getGetRolesMockHandler(),
+);
 
 beforeAll(() => {
   mockApiServer.listen();
