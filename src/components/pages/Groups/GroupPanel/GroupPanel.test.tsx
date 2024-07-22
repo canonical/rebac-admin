@@ -1,7 +1,9 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
@@ -10,6 +12,20 @@ import { Label as RolesPanelFormLabel } from "../RolesPanelForm";
 
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("the input is set from the name", async () => {
   renderComponent(
@@ -57,6 +73,7 @@ test("the entitlement form can be displayed", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
@@ -133,6 +150,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,

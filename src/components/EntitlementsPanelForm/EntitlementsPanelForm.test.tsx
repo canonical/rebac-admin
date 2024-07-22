@@ -1,11 +1,60 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import {
+  getGetEntitlementsMockHandler,
+  getGetEntitlementsResponseMock,
+} from "api/entitlements/entitlements.msw";
+import {
+  getGetResourcesMockHandler,
+  getGetResourcesResponseMock,
+} from "api/resources/resources.msw";
 import { hasNotification, renderComponent } from "test/utils";
 
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(
+  getGetEntitlementsMockHandler(
+    getGetEntitlementsResponseMock({
+      data: [
+        {
+          entitlement_type: "can_read",
+          entity_name: "editors",
+          entity_type: "client",
+        },
+      ],
+    }),
+  ),
+  getGetResourcesMockHandler(
+    getGetResourcesResponseMock({
+      data: [
+        {
+          id: "mock-id",
+          name: "editors",
+          entity: {
+            id: "mock-entity-id",
+            type: "mock-entity-name",
+          },
+        },
+      ],
+    }),
+  ),
+);
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("can add entitlements", async () => {
   const setAddEntitlements = vi.fn();
@@ -23,16 +72,18 @@ test("can add entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.ENTITY }),
+  await screen.findByText("Add entitlement tuple");
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.ENTITY }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.RESOURCE }),
+  await screen.findByText("Select a resource");
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.RESOURCE }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.ENTITLEMENT }),
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.ENTITLEMENT }),
     "can_read",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -44,8 +95,8 @@ test("can add entitlements", async () => {
     },
     {
       entitlement_type: "can_read",
-      entity_name: "client",
-      entity_type: "editors",
+      entity_name: "editors",
+      entity_type: "client",
     },
   ]);
 });
@@ -84,6 +135,7 @@ test("can display entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText("Add entitlement tuple");
   expect(
     screen.getByRole("row", {
       name: new RegExp(
@@ -147,6 +199,7 @@ test("does not display removed entitlements from the API", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText("Add entitlement tuple");
   expect(
     screen.queryByRole("row", {
       name: /moderators collection can_edit/,
@@ -181,6 +234,7 @@ test("can remove newly added entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
@@ -222,6 +276,7 @@ test("can remove entitlements from the API", async () => {
       setRemoveEntitlements={setRemoveEntitlements}
     />,
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );

@@ -1,7 +1,9 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
@@ -47,16 +49,20 @@ test("the input is disabled when editing", async () => {
   expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
 });
 
-test("the entitlement form can be displayed", async () => {
+test.only("the entitlement form can be displayed", async () => {
+  const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+  mockApiServer.listen();
   renderComponent(
     <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
+  mockApiServer.close();
 });
 
 test("submit button is disabled when editing and there are no changes", async () => {

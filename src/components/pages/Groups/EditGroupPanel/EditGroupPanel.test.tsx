@@ -6,6 +6,10 @@ import { vi } from "vitest";
 
 import type { Group } from "api/api.schemas";
 import {
+  getGetEntitlementsMockHandler,
+  getGetEntitlementsResponseMock,
+} from "api/entitlements/entitlements.msw";
+import {
   getPatchGroupsItemEntitlementsMockHandler,
   getPatchGroupsItemEntitlementsMockHandler400,
   getGetGroupsItemEntitlementsMockHandler,
@@ -24,6 +28,10 @@ import {
   getGetGroupsItemMockHandler,
   getGetGroupsItemResponseMock,
 } from "api/groups/groups.msw";
+import {
+  getGetResourcesMockHandler,
+  getGetResourcesResponseMock,
+} from "api/resources/resources.msw";
 import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
 import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
@@ -64,6 +72,31 @@ const mockApiServer = setupServer(
   ),
   getGetGroupsItemMockHandler(
     getGetGroupsItemResponseMock({ id: "admin1", name: "admin" }),
+  ),
+  getGetEntitlementsMockHandler(
+    getGetEntitlementsResponseMock({
+      data: [
+        {
+          entitlement_type: "can_read",
+          entity_name: "editors",
+          entity_type: "client",
+        },
+      ],
+    }),
+  ),
+  getGetResourcesMockHandler(
+    getGetResourcesResponseMock({
+      data: [
+        {
+          id: "mock-id",
+          name: "editors",
+          entity: {
+            id: "mock-entity-id",
+            type: "mock-entity-name",
+          },
+        },
+      ],
+    }),
   ),
 );
 
@@ -127,25 +160,27 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText("Select a resource");
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -159,7 +194,7 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toStrictEqual(
-    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"},{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement_type":"can_read","entity_name":"editors"},"op":"add"},{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
   );
   await hasToast('Group "admin" was updated.', "positive");
 });
@@ -183,25 +218,27 @@ test("should handle errors when updating entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText("Add entitlement tuple");
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText("Select a resource");
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",

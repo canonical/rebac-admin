@@ -29,7 +29,6 @@ const Fields = ({ entitlements }: Props) => {
     <div className="panel-table-form__fields">
       <CleanFormikField
         component={Select}
-        defaultValue=""
         label={Label.ENTITY}
         name="entity_type"
         options={[
@@ -58,16 +57,13 @@ const Fields = ({ entitlements }: Props) => {
       />
       <CleanFormikField
         component={Select}
-        defaultValue=""
         label={Label.RESOURCE}
         name="entity_name"
         disabled={!values.entity_type}
         options={[
           {
             disabled: true,
-            label: isGetResourcesFetching
-              ? "Loading resources..."
-              : "Select a resource",
+            label: isGetResourcesFetching ? "Loading..." : "Select a resource",
             value: "",
           },
         ].concat(
@@ -80,7 +76,6 @@ const Fields = ({ entitlements }: Props) => {
       />
       <CleanFormikField
         component={Select}
-        defaultValue=""
         label={Label.ENTITLEMENT}
         name="entitlement_type"
         disabled={!values.entity_type || !values.entity_name}
