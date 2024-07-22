@@ -50,8 +50,8 @@ const EntitlementsPanelForm = ({
   setRemoveEntitlements,
 }: Props) => {
   const {
-    data,
-    isFetching,
+    data: getEntitlementsData,
+    isFetching: isGetEntitlementsFetching,
     error: getEntitlementsError,
   } = useGetEntitlements();
 
@@ -68,7 +68,7 @@ const EntitlementsPanelForm = ({
           : error
       }
       existingEntities={existingEntitlements}
-      isFetching={isFetching}
+      isFetching={isGetEntitlementsFetching}
       form={
         <Formik<EntityEntitlement>
           initialValues={{
@@ -94,7 +94,7 @@ const EntitlementsPanelForm = ({
                 and entitlement below and add it to the list of entitlements for
                 this role.{" "}
               </p>
-              <Fields entitlements={data ? data.data.data : []} />
+              <Fields entitlements={getEntitlementsData?.data.data ?? []} />
             </fieldset>
           </Form>
         </Formik>

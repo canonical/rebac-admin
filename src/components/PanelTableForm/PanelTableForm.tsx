@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import type { Column } from "react-table";
 
 import NoEntityCard from "components/NoEntityCard";
+import { pluralize } from "utils";
 
 import type { RowData } from "./types";
 import { type Props } from "./types";
@@ -123,7 +124,7 @@ const PanelTableForm = <E,>({
       {isFetching ? (
         <Row>
           <Col size={12}>
-            <Spinner text={`Loading ${entityName}`} />
+            <Spinner text={`Loading ${pluralize(entityName)}`} />
           </Col>
         </Row>
       ) : (
