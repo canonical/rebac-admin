@@ -38,10 +38,14 @@ const Fields = ({ entitlements }: Props) => {
             value: "",
           },
         ].concat(
-          entitlements.map((entitlement) => ({
+          [
+            ...new Set(
+              entitlements.map((entitlement) => entitlement.entity_type),
+            ),
+          ].map((entityType) => ({
             disabled: false,
-            label: entitlement.entity_type,
-            value: entitlement.entity_type,
+            label: entityType,
+            value: entityType,
           })),
         )}
         onChange={(event) => {
@@ -67,11 +71,13 @@ const Fields = ({ entitlements }: Props) => {
             value: "",
           },
         ].concat(
-          resources.map((resource) => ({
-            disabled: false,
-            label: "resource_name",
-            value: resource.name,
-          })),
+          [...new Set(resources.map((resource) => resource.name))].map(
+            (resourceName) => ({
+              disabled: false,
+              label: resourceName,
+              value: resourceName,
+            }),
+          ),
         )}
       />
       <CleanFormikField
@@ -86,15 +92,20 @@ const Fields = ({ entitlements }: Props) => {
             value: "",
           },
         ].concat(
-          entitlements
-            .filter(
-              (entitlement) => entitlement.entity_type === values.entity_type,
-            )
-            .map((entitlement) => ({
-              disabled: false,
-              label: entitlement.entitlement_type,
-              value: entitlement.entitlement_type,
-            })),
+          [
+            ...new Set(
+              entitlements
+                .filter(
+                  (entitlement) =>
+                    entitlement.entity_type === values.entity_type,
+                )
+                .map((entitlement) => entitlement.entitlement_type),
+            ),
+          ].map((entitlementType) => ({
+            disabled: false,
+            label: entitlementType,
+            value: entitlementType,
+          })),
         )}
       />
       <div className="panel-table-form__submit">
