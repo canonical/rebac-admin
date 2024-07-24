@@ -36,9 +36,7 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
       onSubmit={async ({ name }, addEntitlements) => {
         let id: Role["id"] | null = null;
         try {
-          const { data: role } = await postRoles({
-            data: null as unknown as Role,
-          });
+          const { data: role } = await postRoles({ data: { name } });
           id = role?.id ?? null;
         } catch (error) {
           // These errors are handled by the errors returned by `usePostRoles`.

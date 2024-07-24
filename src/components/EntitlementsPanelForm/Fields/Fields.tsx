@@ -8,7 +8,9 @@ import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import { Endpoint } from "types/api";
 
-import { Label } from "../types";
+import { EntitlementsPanelFormLabel } from "..";
+
+import { Label } from "./types";
 
 type Props = {
   entitlements: EntityEntitlement[];
@@ -29,7 +31,7 @@ const Fields = ({ entitlements }: Props) => {
     <div className="panel-table-form__fields">
       <CleanFormikField
         component={Select}
-        label={Label.ENTITY}
+        label={EntitlementsPanelFormLabel.ENTITY}
         name="entity_type"
         options={[
           {
@@ -61,28 +63,30 @@ const Fields = ({ entitlements }: Props) => {
       />
       <CleanFormikField
         component={Select}
-        label={Label.RESOURCE}
+        label={EntitlementsPanelFormLabel.RESOURCE}
         name="entity_name"
         disabled={!values.entity_type}
         options={[
           {
             disabled: true,
-            label: isGetResourcesFetching ? "Loading..." : "Select a resource",
+            label: isGetResourcesFetching
+              ? Label.LOADING_RESOURCES
+              : (Label.SELECT_RESOURCE as string),
             value: "",
           },
         ].concat(
-          [...new Set(resources.map((resource) => resource.name))].map(
-            (resourceName) => ({
-              disabled: false,
-              label: resourceName,
-              value: resourceName,
-            }),
-          ),
+          // We assume that resources are unique by name for now. If this is not
+          // the case, we would not be sure which resource.entity.id to send.
+          resources.map((resource) => ({
+            disabled: false,
+            label: resource.name,
+            value: resource.entity.id,
+          })),
         )}
       />
       <CleanFormikField
         component={Select}
-        label={Label.ENTITLEMENT}
+        label={EntitlementsPanelFormLabel.ENTITLEMENT}
         name="entitlement_type"
         disabled={!values.entity_type || !values.entity_name}
         options={[
@@ -109,7 +113,9 @@ const Fields = ({ entitlements }: Props) => {
         )}
       />
       <div className="panel-table-form__submit">
-        <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
+        <FormikSubmitButton>
+          {EntitlementsPanelFormLabel.SUBMIT}
+        </FormikSubmitButton>
       </div>
     </div>
   );

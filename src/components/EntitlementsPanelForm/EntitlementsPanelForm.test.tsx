@@ -5,6 +5,7 @@ import { vi } from "vitest";
 
 import {
   getGetEntitlementsMockHandler,
+  getGetEntitlementsMockHandler404,
   getGetEntitlementsResponseMock,
 } from "api/entitlements/entitlements.msw";
 import {
@@ -14,6 +15,7 @@ import {
 import { hasNotification, renderComponent } from "test/utils";
 
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
+import { EntitlementPanelFormFieldsLabel } from "./Fields";
 import { Label } from "./types";
 
 const mockApiServer = setupServer(
@@ -72,12 +74,12 @@ test("can add entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
     screen.getByRole("combobox", { name: Label.ENTITY }),
     "client",
   );
-  await screen.findByText("Select a resource");
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
     screen.getByRole("combobox", { name: Label.RESOURCE }),
     "editors",
@@ -95,7 +97,7 @@ test("can add entitlements", async () => {
     },
     {
       entitlement_type: "can_read",
-      entity_name: "editors",
+      entity_name: "mock-entity-id",
       entity_type: "client",
     },
   ]);
@@ -135,7 +137,7 @@ test("can display entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   expect(
     screen.getByRole("row", {
       name: new RegExp(
@@ -199,7 +201,7 @@ test("does not display removed entitlements from the API", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   expect(
     screen.queryByRole("row", {
       name: /moderators collection can_edit/,
@@ -234,7 +236,7 @@ test("can remove newly added entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
@@ -276,7 +278,7 @@ test("can remove entitlements from the API", async () => {
       setRemoveEntitlements={setRemoveEntitlements}
     />,
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
@@ -296,14 +298,14 @@ test("can remove entitlements from the API", async () => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
+  mockApiServer.use(getGetEntitlementsMockHandler404());
   renderComponent(
     <EntitlementsPanelForm
-      error="Uh oh!"
       addEntitlements={[]}
       setAddEntitlements={vi.fn()}
       removeEntitlements={[]}
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  await hasNotification("Request failed with status code 404");
 });

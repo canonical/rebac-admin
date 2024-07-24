@@ -23,7 +23,8 @@ import {
   getPatchRolesItemEntitlementsMockHandler400,
   getPatchRolesItemEntitlementsResponseMock400,
 } from "api/roles/roles.msw";
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { Label as RolePanelLabel } from "../RolePanel";
@@ -108,14 +109,14 @@ test("should add a role and entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await screen.findByText("Select a resource");
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
@@ -138,7 +139,7 @@ test("should add a role and entitlements", async () => {
   await hasToast('Role "role1" was created.', "positive");
   await waitFor(() => expect(done).toBeTruthy());
   expect(responseBody).toBe(
-    '{"patches":[{"entitlement":{"entity_type":"client","entitlement_type":"can_read","entity_name":"editors"},"op":"add"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement_type":"can_read","entity_name":"mock-entity-id"},"op":"add"}]}',
   );
 });
 
@@ -172,14 +173,14 @@ test("handles the role not in the response", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await screen.findByText("Select a resource");
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
@@ -223,14 +224,14 @@ test("should handle errors when adding entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await screen.findByText("Select a resource");
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,

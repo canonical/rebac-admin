@@ -42,7 +42,6 @@ const entitlementMatches = (entitlement: EntityEntitlement, search: string) =>
   Object.values(entitlement).some((value) => value.includes(search));
 
 const EntitlementsPanelForm = ({
-  error,
   existingEntitlements,
   addEntitlements,
   setAddEntitlements,
@@ -62,11 +61,7 @@ const EntitlementsPanelForm = ({
       entityEqual={entitlementEqual}
       entityMatches={entitlementMatches}
       entityName="entitlement"
-      error={
-        getEntitlementsError
-          ? `${error}. ${getEntitlementsError.message}`
-          : error
-      }
+      error={getEntitlementsError?.message}
       existingEntities={existingEntitlements}
       isFetching={isGetEntitlementsFetching}
       form={
@@ -87,7 +82,7 @@ const EntitlementsPanelForm = ({
         >
           <Form aria-label={Label.FORM}>
             <fieldset>
-              <h5>Add entitlement tuple</h5>
+              <h5>{Label.ADD_ENTITLEMENT}</h5>
               <p className="p-text--small u-text--muted">
                 In fine-grained authorisation entitlements need to be given in
                 relation to a specific resource. Select the appropriate resource

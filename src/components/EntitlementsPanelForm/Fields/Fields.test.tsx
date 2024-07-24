@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { setupServer } from "msw/node";
@@ -11,9 +11,10 @@ import {
 } from "api/resources/resources.msw";
 import { renderComponent } from "test/utils";
 
-import { Label } from "../types";
+import { EntitlementsPanelFormLabel } from "..";
 
 import Fields from "./Fields";
+import { Label } from "./types";
 
 const mockApiServer = setupServer(
   getGetResourcesMockHandler(
@@ -71,14 +72,16 @@ test("should show the correct fields initially", () => {
     </Formik>,
   );
   const resourceTypeSelect = screen.getByRole("combobox", {
-    name: Label.ENTITY,
+    name: EntitlementsPanelFormLabel.ENTITY,
   });
   expect(resourceTypeSelect).toHaveValue("");
-  const resourceSelect = screen.getByRole("combobox", { name: Label.RESOURCE });
+  const resourceSelect = screen.getByRole("combobox", {
+    name: EntitlementsPanelFormLabel.RESOURCE,
+  });
   expect(resourceSelect).toHaveValue("");
   expect(resourceSelect).toBeDisabled();
   const entitlementTypeSelect = screen.getByRole("combobox", {
-    name: Label.ENTITLEMENT,
+    name: EntitlementsPanelFormLabel.ENTITLEMENT,
   });
   expect(entitlementTypeSelect).toHaveValue("");
   expect(entitlementTypeSelect).toBeDisabled();
@@ -94,7 +97,7 @@ test("should display the correct values and populate all the fields", async () =
     </Formik>,
   );
   const resourceTypeSelect = screen.getByRole("combobox", {
-    name: Label.ENTITY,
+    name: EntitlementsPanelFormLabel.ENTITY,
   });
   const resourceTypeSelectOptions =
     within(resourceTypeSelect).getAllByRole("option");
@@ -107,18 +110,22 @@ test("should display the correct values and populate all the fields", async () =
     resourceTypeSelectOptions[1],
   );
   expect(resourceTypeSelect).toHaveValue("mock-entity-type-1");
-  expect(await screen.findByText("Loading...")).toBeInTheDocument();
-  expect(await screen.findByText("Select a resource")).toBeInTheDocument();
-  const resourceSelect = screen.getByRole("combobox", { name: Label.RESOURCE });
+  await waitFor(() =>
+    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
+  );
+  expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
+  const resourceSelect = screen.getByRole("combobox", {
+    name: EntitlementsPanelFormLabel.RESOURCE,
+  });
   expect(resourceSelect).not.toBeDisabled();
   const resourceSelectOptions = within(resourceSelect).getAllByRole("option");
   expect(resourceSelectOptions).toHaveLength(2);
   expect(resourceSelectOptions[0]).toHaveValue("");
-  expect(resourceSelectOptions[1]).toHaveValue("editors");
+  expect(resourceSelectOptions[1]).toHaveValue("mock-entity-id");
   await userEvent.selectOptions(resourceSelect, resourceSelectOptions[1]);
-  expect(resourceSelect).toHaveValue("editors");
+  expect(resourceSelect).toHaveValue("mock-entity-id");
   const entitlementTypeSelect = screen.getByRole("combobox", {
-    name: Label.ENTITLEMENT,
+    name: EntitlementsPanelFormLabel.ENTITLEMENT,
   });
   expect(entitlementTypeSelect).not.toBeDisabled();
   const entitlementTypeSelectOptions = within(
@@ -149,14 +156,18 @@ test("should reset resource and entitlement when the resource type changes", asy
     </Formik>,
   );
   const resourceTypeSelect = screen.getByRole("combobox", {
-    name: Label.ENTITY,
+    name: EntitlementsPanelFormLabel.ENTITY,
   });
   await userEvent.selectOptions(resourceTypeSelect, "mock-entity-type-1");
-  expect(await screen.findByText("Loading...")).toBeInTheDocument();
-  expect(await screen.findByText("Select a resource")).toBeInTheDocument();
-  const resourceSelect = screen.getByRole("combobox", { name: Label.RESOURCE });
-  await userEvent.selectOptions(resourceSelect, "editors");
-  expect(resourceSelect).toHaveValue("editors");
+  await waitFor(() =>
+    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
+  );
+  expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
+  const resourceSelect = screen.getByRole("combobox", {
+    name: EntitlementsPanelFormLabel.RESOURCE,
+  });
+  await userEvent.selectOptions(resourceSelect, "mock-entity-id");
+  expect(resourceSelect).toHaveValue("mock-entity-id");
   await userEvent.selectOptions(resourceTypeSelect, "mock-entity-type-3");
   expect(resourceSelect).toHaveValue("");
 });

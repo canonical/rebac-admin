@@ -6,7 +6,7 @@ import { vi } from "vitest";
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
 import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
@@ -79,7 +79,7 @@ test("the entitlement form can be displayed", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
@@ -156,7 +156,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
-  await screen.findByText("Add entitlement tuple");
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
