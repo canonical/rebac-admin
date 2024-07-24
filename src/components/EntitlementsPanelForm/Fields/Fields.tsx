@@ -75,11 +75,13 @@ const Fields = ({ entitlements }: Props) => {
             value: "",
           },
         ].concat(
-          // We assume that resources are unique by name for now. If this is not
-          // the case, we would not be sure which resource.entity.id to send.
           resources.map((resource) => ({
             disabled: false,
-            label: resource.name,
+            label: resource.name.concat(
+              resource.entity.id.length > 5
+                ? ` (${resource.entity.id.slice(0, 5)}...)`
+                : ` (${resource.entity.id})`,
+            ),
             value: resource.entity.id,
           })),
         )}
