@@ -185,7 +185,7 @@ test("should add and remove entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors",
+    "editors (mock-...)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
@@ -248,7 +248,7 @@ test("should handle errors when updating entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors",
+    "editors (mock-...)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {

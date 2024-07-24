@@ -72,7 +72,7 @@ test("can submit the form", async () => {
   );
   await userEvent.type(
     screen.getByRole("textbox", { name: "name" }),
-    "editors",
+    "editors (mock-...)",
   );
   await userEvent.click(screen.getByRole("button", { name: "Submit!" }));
   expect(onSubmit).toHaveBeenCalled();
