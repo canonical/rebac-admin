@@ -1096,6 +1096,7 @@ export const getGetIdentitiesItemRolesResponseMock = (
         entity: faker.helpers.arrayElement([
           {
             id: faker.word.sample(),
+            name: faker.word.sample(),
             type: faker.word.sample(),
             ...overrideResponse,
           },
@@ -1152,6 +1153,7 @@ export const getGetIdentitiesItemRolesResponseMock200 = (
         entity: faker.helpers.arrayElement([
           {
             id: faker.word.sample(),
+            name: faker.word.sample(),
             type: faker.word.sample(),
             ...overrideResponse,
           },
@@ -1396,8 +1398,8 @@ export const getGetIdentitiesItemEntitlementsResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
+    entitlement: faker.word.sample(),
+    entity_id: faker.word.sample(),
     entity_type: faker.word.sample(),
     ...overrideResponse,
   })),
@@ -1431,8 +1433,8 @@ export const getGetIdentitiesItemEntitlementsResponseMock200 = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
+    entitlement: faker.word.sample(),
+    entity_id: faker.word.sample(),
     entity_type: faker.word.sample(),
     ...overrideResponse,
   })),
