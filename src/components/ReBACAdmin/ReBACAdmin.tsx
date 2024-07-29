@@ -40,7 +40,7 @@ export type Props = {
 const ReBACAdmin = ({ apiURL, asidePanelId, authToken }: Props) => {
   const contextClient = useContext(QueryClientContext);
   if (contextClient && !contextClient.getDefaultOptions().queries?.staleTime) {
-    logger.error(Label.STALE_TIME_ERROR);
+    console.error(Label.STALE_TIME_ERROR);
     throw new Error(Label.STALE_TIME_ERROR);
   }
   // Use the query client from the host application if it exists, otherwise
