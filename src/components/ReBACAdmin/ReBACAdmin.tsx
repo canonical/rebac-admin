@@ -1,8 +1,12 @@
 import process from "process";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientContext,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 
@@ -33,14 +37,21 @@ export type Props = {
 };
 
 const ReBACAdmin = ({ apiURL, asidePanelId, authToken }: Props) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        retry: false,
+  const contextClient = useContext(QueryClientContext);
+  // Use the query client from the host application if it exists, otherwise
+  // set up our own client.
+  const queryClient =
+    contextClient ??
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+          retry: false,
+          // Cache queries for 30 seconds by default.
+          staleTime: 30000,
+        },
       },
-    },
-  });
+    });
   axios.defaults.baseURL = apiURL;
 
   useEffect(() => {

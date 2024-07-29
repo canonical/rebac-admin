@@ -8,6 +8,7 @@ This is a shared UI for managing ReBAC permissions.
 - [Config](#config)
 - [Navigation](#navigation)
 - [Limiting access](#limiting-access)
+- [React Query](#react-query)
 
 ## Install
 
@@ -151,3 +152,22 @@ For example, Juju Dashboard can use the existing controller API to check OpenFGA
 relations. Using that API the dashboard can check the user's relations and
 determine if it should render the `ReBACAdmin` component and associated
 navigation.
+
+## React Query
+
+ReBAC Admin will use the QueryClient from the host application if it exists.
+This allows you to have central control over caching, error handling etc.
+
+**IMPORTANT:** If you've set up React Query you **MUST** set `staleTime` to some
+non-zero value so that queries are cached ([by default](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults) queries are not cached) to prevent nested queries from causing
+infinite loops.
+
+```
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000,
+    },
+  },
+});
+```
