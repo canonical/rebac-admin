@@ -19,6 +19,7 @@ import urls from "urls";
 import { logger } from "utils";
 
 import "scss/index.scss";
+import { Label } from "./types";
 
 export type Props = {
   // The absolute API URL.
@@ -35,6 +36,10 @@ const ReBACAdmin = ({
   logLevel = logger.levels.SILENT,
 }: Props) => {
   const contextClient = useContext(QueryClientContext);
+  if (contextClient && !contextClient.getDefaultOptions().queries?.staleTime) {
+    logger.error(Label.STALE_TIME_ERROR);
+    throw new Error(Label.STALE_TIME_ERROR);
+  }
   // Use the query client from the host application if it exists, otherwise
   // set up our own client.
   const queryClient =
