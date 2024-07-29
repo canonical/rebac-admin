@@ -1,8 +1,12 @@
 import { Panel } from "@canonical/react-components";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientContext,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import axios from "axios";
 import type { LogLevelDesc } from "loglevel";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Groups from "components/pages/Groups";
@@ -30,16 +34,21 @@ const ReBACAdmin = ({
   asidePanelId,
   logLevel = logger.levels.SILENT,
 }: Props) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        retry: false,
-        // Cache queries for 30 seconds by default.
-        staleTime: 30000,
+  const contextClient = useContext(QueryClientContext);
+  // Use the query client from the host application if it exists, otherwise
+  // set up our own client.
+  const queryClient =
+    contextClient ??
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+          retry: false,
+          // Cache queries for 30 seconds by default.
+          staleTime: 30000,
+        },
       },
-    },
-  });
+    });
   axios.defaults.baseURL = apiURL;
 
   useEffect(() => {
