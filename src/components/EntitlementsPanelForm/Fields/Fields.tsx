@@ -51,7 +51,23 @@ const Fields = ({ entitlements }: Props) => {
         component={Select}
         label={EntitlementsPanelFormLabel.ENTITY}
         name="entity_type"
-        options={entityIdOptions}
+        options={[
+          {
+            disabled: true,
+            label: "Select a resource type",
+            value: "",
+          },
+        ].concat(
+          [
+            ...new Set(
+              entitlements.map((entitlement) => entitlement.entity_type),
+            ),
+          ].map((entityType) => ({
+            disabled: false,
+            label: entityType,
+            value: entityType,
+          })),
+        )}
         onChange={(event) => {
           void setFieldValue("entity_type", event.target.value);
           void setFieldValue("entity_id", "");
@@ -68,21 +84,7 @@ const Fields = ({ entitlements }: Props) => {
         label={EntitlementsPanelFormLabel.RESOURCE}
         name="entity_id"
         disabled={!values.entity_type}
-        options={[
-          {
-            disabled: true,
-            label: isGetResourcesFetching
-              ? Label.LOADING_RESOURCES
-              : Label.SELECT_RESOURCE,
-            value: "",
-          } as any,
-        ].concat(
-          resources.map((resource) => ({
-            disabled: false,
-            label: `${resource.entity.name} (${resource.entity.id})`,
-            value: resource.entity.id,
-          })),
-        )}
+        options={entityIdOptions}
       />
       <CleanFormikField
         component={Select}
