@@ -21,6 +21,7 @@ const getQueryClient = (options: Options | null | undefined) =>
         defaultOptions: {
           queries: {
             retry: false,
+            staleTime: 1,
           },
         },
       });
