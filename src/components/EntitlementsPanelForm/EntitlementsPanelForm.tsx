@@ -9,23 +9,23 @@ import Fields from "./Fields";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  entity_name: Yup.string().required("Required"),
+  entity_id: Yup.string().required("Required"),
   entity_type: Yup.string().required("Required"),
-  entitlement_type: Yup.string().required("Required"),
+  entitlement: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
-  {
-    Header: "Entity",
-    accessor: "entity_name",
-  },
   {
     Header: "Resource",
     accessor: "entity_type",
   },
   {
+    Header: "Entity",
+    accessor: "entity_id",
+  },
+  {
     Header: "Entitlement",
-    accessor: "entitlement_type",
+    accessor: "entitlement",
   },
 ];
 
@@ -68,14 +68,14 @@ const EntitlementsPanelForm = ({
         <Formik<EntityEntitlement>
           initialValues={{
             entity_type: "",
-            entitlement_type: "",
-            entity_name: "",
+            entitlement: "",
+            entity_id: "",
           }}
           onSubmit={(values, helpers) => {
             setAddEntitlements([...addEntitlements, values]);
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='entity_name']")
+              .querySelector<HTMLInputElement>("input[name='entity_id']")
               ?.focus();
           }}
           validationSchema={schema}

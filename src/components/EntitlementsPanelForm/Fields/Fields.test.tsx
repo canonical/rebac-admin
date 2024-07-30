@@ -21,10 +21,9 @@ const mockApiServer = setupServer(
     getGetResourcesResponseMock({
       data: [
         {
-          id: "mock-id",
-          name: "editors",
           entity: {
             id: "mock-entity-id",
+            name: "editors",
             type: "mock-entity-name",
           },
         },
@@ -35,18 +34,18 @@ const mockApiServer = setupServer(
 const mockEntitlements = [
   {
     entity_type: "mock-entity-type-1",
-    entity_name: "",
-    entitlement_type: "mock-entitlement-type-1",
+    receiver_type: "",
+    entitlement: "mock-entitlement-type-1",
   },
   {
     entity_type: "mock-entity-type-1",
-    entity_name: "",
-    entitlement_type: "mock-entitlement-type-2",
+    receiver_type: "",
+    entitlement: "mock-entitlement-type-2",
   },
   {
     entity_type: "mock-entity-type-3",
-    entity_name: "",
-    entitlement_type: "mock-entitlement-type-3",
+    receiver_type: "",
+    entitlement: "mock-entitlement-type-3",
   },
 ];
 
@@ -65,7 +64,7 @@ afterAll(() => {
 test("should show the correct fields initially", () => {
   renderComponent(
     <Formik<EntityEntitlement>
-      initialValues={{ entity_type: "", entity_name: "", entitlement_type: "" }}
+      initialValues={{ entity_type: "", entity_id: "", entitlement: "" }}
       onSubmit={vi.fn()}
     >
       <Fields entitlements={mockEntitlements} />
@@ -87,10 +86,10 @@ test("should show the correct fields initially", () => {
   expect(entitlementTypeSelect).toBeDisabled();
 });
 
-test("should display the correct values and populate all the fields", async () => {
+test("should select the correct resource type", async () => {
   renderComponent(
     <Formik<EntityEntitlement>
-      initialValues={{ entity_type: "", entity_name: "", entitlement_type: "" }}
+      initialValues={{ entity_type: "", entity_id: "", entitlement: "" }}
       onSubmit={vi.fn()}
     >
       <Fields entitlements={mockEntitlements} />
@@ -110,6 +109,23 @@ test("should display the correct values and populate all the fields", async () =
     resourceTypeSelectOptions[1],
   );
   expect(resourceTypeSelect).toHaveValue("mock-entity-type-1");
+});
+
+test("should select the correct resource", async () => {
+  renderComponent(
+    <Formik<EntityEntitlement>
+      initialValues={{ entity_type: "", entity_id: "", entitlement: "" }}
+      onSubmit={vi.fn()}
+    >
+      <Fields entitlements={mockEntitlements} />
+    </Formik>,
+  );
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
+      name: EntitlementsPanelFormLabel.ENTITY,
+    }),
+    "mock-entity-type-1",
+  );
   await waitFor(() =>
     expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
   );
@@ -124,6 +140,33 @@ test("should display the correct values and populate all the fields", async () =
   expect(resourceSelectOptions[1]).toHaveValue("mock-entity-id");
   await userEvent.selectOptions(resourceSelect, resourceSelectOptions[1]);
   expect(resourceSelect).toHaveValue("mock-entity-id");
+});
+
+test("should select the correct entitlement type", async () => {
+  renderComponent(
+    <Formik<EntityEntitlement>
+      initialValues={{ entity_type: "", entity_id: "", entitlement: "" }}
+      onSubmit={vi.fn()}
+    >
+      <Fields entitlements={mockEntitlements} />
+    </Formik>,
+  );
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
+      name: EntitlementsPanelFormLabel.ENTITY,
+    }),
+    "mock-entity-type-1",
+  );
+  await waitFor(() =>
+    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
+  );
+  expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
+      name: EntitlementsPanelFormLabel.RESOURCE,
+    }),
+    "mock-entity-id",
+  );
   const entitlementTypeSelect = screen.getByRole("combobox", {
     name: EntitlementsPanelFormLabel.ENTITLEMENT,
   });
@@ -149,7 +192,7 @@ test("should display the correct values and populate all the fields", async () =
 test("should reset resource and entitlement when the resource type changes", async () => {
   renderComponent(
     <Formik<EntityEntitlement>
-      initialValues={{ entity_type: "", entity_name: "", entitlement_type: "" }}
+      initialValues={{ entity_type: "", entity_id: "", entitlement: "" }}
       onSubmit={vi.fn()}
     >
       <Fields entitlements={mockEntitlements} />

@@ -2,7 +2,7 @@ import { Select } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 
-import type { EntityEntitlement } from "api/api.schemas";
+import type { EntitlementSchema, EntityEntitlement } from "api/api.schemas";
 import { useGetResources } from "api/resources/resources";
 import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
@@ -13,7 +13,7 @@ import { EntitlementsPanelFormLabel } from "..";
 import { Label } from "./types";
 
 type Props = {
-  entitlements: EntityEntitlement[];
+  entitlements: EntitlementSchema[];
 };
 
 const Fields = ({ entitlements }: Props) => {
@@ -52,10 +52,10 @@ const Fields = ({ entitlements }: Props) => {
         )}
         onChange={(event) => {
           void setFieldValue("entity_type", event.target.value);
-          void setFieldValue("entity_name", "");
-          void setFieldTouched("entity_name", false);
-          void setFieldValue("entitlement_type", "");
-          void setFieldTouched("entitlement_type", false);
+          void setFieldValue("entity_id", "");
+          void setFieldTouched("entity_id", false);
+          void setFieldValue("entitlement", "");
+          void setFieldTouched("entitlement", false);
           void queryClient.invalidateQueries({
             queryKey: [Endpoint.RESOURCES],
           });
@@ -64,24 +64,20 @@ const Fields = ({ entitlements }: Props) => {
       <CleanFormikField
         component={Select}
         label={EntitlementsPanelFormLabel.RESOURCE}
-        name="entity_name"
+        name="entity_id"
         disabled={!values.entity_type}
         options={[
           {
             disabled: true,
             label: isGetResourcesFetching
               ? Label.LOADING_RESOURCES
-              : (Label.SELECT_RESOURCE as string),
+              : Label.SELECT_RESOURCE,
             value: "",
-          },
+          } as any,
         ].concat(
           resources.map((resource) => ({
             disabled: false,
-            label: resource.name.concat(
-              resource.entity.id.length > 5
-                ? ` (${resource.entity.id.slice(0, 5)}...)`
-                : ` (${resource.entity.id})`,
-            ),
+            label: `${resource.entity.name} (${resource.entity.id})`,
             value: resource.entity.id,
           })),
         )}
@@ -89,8 +85,8 @@ const Fields = ({ entitlements }: Props) => {
       <CleanFormikField
         component={Select}
         label={EntitlementsPanelFormLabel.ENTITLEMENT}
-        name="entitlement_type"
-        disabled={!values.entity_type || !values.entity_name}
+        name="entitlement"
+        disabled={!values.entity_type || !values.entity_id}
         options={[
           {
             disabled: true,
@@ -105,12 +101,12 @@ const Fields = ({ entitlements }: Props) => {
                   (entitlement) =>
                     entitlement.entity_type === values.entity_type,
                 )
-                .map((entitlement) => entitlement.entitlement_type),
+                .map((entitlement) => entitlement.entitlement),
             ),
-          ].map((entitlementType) => ({
+          ].map((entitlement) => ({
             disabled: false,
-            label: entitlementType,
-            value: entitlementType,
+            label: entitlement,
+            value: entitlement,
           })),
         )}
       />

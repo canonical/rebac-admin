@@ -73,8 +73,8 @@ const mockApiServer = setupServer(
     getGetEntitlementsResponseMock({
       data: [
         {
-          entitlement_type: "can_read",
-          entity_name: "editors",
+          entitlement: "can_read",
+          receiver_type: "editors",
           entity_type: "client",
         },
       ],
@@ -84,10 +84,9 @@ const mockApiServer = setupServer(
     getGetResourcesResponseMock({
       data: [
         {
-          id: "mock-id",
-          name: "editors",
           entity: {
             id: "mock-entity-id",
+            name: "editors",
             type: "mock-entity-name",
           },
         },
@@ -188,7 +187,7 @@ test("should add entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors (mock-...)",
+    "editors (mock-entity-id)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
@@ -205,7 +204,7 @@ test("should add entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe(
-    '{"patches":[{"entitlement":{"entity_type":"client","entitlement_type":"can_read","entity_name":"mock-entity-id"},"op":"add"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
   await hasToast('Group "group1" was created.', "positive");
 });
@@ -236,7 +235,7 @@ test("should handle errors when adding entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors (mock-...)",
+    "editors (mock-entity-id)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {

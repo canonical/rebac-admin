@@ -9,16 +9,16 @@ import PanelTableForm from "./PanelTableForm";
 
 const COLUMNS = [
   {
-    Header: "Entity",
-    accessor: "entity_name",
-  },
-  {
     Header: "Resource",
     accessor: "entity_type",
   },
   {
+    Header: "Entity",
+    accessor: "entity_id",
+  },
+  {
     Header: "Entitlement",
-    accessor: "entitlement_type",
+    accessor: "entitlement",
   },
 ];
 
@@ -27,17 +27,15 @@ test("displays the form", async () => {
     <PanelTableForm<EntityEntitlement>
       addEntities={[
         {
-          entitlement_type: "can_view",
-          entity_name: "admins",
+          entitlement: "can_view",
+          entity_id: "admins",
           entity_type: "group",
         },
       ]}
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form aria-label="Add form"></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -56,9 +54,7 @@ test("displays the empty state", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -73,25 +69,25 @@ test("displays the empty state", async () => {
 test("can display entities", async () => {
   const addEntities = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ];
   const existingEntities = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -101,9 +97,7 @@ test("can display entities", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -116,9 +110,9 @@ test("can display entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[0].entity_name,
           addEntities[0].entity_type,
-          addEntities[0].entitlement_type,
+          addEntities[0].entity_id,
+          addEntities[0].entitlement,
         ].join(" "),
       ),
     }),
@@ -127,21 +121,21 @@ test("can display entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[1].entity_name,
           addEntities[1].entity_type,
-          addEntities[1].entitlement_type,
+          addEntities[1].entity_id,
+          addEntities[1].entitlement,
         ].join(" "),
       ),
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /moderators collection can_edit/,
+      name: /collection moderators can_edit/,
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /staff team can_remove/,
+      name: /team staff can_remove/,
     }),
   ).toBeInTheDocument();
 });
@@ -149,25 +143,25 @@ test("can display entities", async () => {
 test("can filter entities", async () => {
   const addEntities = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ];
   const existingEntities = [
     {
-      entitlement_type: "can_view",
-      entity_name: "moderators",
+      entitlement: "can_view",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -177,9 +171,7 @@ test("can filter entities", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -193,9 +185,9 @@ test("can filter entities", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntities[0].entity_name,
           addEntities[0].entity_type,
-          addEntities[0].entitlement_type,
+          addEntities[0].entity_id,
+          addEntities[0].entitlement,
         ].join(" "),
       ),
     }),
@@ -204,21 +196,21 @@ test("can filter entities", async () => {
     screen.queryByRole("row", {
       name: new RegExp(
         [
-          addEntities[1].entity_name,
           addEntities[1].entity_type,
-          addEntities[1].entitlement_type,
+          addEntities[1].entity_id,
+          addEntities[1].entitlement,
         ].join(" "),
       ),
     }),
   ).not.toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /moderators collection can_view/,
+      name: /collection moderators can_view/,
     }),
   ).toBeInTheDocument();
   expect(
     screen.queryByRole("row", {
-      name: /staff team can_remove/,
+      name: /team staff can_remove/,
     }),
   ).not.toBeInTheDocument();
 });
@@ -226,13 +218,13 @@ test("can filter entities", async () => {
 test("displays a message when there are no matches", async () => {
   const addEntities = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ];
@@ -242,9 +234,7 @@ test("displays a message when there are no matches", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -262,20 +252,20 @@ test("displays a message when there are no matches", async () => {
 test("does not display removed entities", async () => {
   const removeEntities = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
   ];
   const existingEntities = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -285,9 +275,7 @@ test("does not display removed entities", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -298,12 +286,12 @@ test("does not display removed entities", async () => {
   );
   expect(
     screen.queryByRole("row", {
-      name: /moderators collection can_edit/,
+      name: /collection moderators can_edit/,
     }),
   ).not.toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /staff team can_remove/,
+      name: /team staff can_remove/,
     }),
   ).toBeInTheDocument();
 });
@@ -311,18 +299,18 @@ test("does not display removed entities", async () => {
 test("can remove newly added entities", async () => {
   const entities = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "admins",
+      entitlement: "can_read",
+      entity_id: "admins",
       entity_type: "client",
     },
   ];
@@ -333,9 +321,7 @@ test("can remove newly added entities", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -349,13 +335,13 @@ test("can remove newly added entities", async () => {
   );
   expect(setAddEntities).toHaveBeenCalledWith([
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "admins",
+      entitlement: "can_read",
+      entity_id: "admins",
       entity_type: "client",
     },
   ]);
@@ -364,13 +350,13 @@ test("can remove newly added entities", async () => {
 test("can remove existing entities", async () => {
   const existingEntities = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -382,8 +368,8 @@ test("can remove existing entities", async () => {
       setAddEntities={vi.fn()}
       removeEntities={[
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -391,9 +377,7 @@ test("can remove existing entities", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
     />,
@@ -403,13 +387,13 @@ test("can remove existing entities", async () => {
   );
   expect(setRemoveEntities).toHaveBeenCalledWith([
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
   ]);
@@ -424,9 +408,7 @@ test("can display errors", async () => {
       columns={COLUMNS}
       entityName="entitlement"
       entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) =>
-        entity.entitlement_type.includes(search)
-      }
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -436,4 +418,24 @@ test("can display errors", async () => {
     />,
   );
   await hasNotification("Uh oh!");
+});
+
+test("should display the loading state", async () => {
+  renderComponent(
+    <PanelTableForm<EntityEntitlement>
+      isFetching
+      addEntities={[]}
+      columns={COLUMNS}
+      entityName="entitlement"
+      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
+      entityMatches={(entity, search) => entity.entitlement.includes(search)}
+      existingEntities={[]}
+      form={<form></form>}
+      generateCells={(entitlement) => ({ ...entitlement })}
+      removeEntities={[]}
+      setAddEntities={vi.fn()}
+      setRemoveEntities={vi.fn()}
+    />,
+  );
+  expect(screen.getByText("Loading entitlements")).toBeInTheDocument();
 });

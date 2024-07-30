@@ -73,13 +73,13 @@ test("submit button is disabled when editing and there are no changes", async ()
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -100,13 +100,13 @@ test("submit button is enabled when editing and there are changes", async () => 
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}

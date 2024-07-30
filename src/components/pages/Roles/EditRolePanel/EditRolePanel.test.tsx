@@ -33,13 +33,13 @@ const mockApiServer = setupServer(
     getGetRolesItemEntitlementsResponseMock({
       data: [
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ],
@@ -55,8 +55,8 @@ const mockApiServer = setupServer(
     getGetEntitlementsResponseMock({
       data: [
         {
-          entitlement_type: "can_read",
-          entity_name: "editors",
+          entitlement: "can_read",
+          receiver_type: "editors",
           entity_type: "client",
         },
       ],
@@ -66,10 +66,9 @@ const mockApiServer = setupServer(
     getGetResourcesResponseMock({
       data: [
         {
-          id: "mock-id",
-          name: "editors",
           entity: {
             id: "mock-entity-id",
+            name: "editors",
             type: "mock-entity-name",
           },
         },
@@ -137,7 +136,7 @@ test("should add and remove entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors (mock-...)",
+    "editors (mock-entity-id)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
@@ -154,7 +153,7 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toBe(
-    '{"patches":[{"entitlement":{"entity_type":"client","entitlement_type":"can_read","entity_name":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement":"can_edit","entity_id":"moderators","entity_type":"collection"},"op":"remove"}]}',
   );
   await hasToast('Role "admin1" was updated.', "positive");
 });
@@ -166,13 +165,13 @@ test("should handle errors when updating entitlements", async () => {
       getGetRolesItemEntitlementsResponseMock({
         data: [
           {
-            entitlement_type: "can_edit",
-            entity_name: "moderators",
+            entitlement: "can_edit",
+            entity_id: "moderators",
             entity_type: "collection",
           },
           {
-            entitlement_type: "can_remove",
-            entity_name: "staff",
+            entitlement: "can_remove",
+            entity_id: "staff",
             entity_type: "team",
           },
         ],
@@ -214,7 +213,7 @@ test("should handle errors when updating entitlements", async () => {
     screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
-    "editors (mock-...)",
+    "editors (mock-entity-id)",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", {

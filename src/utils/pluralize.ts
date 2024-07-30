@@ -5,6 +5,7 @@
 export const pluralize = (string: string, count?: number) => {
   const special = {
     entity: "entities",
+    identity: "identities",
   };
   if (count === 1) {
     return string;
