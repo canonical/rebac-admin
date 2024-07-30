@@ -16,11 +16,11 @@ const schema = Yup.object().shape({
 
 const COLUMN_DATA = [
   {
-    Header: "Resource",
+    Header: "Entity",
     accessor: "entity_type",
   },
   {
-    Header: "Entity",
+    Header: "Resource",
     accessor: "entity_id",
   },
   {

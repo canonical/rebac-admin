@@ -9,11 +9,11 @@ import PanelTableForm from "./PanelTableForm";
 
 const COLUMNS = [
   {
-    Header: "Resource",
+    Header: "Entity",
     accessor: "entity_type",
   },
   {
-    Header: "Entity",
+    Header: "Resource",
     accessor: "entity_id",
   },
   {
