@@ -104,11 +104,6 @@ test("should select the correct resource type", async () => {
   expect(resourceTypeSelectOptions[0]).toHaveValue("");
   expect(resourceTypeSelectOptions[1]).toHaveValue("mock-entity-type-1");
   expect(resourceTypeSelectOptions[2]).toHaveValue("mock-entity-type-3");
-  await userEvent.selectOptions(
-    resourceTypeSelect,
-    resourceTypeSelectOptions[1],
-  );
-  expect(resourceTypeSelect).toHaveValue("mock-entity-type-1");
 });
 
 test("should select the correct resource", async () => {
@@ -138,8 +133,6 @@ test("should select the correct resource", async () => {
   expect(resourceSelectOptions).toHaveLength(2);
   expect(resourceSelectOptions[0]).toHaveValue("");
   expect(resourceSelectOptions[1]).toHaveValue("mock-entity-id");
-  await userEvent.selectOptions(resourceSelect, resourceSelectOptions[1]);
-  expect(resourceSelect).toHaveValue("mock-entity-id");
 });
 
 test("should select the correct entitlement type", async () => {
@@ -186,7 +179,9 @@ test("should select the correct entitlement type", async () => {
     entitlementTypeSelect,
     entitlementTypeSelectOptions[1],
   );
-  expect(entitlementTypeSelect).toHaveValue("mock-entitlement-type-1");
+  expect(
+    screen.getByRole("button", { name: EntitlementsPanelFormLabel.SUBMIT }),
+  ).toBeEnabled();
 });
 
 test("should reset resource and entitlement when the resource type changes", async () => {

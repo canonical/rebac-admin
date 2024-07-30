@@ -1,6 +1,7 @@
 import { Select } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
+import type { OptionHTMLAttributes } from "react";
 
 import type { EntitlementSchema, EntityEntitlement } from "api/api.schemas";
 import { useGetResources } from "api/resources/resources";
@@ -20,12 +21,29 @@ const Fields = ({ entitlements }: Props) => {
   const queryClient = useQueryClient();
   const { values, setFieldValue, setFieldTouched } =
     useFormikContext<EntityEntitlement>();
+  // TODO: implement pagination for resources.
   const { data: getResourcesData, isFetching: isGetResourcesFetching } =
     useGetResources(
       { entityType: values.entity_type },
       { query: { enabled: !!values.entity_type } },
     );
   const resources = getResourcesData?.data.data || [];
+  const entityIdOptions: OptionHTMLAttributes<HTMLOptionElement>[] = [
+    {
+      disabled: true,
+      label: isGetResourcesFetching
+        ? Label.LOADING_RESOURCES
+        : Label.SELECT_RESOURCE,
+      value: "",
+    },
+  ];
+  entityIdOptions.push(
+    ...resources.map((resource) => ({
+      disabled: false,
+      label: `${resource.entity.name} (${resource.entity.id})`,
+      value: resource.entity.id,
+    })),
+  );
 
   return (
     <div className="panel-table-form__fields">
@@ -33,23 +51,7 @@ const Fields = ({ entitlements }: Props) => {
         component={Select}
         label={EntitlementsPanelFormLabel.ENTITY}
         name="entity_type"
-        options={[
-          {
-            disabled: true,
-            label: "Select a resource type",
-            value: "",
-          },
-        ].concat(
-          [
-            ...new Set(
-              entitlements.map((entitlement) => entitlement.entity_type),
-            ),
-          ].map((entityType) => ({
-            disabled: false,
-            label: entityType,
-            value: entityType,
-          })),
-        )}
+        options={entityIdOptions}
         onChange={(event) => {
           void setFieldValue("entity_type", event.target.value);
           void setFieldValue("entity_id", "");
