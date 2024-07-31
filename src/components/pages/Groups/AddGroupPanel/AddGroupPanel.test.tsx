@@ -5,6 +5,10 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import {
+  getGetEntitlementsMockHandler,
+  getGetEntitlementsResponseMock,
+} from "api/entitlements/entitlements.msw";
+import {
   getPostGroupsResponseMock,
   getPostGroupsMockHandler,
   getPostGroupsMockHandler400,
@@ -21,10 +25,15 @@ import {
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import {
+  getGetResourcesMockHandler,
+  getGetResourcesResponseMock,
+} from "api/resources/resources.msw";
+import {
   getGetRolesMockHandler,
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { GroupPanelLabel } from "../GroupPanel";
@@ -60,6 +69,30 @@ const mockApiServer = setupServer(
   getPatchGroupsItemEntitlementsMockHandler(),
   getPatchGroupsItemIdentitiesMockHandler(),
   getPatchGroupsItemRolesMockHandler(),
+  getGetEntitlementsMockHandler(
+    getGetEntitlementsResponseMock({
+      data: [
+        {
+          entitlement: "can_read",
+          receiver_type: "editors",
+          entity_type: "client",
+        },
+      ],
+    }),
+  ),
+  getGetResourcesMockHandler(
+    getGetResourcesResponseMock({
+      data: [
+        {
+          entity: {
+            id: "mock-entity-id",
+            name: "editors",
+            type: "mock-entity-name",
+          },
+        },
+      ],
+    }),
+  ),
 );
 
 beforeAll(() => {
@@ -142,20 +175,22 @@ test("should add entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -169,7 +204,7 @@ test("should add entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe(
-    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
   await hasToast('Group "group1" was created.', "positive");
 });
@@ -188,20 +223,22 @@ test("should handle errors when adding entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",

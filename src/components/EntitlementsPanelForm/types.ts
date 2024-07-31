@@ -2,7 +2,6 @@ import type { EntityEntitlement } from "api/api.schemas";
 
 export type Props = {
   addEntitlements: EntityEntitlement[];
-  error?: string | null;
   existingEntitlements?: EntityEntitlement[];
   removeEntitlements: EntityEntitlement[];
   setAddEntitlements: (addEntitlements: EntityEntitlement[]) => void;
@@ -16,4 +15,5 @@ export enum Label {
   RESOURCE = "Resource",
   REMOVE = "Remove entitlement",
   SUBMIT = "Add",
+  ADD_ENTITLEMENT = "Add entitlement tuple",
 }

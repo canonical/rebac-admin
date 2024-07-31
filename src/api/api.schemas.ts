@@ -11,6 +11,13 @@
  */
 export type FilterParamParameter = string;
 
+export type GetEntitlementsParams = {
+  /**
+   * A string to filter results by
+   */
+  filter?: FilterParamParameter;
+};
+
 /**
  * The continuation token to retrieve the next set of results
  */
@@ -40,25 +47,7 @@ export type GetResourcesParams = {
    */
   nextToken?: PaginationNextTokenParameter;
   entityType?: string;
-};
-
-export type GetEntitlementsParams = {
-  /**
-   * The number of records to return per response
-   */
-  size?: PaginationSizeParameter;
-  /**
-   * The record offset to return results from
-   */
-  page?: PaginationPageParameter;
-  /**
-   * The continuation token to retrieve the next set of results
-   */
-  nextToken?: PaginationNextTokenParameter;
-  /**
-   * A string to filter results by
-   */
-  filter?: FilterParamParameter;
+  entityName?: string;
 };
 
 export type GetRolesItemEntitlementsParams = {
@@ -276,7 +265,7 @@ export type BadRequestResponse = Response;
 export type GetResourcesResponse = Response & Resources;
 
 export type GetEntitlementsResponseAllOf = {
-  data: EntityEntitlement[];
+  data: EntitlementSchema[];
 };
 
 export type GetEntitlementsResponse = Response & GetEntitlementsResponseAllOf;
@@ -343,10 +332,6 @@ export type IdentityProviderPatchRequestBodyAllOfItem = {
 export type IdentityProviderPatchRequestBody = PatchRequestBody &
   IdentityProviderPatchRequestBodyAllOfItem[];
 
-export enum RoleEntitlementsPatchItemAllOfOp {
-  add = "add",
-  remove = "remove",
-}
 export type RoleEntitlementsPatchItemAllOf = {
   op: RoleEntitlementsPatchItemAllOfOp;
 };
@@ -354,6 +339,10 @@ export type RoleEntitlementsPatchItemAllOf = {
 export type RoleEntitlementsPatchItem = EntityEntitlementItem &
   RoleEntitlementsPatchItemAllOf;
 
+export enum RoleEntitlementsPatchItemAllOfOp {
+  add = "add",
+  remove = "remove",
+}
 export interface RoleEntitlementsPatchRequestBody {
   /** @minItems 1 */
   patches: RoleEntitlementsPatchItem[];
@@ -366,9 +355,6 @@ export enum GroupEntitlementsPatchItemAllOfOp {
 export type GroupEntitlementsPatchItemAllOf = {
   op: GroupEntitlementsPatchItemAllOfOp;
 };
-
-export type GroupEntitlementsPatchItem = EntityEntitlementItem &
-  GroupEntitlementsPatchItemAllOf;
 
 export interface GroupEntitlementsPatchRequestBody {
   /** @minItems 1 */
@@ -403,15 +389,24 @@ export interface GroupIdentitiesPatchRequestBody {
   patches: GroupIdentitiesPatchItem[];
 }
 
+export interface EntitlementSchema {
+  entitlement: string;
+  entity_type: string;
+  receiver_type: string;
+}
+
 export interface EntityEntitlement {
-  entitlement_type: string;
-  entity_name: string;
+  entitlement: string;
+  entity_id: string;
   entity_type: string;
 }
 
 export interface EntityEntitlementItem {
   entitlement: EntityEntitlement;
 }
+
+export type GroupEntitlementsPatchItem = EntityEntitlementItem &
+  GroupEntitlementsPatchItemAllOf;
 
 export enum IdentityEntitlementsPatchItemAllOfOp {
   add = "add",
@@ -518,14 +513,13 @@ export interface Resources {
 
 export interface Entity {
   id: string;
+  name: string;
   type: string;
 }
 
 export interface Resource {
   entity: Entity;
-  id: string;
-  name: string;
-  parent?: Resource;
+  parent?: Entity;
 }
 
 export interface RoleEntitlement {

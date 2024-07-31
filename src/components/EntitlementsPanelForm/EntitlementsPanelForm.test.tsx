@@ -1,11 +1,61 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import {
+  getGetEntitlementsMockHandler,
+  getGetEntitlementsMockHandler404,
+  getGetEntitlementsResponseMock,
+} from "api/entitlements/entitlements.msw";
+import {
+  getGetResourcesMockHandler,
+  getGetResourcesResponseMock,
+} from "api/resources/resources.msw";
 import { hasNotification, renderComponent } from "test/utils";
 
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
+import { EntitlementPanelFormFieldsLabel } from "./Fields";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(
+  getGetEntitlementsMockHandler(
+    getGetEntitlementsResponseMock({
+      data: [
+        {
+          entitlement: "can_read",
+          entity_id: "editors",
+          entity_type: "client",
+        },
+      ],
+    }),
+  ),
+  getGetResourcesMockHandler(
+    getGetResourcesResponseMock({
+      data: [
+        {
+          entity: {
+            id: "mock-entity-id",
+            name: "editors",
+            type: "mock-entity-name",
+          },
+        },
+      ],
+    }),
+  ),
+);
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("can add entitlements", async () => {
   const setAddEntitlements = vi.fn();
@@ -13,8 +63,8 @@ test("can add entitlements", async () => {
     <EntitlementsPanelForm
       addEntitlements={[
         {
-          entitlement_type: "can_view",
-          entity_name: "admins",
+          entitlement: "can_view",
+          entity_id: "admins",
           entity_type: "group",
         },
       ]}
@@ -23,29 +73,31 @@ test("can add entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.ENTITY }),
+  await screen.findByText(Label.ADD_ENTITLEMENT);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.ENTITY }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.RESOURCE }),
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.RESOURCE }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.ENTITLEMENT }),
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: Label.ENTITLEMENT }),
     "can_read",
   );
   await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
   expect(setAddEntitlements).toHaveBeenCalledWith([
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "client",
-      entity_type: "editors",
+      entitlement: "can_read",
+      entity_id: "mock-entity-id",
+      entity_type: "client",
     },
   ]);
 });
@@ -53,25 +105,25 @@ test("can add entitlements", async () => {
 test("can display entitlements", async () => {
   const addEntitlements = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ];
   const existingEntitlements = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -84,13 +136,14 @@ test("can display entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   expect(
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntitlements[0].entity_name,
           addEntitlements[0].entity_type,
-          addEntitlements[0].entitlement_type,
+          addEntitlements[0].entity_id,
+          addEntitlements[0].entitlement,
         ].join(" "),
       ),
     }),
@@ -99,21 +152,21 @@ test("can display entitlements", async () => {
     screen.getByRole("row", {
       name: new RegExp(
         [
-          addEntitlements[1].entity_name,
           addEntitlements[1].entity_type,
-          addEntitlements[1].entitlement_type,
+          addEntitlements[1].entity_id,
+          addEntitlements[1].entitlement,
         ].join(" "),
       ),
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /moderators collection can_edit/,
+      name: /collection moderators can_edit/,
     }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /staff team can_remove/,
+      name: /team staff can_remove/,
     }),
   ).toBeInTheDocument();
 });
@@ -121,20 +174,20 @@ test("can display entitlements", async () => {
 test("does not display removed entitlements from the API", async () => {
   const removeEntitlements = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
   ];
   const existingEntitlements = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -147,14 +200,15 @@ test("does not display removed entitlements from the API", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   expect(
     screen.queryByRole("row", {
-      name: /moderators collection can_edit/,
+      name: /collection moderators can_edit/,
     }),
   ).not.toBeInTheDocument();
   expect(
     screen.getByRole("row", {
-      name: /staff team can_remove/,
+      name: /team staff can_remove/,
     }),
   ).toBeInTheDocument();
 });
@@ -162,13 +216,13 @@ test("does not display removed entitlements from the API", async () => {
 test("can remove newly added entitlements", async () => {
   const entitlements = [
     {
-      entitlement_type: "can_view",
-      entity_name: "admins",
+      entitlement: "can_view",
+      entity_id: "admins",
       entity_type: "group",
     },
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ];
@@ -181,13 +235,14 @@ test("can remove newly added entitlements", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
   expect(setAddEntitlements).toHaveBeenCalledWith([
     {
-      entitlement_type: "can_read",
-      entity_name: "editors",
+      entitlement: "can_read",
+      entity_id: "editors",
       entity_type: "client",
     },
   ]);
@@ -196,13 +251,13 @@ test("can remove newly added entitlements", async () => {
 test("can remove entitlements from the API", async () => {
   const existingEntitlements = [
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
   ];
@@ -214,26 +269,27 @@ test("can remove entitlements from the API", async () => {
       setAddEntitlements={vi.fn()}
       removeEntitlements={[
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
       setRemoveEntitlements={setRemoveEntitlements}
     />,
   );
+  await screen.findByText(Label.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", { name: Label.REMOVE })[0],
   );
   expect(setRemoveEntitlements).toHaveBeenCalledWith([
     {
-      entitlement_type: "can_remove",
-      entity_name: "staff",
+      entitlement: "can_remove",
+      entity_id: "staff",
       entity_type: "team",
     },
     {
-      entitlement_type: "can_edit",
-      entity_name: "moderators",
+      entitlement: "can_edit",
+      entity_id: "moderators",
       entity_type: "collection",
     },
   ]);
@@ -241,14 +297,14 @@ test("can remove entitlements from the API", async () => {
 
 // eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
+  mockApiServer.use(getGetEntitlementsMockHandler404());
   renderComponent(
     <EntitlementsPanelForm
-      error="Uh oh!"
       addEntitlements={[]}
       setAddEntitlements={vi.fn()}
       removeEntitlements={[]}
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  await hasNotification("Request failed with status code 404");
 });

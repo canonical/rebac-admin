@@ -58,6 +58,7 @@ export const getGetRolesResponseMock = (
         entity: faker.helpers.arrayElement([
           {
             id: faker.word.sample(),
+            name: faker.word.sample(),
             type: faker.word.sample(),
             ...overrideResponse,
           },
@@ -114,6 +115,7 @@ export const getGetRolesResponseMock200 = (
         entity: faker.helpers.arrayElement([
           {
             id: faker.word.sample(),
+            name: faker.word.sample(),
             type: faker.word.sample(),
             ...overrideResponse,
           },
@@ -241,6 +243,7 @@ export const getPostRolesResponseMock = (overrideResponse: any = {}): Role => ({
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -268,6 +271,7 @@ export const getPostRolesResponseMock200 = (
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -395,6 +399,7 @@ export const getGetRolesItemResponseMock = (
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -422,6 +427,7 @@ export const getGetRolesItemResponseMock200 = (
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -549,6 +555,7 @@ export const getPutRolesItemResponseMock = (
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -576,6 +583,7 @@ export const getPutRolesItemResponseMock200 = (
       entity: faker.helpers.arrayElement([
         {
           id: faker.word.sample(),
+          name: faker.word.sample(),
           type: faker.word.sample(),
           ...overrideResponse,
         },
@@ -818,8 +826,8 @@ export const getGetRolesItemEntitlementsResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
+    entitlement: faker.word.sample(),
+    entity_id: faker.word.sample(),
     entity_type: faker.word.sample(),
     ...overrideResponse,
   })),
@@ -853,8 +861,8 @@ export const getGetRolesItemEntitlementsResponseMock200 = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    entitlement_type: faker.word.sample(),
-    entity_name: faker.word.sample(),
+    entitlement: faker.word.sample(),
+    entity_id: faker.word.sample(),
     entity_type: faker.word.sample(),
     ...overrideResponse,
   })),

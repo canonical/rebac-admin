@@ -2,30 +2,30 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import type { EntityEntitlement } from "api/api.schemas";
-import CleanFormikField from "components/CleanFormikField";
-import FormikSubmitButton from "components/FormikSubmitButton";
+import { useGetEntitlements } from "api/entitlements/entitlements";
 import PanelTableForm from "components/PanelTableForm";
 
+import Fields from "./Fields";
 import { Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
-  entity_name: Yup.string().required("Required"),
+  entity_id: Yup.string().required("Required"),
   entity_type: Yup.string().required("Required"),
-  entitlement_type: Yup.string().required("Required"),
+  entitlement: Yup.string().required("Required"),
 });
 
 const COLUMN_DATA = [
   {
     Header: "Entity",
-    accessor: "entity_name",
-  },
-  {
-    Header: "Resource",
     accessor: "entity_type",
   },
   {
+    Header: "Resource",
+    accessor: "entity_id",
+  },
+  {
     Header: "Entitlement",
-    accessor: "entitlement_type",
+    accessor: "entitlement",
   },
 ];
 
@@ -42,13 +42,18 @@ const entitlementMatches = (entitlement: EntityEntitlement, search: string) =>
   Object.values(entitlement).some((value) => value.includes(search));
 
 const EntitlementsPanelForm = ({
-  error,
   existingEntitlements,
   addEntitlements,
   setAddEntitlements,
   removeEntitlements,
   setRemoveEntitlements,
 }: Props) => {
+  const {
+    data: getEntitlementsData,
+    isFetching: isGetEntitlementsFetching,
+    error: getEntitlementsError,
+  } = useGetEntitlements();
+
   return (
     <PanelTableForm<EntityEntitlement>
       addEntities={addEntitlements}
@@ -56,53 +61,35 @@ const EntitlementsPanelForm = ({
       entityEqual={entitlementEqual}
       entityMatches={entitlementMatches}
       entityName="entitlement"
-      error={error}
+      error={getEntitlementsError?.message}
       existingEntities={existingEntitlements}
+      isFetching={isGetEntitlementsFetching}
       form={
         <Formik<EntityEntitlement>
           initialValues={{
             entity_type: "",
-            entitlement_type: "",
-            entity_name: "",
+            entitlement: "",
+            entity_id: "",
           }}
           onSubmit={(values, helpers) => {
             setAddEntitlements([...addEntitlements, values]);
             helpers.resetForm();
             document
-              .querySelector<HTMLInputElement>("input[name='entity_name']")
+              .querySelector<HTMLInputElement>("input[name='entity_id']")
               ?.focus();
           }}
           validationSchema={schema}
         >
           <Form aria-label={Label.FORM}>
             <fieldset>
-              <h5>Add entitlement tuple</h5>
+              <h5>{Label.ADD_ENTITLEMENT}</h5>
               <p className="p-text--small u-text--muted">
                 In fine-grained authorisation entitlements need to be given in
                 relation to a specific resource. Select the appropriate resource
                 and entitlement below and add it to the list of entitlements for
                 this role.{" "}
               </p>
-              <div className="panel-table-form__fields">
-                <CleanFormikField
-                  label={Label.ENTITY}
-                  name="entity_name"
-                  type="text"
-                />
-                <CleanFormikField
-                  label={Label.RESOURCE}
-                  name="entity_type"
-                  type="text"
-                />
-                <CleanFormikField
-                  label={Label.ENTITLEMENT}
-                  name="entitlement_type"
-                  type="text"
-                />
-                <div className="panel-table-form__submit">
-                  <FormikSubmitButton>{Label.SUBMIT}</FormikSubmitButton>
-                </div>
-              </div>
+              <Fields entitlements={getEntitlementsData?.data.data ?? []} />
             </fieldset>
           </Form>
         </Formik>

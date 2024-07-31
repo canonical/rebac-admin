@@ -16,4 +16,5 @@ export type Props<E> = {
   removeEntities: E[];
   setAddEntities: (addEntities: E[]) => void;
   setRemoveEntities: (removeEntities: E[]) => void;
+  isFetching?: boolean;
 };

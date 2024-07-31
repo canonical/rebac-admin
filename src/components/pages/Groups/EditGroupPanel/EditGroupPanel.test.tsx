@@ -5,6 +5,10 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import {
+  getGetEntitlementsMockHandler,
+  getGetEntitlementsResponseMock,
+} from "api/entitlements/entitlements.msw";
+import {
   getPatchGroupsItemEntitlementsMockHandler,
   getPatchGroupsItemEntitlementsMockHandler400,
   getGetGroupsItemEntitlementsMockHandler,
@@ -26,10 +30,15 @@ import {
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import {
+  getGetResourcesMockHandler,
+  getGetResourcesResponseMock,
+} from "api/resources/resources.msw";
+import {
   getGetRolesMockHandler,
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm/types";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
 import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
 import { hasToast, renderComponent } from "test/utils";
@@ -60,13 +69,13 @@ const mockApiServer = setupServer(
     getGetGroupsItemEntitlementsResponseMock({
       data: [
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ],
@@ -92,6 +101,30 @@ const mockApiServer = setupServer(
   ),
   getGetGroupsItemMockHandler(
     getGetGroupsItemResponseMock({ id: "admin1", name: "admin" }),
+  ),
+  getGetEntitlementsMockHandler(
+    getGetEntitlementsResponseMock({
+      data: [
+        {
+          entitlement: "can_read",
+          receiver_type: "editors",
+          entity_type: "client",
+        },
+      ],
+    }),
+  ),
+  getGetResourcesMockHandler(
+    getGetResourcesResponseMock({
+      data: [
+        {
+          entity: {
+            id: "mock-entity-id",
+            name: "editors",
+            type: "mock-entity-name",
+          },
+        },
+      ],
+    }),
   ),
 );
 
@@ -134,25 +167,27 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -166,7 +201,7 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toStrictEqual(
-    '{"patches":[{"entitlement":{"entity_type":"editors","entitlement_type":"can_read","entity_name":"client"},"op":"add"},{"entitlement":{"entitlement_type":"can_edit","entity_name":"moderators","entity_type":"collection"},"op":"remove"}]}',
+    '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement":"can_edit","entity_id":"moderators","entity_type":"collection"},"op":"remove"}]}',
   );
   await hasToast('Group "admin" was updated.', "positive");
 });
@@ -195,25 +230,27 @@ test("should handle errors when updating entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
-  await userEvent.type(
-    screen.getByRole("textbox", {
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",

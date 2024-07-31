@@ -1,8 +1,10 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
 import RolePanel from "./RolePanel";
@@ -48,15 +50,19 @@ test("the input is disabled when editing", async () => {
 });
 
 test("the entitlement form can be displayed", async () => {
+  const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+  mockApiServer.listen();
   renderComponent(
     <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
+  mockApiServer.close();
 });
 
 test("submit button is disabled when editing and there are no changes", async () => {
@@ -67,13 +73,13 @@ test("submit button is disabled when editing and there are no changes", async ()
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -85,6 +91,8 @@ test("submit button is disabled when editing and there are no changes", async ()
 });
 
 test("submit button is enabled when editing and there are changes", async () => {
+  const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+  mockApiServer.listen();
   renderComponent(
     <RolePanel
       close={vi.fn()}
@@ -92,13 +100,13 @@ test("submit button is enabled when editing and there are changes", async () => 
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -109,6 +117,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
@@ -120,4 +129,5 @@ test("submit button is enabled when editing and there are changes", async () => 
   expect(
     screen.getByRole("button", { name: "Update role" }),
   ).not.toBeDisabled();
+  mockApiServer.close();
 });

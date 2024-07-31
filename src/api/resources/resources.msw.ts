@@ -46,11 +46,19 @@ export const getGetResourcesResponseMock = (
   ).map(() => ({
     entity: {
       id: faker.word.sample(),
+      name: faker.word.sample(),
       type: faker.word.sample(),
       ...overrideResponse,
     },
-    id: faker.word.sample(),
-    name: faker.word.sample(),
+    parent: faker.helpers.arrayElement([
+      {
+        id: faker.word.sample(),
+        name: faker.word.sample(),
+        type: faker.word.sample(),
+        ...overrideResponse,
+      },
+      undefined,
+    ]),
     ...overrideResponse,
   })),
   ...overrideResponse,
@@ -85,11 +93,19 @@ export const getGetResourcesResponseMock200 = (
   ).map(() => ({
     entity: {
       id: faker.word.sample(),
+      name: faker.word.sample(),
       type: faker.word.sample(),
       ...overrideResponse,
     },
-    id: faker.word.sample(),
-    name: faker.word.sample(),
+    parent: faker.helpers.arrayElement([
+      {
+        id: faker.word.sample(),
+        name: faker.word.sample(),
+        type: faker.word.sample(),
+        ...overrideResponse,
+      },
+      undefined,
+    ]),
     ...overrideResponse,
   })),
   ...overrideResponse,

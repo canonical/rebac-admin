@@ -1,8 +1,12 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
-import { Label as EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
+import { getGetRolesMockHandler } from "api/roles/roles.msw";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
@@ -10,6 +14,24 @@ import { Label as RolesPanelFormLabel } from "../RolesPanelForm";
 
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(
+  getGetEntitlementsMockHandler(),
+  getGetIdentitiesMockHandler(),
+  getGetRolesMockHandler(),
+);
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("the input is set from the name", async () => {
   renderComponent(
@@ -57,6 +79,7 @@ test("the entitlement form can be displayed", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: /Add entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
@@ -91,13 +114,13 @@ test("submit button is disabled when editing and there are no changes", async ()
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -116,13 +139,13 @@ test("submit button is enabled when editing and there are changes", async () => 
       setPanelWidth={vi.fn()}
       existingEntitlements={[
         {
-          entitlement_type: "can_edit",
-          entity_name: "moderators",
+          entitlement: "can_edit",
+          entity_id: "moderators",
           entity_type: "collection",
         },
         {
-          entitlement_type: "can_remove",
-          entity_name: "staff",
+          entitlement: "can_remove",
+          entity_id: "staff",
           entity_type: "team",
         },
       ]}
@@ -133,6 +156,7 @@ test("submit button is enabled when editing and there are changes", async () => 
   await userEvent.click(
     screen.getByRole("button", { name: /Edit entitlements/ }),
   );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(
     screen.getAllByRole("button", {
       name: EntitlementsPanelFormLabel.REMOVE,
