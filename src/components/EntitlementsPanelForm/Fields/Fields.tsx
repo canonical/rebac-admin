@@ -40,7 +40,7 @@ const Fields = ({ entitlements }: Props) => {
   entityIdOptions.push(
     ...resources.map((resource) => ({
       disabled: false,
-      label: `${resource.entity.name} (${resource.entity.id})`,
+      label: resource.entity.name,
       value: resource.entity.id,
     })),
   );

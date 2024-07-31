@@ -81,7 +81,7 @@ test("can add entitlements", async () => {
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
     screen.getByRole("combobox", { name: Label.RESOURCE }),
-    "editors (mock-entity-id)",
+    "editors",
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", { name: Label.ENTITLEMENT }),
