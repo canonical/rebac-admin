@@ -5,16 +5,18 @@ import {
   QueryClientContext,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import axios from "axios";
-import { useContext, useEffect } from "react";
+import type { AxiosInstance } from "axios";
+import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 
+import { setInstance, createInstance } from "api-utils/mutator/custom-instance";
 import Panel from "components/Panel";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
+import type { ExclusiveProps } from "types/utils";
 import urls from "urls";
 
 import "scss/index.scss";
@@ -29,15 +31,20 @@ if (!window.process) {
 }
 
 export type Props = {
-  // The absolute API URL.
-  apiURL: `${"http" | "/"}${string}`;
   // The element ID to use to render aside panels into. Should not begin with "#".
   asidePanelId?: string | null;
-  // The base64 encoded user id for the authenticated user.
-  authToken?: string | null;
-};
+} & ExclusiveProps<
+  {
+    // The absolute API base URL.
+    apiURL: `${"http" | "/"}${string}`;
+  },
+  {
+    // An Axios instance to be used by all requests.
+    axiosInstance: AxiosInstance;
+  }
+>;
 
-const ReBACAdmin = ({ apiURL, asidePanelId, authToken }: Props) => {
+const ReBACAdmin = ({ apiURL, asidePanelId, axiosInstance }: Props) => {
   const contextClient = useContext(QueryClientContext);
   if (contextClient && !contextClient.getDefaultOptions().queries?.staleTime) {
     console.error(Label.STALE_TIME_ERROR);
@@ -57,15 +64,11 @@ const ReBACAdmin = ({ apiURL, asidePanelId, authToken }: Props) => {
         },
       },
     });
-  axios.defaults.baseURL = apiURL;
-
-  useEffect(() => {
-    if (authToken) {
-      axios.defaults.headers.common["X-Authorization"] = authToken;
-    } else if (axios.defaults.headers.common["X-Authorization"]) {
-      delete axios.defaults.headers.common["X-Authorization"];
-    }
-  }, [authToken]);
+  if (axiosInstance) {
+    setInstance(axiosInstance);
+  } else if (apiURL) {
+    createInstance(apiURL);
+  }
 
   return (
     <ReBACAdminContext.Provider value={{ asidePanelId }}>

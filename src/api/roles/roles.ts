@@ -28,9 +28,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -42,17 +42,20 @@ import type {
   UnauthorizedResponse,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get the list of roles.
  */
 export const getRoles = (
   params?: GetRolesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetRoles200>> => {
-  return axios.get(`/roles`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetRoles200>(
+    { url: `/roles`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetRolesQueryKey = (params?: GetRolesParams) => {
@@ -61,7 +64,7 @@ export const getGetRolesQueryKey = (params?: GetRolesParams) => {
 
 export const getGetRolesQueryOptions = <
   TData = Awaited<ReturnType<typeof getRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -73,16 +76,16 @@ export const getGetRolesQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getRoles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetRolesQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getRoles>>> = ({
     signal,
-  }) => getRoles(params, { signal, ...axiosOptions });
+  }) => getRoles(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getRoles>>,
@@ -94,7 +97,7 @@ export const getGetRolesQueryOptions = <
 export type GetRolesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getRoles>>
 >;
-export type GetRolesQueryError = AxiosError<
+export type GetRolesQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -103,7 +106,7 @@ export type GetRolesQueryError = AxiosError<
  */
 export const useGetRoles = <
   TData = Awaited<ReturnType<typeof getRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -115,7 +118,7 @@ export const useGetRoles = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getRoles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetRolesQueryOptions(params, options);
@@ -134,13 +137,21 @@ export const useGetRoles = <
  */
 export const postRoles = (
   roleObject: RoleObject,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostRoles201>> => {
-  return axios.post(`/roles`, roleObject, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<PostRoles201>(
+    {
+      url: `/roles`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: roleObject,
+    },
+    options,
+  );
 };
 
 export const getPostRolesMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -154,14 +165,14 @@ export const getPostRolesMutationOptions = <
     { data: RoleObject },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postRoles>>,
   TError,
   { data: RoleObject },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postRoles>>,
@@ -169,7 +180,7 @@ export const getPostRolesMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return postRoles(data, axiosOptions);
+    return postRoles(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -179,7 +190,7 @@ export type PostRolesMutationResult = NonNullable<
   Awaited<ReturnType<typeof postRoles>>
 >;
 export type PostRolesMutationBody = RoleObject;
-export type PostRolesMutationError = AxiosError<
+export type PostRolesMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -187,7 +198,7 @@ export type PostRolesMutationError = AxiosError<
  * @summary Create a new role
  */
 export const usePostRoles = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -201,7 +212,7 @@ export const usePostRoles = <
     { data: RoleObject },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof postRoles>>,
   TError,
