@@ -4,17 +4,19 @@ import {
   QueryClientContext,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import axios from "axios";
+import type { AxiosInstance } from "axios";
 import type { LogLevelDesc } from "loglevel";
 import { useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
+import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
+import type { ExclusiveProps } from "types/utils";
 import urls from "urls";
 import { logger } from "utils";
 
@@ -22,16 +24,24 @@ import "scss/index.scss";
 import { Label } from "./types";
 
 export type Props = {
-  // The absolute API URL.
-  apiURL: `${"http" | "/"}${string}`;
   // The element ID to use to render aside panels into. Should not begin with "#".
   asidePanelId?: string | null;
   // The level of logging to be used by the logger.
   logLevel?: LogLevelDesc;
-};
+} & ExclusiveProps<
+  {
+    // The absolute API base URL.
+    apiURL: `${"http" | "/"}${string}`;
+  },
+  {
+    // An Axios instance to be used by all requests.
+    axiosInstance: AxiosInstance;
+  }
+>;
 
 const ReBACAdmin = ({
   apiURL,
+  axiosInstance,
   asidePanelId,
   logLevel = logger.levels.SILENT,
 }: Props) => {
@@ -54,7 +64,11 @@ const ReBACAdmin = ({
         },
       },
     });
-  axios.defaults.baseURL = apiURL;
+  if (axiosInstance) {
+    setInstance(axiosInstance);
+  } else {
+    createInstance(apiURL);
+  }
 
   useEffect(() => {
     logger.setDefaultLevel(logLevel);

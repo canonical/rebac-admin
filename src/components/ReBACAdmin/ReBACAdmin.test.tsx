@@ -2,6 +2,10 @@ import { screen } from "@testing-library/react";
 import axios from "axios";
 import { setupServer } from "msw/node";
 
+import {
+  createInstance,
+  axiosInstance,
+} from "api-utils/mutator/custom-instance";
 import { renderComponent } from "test/utils";
 import { logger } from "utils";
 
@@ -19,6 +23,8 @@ beforeAll(() => {
 
 afterEach(() => {
   mockApiServer.resetHandlers();
+  // Reset the instance for other test files.
+  createInstance("/api");
 });
 
 afterAll(() => {
@@ -30,10 +36,16 @@ test("renders the component", () => {
   expect(screen.getByText("Canonical ReBAC Admin")).toBeInTheDocument();
 });
 
-test("the api URL can be configured", () => {
+test("the api URL can be configured when not using a custom axios instance", () => {
   const apiURL = "http://example.com/api";
   renderComponent(<ReBACAdmin apiURL={apiURL} />);
-  expect(axios.defaults.baseURL).toBe(apiURL);
+  expect(axiosInstance.defaults.baseURL).toBe(apiURL);
+});
+
+test("a custom axios instance can be passed", () => {
+  const instance = axios.create();
+  renderComponent(<ReBACAdmin axiosInstance={instance} />);
+  expect(axiosInstance).toStrictEqual(instance);
 });
 
 test("the index is displayed", async () => {

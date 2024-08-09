@@ -13,17 +13,24 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * This endpoint returns the implemented OpenAPI spec, which could be used for debugging, browsing, API discovery, etc.
  * @summary Returns the OpenAPI spec as a JSON file.
  */
 export const swaggerJson = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
-  return axios.get(`/swagger.json`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<string>(
+    { url: `/swagger.json`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getSwaggerJsonQueryKey = () => {
@@ -32,20 +39,20 @@ export const getSwaggerJsonQueryKey = () => {
 
 export const getSwaggerJsonQueryOptions = <
   TData = Awaited<ReturnType<typeof swaggerJson>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof swaggerJson>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getSwaggerJsonQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof swaggerJson>>> = ({
     signal,
-  }) => swaggerJson({ signal, ...axiosOptions });
+  }) => swaggerJson(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof swaggerJson>>,
@@ -57,19 +64,19 @@ export const getSwaggerJsonQueryOptions = <
 export type SwaggerJsonQueryResult = NonNullable<
   Awaited<ReturnType<typeof swaggerJson>>
 >;
-export type SwaggerJsonQueryError = AxiosError<unknown>;
+export type SwaggerJsonQueryError = ErrorType<unknown>;
 
 /**
  * @summary Returns the OpenAPI spec as a JSON file.
  */
 export const useSwaggerJson = <
   TData = Awaited<ReturnType<typeof swaggerJson>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof swaggerJson>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getSwaggerJsonQueryOptions(options);
 

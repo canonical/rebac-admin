@@ -47,7 +47,7 @@ afterAll(() => {
 
 test("should display spinner on mount", async () => {
   mockApiServer.use(
-    http.get(Endpoint.ROLES, async () => {
+    http.get(`*${Endpoint.ROLES}`, async () => {
       await delay(100);
     }),
   );
