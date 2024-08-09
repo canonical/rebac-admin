@@ -13,19 +13,25 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type { GetCapabilitiesResponse } from "../api.schemas";
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * This endpoint will be used by the frontend to determine which UI elements should be enabled through a mapping. All available endpoints should be listed here along with the available methods.
  * @summary Returns the list of endpoints implemented by this API.
  */
 export const getCapabilities = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetCapabilitiesResponse>> => {
-  return axios.get(`/capabilities`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetCapabilitiesResponse>(
+    { url: `/capabilities`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getGetCapabilitiesQueryKey = () => {
@@ -34,20 +40,20 @@ export const getGetCapabilitiesQueryKey = () => {
 
 export const getGetCapabilitiesQueryOptions = <
   TData = Awaited<ReturnType<typeof getCapabilities>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getCapabilities>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetCapabilitiesQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getCapabilities>>> = ({
     signal,
-  }) => getCapabilities({ signal, ...axiosOptions });
+  }) => getCapabilities(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getCapabilities>>,
@@ -59,19 +65,19 @@ export const getGetCapabilitiesQueryOptions = <
 export type GetCapabilitiesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getCapabilities>>
 >;
-export type GetCapabilitiesQueryError = AxiosError<unknown>;
+export type GetCapabilitiesQueryError = ErrorType<unknown>;
 
 /**
  * @summary Returns the list of endpoints implemented by this API.
  */
 export const useGetCapabilities = <
   TData = Awaited<ReturnType<typeof getCapabilities>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getCapabilities>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetCapabilitiesQueryOptions(options);
 

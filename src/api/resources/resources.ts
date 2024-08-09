@@ -13,9 +13,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -25,18 +25,21 @@ import type {
   UnauthorizedResponse,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * Get the list of available resources.
  * @summary Get the list of available resources.
  */
 export const getResources = (
   params?: GetResourcesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetResourcesResponse>> => {
-  return axios.get(`/resources`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetResourcesResponse>(
+    { url: `/resources`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetResourcesQueryKey = (params?: GetResourcesParams) => {
@@ -45,7 +48,7 @@ export const getGetResourcesQueryKey = (params?: GetResourcesParams) => {
 
 export const getGetResourcesQueryOptions = <
   TData = Awaited<ReturnType<typeof getResources>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -57,16 +60,16 @@ export const getGetResourcesQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getResources>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetResourcesQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getResources>>> = ({
     signal,
-  }) => getResources(params, { signal, ...axiosOptions });
+  }) => getResources(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getResources>>,
@@ -78,7 +81,7 @@ export const getGetResourcesQueryOptions = <
 export type GetResourcesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getResources>>
 >;
-export type GetResourcesQueryError = AxiosError<
+export type GetResourcesQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -87,7 +90,7 @@ export type GetResourcesQueryError = AxiosError<
  */
 export const useGetResources = <
   TData = Awaited<ReturnType<typeof getResources>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -99,7 +102,7 @@ export const useGetResources = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getResources>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetResourcesQueryOptions(params, options);
