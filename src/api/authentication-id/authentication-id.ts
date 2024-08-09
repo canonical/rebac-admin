@@ -28,9 +28,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -40,14 +40,20 @@ import type {
   UnauthorizedResponse,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get a single authentication method.
  */
 export const getAuthenticationId = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetAuthenticationId200>> => {
-  return axios.get(`/authentication/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetAuthenticationId200>(
+    { url: `/authentication/${id}`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getGetAuthenticationIdQueryKey = (id: string) => {
@@ -56,7 +62,7 @@ export const getGetAuthenticationIdQueryKey = (id: string) => {
 
 export const getGetAuthenticationIdQueryOptions = <
   TData = Awaited<ReturnType<typeof getAuthenticationId>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -72,16 +78,16 @@ export const getGetAuthenticationIdQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetAuthenticationIdQueryKey(id);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getAuthenticationId>>
-  > = ({ signal }) => getAuthenticationId(id, { signal, ...axiosOptions });
+  > = ({ signal }) => getAuthenticationId(id, requestOptions, signal);
 
   return {
     queryKey,
@@ -98,7 +104,7 @@ export const getGetAuthenticationIdQueryOptions = <
 export type GetAuthenticationIdQueryResult = NonNullable<
   Awaited<ReturnType<typeof getAuthenticationId>>
 >;
-export type GetAuthenticationIdQueryError = AxiosError<
+export type GetAuthenticationIdQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -107,7 +113,7 @@ export type GetAuthenticationIdQueryError = AxiosError<
  */
 export const useGetAuthenticationId = <
   TData = Awaited<ReturnType<typeof getAuthenticationId>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -123,7 +129,7 @@ export const useGetAuthenticationId = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetAuthenticationIdQueryOptions(id, options);
@@ -143,13 +149,21 @@ export const useGetAuthenticationId = <
 export const patchAuthenticationId = (
   id: string,
   identityProvider: IdentityProvider,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(`/authentication/${id}`, identityProvider, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/authentication/${id}`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: identityProvider,
+    },
+    options,
+  );
 };
 
 export const getPatchAuthenticationIdMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -163,14 +177,14 @@ export const getPatchAuthenticationIdMutationOptions = <
     { id: string; data: IdentityProvider },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchAuthenticationId>>,
   TError,
   { id: string; data: IdentityProvider },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchAuthenticationId>>,
@@ -178,7 +192,7 @@ export const getPatchAuthenticationIdMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchAuthenticationId(id, data, axiosOptions);
+    return patchAuthenticationId(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -188,7 +202,7 @@ export type PatchAuthenticationIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchAuthenticationId>>
 >;
 export type PatchAuthenticationIdMutationBody = IdentityProvider;
-export type PatchAuthenticationIdMutationError = AxiosError<
+export type PatchAuthenticationIdMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -196,7 +210,7 @@ export type PatchAuthenticationIdMutationError = AxiosError<
  * @summary Update an authentication method.
  */
 export const usePatchAuthenticationId = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -210,7 +224,7 @@ export const usePatchAuthenticationId = <
     { id: string; data: IdentityProvider },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchAuthenticationId>>,
   TError,
@@ -226,13 +240,16 @@ export const usePatchAuthenticationId = <
  */
 export const deleteAuthenticationId = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.delete(`/authentication/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    { url: `/authentication/${id}`, method: "DELETE" },
+    options,
+  );
 };
 
 export const getDeleteAuthenticationIdMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -246,14 +263,14 @@ export const getDeleteAuthenticationIdMutationOptions = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteAuthenticationId>>,
   TError,
   { id: string },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteAuthenticationId>>,
@@ -261,7 +278,7 @@ export const getDeleteAuthenticationIdMutationOptions = <
   > = (props) => {
     const { id } = props ?? {};
 
-    return deleteAuthenticationId(id, axiosOptions);
+    return deleteAuthenticationId(id, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -271,7 +288,7 @@ export type DeleteAuthenticationIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteAuthenticationId>>
 >;
 
-export type DeleteAuthenticationIdMutationError = AxiosError<
+export type DeleteAuthenticationIdMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -279,7 +296,7 @@ export type DeleteAuthenticationIdMutationError = AxiosError<
  * @summary Remove an authentication method.
  */
 export const useDeleteAuthenticationId = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -293,7 +310,7 @@ export const useDeleteAuthenticationId = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof deleteAuthenticationId>>,
   TError,

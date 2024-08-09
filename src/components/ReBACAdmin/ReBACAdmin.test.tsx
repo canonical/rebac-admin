@@ -2,6 +2,10 @@ import { screen } from "@testing-library/react";
 import axios from "axios";
 import { setupServer } from "msw/node";
 
+import {
+  createInstance,
+  axiosInstance,
+} from "api-utils/mutator/custom-instance";
 import { renderComponent } from "test/utils";
 
 import ReBACAdmin from "./ReBACAdmin";
@@ -18,6 +22,8 @@ beforeAll(() => {
 
 afterEach(() => {
   mockApiServer.resetHandlers();
+  // Reset the instance for other test files
+  createInstance("/api");
 });
 
 afterAll(() => {
@@ -29,35 +35,16 @@ test("renders the component", () => {
   expect(screen.getByText("Canonical ReBAC Admin")).toBeInTheDocument();
 });
 
-test("the api URL can be configured", () => {
+test("the api URL can be configured when not using a custom axios instance", () => {
   const apiURL = "http://example.com/api";
   renderComponent(<ReBACAdmin apiURL={apiURL} />);
-  expect(axios.defaults.baseURL).toBe(apiURL);
+  expect(axiosInstance.defaults.baseURL).toBe(apiURL);
 });
 
-test("the auth token can be configured", () => {
-  renderComponent(
-    <ReBACAdmin apiURL="http://example.com/api" authToken="U3VwZXIgc2VjcmV0" />,
-  );
-  expect(axios.defaults.headers.common["X-Authorization"]).toBe(
-    "U3VwZXIgc2VjcmV0",
-  );
-});
-
-test("the header is not set if there is no auth token", () => {
-  renderComponent(<ReBACAdmin apiURL="http://example.com/api" />);
-  expect(axios.defaults.headers.common["X-Authorization"]).toBeUndefined();
-});
-
-test("the header is removed if the auth token is unset", () => {
-  const { result } = renderComponent(
-    <ReBACAdmin apiURL="http://example.com/api" authToken="U3VwZXIgc2VjcmV0" />,
-  );
-  expect(axios.defaults.headers.common["X-Authorization"]).toBe(
-    "U3VwZXIgc2VjcmV0",
-  );
-  result.rerender(<ReBACAdmin apiURL="http://example.com/api" />);
-  expect(axios.defaults.headers.common["X-Authorization"]).toBeUndefined();
+test("a custom axios instance can be passed", () => {
+  const instance = axios.create();
+  renderComponent(<ReBACAdmin axiosInstance={instance} />);
+  expect(axiosInstance).toStrictEqual(instance);
 });
 
 test("the index is displayed", async () => {

@@ -28,9 +28,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -46,14 +46,20 @@ import type {
   User,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get a single user.
  */
 export const getUsersId = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetUsersId200>> => {
-  return axios.get(`/users/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetUsersId200>(
+    { url: `/users/${id}`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getGetUsersIdQueryKey = (id: string) => {
@@ -62,7 +68,7 @@ export const getGetUsersIdQueryKey = (id: string) => {
 
 export const getGetUsersIdQueryOptions = <
   TData = Awaited<ReturnType<typeof getUsersId>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -74,16 +80,16 @@ export const getGetUsersIdQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getUsersId>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetUsersIdQueryKey(id);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersId>>> = ({
     signal,
-  }) => getUsersId(id, { signal, ...axiosOptions });
+  }) => getUsersId(id, requestOptions, signal);
 
   return {
     queryKey,
@@ -100,7 +106,7 @@ export const getGetUsersIdQueryOptions = <
 export type GetUsersIdQueryResult = NonNullable<
   Awaited<ReturnType<typeof getUsersId>>
 >;
-export type GetUsersIdQueryError = AxiosError<
+export type GetUsersIdQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -109,7 +115,7 @@ export type GetUsersIdQueryError = AxiosError<
  */
 export const useGetUsersId = <
   TData = Awaited<ReturnType<typeof getUsersId>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -121,7 +127,7 @@ export const useGetUsersId = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getUsersId>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUsersIdQueryOptions(id, options);
@@ -141,13 +147,21 @@ export const useGetUsersId = <
 export const patchUsersId = (
   id: string,
   user: User,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(`/users/${id}`, user, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/users/${id}`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: user,
+    },
+    options,
+  );
 };
 
 export const getPatchUsersIdMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -161,14 +175,14 @@ export const getPatchUsersIdMutationOptions = <
     { id: string; data: User },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchUsersId>>,
   TError,
   { id: string; data: User },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchUsersId>>,
@@ -176,7 +190,7 @@ export const getPatchUsersIdMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchUsersId(id, data, axiosOptions);
+    return patchUsersId(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -186,7 +200,7 @@ export type PatchUsersIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchUsersId>>
 >;
 export type PatchUsersIdMutationBody = User;
-export type PatchUsersIdMutationError = AxiosError<
+export type PatchUsersIdMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -194,7 +208,7 @@ export type PatchUsersIdMutationError = AxiosError<
  * @summary Update a local user.
  */
 export const usePatchUsersId = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -208,7 +222,7 @@ export const usePatchUsersId = <
     { id: string; data: User },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchUsersId>>,
   TError,
@@ -224,13 +238,16 @@ export const usePatchUsersId = <
  */
 export const deleteUsersId = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.delete(`/users/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    { url: `/users/${id}`, method: "DELETE" },
+    options,
+  );
 };
 
 export const getDeleteUsersIdMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -244,14 +261,14 @@ export const getDeleteUsersIdMutationOptions = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteUsersId>>,
   TError,
   { id: string },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteUsersId>>,
@@ -259,7 +276,7 @@ export const getDeleteUsersIdMutationOptions = <
   > = (props) => {
     const { id } = props ?? {};
 
-    return deleteUsersId(id, axiosOptions);
+    return deleteUsersId(id, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -269,7 +286,7 @@ export type DeleteUsersIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteUsersId>>
 >;
 
-export type DeleteUsersIdMutationError = AxiosError<
+export type DeleteUsersIdMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -277,7 +294,7 @@ export type DeleteUsersIdMutationError = AxiosError<
  * @summary Remove a local user.
  */
 export const useDeleteUsersId = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -291,7 +308,7 @@ export const useDeleteUsersId = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof deleteUsersId>>,
   TError,
@@ -308,12 +325,13 @@ export const useDeleteUsersId = <
 export const getUsersIdGroups = (
   id: string,
   params?: GetUsersIdGroupsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetUsersIdGroups200>> => {
-  return axios.get(`/users/${id}/groups`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetUsersIdGroups200>(
+    { url: `/users/${id}/groups`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetUsersIdGroupsQueryKey = (
@@ -325,7 +343,7 @@ export const getGetUsersIdGroupsQueryKey = (
 
 export const getGetUsersIdGroupsQueryOptions = <
   TData = Awaited<ReturnType<typeof getUsersIdGroups>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -342,17 +360,17 @@ export const getGetUsersIdGroupsQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetUsersIdGroupsQueryKey(id, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getUsersIdGroups>>
-  > = ({ signal }) => getUsersIdGroups(id, params, { signal, ...axiosOptions });
+  > = ({ signal }) => getUsersIdGroups(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -369,7 +387,7 @@ export const getGetUsersIdGroupsQueryOptions = <
 export type GetUsersIdGroupsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getUsersIdGroups>>
 >;
-export type GetUsersIdGroupsQueryError = AxiosError<
+export type GetUsersIdGroupsQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -378,7 +396,7 @@ export type GetUsersIdGroupsQueryError = AxiosError<
  */
 export const useGetUsersIdGroups = <
   TData = Awaited<ReturnType<typeof getUsersIdGroups>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -395,7 +413,7 @@ export const useGetUsersIdGroups = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUsersIdGroupsQueryOptions(id, params, options);
@@ -415,12 +433,13 @@ export const useGetUsersIdGroups = <
 export const getUsersIdRoles = (
   id: string,
   params?: GetUsersIdRolesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetUsersIdRoles200>> => {
-  return axios.get(`/users/${id}/roles`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetUsersIdRoles200>(
+    { url: `/users/${id}/roles`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetUsersIdRolesQueryKey = (
@@ -432,7 +451,7 @@ export const getGetUsersIdRolesQueryKey = (
 
 export const getGetUsersIdRolesQueryOptions = <
   TData = Awaited<ReturnType<typeof getUsersIdRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -449,17 +468,17 @@ export const getGetUsersIdRolesQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetUsersIdRolesQueryKey(id, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersIdRoles>>> = ({
     signal,
-  }) => getUsersIdRoles(id, params, { signal, ...axiosOptions });
+  }) => getUsersIdRoles(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -476,7 +495,7 @@ export const getGetUsersIdRolesQueryOptions = <
 export type GetUsersIdRolesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getUsersIdRoles>>
 >;
-export type GetUsersIdRolesQueryError = AxiosError<
+export type GetUsersIdRolesQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -485,7 +504,7 @@ export type GetUsersIdRolesQueryError = AxiosError<
  */
 export const useGetUsersIdRoles = <
   TData = Awaited<ReturnType<typeof getUsersIdRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -502,7 +521,7 @@ export const useGetUsersIdRoles = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUsersIdRolesQueryOptions(id, params, options);
@@ -522,12 +541,13 @@ export const useGetUsersIdRoles = <
 export const getUsersIdEntitlements = (
   id: string,
   params?: GetUsersIdEntitlementsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetUsersIdEntitlements200>> => {
-  return axios.get(`/users/${id}/entitlements`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetUsersIdEntitlements200>(
+    { url: `/users/${id}/entitlements`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetUsersIdEntitlementsQueryKey = (
@@ -539,7 +559,7 @@ export const getGetUsersIdEntitlementsQueryKey = (
 
 export const getGetUsersIdEntitlementsQueryOptions = <
   TData = Awaited<ReturnType<typeof getUsersIdEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -556,10 +576,10 @@ export const getGetUsersIdEntitlementsQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetUsersIdEntitlementsQueryKey(id, params);
@@ -567,7 +587,7 @@ export const getGetUsersIdEntitlementsQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getUsersIdEntitlements>>
   > = ({ signal }) =>
-    getUsersIdEntitlements(id, params, { signal, ...axiosOptions });
+    getUsersIdEntitlements(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -584,7 +604,7 @@ export const getGetUsersIdEntitlementsQueryOptions = <
 export type GetUsersIdEntitlementsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getUsersIdEntitlements>>
 >;
-export type GetUsersIdEntitlementsQueryError = AxiosError<
+export type GetUsersIdEntitlementsQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -593,7 +613,7 @@ export type GetUsersIdEntitlementsQueryError = AxiosError<
  */
 export const useGetUsersIdEntitlements = <
   TData = Awaited<ReturnType<typeof getUsersIdEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -610,7 +630,7 @@ export const useGetUsersIdEntitlements = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUsersIdEntitlementsQueryOptions(

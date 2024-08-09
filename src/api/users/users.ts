@@ -28,9 +28,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -41,17 +41,20 @@ import type {
   User,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get list of users.
  */
 export const getUsers = (
   params?: GetUsersParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetUsers200>> => {
-  return axios.get(`/users`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetUsers200>(
+    { url: `/users`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetUsersQueryKey = (params?: GetUsersParams) => {
@@ -60,7 +63,7 @@ export const getGetUsersQueryKey = (params?: GetUsersParams) => {
 
 export const getGetUsersQueryOptions = <
   TData = Awaited<ReturnType<typeof getUsers>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -72,16 +75,16 @@ export const getGetUsersQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetUsersQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsers>>> = ({
     signal,
-  }) => getUsers(params, { signal, ...axiosOptions });
+  }) => getUsers(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getUsers>>,
@@ -93,7 +96,7 @@ export const getGetUsersQueryOptions = <
 export type GetUsersQueryResult = NonNullable<
   Awaited<ReturnType<typeof getUsers>>
 >;
-export type GetUsersQueryError = AxiosError<
+export type GetUsersQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -102,7 +105,7 @@ export type GetUsersQueryError = AxiosError<
  */
 export const useGetUsers = <
   TData = Awaited<ReturnType<typeof getUsers>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -114,7 +117,7 @@ export const useGetUsers = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUsersQueryOptions(params, options);
@@ -133,13 +136,21 @@ export const useGetUsers = <
  */
 export const postUsers = (
   user: User,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<User>> => {
-  return axios.post(`/users`, user, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<User>(
+    {
+      url: `/users`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: user,
+    },
+    options,
+  );
 };
 
 export const getPostUsersMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -153,14 +164,14 @@ export const getPostUsersMutationOptions = <
     { data: User },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postUsers>>,
   TError,
   { data: User },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postUsers>>,
@@ -168,7 +179,7 @@ export const getPostUsersMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return postUsers(data, axiosOptions);
+    return postUsers(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -178,7 +189,7 @@ export type PostUsersMutationResult = NonNullable<
   Awaited<ReturnType<typeof postUsers>>
 >;
 export type PostUsersMutationBody = User;
-export type PostUsersMutationError = AxiosError<
+export type PostUsersMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -186,7 +197,7 @@ export type PostUsersMutationError = AxiosError<
  * @summary Add a local user
  */
 export const usePostUsers = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -200,7 +211,7 @@ export const usePostUsers = <
     { data: User },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof postUsers>>,
   TError,

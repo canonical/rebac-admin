@@ -28,9 +28,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -40,18 +40,21 @@ import type {
   UnauthorizedResponse,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * The application/json response type will return the JSON authorisation model.
  * @summary Get the list of entitlements in JSON format.
  */
 export const getEntitlements = (
   params?: GetEntitlementsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetEntitlements200>> => {
-  return axios.get(`/entitlements`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetEntitlements200>(
+    { url: `/entitlements`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetEntitlementsQueryKey = (params?: GetEntitlementsParams) => {
@@ -60,7 +63,7 @@ export const getGetEntitlementsQueryKey = (params?: GetEntitlementsParams) => {
 
 export const getGetEntitlementsQueryOptions = <
   TData = Awaited<ReturnType<typeof getEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -76,16 +79,16 @@ export const getGetEntitlementsQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetEntitlementsQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getEntitlements>>> = ({
     signal,
-  }) => getEntitlements(params, { signal, ...axiosOptions });
+  }) => getEntitlements(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEntitlements>>,
@@ -97,7 +100,7 @@ export const getGetEntitlementsQueryOptions = <
 export type GetEntitlementsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getEntitlements>>
 >;
-export type GetEntitlementsQueryError = AxiosError<
+export type GetEntitlementsQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -106,7 +109,7 @@ export type GetEntitlementsQueryError = AxiosError<
  */
 export const useGetEntitlements = <
   TData = Awaited<ReturnType<typeof getEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -122,7 +125,7 @@ export const useGetEntitlements = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetEntitlementsQueryOptions(params, options);
@@ -141,9 +144,13 @@ export const useGetEntitlements = <
  * @summary Get the list of entitlements as raw text.
  */
 export const getEntitlementsRaw = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
-  return axios.get(`/entitlements/raw`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<string>(
+    { url: `/entitlements/raw`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getGetEntitlementsRawQueryKey = () => {
@@ -152,7 +159,7 @@ export const getGetEntitlementsRawQueryKey = () => {
 
 export const getGetEntitlementsRawQueryOptions = <
   TData = Awaited<ReturnType<typeof getEntitlementsRaw>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -166,15 +173,15 @@ export const getGetEntitlementsRawQueryOptions = <
       TData
     >
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetEntitlementsRawQueryKey();
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getEntitlementsRaw>>
-  > = ({ signal }) => getEntitlementsRaw({ signal, ...axiosOptions });
+  > = ({ signal }) => getEntitlementsRaw(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEntitlementsRaw>>,
@@ -186,7 +193,7 @@ export const getGetEntitlementsRawQueryOptions = <
 export type GetEntitlementsRawQueryResult = NonNullable<
   Awaited<ReturnType<typeof getEntitlementsRaw>>
 >;
-export type GetEntitlementsRawQueryError = AxiosError<
+export type GetEntitlementsRawQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -195,7 +202,7 @@ export type GetEntitlementsRawQueryError = AxiosError<
  */
 export const useGetEntitlementsRaw = <
   TData = Awaited<ReturnType<typeof getEntitlementsRaw>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -209,7 +216,7 @@ export const useGetEntitlementsRaw = <
       TData
     >
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetEntitlementsRawQueryOptions(options);
 
@@ -227,13 +234,21 @@ export const useGetEntitlementsRaw = <
  */
 export const putEntitlementsRaw = (
   putEntitlementsRawBody: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
-  return axios.put(`/entitlements/raw`, putEntitlementsRawBody, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<string>(
+    {
+      url: `/entitlements/raw`,
+      method: "PUT",
+      headers: { "Content-Type": "text/plain" },
+      data: putEntitlementsRawBody,
+    },
+    options,
+  );
 };
 
 export const getPutEntitlementsRawMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -247,14 +262,14 @@ export const getPutEntitlementsRawMutationOptions = <
     { data: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putEntitlementsRaw>>,
   TError,
   { data: string },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putEntitlementsRaw>>,
@@ -262,7 +277,7 @@ export const getPutEntitlementsRawMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return putEntitlementsRaw(data, axiosOptions);
+    return putEntitlementsRaw(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -272,7 +287,7 @@ export type PutEntitlementsRawMutationResult = NonNullable<
   Awaited<ReturnType<typeof putEntitlementsRaw>>
 >;
 export type PutEntitlementsRawMutationBody = string;
-export type PutEntitlementsRawMutationError = AxiosError<
+export type PutEntitlementsRawMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -280,7 +295,7 @@ export type PutEntitlementsRawMutationError = AxiosError<
  * @summary Update the authorisation model.
  */
 export const usePutEntitlementsRaw = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -294,7 +309,7 @@ export const usePutEntitlementsRaw = <
     { data: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof putEntitlementsRaw>>,
   TError,

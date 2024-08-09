@@ -9,6 +9,7 @@ This is a shared UI for managing ReBAC permissions.
 - [Navigation](#navigation)
 - [Limiting access](#limiting-access)
 - [React Query](#react-query)
+- [Custom Axios instance.](#custom-axios-instance)
 
 ## Install
 
@@ -78,9 +79,9 @@ The following props can be provided to the `ReBACAdmin` component to configure t
 
 | Prop         | Description                                                                          | Examples                       |
 | :----------- | :----------------------------------------------------------------------------------- | :----------------------------- |
-| apiURL       | The absolute URL of the ReBAC API, including domain if the API is hosted externally. | http://example.com/api/, /api/ |
+| apiURL       | The absolute base URL of the ReBAC API, including domain if the API is hosted externally. This is not used when a custom Axios instance is passed to the `axiosInstance` prop. | http://example.com/api/, /api/ |
 | asidePanelId | The element ID to use to render aside panels into. Should not begin with "#".        | app-aside                      |
-| authToken    | The base64 encoded user id for the authenticated user.                               | VGhpcyBpcyB5b3VyIHByaXplIQ==   |
+| axiosInstance    | A [custom Axios instance](#custom-axios-instance).   |
 
 ## Navigation
 
@@ -170,4 +171,21 @@ const queryClient = new QueryClient({
     },
   },
 });
+```
+
+## Custom Axios instance.
+
+If you want to share an Axios instance between the host application and
+ReBAC Admin then you can pass an [Axios instance](https://axios-http.com/docs/instance) to the
+`axiosInstance` prop on the `ReBACAdmin` component. This could be useful if you
+need to configure headers, global error logging etc.
+
+```
+const instance = axios.create({
+  baseURL: 'https://example.com/api/',
+  timeout: 1000,
+  headers: {'X-Auth': 'secretkey'}
+});
+...
+<ReBACAdmin axiosInstance={instance} />
 ```

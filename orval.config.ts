@@ -18,6 +18,10 @@ export default defineConfig({
       clean: ["src/api"],
       prettier: true,
       override: {
+        mutator: {
+          path: "./src/api-utils/mutator/custom-instance.ts",
+          name: "customInstance",
+        },
         useNativeEnums: true,
       },
     },
