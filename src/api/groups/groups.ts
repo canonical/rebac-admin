@@ -16,9 +16,9 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+import { customInstance } from "../../api-utils/mutator/custom-instance";
+import type { ErrorType } from "../../api-utils/mutator/custom-instance";
 import type {
   BadRequestResponse,
   DefaultResponse,
@@ -38,18 +38,21 @@ import type {
   UnauthorizedResponse,
 } from "../api.schemas";
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * Get all groups.
  * @summary Get all groups.
  */
 export const getGroups = (
   params?: GetGroupsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupsResponse>> => {
-  return axios.get(`/groups`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetGroupsResponse>(
+    { url: `/groups`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetGroupsQueryKey = (params?: GetGroupsParams) => {
@@ -58,7 +61,7 @@ export const getGetGroupsQueryKey = (params?: GetGroupsParams) => {
 
 export const getGetGroupsQueryOptions = <
   TData = Awaited<ReturnType<typeof getGroups>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -70,16 +73,16 @@ export const getGetGroupsQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetGroupsQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroups>>> = ({
     signal,
-  }) => getGroups(params, { signal, ...axiosOptions });
+  }) => getGroups(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getGroups>>,
@@ -91,7 +94,7 @@ export const getGetGroupsQueryOptions = <
 export type GetGroupsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGroups>>
 >;
-export type GetGroupsQueryError = AxiosError<
+export type GetGroupsQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -100,7 +103,7 @@ export type GetGroupsQueryError = AxiosError<
  */
 export const useGetGroups = <
   TData = Awaited<ReturnType<typeof getGroups>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -112,7 +115,7 @@ export const useGetGroups = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getGroups>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetGroupsQueryOptions(params, options);
@@ -132,13 +135,21 @@ export const useGetGroups = <
  */
 export const postGroups = (
   group: Group,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Group>> => {
-  return axios.post(`/groups`, group, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<Group>(
+    {
+      url: `/groups`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: group,
+    },
+    options,
+  );
 };
 
 export const getPostGroupsMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -152,14 +163,14 @@ export const getPostGroupsMutationOptions = <
     { data: Group },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postGroups>>,
   TError,
   { data: Group },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postGroups>>,
@@ -167,7 +178,7 @@ export const getPostGroupsMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return postGroups(data, axiosOptions);
+    return postGroups(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -177,7 +188,7 @@ export type PostGroupsMutationResult = NonNullable<
   Awaited<ReturnType<typeof postGroups>>
 >;
 export type PostGroupsMutationBody = Group;
-export type PostGroupsMutationError = AxiosError<
+export type PostGroupsMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -185,7 +196,7 @@ export type PostGroupsMutationError = AxiosError<
  * @summary Create a new group.
  */
 export const usePostGroups = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -199,7 +210,7 @@ export const usePostGroups = <
     { data: Group },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof postGroups>>,
   TError,
@@ -216,9 +227,13 @@ export const usePostGroups = <
  */
 export const getGroupsItem = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Group>> => {
-  return axios.get(`/groups/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<Group>(
+    { url: `/groups/${id}`, method: "GET", signal },
+    options,
+  );
 };
 
 export const getGetGroupsItemQueryKey = (id: string) => {
@@ -227,7 +242,7 @@ export const getGetGroupsItemQueryKey = (id: string) => {
 
 export const getGetGroupsItemQueryOptions = <
   TData = Awaited<ReturnType<typeof getGroupsItem>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -239,16 +254,16 @@ export const getGetGroupsItemQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getGroupsItem>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetGroupsItemQueryKey(id);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroupsItem>>> = ({
     signal,
-  }) => getGroupsItem(id, { signal, ...axiosOptions });
+  }) => getGroupsItem(id, requestOptions, signal);
 
   return {
     queryKey,
@@ -265,7 +280,7 @@ export const getGetGroupsItemQueryOptions = <
 export type GetGroupsItemQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGroupsItem>>
 >;
-export type GetGroupsItemQueryError = AxiosError<
+export type GetGroupsItemQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -274,7 +289,7 @@ export type GetGroupsItemQueryError = AxiosError<
  */
 export const useGetGroupsItem = <
   TData = Awaited<ReturnType<typeof getGroupsItem>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -286,7 +301,7 @@ export const useGetGroupsItem = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getGroupsItem>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetGroupsItemQueryOptions(id, options);
@@ -307,13 +322,21 @@ export const useGetGroupsItem = <
 export const putGroupsItem = (
   id: string,
   group: Group,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Group>> => {
-  return axios.put(`/groups/${id}`, group, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<Group>(
+    {
+      url: `/groups/${id}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: group,
+    },
+    options,
+  );
 };
 
 export const getPutGroupsItemMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -327,14 +350,14 @@ export const getPutGroupsItemMutationOptions = <
     { id: string; data: Group },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putGroupsItem>>,
   TError,
   { id: string; data: Group },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putGroupsItem>>,
@@ -342,7 +365,7 @@ export const getPutGroupsItemMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return putGroupsItem(id, data, axiosOptions);
+    return putGroupsItem(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -352,7 +375,7 @@ export type PutGroupsItemMutationResult = NonNullable<
   Awaited<ReturnType<typeof putGroupsItem>>
 >;
 export type PutGroupsItemMutationBody = Group;
-export type PutGroupsItemMutationError = AxiosError<
+export type PutGroupsItemMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -360,7 +383,7 @@ export type PutGroupsItemMutationError = AxiosError<
  * @summary Update a group.
  */
 export const usePutGroupsItem = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -374,7 +397,7 @@ export const usePutGroupsItem = <
     { id: string; data: Group },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof putGroupsItem>>,
   TError,
@@ -391,13 +414,16 @@ export const usePutGroupsItem = <
  */
 export const deleteGroupsItem = (
   id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.delete(`/groups/${id}`, options);
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    { url: `/groups/${id}`, method: "DELETE" },
+    options,
+  );
 };
 
 export const getDeleteGroupsItemMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -411,14 +437,14 @@ export const getDeleteGroupsItemMutationOptions = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteGroupsItem>>,
   TError,
   { id: string },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteGroupsItem>>,
@@ -426,7 +452,7 @@ export const getDeleteGroupsItemMutationOptions = <
   > = (props) => {
     const { id } = props ?? {};
 
-    return deleteGroupsItem(id, axiosOptions);
+    return deleteGroupsItem(id, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -436,7 +462,7 @@ export type DeleteGroupsItemMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteGroupsItem>>
 >;
 
-export type DeleteGroupsItemMutationError = AxiosError<
+export type DeleteGroupsItemMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -444,7 +470,7 @@ export type DeleteGroupsItemMutationError = AxiosError<
  * @summary Remove a group.
  */
 export const useDeleteGroupsItem = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -458,7 +484,7 @@ export const useDeleteGroupsItem = <
     { id: string },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof deleteGroupsItem>>,
   TError,
@@ -476,12 +502,13 @@ export const useDeleteGroupsItem = <
 export const getGroupsItemIdentities = (
   id: string,
   params?: GetGroupsItemIdentitiesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupIdentitiesResponse>> => {
-  return axios.get(`/groups/${id}/identities`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetGroupIdentitiesResponse>(
+    { url: `/groups/${id}/identities`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetGroupsItemIdentitiesQueryKey = (
@@ -493,7 +520,7 @@ export const getGetGroupsItemIdentitiesQueryKey = (
 
 export const getGetGroupsItemIdentitiesQueryOptions = <
   TData = Awaited<ReturnType<typeof getGroupsItemIdentities>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -510,10 +537,10 @@ export const getGetGroupsItemIdentitiesQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetGroupsItemIdentitiesQueryKey(id, params);
@@ -521,7 +548,7 @@ export const getGetGroupsItemIdentitiesQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getGroupsItemIdentities>>
   > = ({ signal }) =>
-    getGroupsItemIdentities(id, params, { signal, ...axiosOptions });
+    getGroupsItemIdentities(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -538,7 +565,7 @@ export const getGetGroupsItemIdentitiesQueryOptions = <
 export type GetGroupsItemIdentitiesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGroupsItemIdentities>>
 >;
-export type GetGroupsItemIdentitiesQueryError = AxiosError<
+export type GetGroupsItemIdentitiesQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -547,7 +574,7 @@ export type GetGroupsItemIdentitiesQueryError = AxiosError<
  */
 export const useGetGroupsItemIdentities = <
   TData = Awaited<ReturnType<typeof getGroupsItemIdentities>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -564,7 +591,7 @@ export const useGetGroupsItemIdentities = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetGroupsItemIdentitiesQueryOptions(
@@ -589,17 +616,21 @@ export const useGetGroupsItemIdentities = <
 export const patchGroupsItemIdentities = (
   id: string,
   groupIdentitiesPatchRequestBody: GroupIdentitiesPatchRequestBody,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(
-    `/groups/${id}/identities`,
-    groupIdentitiesPatchRequestBody,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/groups/${id}/identities`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: groupIdentitiesPatchRequestBody,
+    },
     options,
   );
 };
 
 export const getPatchGroupsItemIdentitiesMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -613,14 +644,14 @@ export const getPatchGroupsItemIdentitiesMutationOptions = <
     { id: string; data: GroupIdentitiesPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchGroupsItemIdentities>>,
   TError,
   { id: string; data: GroupIdentitiesPatchRequestBody },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchGroupsItemIdentities>>,
@@ -628,7 +659,7 @@ export const getPatchGroupsItemIdentitiesMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchGroupsItemIdentities(id, data, axiosOptions);
+    return patchGroupsItemIdentities(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -639,7 +670,7 @@ export type PatchGroupsItemIdentitiesMutationResult = NonNullable<
 >;
 export type PatchGroupsItemIdentitiesMutationBody =
   GroupIdentitiesPatchRequestBody;
-export type PatchGroupsItemIdentitiesMutationError = AxiosError<
+export type PatchGroupsItemIdentitiesMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -647,7 +678,7 @@ export type PatchGroupsItemIdentitiesMutationError = AxiosError<
  * @summary Add or remove identities to/from a group.
  */
 export const usePatchGroupsItemIdentities = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -661,7 +692,7 @@ export const usePatchGroupsItemIdentities = <
     { id: string; data: GroupIdentitiesPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchGroupsItemIdentities>>,
   TError,
@@ -679,12 +710,13 @@ export const usePatchGroupsItemIdentities = <
 export const getGroupsItemRoles = (
   id: string,
   params?: GetGroupsItemRolesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupRolesResponse>> => {
-  return axios.get(`/groups/${id}/roles`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetGroupRolesResponse>(
+    { url: `/groups/${id}/roles`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetGroupsItemRolesQueryKey = (
@@ -696,7 +728,7 @@ export const getGetGroupsItemRolesQueryKey = (
 
 export const getGetGroupsItemRolesQueryOptions = <
   TData = Awaited<ReturnType<typeof getGroupsItemRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -713,18 +745,17 @@ export const getGetGroupsItemRolesQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetGroupsItemRolesQueryKey(id, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getGroupsItemRoles>>
-  > = ({ signal }) =>
-    getGroupsItemRoles(id, params, { signal, ...axiosOptions });
+  > = ({ signal }) => getGroupsItemRoles(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -741,7 +772,7 @@ export const getGetGroupsItemRolesQueryOptions = <
 export type GetGroupsItemRolesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGroupsItemRoles>>
 >;
-export type GetGroupsItemRolesQueryError = AxiosError<
+export type GetGroupsItemRolesQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -750,7 +781,7 @@ export type GetGroupsItemRolesQueryError = AxiosError<
  */
 export const useGetGroupsItemRoles = <
   TData = Awaited<ReturnType<typeof getGroupsItemRoles>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -767,7 +798,7 @@ export const useGetGroupsItemRoles = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetGroupsItemRolesQueryOptions(id, params, options);
@@ -788,17 +819,21 @@ export const useGetGroupsItemRoles = <
 export const patchGroupsItemRoles = (
   id: string,
   groupRolesPatchRequestBody: GroupRolesPatchRequestBody,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(
-    `/groups/${id}/roles`,
-    groupRolesPatchRequestBody,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/groups/${id}/roles`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: groupRolesPatchRequestBody,
+    },
     options,
   );
 };
 
 export const getPatchGroupsItemRolesMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -812,14 +847,14 @@ export const getPatchGroupsItemRolesMutationOptions = <
     { id: string; data: GroupRolesPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchGroupsItemRoles>>,
   TError,
   { id: string; data: GroupRolesPatchRequestBody },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchGroupsItemRoles>>,
@@ -827,7 +862,7 @@ export const getPatchGroupsItemRolesMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchGroupsItemRoles(id, data, axiosOptions);
+    return patchGroupsItemRoles(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -837,7 +872,7 @@ export type PatchGroupsItemRolesMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchGroupsItemRoles>>
 >;
 export type PatchGroupsItemRolesMutationBody = GroupRolesPatchRequestBody;
-export type PatchGroupsItemRolesMutationError = AxiosError<
+export type PatchGroupsItemRolesMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -845,7 +880,7 @@ export type PatchGroupsItemRolesMutationError = AxiosError<
  * @summary Add or remove a role to/from the group.
  */
 export const usePatchGroupsItemRoles = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -859,7 +894,7 @@ export const usePatchGroupsItemRoles = <
     { id: string; data: GroupRolesPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchGroupsItemRoles>>,
   TError,
@@ -877,12 +912,13 @@ export const usePatchGroupsItemRoles = <
 export const getGroupsItemEntitlements = (
   id: string,
   params?: GetGroupsItemEntitlementsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetGroupEntitlementsResponse>> => {
-  return axios.get(`/groups/${id}/entitlements`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetGroupEntitlementsResponse>(
+    { url: `/groups/${id}/entitlements`, method: "GET", params, signal },
+    options,
+  );
 };
 
 export const getGetGroupsItemEntitlementsQueryKey = (
@@ -894,7 +930,7 @@ export const getGetGroupsItemEntitlementsQueryKey = (
 
 export const getGetGroupsItemEntitlementsQueryOptions = <
   TData = Awaited<ReturnType<typeof getGroupsItemEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -911,10 +947,10 @@ export const getGetGroupsItemEntitlementsQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetGroupsItemEntitlementsQueryKey(id, params);
@@ -922,7 +958,7 @@ export const getGetGroupsItemEntitlementsQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getGroupsItemEntitlements>>
   > = ({ signal }) =>
-    getGroupsItemEntitlements(id, params, { signal, ...axiosOptions });
+    getGroupsItemEntitlements(id, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -939,7 +975,7 @@ export const getGetGroupsItemEntitlementsQueryOptions = <
 export type GetGroupsItemEntitlementsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGroupsItemEntitlements>>
 >;
-export type GetGroupsItemEntitlementsQueryError = AxiosError<
+export type GetGroupsItemEntitlementsQueryError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -948,7 +984,7 @@ export type GetGroupsItemEntitlementsQueryError = AxiosError<
  */
 export const useGetGroupsItemEntitlements = <
   TData = Awaited<ReturnType<typeof getGroupsItemEntitlements>>,
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -965,7 +1001,7 @@ export const useGetGroupsItemEntitlements = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof customInstance>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetGroupsItemEntitlementsQueryOptions(
@@ -990,17 +1026,21 @@ export const useGetGroupsItemEntitlements = <
 export const patchGroupsItemEntitlements = (
   id: string,
   groupEntitlementsPatchRequestBody: GroupEntitlementsPatchRequestBody,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<void>> => {
-  return axios.patch(
-    `/groups/${id}/entitlements`,
-    groupEntitlementsPatchRequestBody,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/groups/${id}/entitlements`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: groupEntitlementsPatchRequestBody,
+    },
     options,
   );
 };
 
 export const getPatchGroupsItemEntitlementsMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -1014,14 +1054,14 @@ export const getPatchGroupsItemEntitlementsMutationOptions = <
     { id: string; data: GroupEntitlementsPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchGroupsItemEntitlements>>,
   TError,
   { id: string; data: GroupEntitlementsPatchRequestBody },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchGroupsItemEntitlements>>,
@@ -1029,7 +1069,7 @@ export const getPatchGroupsItemEntitlementsMutationOptions = <
   > = (props) => {
     const { id, data } = props ?? {};
 
-    return patchGroupsItemEntitlements(id, data, axiosOptions);
+    return patchGroupsItemEntitlements(id, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1040,7 +1080,7 @@ export type PatchGroupsItemEntitlementsMutationResult = NonNullable<
 >;
 export type PatchGroupsItemEntitlementsMutationBody =
   GroupEntitlementsPatchRequestBody;
-export type PatchGroupsItemEntitlementsMutationError = AxiosError<
+export type PatchGroupsItemEntitlementsMutationError = ErrorType<
   BadRequestResponse | UnauthorizedResponse | NotFoundResponse | DefaultResponse
 >;
 
@@ -1048,7 +1088,7 @@ export type PatchGroupsItemEntitlementsMutationError = AxiosError<
  * @summary Add or remove a direct entitlements to/from a group.
  */
 export const usePatchGroupsItemEntitlements = <
-  TError = AxiosError<
+  TError = ErrorType<
     | BadRequestResponse
     | UnauthorizedResponse
     | NotFoundResponse
@@ -1062,7 +1102,7 @@ export const usePatchGroupsItemEntitlements = <
     { id: string; data: GroupEntitlementsPatchRequestBody },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof patchGroupsItemEntitlements>>,
   TError,

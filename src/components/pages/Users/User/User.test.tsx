@@ -46,7 +46,7 @@ afterAll(() => {
 
 test("displays loading state", async () => {
   mockApiServer.use(
-    http.get(`${Endpoint.IDENTITIES}/*`, async () => {
+    http.get(`*${Endpoint.IDENTITIES}/*`, async () => {
       await delay(100);
     }),
   );
