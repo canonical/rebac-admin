@@ -2,26 +2,26 @@ import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
-import { useDeleteGroupsItem } from "api/groups/groups";
-import DeleteEntityPanel from "components/DeleteEntityPanel";
+import { useDeleteRolesItem } from "api/roles/roles";
+import DeleteEntityModal from "components/DeleteEntityModal";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteGroupsPanel = ({ groups, close }: Props) => {
+const DeleteRolesModal = ({ roles, close }: Props) => {
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteGroupsId, isPending: isDeleteGroupsIdPending } =
-    useDeleteGroupsItem();
+  const { mutateAsync: deleteRolesId, isPending: isDeleteRolesIdPending } =
+    useDeleteRolesItem();
 
-  const handleDeleteGroups = async () => {
+  const handleDeleteRoles = async () => {
     let hasError = false;
     const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    groups.forEach((id) => {
+    roles.forEach((id) => {
       queue.push(async (done) => {
         try {
-          await deleteGroupsId({
+          await deleteRolesId({
             id,
           });
         } catch (error) {
@@ -32,7 +32,7 @@ const DeleteGroupsPanel = ({ groups, close }: Props) => {
     });
     queue.onDone(() => {
       void queryClient.invalidateQueries({
-        queryKey: [Endpoint.GROUPS],
+        queryKey: [Endpoint.ROLES],
       });
       close();
       if (hasError) {
@@ -52,14 +52,14 @@ const DeleteGroupsPanel = ({ groups, close }: Props) => {
   };
 
   return (
-    <DeleteEntityPanel
-      entity="group"
-      count={groups.length}
-      onDelete={handleDeleteGroups}
-      isDeletePending={isDeleteGroupsIdPending}
+    <DeleteEntityModal
+      entity="role"
+      count={roles.length}
+      onDelete={handleDeleteRoles}
+      isDeletePending={isDeleteRolesIdPending}
       close={close}
     />
   );
 };
 
-export default DeleteGroupsPanel;
+export default DeleteRolesModal;

@@ -11,17 +11,18 @@ import type { ReactNode } from "react";
 import { useMemo, useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
-import type { Identity } from "api/api.schemas";
+import type { Group } from "api/api.schemas";
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
+import { useDeleteModal } from "hooks/useDeleteModal";
 import { Endpoint } from "types/api";
 import urls from "urls";
 import { getIds } from "utils/getIds";
 
 import AddUserPanel from "./AddUserPanel";
-import DeleteUsersPanel from "./DeleteUsersPanel";
+import DeleteUsersModal from "./DeleteUsersModal";
 import { Label } from "./types";
 
 const COLUMN_DATA = [
@@ -58,21 +59,19 @@ const Users = () => {
   });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editIdentityId?: string | null;
-    deleteIdentities?: NonNullable<Identity["id"]>[];
   }>((closePanel, data, setPanelWidth) => {
     if (data?.editIdentityId) {
       // TODO: Edit user panel.
-    } else if (data?.deleteIdentities) {
-      return (
-        <DeleteUsersPanel
-          identities={data.deleteIdentities}
-          close={closePanel}
-        />
-      );
     } else {
       return <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
+
+  const { generateModal, openModal } = useDeleteModal<
+    NonNullable<Group["id"]>[]
+  >((closeModal, identities) => (
+    <DeleteUsersModal identities={identities} close={closeModal} />
+  ));
 
   const {
     handleSelectEntity: handleSelectIdentity,
@@ -133,8 +132,7 @@ const Users = () => {
                     <Icon name="delete" /> {Label.DELETE}
                   </>
                 ),
-                onClick: () =>
-                  user.id && openPanel({ deleteIdentities: [user.id] }),
+                onClick: () => user.id && openModal([user.id]),
               },
             ]}
             position="right"
@@ -152,6 +150,7 @@ const Users = () => {
     data?.data.data,
     handleSelectIdentity,
     isPanelOpen,
+    openModal,
     openPanel,
     selectedIdentities,
   ]);
@@ -239,7 +238,7 @@ const Users = () => {
           <Button
             appearance={ButtonAppearance.NEGATIVE}
             disabled={!selectedIdentities.length}
-            onClick={() => openPanel({ deleteIdentities: selectedIdentities })}
+            onClick={() => openModal(selectedIdentities)}
           >
             {Label.DELETE}
           </Button>
@@ -252,6 +251,7 @@ const Users = () => {
     >
       {generateContent()}
       {generatePanel()}
+      {generateModal()}
     </Content>
   );
 };

@@ -1873,9 +1873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.59.0":
-  version: 0.59.0
-  resolution: "@canonical/react-components@npm:0.59.0"
+"@canonical/react-components@npm:0.60.0":
+  version: 0.60.0
+  resolution: "@canonical/react-components@npm:0.60.0"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -1895,7 +1895,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/4d1dfee4e0a48280f13d3c425d07a10c2291f75c6d6745ff0b1c6d296366d033ed8e6f3bf686c632ce09c479e8861429e0fefdee379edc8131f3e64e96c30708
+  checksum: 10c0/8ed1e63784fe803404e9ddf0105c14fe5f6b78eaa80a1f2fb9a33fe56f953f94ca4dd21405f014fba5ba6bf0c244868adb6630a03acfd783043ceba99512e2eb
   languageName: node
   linkType: hard
 
@@ -1903,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@canonical/rebac-admin@workspace:."
   dependencies:
-    "@canonical/react-components": "npm:0.59.0"
+    "@canonical/react-components": "npm:0.60.0"
     "@faker-js/faker": "npm:8.4.1"
     "@mswjs/http-middleware": "npm:0.10.1"
     "@tanstack/eslint-plugin-query": "npm:5.32.1"
@@ -1968,7 +1968,7 @@ __metadata:
     vitest: "npm:1.6.0"
     yup: "npm:1.4.0"
   peerDependencies:
-    "@canonical/react-components": ^0.56.0
+    "@canonical/react-components": ^0.60.0
     "@tanstack/react-query": ^5.24.7
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0

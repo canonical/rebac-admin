@@ -10,17 +10,18 @@ import {
 import type { ReactNode, JSX } from "react";
 import { useMemo, useState } from "react";
 
-import type { Group } from "api/api.schemas";
+import type { Group, Identity } from "api/api.schemas";
 import { useGetGroups } from "api/groups/groups";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
+import { useDeleteModal } from "hooks/useDeleteModal";
 import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import AddGroupPanel from "./AddGroupPanel";
-import DeleteGroupsPanel from "./DeleteGroupsPanel";
+import DeleteGroupsModal from "./DeleteGroupsModal";
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
@@ -42,7 +43,6 @@ const Groups = () => {
   });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroup?: Group | null;
-    deleteGroups?: NonNullable<Group["id"]>[];
   }>((closePanel, data, setPanelWidth) => {
     if (data?.editGroup && data?.editGroup.id) {
       return (
@@ -53,14 +53,16 @@ const Groups = () => {
           setPanelWidth={setPanelWidth}
         />
       );
-    } else if (data?.deleteGroups) {
-      return (
-        <DeleteGroupsPanel groups={data.deleteGroups} close={closePanel} />
-      );
     } else {
       return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
+
+  const { generateModal, openModal } = useDeleteModal<
+    NonNullable<Identity["id"]>[]
+  >((closeModal, groups) => (
+    <DeleteGroupsModal groups={groups} close={closeModal} />
+  ));
 
   const {
     handleSelectEntity: handleSelectGroup,
@@ -110,7 +112,7 @@ const Groups = () => {
                 </>
               ),
               onClick: () => {
-                group.id && openPanel({ deleteGroups: [group.id] });
+                group.id && openModal([group.id]);
               },
             },
           ]}
@@ -128,6 +130,7 @@ const Groups = () => {
     data?.data.data,
     handleSelectGroup,
     isPanelOpen,
+    openModal,
     openPanel,
     selectedGroups,
   ]);
@@ -221,7 +224,7 @@ const Groups = () => {
           <Button
             appearance={ButtonAppearance.NEGATIVE}
             disabled={!selectedGroups.length}
-            onClick={() => openPanel({ deleteGroups: selectedGroups })}
+            onClick={() => openModal(selectedGroups)}
           >
             {Label.DELETE}
           </Button>
@@ -233,6 +236,7 @@ const Groups = () => {
     >
       {generateContent()}
       {generatePanel()}
+      {generateModal()}
     </Content>
   );
 };

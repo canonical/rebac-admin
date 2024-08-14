@@ -2,28 +2,26 @@ import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
-import { useDeleteIdentitiesItem } from "api/identities/identities";
-import DeleteEntityPanel from "components/DeleteEntityPanel";
+import { useDeleteGroupsItem } from "api/groups/groups";
+import DeleteEntityModal from "components/DeleteEntityModal";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteUsersPanel = ({ identities, close }: Props) => {
+const DeleteGroupsModal = ({ groups, close }: Props) => {
   const queryClient = useQueryClient();
-  const {
-    mutateAsync: deleteIdentitiesId,
-    isPending: isDeleteIdentitiesIdPending,
-  } = useDeleteIdentitiesItem();
+  const { mutateAsync: deleteGroupsId, isPending: isDeleteGroupsIdPending } =
+    useDeleteGroupsItem();
 
-  const handleDeleteIdentities = async () => {
+  const handleDeleteGroups = async () => {
     let hasError = false;
     const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    identities.forEach((id) => {
+    groups.forEach((id) => {
       queue.push(async (done) => {
         try {
-          await deleteIdentitiesId({
+          await deleteGroupsId({
             id,
           });
         } catch (error) {
@@ -34,7 +32,7 @@ const DeleteUsersPanel = ({ identities, close }: Props) => {
     });
     queue.onDone(() => {
       void queryClient.invalidateQueries({
-        queryKey: [Endpoint.IDENTITIES],
+        queryKey: [Endpoint.GROUPS],
       });
       close();
       if (hasError) {
@@ -54,14 +52,14 @@ const DeleteUsersPanel = ({ identities, close }: Props) => {
   };
 
   return (
-    <DeleteEntityPanel
-      entity="user"
-      count={identities.length}
-      onDelete={handleDeleteIdentities}
-      isDeletePending={isDeleteIdentitiesIdPending}
+    <DeleteEntityModal
+      entity="group"
+      count={groups.length}
+      onDelete={handleDeleteGroups}
+      isDeletePending={isDeleteGroupsIdPending}
       close={close}
     />
   );
 };
 
-export default DeleteUsersPanel;
+export default DeleteGroupsModal;
