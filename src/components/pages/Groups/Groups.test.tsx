@@ -170,7 +170,7 @@ test("displays the delete panel", async () => {
   const rows = await screen.findAllByRole("row");
   await userEvent.click(within(rows[1]).getByRole("checkbox"));
   await userEvent.click(screen.getByRole("button", { name: Label.DELETE }));
-  const panel = await screen.findByRole("complementary", {
+  const panel = await screen.findByRole("dialog", {
     name: "Delete 1 group",
   });
   expect(panel).toBeInTheDocument();

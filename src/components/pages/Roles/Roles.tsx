@@ -16,11 +16,12 @@ import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
+import { useDeleteModal } from "hooks/useDeleteModal";
 import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import AddRolePanel from "./AddRolePanel";
-import DeleteRolesPanel from "./DeleteRolesPanel";
+import DeleteRolesModal from "./DeleteRolesModal";
 import EditRolePanel from "./EditRolePanel";
 import { Label } from "./types";
 
@@ -42,7 +43,6 @@ const Roles = () => {
   });
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRole?: Role | null;
-    deleteRoles?: NonNullable<Role["id"]>[];
   }>((closePanel, data, setPanelWidth) => {
     if (data?.editRole && data.editRole.id) {
       return (
@@ -53,12 +53,16 @@ const Roles = () => {
           setPanelWidth={setPanelWidth}
         />
       );
-    } else if (data?.deleteRoles) {
-      return <DeleteRolesPanel roles={data.deleteRoles} close={closePanel} />;
     } else {
       return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
+
+  const { generateModal, openModal } = useDeleteModal<
+    NonNullable<Role["id"]>[]
+  >((closeModal, roles) => (
+    <DeleteRolesModal roles={roles} close={closeModal} />
+  ));
 
   const {
     handleSelectEntity: handleSelectRole,
@@ -108,7 +112,7 @@ const Roles = () => {
                 </>
               ),
               onClick: () => {
-                role.id && openPanel({ deleteRoles: [role.id] });
+                role.id && openModal([role.id]);
               },
             },
           ]}
@@ -126,6 +130,7 @@ const Roles = () => {
     data?.data.data,
     handleSelectRole,
     isPanelOpen,
+    openModal,
     openPanel,
     selectedRoles,
   ]);
@@ -218,7 +223,7 @@ const Roles = () => {
           <Button
             appearance={ButtonAppearance.NEGATIVE}
             disabled={!selectedRoles.length}
-            onClick={() => openPanel({ deleteRoles: selectedRoles })}
+            onClick={() => openModal(selectedRoles)}
           >
             {Label.DELETE}
           </Button>
@@ -231,6 +236,7 @@ const Roles = () => {
     >
       {generateContent()}
       {generatePanel()}
+      {generateModal()}
     </Content>
   );
 };

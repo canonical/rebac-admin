@@ -1,10 +1,9 @@
 import type { Group } from "api/api.schemas";
-
-import type { GroupPanelProps } from "../GroupPanel";
+import type { DeleteEntityModalProps } from "components/DeleteEntityModal";
 
 export type Props = {
   groups: NonNullable<Group["id"]>[];
-  close: GroupPanelProps["close"];
+  close: DeleteEntityModalProps["close"];
 };
 
 export enum Label {

@@ -1,10 +1,9 @@
 import type { Role } from "api/api.schemas";
-
-import type { Props as RolePanelProps } from "../RolePanel";
+import type { DeleteEntityModalProps } from "components/DeleteEntityModal";
 
 export type Props = {
   roles: NonNullable<Role["id"]>[];
-  close: RolePanelProps["close"];
+  close: DeleteEntityModalProps["close"];
 };
 
 export enum Label {

@@ -2,26 +2,28 @@ import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
-import { useDeleteRolesItem } from "api/roles/roles";
-import DeleteEntityPanel from "components/DeleteEntityPanel";
+import { useDeleteIdentitiesItem } from "api/identities/identities";
+import DeleteEntityModal from "components/DeleteEntityModal";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteRolesPanel = ({ roles, close }: Props) => {
+const DeleteUsersModal = ({ identities, close }: Props) => {
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteRolesId, isPending: isDeleteRolesIdPending } =
-    useDeleteRolesItem();
+  const {
+    mutateAsync: deleteIdentitiesId,
+    isPending: isDeleteIdentitiesIdPending,
+  } = useDeleteIdentitiesItem();
 
-  const handleDeleteRoles = async () => {
+  const handleDeleteIdentities = async () => {
     let hasError = false;
     const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    roles.forEach((id) => {
+    identities.forEach((id) => {
       queue.push(async (done) => {
         try {
-          await deleteRolesId({
+          await deleteIdentitiesId({
             id,
           });
         } catch (error) {
@@ -32,7 +34,7 @@ const DeleteRolesPanel = ({ roles, close }: Props) => {
     });
     queue.onDone(() => {
       void queryClient.invalidateQueries({
-        queryKey: [Endpoint.ROLES],
+        queryKey: [Endpoint.IDENTITIES],
       });
       close();
       if (hasError) {
@@ -52,14 +54,14 @@ const DeleteRolesPanel = ({ roles, close }: Props) => {
   };
 
   return (
-    <DeleteEntityPanel
-      entity="role"
-      count={roles.length}
-      onDelete={handleDeleteRoles}
-      isDeletePending={isDeleteRolesIdPending}
+    <DeleteEntityModal
+      entity="user"
+      count={identities.length}
+      onDelete={handleDeleteIdentities}
+      isDeletePending={isDeleteIdentitiesIdPending}
       close={close}
     />
   );
 };
 
-export default DeleteRolesPanel;
+export default DeleteUsersModal;

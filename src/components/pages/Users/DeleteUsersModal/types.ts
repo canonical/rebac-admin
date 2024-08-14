@@ -1,10 +1,9 @@
 import type { Identity } from "api/api.schemas";
-
-import type { UserPanelProps } from "../UserPanel";
+import type { DeleteEntityModalProps } from "components/DeleteEntityModal";
 
 export type Props = {
   identities: NonNullable<Identity["id"]>[];
-  close: UserPanelProps["close"];
+  close: DeleteEntityModalProps["close"];
 };
 
 export enum Label {
