@@ -12,6 +12,7 @@ import { Route, Routes } from "react-router-dom";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
+import EntitlementsTab from "components/pages/Users/EntitlementsTab";
 import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
@@ -102,9 +103,7 @@ const ReBACAdmin = ({
               />
               <Route
                 path={urls.users.user.entitlements(null)}
-                element={
-                  <>Entitlements{/* TODO: display user entitlements */}</>
-                }
+                element={<EntitlementsTab />}
               />
               <Route
                 path={urls.users.user.accountManagement(null)}

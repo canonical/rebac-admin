@@ -1,6 +1,6 @@
 import { NotificationSeverity } from "@canonical/react-components";
 import { QueryClient } from "@tanstack/react-query";
-import { render, renderHook, screen } from "@testing-library/react";
+import { render, renderHook, screen, waitFor } from "@testing-library/react";
 import React from "react";
 
 import ComponentProviders from "./ComponentProviders";
@@ -82,4 +82,25 @@ export const hasToast = async (
   const card = toast.closest(".toast-card");
   expect(card).toBeInTheDocument();
   expect(card).toHaveAttribute("data-type", severity);
+};
+
+export const hasSpinner = async (label = "Loading", shouldExist = true) => {
+  if (shouldExist) {
+    const text = await screen.findByText(label);
+    const parent = text?.closest('[role="alert"]');
+    const icon = parent?.querySelector(".p-icon--spinner");
+    expect(text).toBeInTheDocument();
+    expect(icon).toBeInTheDocument();
+  } else {
+    await waitFor(() => {
+      const text = screen.queryByText(label);
+      if (text) {
+        const parent = text.closest('[role="alert"]');
+        const icon = parent?.querySelector(".p-icon--spinner");
+        expect(icon).not.toBeInTheDocument();
+      } else {
+        expect(text).not.toBeInTheDocument();
+      }
+    });
+  }
 };
