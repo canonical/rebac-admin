@@ -6,6 +6,7 @@ import type { OptionHTMLAttributes } from "react";
 import type { EntitlementSchema, EntityEntitlement } from "api/api.schemas";
 import { useGetResources } from "api/resources/resources";
 import CleanFormikField from "components/CleanFormikField";
+import type { FormikSubmitButtonProps } from "components/FormikSubmitButton";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import { Endpoint } from "types/api";
 
@@ -15,9 +16,10 @@ import { Label } from "./types";
 
 type Props = {
   entitlements: EntitlementSchema[];
+  submitProps?: Partial<FormikSubmitButtonProps>;
 };
 
-const Fields = ({ entitlements }: Props) => {
+const Fields = ({ entitlements, submitProps }: Props) => {
   const queryClient = useQueryClient();
   const { values, setFieldValue, setFieldTouched } =
     useFormikContext<EntityEntitlement>();
@@ -115,7 +117,7 @@ const Fields = ({ entitlements }: Props) => {
         )}
       />
       <div className="panel-table-form__submit">
-        <FormikSubmitButton>
+        <FormikSubmitButton {...submitProps}>
           {EntitlementsPanelFormLabel.SUBMIT}
         </FormikSubmitButton>
       </div>

@@ -43,10 +43,11 @@ const entitlementMatches = (entitlement: EntityEntitlement, search: string) =>
 
 const EntitlementsPanelForm = ({
   existingEntitlements,
-  addEntitlements,
+  addEntitlements = [],
   setAddEntitlements,
-  removeEntitlements,
+  removeEntitlements = [],
   setRemoveEntitlements,
+  submitProps,
 }: Props) => {
   const {
     data: getEntitlementsData,
@@ -89,7 +90,10 @@ const EntitlementsPanelForm = ({
                 and entitlement below and add it to the list of entitlements for
                 this role.{" "}
               </p>
-              <Fields entitlements={getEntitlementsData?.data.data ?? []} />
+              <Fields
+                entitlements={getEntitlementsData?.data.data ?? []}
+                submitProps={submitProps}
+              />
             </fieldset>
           </Form>
         </Formik>

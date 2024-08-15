@@ -6,7 +6,7 @@ import ListCard from "components/ListCard";
 
 const SummaryTab = () => {
   const { id: userId } = useParams<{ id: string }>();
-  // Loading states and errors for the user are handled in the parent component.
+  // Loading states and errors for the user are handled in the parent `User` component.
   const { data } = useGetIdentitiesItem(userId ?? "");
   const user = data?.data;
 

@@ -1,11 +1,13 @@
 import type { EntityEntitlement } from "api/api.schemas";
+import type { FormikSubmitButtonProps } from "components/FormikSubmitButton";
 
 export type Props = {
-  addEntitlements: EntityEntitlement[];
+  addEntitlements?: EntityEntitlement[];
   existingEntitlements?: EntityEntitlement[];
-  removeEntitlements: EntityEntitlement[];
+  removeEntitlements?: EntityEntitlement[];
   setAddEntitlements: (addEntitlements: EntityEntitlement[]) => void;
   setRemoveEntitlements: (removeEntitlements: EntityEntitlement[]) => void;
+  submitProps?: Partial<FormikSubmitButtonProps>;
 };
 
 export enum Label {
