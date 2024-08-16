@@ -30,8 +30,8 @@ import urls from "urls";
 import EntitlementsTab from "./EntitlementsTab";
 import { Label } from "./types";
 
-const path = urls.users.user.index(null);
-const url = urls.users.user.index({ id: "user1" });
+const path = urls.users.user.entitlements(null);
+const url = urls.users.user.entitlements({ id: "user1" });
 
 const mockApiServer = setupServer(
   getGetEntitlementsMockHandler(
