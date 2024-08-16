@@ -4,6 +4,7 @@ import type { DeleteEntityModalProps } from "components/DeleteEntityModal";
 export type Props = {
   identities: NonNullable<Identity["id"]>[];
   close: DeleteEntityModalProps["close"];
+  onDeleted?: () => void;
 };
 
 export enum Label {

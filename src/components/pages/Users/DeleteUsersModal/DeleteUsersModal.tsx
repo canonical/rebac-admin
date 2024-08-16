@@ -10,7 +10,7 @@ import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteUsersModal = ({ identities, close }: Props) => {
+const DeleteUsersModal = ({ identities, close, onDeleted }: Props) => {
   const queryClient = useQueryClient();
   const {
     mutateAsync: deleteIdentitiesId,
@@ -36,6 +36,7 @@ const DeleteUsersModal = ({ identities, close }: Props) => {
       void queryClient.invalidateQueries({
         queryKey: [Endpoint.IDENTITIES],
       });
+      onDeleted?.();
       close();
       if (hasError) {
         reactHotToast.custom((t) => (

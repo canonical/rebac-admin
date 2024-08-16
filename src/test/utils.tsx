@@ -11,6 +11,7 @@ type Options = {
   path?: string;
   routeChildren?: ComponentProps["routeChildren"];
   queryClient?: QueryClient;
+  setLocation?: ComponentProps["setLocation"];
 };
 
 export const changeURL = (url: string) => window.happyDOM.setURL(url);
@@ -39,6 +40,7 @@ export const renderComponent = (
         routeChildren={options?.routeChildren}
         path={options?.path ?? "*"}
         queryClient={queryClient}
+        setLocation={options?.setLocation}
       />
     ),
   });
@@ -58,6 +60,7 @@ export const renderWrappedHook = <Result, Props>(
         routeChildren={options?.routeChildren}
         path={options?.path ?? "*"}
         queryClient={queryClient}
+        setLocation={options?.setLocation}
       />
     ),
   });

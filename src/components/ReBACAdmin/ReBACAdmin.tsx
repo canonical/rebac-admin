@@ -13,6 +13,7 @@ import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
+import AccountManagementTab from "components/pages/Users/AccountManagementTab";
 import EntitlementsTab from "components/pages/Users/EntitlementsTab";
 import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
@@ -121,11 +122,7 @@ const ReBACAdmin = ({
               />
               <Route
                 path={urls.users.user.accountManagement(null)}
-                element={
-                  <>
-                    Account management{/* TODO: display account management */}
-                  </>
-                }
+                element={<AccountManagementTab />}
               />
             </Route>
             <Route path={urls.users.index} element={<Users />} />

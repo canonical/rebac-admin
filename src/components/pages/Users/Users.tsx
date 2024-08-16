@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
-import type { Group } from "api/api.schemas";
+import type { Identity } from "api/api.schemas";
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
@@ -68,7 +68,7 @@ const Users = () => {
   });
 
   const { generateModal, openModal } = useDeleteModal<
-    NonNullable<Group["id"]>[]
+    NonNullable<Identity["id"]>[]
   >((closeModal, identities) => (
     <DeleteUsersModal identities={identities} close={closeModal} />
   ));
