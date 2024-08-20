@@ -1873,9 +1873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.60.0":
-  version: 0.60.0
-  resolution: "@canonical/react-components@npm:0.60.0"
+"@canonical/react-components@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@canonical/react-components@npm:1.1.0"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -1895,7 +1895,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/8ed1e63784fe803404e9ddf0105c14fe5f6b78eaa80a1f2fb9a33fe56f953f94ca4dd21405f014fba5ba6bf0c244868adb6630a03acfd783043ceba99512e2eb
+  checksum: 10c0/e83e7a401141a8fcb17954ac66e98ceacc09e98d8a1b12365bef003e182d2db33ef83a4ae541be23e680bb82eb0b61694d2a4b6b2d6c86ad9df0dded4c73e0e3
   languageName: node
   linkType: hard
 
@@ -1903,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@canonical/rebac-admin@workspace:."
   dependencies:
-    "@canonical/react-components": "npm:0.60.0"
+    "@canonical/react-components": "npm:1.1.0"
     "@faker-js/faker": "npm:8.4.1"
     "@mswjs/http-middleware": "npm:0.10.1"
     "@tanstack/eslint-plugin-query": "npm:5.32.1"
@@ -1916,6 +1916,7 @@ __metadata:
     "@types/cors": "npm:2.8.17"
     "@types/express": "npm:4.17.21"
     "@types/ip": "npm:1.1.3"
+    "@types/lodash.isequal": "npm:4"
     "@types/node": "npm:20.12.11"
     "@types/react": "npm:18.3.1"
     "@types/react-dom": "npm:18.3.0"
@@ -1942,6 +1943,7 @@ __metadata:
     formik: "npm:2.4.6"
     happy-dom: "npm:14.10.1"
     ip: "npm:2.0.1"
+    lodash.isequal: "npm:4.5.0"
     loglevel: "npm:1.9.1"
     msw: "npm:2.3.0"
     npm-package-json-lint: "npm:7.1.0"
@@ -1968,7 +1970,7 @@ __metadata:
     vitest: "npm:1.6.0"
     yup: "npm:1.4.0"
   peerDependencies:
-    "@canonical/react-components": ^0.60.0
+    "@canonical/react-components": ^1.1.0
     "@tanstack/react-query": ^5.24.7
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
@@ -4021,6 +4023,22 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: 10c0/6bf5337bc447b706bb5b4431d37686aa2ea6d07cfd6f79cc31de80170d6ff9b1c7384a9c0ccbc45b3f512bae9e9f75c2e12109806a15331dc94e8a8db6dbb4ac
+  languageName: node
+  linkType: hard
+
+"@types/lodash.isequal@npm:4":
+  version: 4.5.8
+  resolution: "@types/lodash.isequal@npm:4.5.8"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/6db28cacf165d55421fbf2970ccfb1682a7b82b743bb7aba4398fa8ab98f1711fca2fe4afa1aa2b7b4afb3eff76c8aca13b22206f5efeb038d99e41300589bca
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.7
+  resolution: "@types/lodash@npm:4.17.7"
+  checksum: 10c0/40c965b5ffdcf7ff5c9105307ee08b782da228c01b5c0529122c554c64f6b7168fc8f11dc79aa7bae4e67e17efafaba685dc3a47e294dbf52a65ed2b67100561
   languageName: node
   linkType: hard
 

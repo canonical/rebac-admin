@@ -1,0 +1,7 @@
+@import "vanilla-framework/scss/vanilla";
+
+.multi-select-field {
+  &__search {
+    padding: $sph--large $sph--large 0 $sph--large;
+  }
+}

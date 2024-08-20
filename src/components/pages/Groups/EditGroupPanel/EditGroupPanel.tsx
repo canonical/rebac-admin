@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
@@ -48,6 +49,7 @@ const generateError = (
 };
 
 const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
+  const queryClient = useQueryClient();
   const {
     error: getGroupsItemEntitlementsError,
     data: existingEntitlements,
@@ -70,6 +72,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
     error: getGroupsItemRolesError,
     data: existingRoles,
     isFetching: isFetchingExistingRoles,
+    queryKey,
   } = useGetGroupsItemRoles(groupId);
   const {
     mutateAsync: patchGroupsItemRoles,
@@ -205,6 +208,9 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
           });
         }
         queue.onDone(() => {
+          void queryClient.invalidateQueries({
+            queryKey,
+          });
           close();
           if (hasEntitlementsError) {
             reactHotToast.custom((t) => (

@@ -7,10 +7,10 @@ import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw
 import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
-import { Label as RolesPanelFormLabel } from "../RolesPanelForm";
 
 import GroupPanel from "./GroupPanel";
 import { Label } from "./types";
@@ -102,7 +102,9 @@ test("the role form can be displayed", async () => {
 
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   expect(
-    screen.getByRole("form", { name: RolesPanelFormLabel.FORM }),
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
   ).toBeInTheDocument();
 });
 
