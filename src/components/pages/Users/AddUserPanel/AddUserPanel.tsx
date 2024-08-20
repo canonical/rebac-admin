@@ -55,22 +55,24 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           });
           const identityId = identity.id;
           if (identityId) {
-            queue.push(async (done) => {
-              try {
-                await patchIdentitiesItemEntitlements({
-                  id: identityId,
-                  data: {
-                    patches: addEntitlements.map((entitlement) => ({
-                      entitlement,
-                      op: IdentityEntitlementsPatchItemAllOfOp.add,
-                    })),
-                  },
-                });
-              } catch (error) {
-                hasEntitlementsError = true;
-              }
-              done();
-            });
+            if (addEntitlements.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchIdentitiesItemEntitlements({
+                    id: identityId,
+                    data: {
+                      patches: addEntitlements.map((entitlement) => ({
+                        entitlement,
+                        op: IdentityEntitlementsPatchItemAllOfOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasEntitlementsError = true;
+                }
+                done();
+              });
+            }
           } else {
             hasIdentityIdError = true;
           }
