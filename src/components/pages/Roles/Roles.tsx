@@ -1,18 +1,11 @@
-import {
-  ContextualMenu,
-  Icon,
-  ModularTable,
-  Spinner,
-  Button,
-  ButtonAppearance,
-  CheckboxInput,
-} from "@canonical/react-components";
-import type { JSX, ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import type { JSX } from "react";
+import { useState } from "react";
 
 import type { Role } from "api/api.schemas";
 import { useGetRoles } from "api/roles/roles";
 import Content from "components/Content";
+import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
@@ -29,10 +22,6 @@ const COLUMN_DATA = [
   {
     Header: "role name",
     accessor: "roleName",
-  },
-  {
-    Header: "actions",
-    accessor: "actions",
   },
 ];
 
@@ -64,93 +53,7 @@ const Roles = () => {
     <DeleteRolesModal roles={roles} close={closeModal} />
   ));
 
-  const {
-    handleSelectEntity: handleSelectRole,
-    handleSelectAllEntities: handleSelectAllRoles,
-    selectedEntities: selectedRoles,
-    areAllEntitiesSelected: areAllRolesSelected,
-  } = useEntitiesSelect(getIds(data?.data.data));
-
-  const tableData = useMemo<Record<string, ReactNode>[]>(() => {
-    const roles = data?.data.data;
-    if (!roles) {
-      return [];
-    }
-    const tableData = roles.map((role) => ({
-      selectRole: (
-        <CheckboxInput
-          label=""
-          inline
-          checked={
-            areAllRolesSelected ||
-            (!!role.id && selectedRoles.includes(role.id))
-          }
-          onChange={() => role.id && handleSelectRole(role.id)}
-          disabled={isPanelOpen}
-        />
-      ),
-      roleName: role.name,
-      actions: (
-        <ContextualMenu
-          links={[
-            {
-              appearance: "link",
-              children: (
-                <>
-                  <Icon name="edit" /> {Label.EDIT}
-                </>
-              ),
-              onClick: () => {
-                openPanel({ editRole: role });
-              },
-            },
-            {
-              appearance: "link",
-              children: (
-                <>
-                  <Icon name="delete" /> {Label.DELETE}
-                </>
-              ),
-              onClick: () => {
-                role.id && openModal([role.id]);
-              },
-            },
-          ]}
-          position="right"
-          scrollOverflow
-          toggleAppearance="base"
-          toggleClassName="has-icon u-no-margin--bottom is-small"
-          toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
-        />
-      ),
-    }));
-    return tableData;
-  }, [
-    areAllRolesSelected,
-    data?.data.data,
-    handleSelectRole,
-    isPanelOpen,
-    openModal,
-    openPanel,
-    selectedRoles,
-  ]);
-
-  const columns = [
-    {
-      Header: (
-        <CheckboxInput
-          label=""
-          inline
-          checked={areAllRolesSelected}
-          indeterminate={!areAllRolesSelected && !!selectedRoles.length}
-          onChange={handleSelectAllRoles}
-          disabled={isPanelOpen}
-        />
-      ),
-      accessor: "selectRole",
-    },
-    ...COLUMN_DATA,
-  ];
+  const selected = useEntitiesSelect(getIds(data?.data.data));
 
   const generateCreateRoleButton = () => (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
@@ -169,7 +72,7 @@ const Roles = () => {
           onRefetch={() => void refetch()}
         />
       );
-    } else if (!tableData.length) {
+    } else if (!data?.data.data.length) {
       return (
         <NoEntityCard
           title="No roles"
@@ -179,38 +82,17 @@ const Roles = () => {
       );
     } else {
       return (
-        <ModularTable
-          columns={columns}
-          data={tableData}
+        <EntityTable<Role>
+          checkboxesDisabled={isPanelOpen}
+          columns={COLUMN_DATA}
+          entities={data?.data.data}
           emptyMsg={Label.NO_ROLES}
-          getCellProps={({ column }) => {
-            switch (column.id) {
-              case "selectRole":
-                return {
-                  className: "select-entity-checkbox",
-                };
-              case "actions":
-                return {
-                  className: "u-align--right",
-                };
-              default:
-                return {};
-            }
-          }}
-          getHeaderProps={({ id }) => {
-            switch (id) {
-              case "selectRole":
-                return {
-                  className: "select-entity-checkbox",
-                };
-              case "actions":
-                return {
-                  className: "u-align--right",
-                };
-              default:
-                return {};
-            }
-          }}
+          generateColumns={(role) => ({
+            roleName: role.name,
+          })}
+          onDelete={(role) => role.id && openModal([role.id])}
+          onEdit={(role) => openPanel({ editRole: role })}
+          selected={selected}
         />
       );
     }
@@ -222,8 +104,8 @@ const Roles = () => {
         <>
           <Button
             appearance={ButtonAppearance.NEGATIVE}
-            disabled={!selectedRoles.length}
-            onClick={() => openModal(selectedRoles)}
+            disabled={!selected.selectedEntities.length}
+            onClick={() => openModal(selected.selectedEntities)}
           >
             {Label.DELETE}
           </Button>
