@@ -1,19 +1,11 @@
-import {
-  ModularTable,
-  Spinner,
-  CheckboxInput,
-  ContextualMenu,
-  Icon,
-  Button,
-  ButtonAppearance,
-} from "@canonical/react-components";
-import type { ReactNode } from "react";
-import { useMemo, useState, type JSX } from "react";
+import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
 import type { Identity } from "api/api.schemas";
 import { useGetIdentities } from "api/identities/identities";
 import Content from "components/Content";
+import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
 import { useDeleteModal } from "hooks/useDeleteModal";
@@ -46,10 +38,6 @@ const COLUMN_DATA = [
     Header: "source",
     accessor: "source",
   },
-  {
-    Header: "actions",
-    accessor: "actions",
-  },
 ];
 
 const Users = () => {
@@ -73,106 +61,7 @@ const Users = () => {
     <DeleteUsersModal identities={identities} close={closeModal} />
   ));
 
-  const {
-    handleSelectEntity: handleSelectIdentity,
-    handleSelectAllEntities: handleSelectAllIdentities,
-    selectedEntities: selectedIdentities,
-    areAllEntitiesSelected: areAllIdentitiesSelected,
-  } = useEntitiesSelect(getIds(data?.data.data));
-
-  const tableData = useMemo<Record<string, ReactNode>[]>(() => {
-    const users = data?.data.data;
-    if (!users) {
-      return [];
-    }
-    const tableData = users.map((user) => {
-      const firstName = user.firstName || "Unknown";
-      return {
-        selectIdentity: (
-          <CheckboxInput
-            label=""
-            inline
-            checked={
-              areAllIdentitiesSelected ||
-              (!!user.id && selectedIdentities.includes(user.id))
-            }
-            onChange={() => user.id && handleSelectIdentity(user.id)}
-            disabled={isPanelOpen}
-          />
-        ),
-        firstName: user.id ? (
-          <Link to={`..${urls.users.user.index({ id: user.id })}`}>
-            {firstName}
-          </Link>
-        ) : (
-          firstName
-        ),
-        lastName: user.lastName || "Unknown",
-        addedBy: user.addedBy,
-        email: user.email,
-        source: user.source,
-        actions: (
-          <ContextualMenu
-            links={[
-              {
-                appearance: "link",
-                children: (
-                  <>
-                    <Icon name="edit" /> {Label.EDIT}
-                  </>
-                ),
-                onClick: () => {
-                  openPanel({ editIdentityId: user.id });
-                },
-              },
-              {
-                appearance: "link",
-                children: (
-                  <>
-                    <Icon name="delete" /> {Label.DELETE}
-                  </>
-                ),
-                onClick: () => user.id && openModal([user.id]),
-              },
-            ]}
-            position="right"
-            scrollOverflow
-            toggleAppearance="base"
-            toggleClassName="has-icon u-no-margin--bottom is-small"
-            toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
-          />
-        ),
-      };
-    });
-    return tableData;
-  }, [
-    areAllIdentitiesSelected,
-    data?.data.data,
-    handleSelectIdentity,
-    isPanelOpen,
-    openModal,
-    openPanel,
-    selectedIdentities,
-  ]);
-
-  const columns = [
-    {
-      Header: (
-        <CheckboxInput
-          label=""
-          inline
-          checked={areAllIdentitiesSelected}
-          indeterminate={
-            !areAllIdentitiesSelected && !!selectedIdentities.length
-          }
-          onChange={handleSelectAllIdentities}
-          disabled={isPanelOpen}
-        />
-      ),
-      accessor: "selectIdentity",
-    },
-    ...COLUMN_DATA,
-  ];
+  const selected = useEntitiesSelect(getIds(data?.data.data));
 
   const generateCreateUserButton = () => (
     <Button appearance={ButtonAppearance.DEFAULT} onClick={openPanel}>
@@ -193,39 +82,30 @@ const Users = () => {
       );
     } else {
       return (
-        <ModularTable
-          className="audit-logs-table"
-          columns={columns}
-          data={tableData}
+        <EntityTable<Identity>
+          checkboxesDisabled={isPanelOpen}
+          columns={COLUMN_DATA}
+          entities={data?.data.data}
           emptyMsg={Label.NO_USERS}
-          getCellProps={({ column }) => {
-            switch (column.id) {
-              case "selectIdentity":
-                return {
-                  className: "select-entity-checkbox",
-                };
-              case "actions":
-                return {
-                  className: "u-align--right",
-                };
-              default:
-                return {};
-            }
+          generateColumns={(user) => {
+            const firstName = user.firstName || "Unknown";
+            return {
+              firstName: user.id ? (
+                <Link to={`..${urls.users.user.index({ id: user.id })}`}>
+                  {firstName}
+                </Link>
+              ) : (
+                firstName
+              ),
+              lastName: user.lastName || "Unknown",
+              addedBy: user.addedBy,
+              email: user.email,
+              source: user.source,
+            };
           }}
-          getHeaderProps={({ id }) => {
-            switch (id) {
-              case "selectIdentity":
-                return {
-                  className: "select-entity-checkbox",
-                };
-              case "actions":
-                return {
-                  className: "u-align--right",
-                };
-              default:
-                return {};
-            }
-          }}
+          onDelete={(user) => user.id && openModal([user.id])}
+          onEdit={(user) => openPanel({ editIdentityId: user.id })}
+          selected={selected}
         />
       );
     }
@@ -237,8 +117,8 @@ const Users = () => {
         <>
           <Button
             appearance={ButtonAppearance.NEGATIVE}
-            disabled={!selectedIdentities.length}
-            onClick={() => openModal(selectedIdentities)}
+            disabled={!selected.selectedEntities.length}
+            onClick={() => openModal(selected.selectedEntities)}
           >
             {Label.DELETE}
           </Button>

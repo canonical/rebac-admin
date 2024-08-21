@@ -1,0 +1,137 @@
+import {
+  ModularTable,
+  CheckboxInput,
+  ContextualMenu,
+  Icon,
+} from "@canonical/react-components";
+import { useMemo } from "react";
+
+import type { TableEntity } from "./types";
+import { Label, type Props } from "./types";
+
+const EntityTable = <E extends TableEntity>({
+  columns,
+  checkboxesDisabled,
+  entities,
+  generateColumns,
+  onDelete,
+  onEdit,
+  selected,
+  ...props
+}: Props<E>) => {
+  const allColumns = [
+    {
+      Header: (
+        <CheckboxInput
+          label=""
+          inline
+          checked={selected.areAllEntitiesSelected}
+          indeterminate={
+            !selected.areAllEntitiesSelected &&
+            !!selected.selectedEntities.length
+          }
+          onChange={selected.handleSelectAllEntities}
+          disabled={checkboxesDisabled}
+          aria-label={Label.SELECT_ALL}
+          aria-labelledby={undefined}
+        />
+      ),
+      accessor: "selectEntity",
+    },
+    ...columns,
+    {
+      Header: Label.HEADER_ACTIONS,
+      accessor: "actions",
+    },
+  ];
+  const tableData = useMemo(
+    () =>
+      (entities || []).map((entity) => {
+        return {
+          selectEntity: (
+            <CheckboxInput
+              label=""
+              inline
+              checked={
+                selected.areAllEntitiesSelected ||
+                (!!entity.id && selected.selectedEntities.includes(entity.id))
+              }
+              onChange={() =>
+                entity.id && selected.handleSelectEntity(entity.id)
+              }
+              disabled={checkboxesDisabled}
+              aria-labelledby={undefined}
+            />
+          ),
+          ...generateColumns(entity),
+          actions: (
+            <ContextualMenu
+              links={[
+                {
+                  appearance: "link",
+                  children: (
+                    <>
+                      <Icon name="edit" /> {Label.EDIT}
+                    </>
+                  ),
+                  onClick: () => onEdit(entity),
+                },
+                {
+                  appearance: "link",
+                  children: (
+                    <>
+                      <Icon name="delete" /> {Label.DELETE}
+                    </>
+                  ),
+                  onClick: () => onDelete(entity),
+                },
+              ]}
+              position="right"
+              scrollOverflow
+              toggleAppearance="base"
+              toggleClassName="has-icon u-no-margin--bottom is-small"
+              toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
+            />
+          ),
+        };
+      }),
+    [checkboxesDisabled, entities, generateColumns, onDelete, onEdit, selected],
+  );
+  return (
+    <ModularTable
+      {...props}
+      columns={allColumns}
+      data={tableData}
+      getCellProps={({ column }) => {
+        switch (column.id) {
+          case "selectEntity":
+            return {
+              className: "select-entity-checkbox",
+            };
+          case "actions":
+            return {
+              className: "u-align--right",
+            };
+          default:
+            return {};
+        }
+      }}
+      getHeaderProps={({ id }) => {
+        switch (id) {
+          case "selectEntity":
+            return {
+              className: "select-entity-checkbox",
+            };
+          case "actions":
+            return {
+              className: "u-align--right",
+            };
+          default:
+            return {};
+        }
+      }}
+    />
+  );
+};
+
+export default EntityTable;
