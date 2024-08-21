@@ -1,11 +1,28 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { renderComponent } from "test/utils";
 
 import UserPanel from "./UserPanel";
 import { Label } from "./types";
+
+const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+
+beforeAll(() => {
+  mockApiServer.listen();
+});
+
+afterEach(() => {
+  mockApiServer.resetHandlers();
+});
+
+afterAll(() => {
+  mockApiServer.close();
+});
 
 test("can submit the form", async () => {
   const onSubmit = vi.fn();
@@ -24,11 +41,14 @@ test("can submit the form", async () => {
     screen.getByRole("textbox", { name: Label.LAST_NAME }),
     "mock last name{Enter}",
   );
-  expect(onSubmit).toHaveBeenCalledWith({
-    email: "test@test.com",
-    firstName: "mock first name",
-    lastName: "mock last name",
-  });
+  expect(onSubmit).toHaveBeenCalledWith(
+    {
+      email: "test@test.com",
+      firstName: "mock first name",
+      lastName: "mock last name",
+    },
+    [],
+  );
 });
 
 test("submit button is disabled when email is not provided", async () => {
@@ -38,4 +58,17 @@ test("submit button is disabled when email is not provided", async () => {
   expect(
     screen.getByRole("button", { name: "Create local user" }),
   ).toBeDisabled();
+});
+
+test("should display the entitlements form", async () => {
+  renderComponent(
+    <UserPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: /Add entitlements/ }),
+  );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
+  expect(
+    screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
+  ).toBeInTheDocument();
 });

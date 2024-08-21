@@ -1,3 +1,4 @@
+import type { EntityEntitlement } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
@@ -16,7 +17,10 @@ export type FormFields = {
 export type Props = {
   close: SubFormPanelProps<FormFields>["close"];
   error?: SubFormPanelProps<FormFields>["error"];
-  onSubmit: (values: FormFields) => Promise<void>;
+  onSubmit: (
+    values: FormFields,
+    addEntitlements: EntityEntitlement[],
+  ) => Promise<void>;
   setPanelWidth: SetPanelWidth;
   isSaving?: boolean;
 };
