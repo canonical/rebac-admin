@@ -48,6 +48,7 @@ test("can submit the form", async () => {
       lastName: "mock last name",
     },
     [],
+    [],
   );
 });
 
