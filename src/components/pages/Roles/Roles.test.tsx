@@ -10,6 +10,7 @@ import {
   getGetRolesMockHandler404,
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
+import { EntityTableLabel } from "components/EntityTable";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
@@ -145,11 +146,13 @@ test("displays the edit panel", async () => {
   );
   const contextMenu = (
     await screen.findAllByRole("button", {
-      name: Label.ACTION_MENU,
+      name: EntityTableLabel.ACTION_MENU,
     })
   )[0];
   await userEvent.click(contextMenu);
-  await userEvent.click(screen.getByRole("button", { name: Label.EDIT }));
+  await userEvent.click(
+    screen.getByRole("button", { name: EntityTableLabel.EDIT }),
+  );
   const panel = await screen.findByRole("complementary", {
     name: "Edit role",
   });
