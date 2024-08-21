@@ -32,59 +32,61 @@ const MultiSelectField = <E,>({
   ...selectProps
 }: Props<E>) => {
   return (
-    <MultiSelect
-      {...selectProps}
-      selectedItems={mapItems(
-        generateItem,
-        (existingEntities || [])
-          .concat(addEntities)
-          .filter(
-            (entity) =>
-              !removeEntities.find((removeEntity) =>
-                isEqual(entity, removeEntity),
-              ),
-          ),
-      )}
-      dropdownHeader={
-        <div className="multi-select-field__search">
-          <SearchBox onSearch={onSearch} shouldBlurOnSearch={false} />
-          {isLoading ? <Spinner /> : null}
-        </div>
-      }
-      items={mapItems(generateItem, entities)}
-      listSelected={false}
-      onDeselectItem={(item) => {
-        if (addEntities.find((entity) => entityMatches(entity, item))) {
-          setAddEntities(
-            addEntities.filter((entity) => !entityMatches(entity, item)),
-          );
-        } else {
-          const removeEntity = entities.find((entity) =>
-            entityMatches(entity, item),
-          );
-          if (removeEntity) {
-            setRemoveEntities([...removeEntities, removeEntity]);
-          }
+    <div className="multi-select-field">
+      <MultiSelect
+        {...selectProps}
+        selectedItems={mapItems(
+          generateItem,
+          (existingEntities || [])
+            .concat(addEntities)
+            .filter(
+              (entity) =>
+                !removeEntities.find((removeEntity) =>
+                  isEqual(entity, removeEntity),
+                ),
+            ),
+        )}
+        dropdownHeader={
+          <div className="multi-select-field__search">
+            <SearchBox onSearch={onSearch} />
+            {isLoading ? <Spinner /> : null}
+          </div>
         }
-      }}
-      onSelectItem={(item) => {
-        if (removeEntities.find((entity) => entityMatches(entity, item))) {
-          setRemoveEntities(
-            removeEntities.filter((entity) => !entityMatches(entity, item)),
-          );
-        } else {
-          const addEntity = entities.find((entity) =>
-            entityMatches(entity, item),
-          );
-          if (addEntity) {
-            setAddEntities([...addEntities, addEntity]);
+        items={mapItems(generateItem, entities)}
+        listSelected={false}
+        onDeselectItem={(item) => {
+          if (addEntities.find((entity) => entityMatches(entity, item))) {
+            setAddEntities(
+              addEntities.filter((entity) => !entityMatches(entity, item)),
+            );
+          } else {
+            const removeEntity = entities.find((entity) =>
+              entityMatches(entity, item),
+            );
+            if (removeEntity) {
+              setRemoveEntities([...removeEntities, removeEntity]);
+            }
           }
-        }
-      }}
-      placeholder={`Select ${pluralize(entityName)}`}
-      showDropdownFooter={false}
-      variant="condensed"
-    />
+        }}
+        onSelectItem={(item) => {
+          if (removeEntities.find((entity) => entityMatches(entity, item))) {
+            setRemoveEntities(
+              removeEntities.filter((entity) => !entityMatches(entity, item)),
+            );
+          } else {
+            const addEntity = entities.find((entity) =>
+              entityMatches(entity, item),
+            );
+            if (addEntity) {
+              setAddEntities([...addEntities, addEntity]);
+            }
+          }
+        }}
+        placeholder={`Select ${pluralize(entityName)}`}
+        showDropdownFooter={false}
+        variant="condensed"
+      />
+    </div>
   );
 };
 
