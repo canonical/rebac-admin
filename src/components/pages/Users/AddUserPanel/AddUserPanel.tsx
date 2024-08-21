@@ -2,14 +2,19 @@ import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import reactHotToast from "react-hot-toast";
 
-import { IdentityEntitlementsPatchItemAllOfOp } from "api/api.schemas";
+import {
+  IdentityEntitlementsPatchItemAllOfOp,
+  IdentityRolesPatchItemOp,
+} from "api/api.schemas";
 import {
   usePatchIdentitiesItemEntitlements,
+  usePatchIdentitiesItemRoles,
   usePostIdentities,
 } from "api/identities/identities";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 import { Endpoint } from "types/api";
+import { getIds } from "utils/getIds";
 
 import UserPanel from "../UserPanel";
 
@@ -23,6 +28,10 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
     isPending: isPostIdentitiesPending,
   } = usePostIdentities();
   const {
+    mutateAsync: patchIdentitiesItemRoles,
+    isPending: isPatchIdentitiesItemRolesPending,
+  } = usePatchIdentitiesItemRoles();
+  const {
     mutateAsync: patchIdentitiesItemEntitlements,
     isPending: isPatchIdentitiesItemEntitlementsPending,
   } = usePatchIdentitiesItemEntitlements();
@@ -32,15 +41,22 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
       close={close}
       setPanelWidth={setPanelWidth}
       isSaving={
-        isPostIdentitiesPending || isPatchIdentitiesItemEntitlementsPending
+        isPostIdentitiesPending ||
+        isPatchIdentitiesItemRolesPending ||
+        isPatchIdentitiesItemEntitlementsPending
       }
       error={
         postIdentitiesError
           ? `Unable to create local user: ${postIdentitiesError.response?.data.message}`
           : null
       }
-      onSubmit={async ({ email, firstName, lastName }, addEntitlements) => {
+      onSubmit={async (
+        { email, firstName, lastName },
+        addRoles,
+        addEntitlements,
+      ) => {
         let hasIdentityIdError = false;
+        let hasRolesError = false;
         let hasEntitlementsError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         try {
@@ -55,6 +71,24 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           });
           const identityId = identity.id;
           if (identityId) {
+            if (addRoles.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchIdentitiesItemRoles({
+                    id: identityId,
+                    data: {
+                      patches: getIds(addRoles).map((id) => ({
+                        role: id,
+                        op: IdentityRolesPatchItemOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasRolesError = true;
+                }
+                done();
+              });
+            }
             if (addEntitlements.length) {
               queue.push(async (done) => {
                 try {
@@ -89,6 +123,13 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
                 {Label.IDENTITY_ID_ERROR}
+              </ToastCard>
+            ));
+          }
+          if (hasRolesError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.ROLES_ERROR}
               </ToastCard>
             ));
           }
