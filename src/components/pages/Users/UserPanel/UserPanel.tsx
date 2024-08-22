@@ -4,8 +4,8 @@ import * as Yup from "yup";
 import type { EntityEntitlement, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
+import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
-import RolesPanelForm from "components/pages/Groups/RolesPanelForm";
 
 import { FieldName, Label } from "./types";
 import type { FormFields, Props } from "./types";
