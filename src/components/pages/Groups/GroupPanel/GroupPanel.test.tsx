@@ -91,7 +91,7 @@ test("the user form can be displayed", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
   expect(
-    screen.getByRole("form", { name: IdentitiesPanelFormLabel.FORM }),
+    screen.getByRole("combobox", { name: IdentitiesPanelFormLabel.SELECT }),
   ).toBeInTheDocument();
 });
 

@@ -273,18 +273,15 @@ test("should add users", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "user2@example.com",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: IdentitiesPanelFormLabel.USER,
+      name: IdentitiesPanelFormLabel.SELECT,
     }),
-    "user2@example.com",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "user2@example.com",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create group" })[0],
@@ -310,18 +307,15 @@ test("should handle errors when adding users", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "user2@example.com",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: IdentitiesPanelFormLabel.USER,
+      name: IdentitiesPanelFormLabel.SELECT,
     }),
-    "user2@example.com",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "user2@example.com",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create group" })[0],

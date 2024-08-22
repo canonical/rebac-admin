@@ -1,11 +1,13 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import {
   getGetIdentitiesMockHandler,
+  getGetIdentitiesMockHandler400,
   getGetIdentitiesResponseMock,
+  getGetIdentitiesResponseMock400,
 } from "api/identities/identities.msw";
 import { hasNotification, renderComponent } from "test/utils";
 
@@ -47,17 +49,16 @@ test("can add identities", async () => {
       setRemoveIdentities={vi.fn()}
     />,
   );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: Label.SELECT,
+    }),
+  );
   // Wait for the options to load.
-  await screen.findByRole("option", {
+  const checkbox = await screen.findByRole("checkbox", {
     name: "user1@example.com",
   });
-  await userEvent.selectOptions(
-    screen.getByRole("combobox", {
-      name: Label.USER,
-    }),
-    "user1@example.com",
-  );
-  await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+  await userEvent.click(checkbox);
   expect(setAddIdentities).toHaveBeenCalledWith([
     { email: "johndoe@example.com", addedBy: "admin", source: "local" },
     { email: "user1@example.com", id: "user1" },
@@ -182,10 +183,14 @@ test("can remove identities from the API", async () => {
 });
 
 // eslint-disable-next-line vitest/expect-expect
-test("can display errors", async () => {
+test("can display fetch errors", async () => {
+  mockApiServer.use(
+    getGetIdentitiesMockHandler400(
+      getGetIdentitiesResponseMock400({ message: "Uh oh!" }),
+    ),
+  );
   renderComponent(
     <IdentitiesPanelForm
-      error="Uh oh!"
       addIdentities={[]}
       setAddIdentities={vi.fn()}
       removeIdentities={[]}
@@ -193,4 +198,36 @@ test("can display errors", async () => {
     />,
   );
   await hasNotification("Uh oh!");
+});
+
+test("filter identities", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/identities?filter=identity1")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(
+    <IdentitiesPanelForm
+      addIdentities={[]}
+      setAddIdentities={vi.fn()}
+      removeIdentities={[]}
+      setRemoveIdentities={vi.fn()}
+    />,
+  );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: Label.SELECT,
+    }),
+  );
+  await userEvent.type(
+    within(screen.getByRole("listbox")).getByRole("searchbox"),
+    "identity1{enter}",
+  );
+  await waitFor(() => expect(getDone).toBeTruthy());
 });
