@@ -2,7 +2,6 @@ import type { Role } from "api/api.schemas";
 
 export type Props = {
   addRoles: Role[];
-  error?: string | null;
   existingRoles?: Role[];
   removeRoles: Role[];
   setAddRoles: (addRoles: Role[]) => void;
@@ -10,8 +9,6 @@ export type Props = {
 };
 
 export enum Label {
-  ROLE = "Role name",
-  FORM = "Add role",
+  SELECT = "Select roles",
   REMOVE = "Remove role",
-  SUBMIT = "Add",
 }

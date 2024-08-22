@@ -383,14 +383,15 @@ test("should add and remove roles", async () => {
       name: RolesPanelFormLabel.REMOVE,
     })[0],
   );
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Edit group" })[0],
@@ -398,7 +399,7 @@ test("should add and remove roles", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
   expect(patchResponseBody).toBe(
-    '{"patches":[{"role":"role345","op":"add"},{"role":"role123","op":"remove"}]}',
+    '{"patches":[{"role":"role123","op":"remove"},{"role":"role345","op":"remove"}]}',
   );
   await hasToast('Group "admin" was updated.', "positive");
 });
@@ -417,18 +418,15 @@ test("should handle errors when updating roles", async () => {
   // Wait until the roles have loaded.
   await screen.findByText("3 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "role3",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Edit group" })[0],

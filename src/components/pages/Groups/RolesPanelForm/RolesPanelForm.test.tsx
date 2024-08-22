@@ -1,16 +1,18 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import {
   getGetRolesMockHandler,
+  getGetRolesMockHandler400,
   getGetRolesResponseMock,
+  getGetRolesResponseMock400,
 } from "api/roles/roles.msw";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
 import { hasNotification, renderComponent } from "test/utils";
 
 import RolesPanelForm from "./RolesPanelForm";
-import { Label } from "./types";
 
 const mockApiServer = setupServer(
   getGetRolesMockHandler(
@@ -46,15 +48,16 @@ test("can add roles", async () => {
       setRemoveRoles={vi.fn()}
     />,
   );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
   // Wait for the options to load.
-  await screen.findByRole("option", {
+  const checkbox = await screen.findByRole("checkbox", {
     name: "role3",
   });
-  await userEvent.selectOptions(
-    screen.getByRole("combobox", { name: Label.ROLE }),
-    "role3",
-  );
-  await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+  await userEvent.click(checkbox);
   expect(setAddRoles).toHaveBeenCalledWith([
     { id: "1", name: "viewer" },
     { id: "role345", name: "role3" },
@@ -131,7 +134,7 @@ test("can remove newly added roles", async () => {
     />,
   );
   await userEvent.click(
-    screen.getAllByRole("button", { name: Label.REMOVE })[1],
+    screen.getAllByRole("button", { name: "Remove role" })[1],
   );
   expect(setAddRoles).toHaveBeenCalledWith([{ name: "devops" }]);
 });
@@ -149,7 +152,7 @@ test("can remove roles from the API", async () => {
     />,
   );
   await userEvent.click(
-    screen.getAllByRole("button", { name: Label.REMOVE })[0],
+    screen.getAllByRole("button", { name: "Remove role" })[0],
   );
   expect(setRemoveRoles).toHaveBeenCalledWith([
     { name: "viewer" },
@@ -158,10 +161,14 @@ test("can remove roles from the API", async () => {
 });
 
 // eslint-disable-next-line vitest/expect-expect
-test("can display errors", async () => {
+test("can display fetch errors", async () => {
+  mockApiServer.use(
+    getGetRolesMockHandler400(
+      getGetRolesResponseMock400({ message: "Uh oh!" }),
+    ),
+  );
   renderComponent(
     <RolesPanelForm
-      error="Uh oh!"
       addRoles={[]}
       setAddRoles={vi.fn()}
       removeRoles={[]}
@@ -169,4 +176,37 @@ test("can display errors", async () => {
     />,
   );
   await hasNotification("Uh oh!");
+});
+
+test("filter roles", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    console.log(requestClone.url);
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/roles?filter=role1")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(
+    <RolesPanelForm
+      addRoles={[]}
+      setAddRoles={vi.fn()}
+      removeRoles={[]}
+      setRemoveRoles={vi.fn()}
+    />,
+  );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.type(
+    within(screen.getByRole("listbox")).getByRole("searchbox"),
+    "role1{enter}",
+  );
+  await waitFor(() => expect(getDone).toBeTruthy());
 });

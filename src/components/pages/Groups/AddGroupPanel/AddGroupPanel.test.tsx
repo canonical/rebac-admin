@@ -34,11 +34,11 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { GroupPanelLabel } from "../GroupPanel";
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
-import { Label as RolesPanelFormLabel } from "../RolesPanelForm/types";
 
 import AddGroupPanel from "./AddGroupPanel";
 import { Label } from "./types";
@@ -350,18 +350,15 @@ test("should add roles", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "role3",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create group" })[0],
@@ -385,18 +382,15 @@ test("should handle errors when adding roles", async () => {
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "role3",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create group" })[0],
