@@ -47,11 +47,32 @@ import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
 
 const mockApiServer = setupServer(
+  // Needs to be before getGetIdentitiesMockHandler so that the path matches
+  // `*/groups/:id/identities` before `*/identities`.
+  getGetGroupsItemIdentitiesMockHandler(
+    getGetGroupsItemIdentitiesResponseMock({
+      data: [
+        { id: "user1", email: "user1@example.com" },
+        { id: "user2", email: "user2@example.com" },
+      ],
+    }),
+  ),
   getGetIdentitiesMockHandler(
     getGetIdentitiesResponseMock({
       data: [
         { id: "user1", email: "user1@example.com" },
         { id: "user2", email: "user2@example.com" },
+        { id: "user3", email: "user3@example.com" },
+      ],
+    }),
+  ),
+  // Needs to be before getGetRolesMockHandler so that the path matches this
+  // handler first.
+  getGetGroupsItemRolesMockHandler(
+    getGetGroupsItemRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
       ],
     }),
   ),
@@ -82,23 +103,7 @@ const mockApiServer = setupServer(
     }),
   ),
   getPatchGroupsItemIdentitiesMockHandler(),
-  getGetGroupsItemIdentitiesMockHandler(
-    getGetGroupsItemIdentitiesResponseMock({
-      data: [
-        { id: "user1", email: "user1@example.com" },
-        { id: "user2", email: "user2@example.com" },
-      ],
-    }),
-  ),
   getPatchGroupsItemRolesMockHandler(),
-  getGetGroupsItemRolesMockHandler(
-    getGetGroupsItemRolesResponseMock({
-      data: [
-        { id: "role123", name: "role1" },
-        { id: "role234", name: "role2" },
-      ],
-    }),
-  ),
   getGetGroupsItemMockHandler(
     getGetGroupsItemResponseMock({ id: "admin1", name: "admin" }),
   ),
@@ -200,9 +205,26 @@ test("should add and remove entitlements", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
-  expect(patchResponseBody).toStrictEqual(
-    '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement":"can_edit","entity_id":"moderators","entity_type":"collection"},"op":"remove"}]}',
-  );
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    patches: [
+      {
+        entitlement: {
+          entity_type: "client",
+          entitlement: "can_read",
+          entity_id: "mock-entity-id",
+        },
+        op: "add",
+      },
+      {
+        entitlement: {
+          entitlement: "can_edit",
+          entity_id: "moderators",
+          entity_type: "collection",
+        },
+        op: "remove",
+      },
+    ],
+  });
   await hasToast('Group "admin" was updated.', "positive");
 });
 
@@ -295,27 +317,27 @@ test("should add and remove users", async () => {
       name: IdentitiesPanelFormLabel.REMOVE,
     })[0],
   );
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "user1@example.com",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: IdentitiesPanelFormLabel.USER,
+      name: IdentitiesPanelFormLabel.SELECT,
     }),
-    "user2@example.com",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "user3@example.com",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
-  expect(patchResponseBody).toBe(
-    '{"patches":[{"identity":"user2","op":"add"},{"identity":"user1","op":"remove"}]}',
-  );
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    patches: [
+      { identity: "user3", op: "add" },
+      { identity: "user1", op: "remove" },
+    ],
+  });
   await hasToast('Group "admin" was updated.', "positive");
 });
 
@@ -333,18 +355,15 @@ test("should handle errors when updating users", async () => {
   // Wait until the users have loaded.
   await screen.findByText("2 users");
   await userEvent.click(screen.getByRole("button", { name: /Edit users/ }));
-  // Wait for the options to load.
-  await screen.findByRole("option", {
-    name: "user1@example.com",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: IdentitiesPanelFormLabel.USER,
+      name: IdentitiesPanelFormLabel.SELECT,
     }),
-    "user1@example.com",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: IdentitiesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "user2@example.com",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Edit group" })[0],
@@ -376,7 +395,7 @@ test("should add and remove roles", async () => {
     />,
   );
   // Wait until the roles have loaded.
-  await screen.findByText("3 roles");
+  await screen.findByText("2 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
     screen.getAllByRole("button", {
@@ -398,9 +417,12 @@ test("should add and remove roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   await waitFor(() => expect(patchDone).toBe(true));
-  expect(patchResponseBody).toBe(
-    '{"patches":[{"role":"role123","op":"remove"},{"role":"role345","op":"remove"}]}',
-  );
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    patches: [
+      { role: "role345", op: "add" },
+      { role: "role123", op: "remove" },
+    ],
+  });
   await hasToast('Group "admin" was updated.', "positive");
 });
 
@@ -416,7 +438,7 @@ test("should handle errors when updating roles", async () => {
     />,
   );
   // Wait until the roles have loaded.
-  await screen.findByText("3 roles");
+  await screen.findByText("2 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
     screen.getByRole("combobox", {

@@ -63,6 +63,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
     error: getGroupsItemIdentitiesError,
     data: existingIdentities,
     isFetching: isFetchingExistingIdentities,
+    queryKey: identitiesQueryKey,
   } = useGetGroupsItemIdentities(groupId);
   const {
     mutateAsync: patchGroupsItemIdentities,
@@ -72,7 +73,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
     error: getGroupsItemRolesError,
     data: existingRoles,
     isFetching: isFetchingExistingRoles,
-    queryKey,
+    queryKey: rolesQueryKey,
   } = useGetGroupsItemRoles(groupId);
   const {
     mutateAsync: patchGroupsItemRoles,
@@ -209,7 +210,10 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
         }
         queue.onDone(() => {
           void queryClient.invalidateQueries({
-            queryKey,
+            queryKey: rolesQueryKey,
+          });
+          void queryClient.invalidateQueries({
+            queryKey: identitiesQueryKey,
           });
           close();
           if (hasEntitlementsError) {

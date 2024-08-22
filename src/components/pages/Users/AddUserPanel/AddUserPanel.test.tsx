@@ -28,7 +28,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm";
+import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { hasToast, renderComponent, hasNotification } from "test/utils";
 
 import { UserPanelLabel } from "../UserPanel";

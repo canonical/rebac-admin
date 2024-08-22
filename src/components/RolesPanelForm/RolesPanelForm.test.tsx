@@ -183,7 +183,6 @@ test("filter roles", async () => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
     const requestClone = request.clone();
-    console.log(requestClone.url);
     if (
       requestClone.method === "GET" &&
       requestClone.url.endsWith("/roles?filter=role1")

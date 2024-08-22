@@ -6,7 +6,7 @@ import { vi } from "vitest";
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
-import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm";
+import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
 import UserPanel from "./UserPanel";
