@@ -4,13 +4,18 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
 import UserPanel from "./UserPanel";
 import { Label } from "./types";
 
-const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+const mockApiServer = setupServer(
+  getGetRolesMockHandler(),
+  getGetEntitlementsMockHandler(),
+);
 
 beforeAll(() => {
   mockApiServer.listen();
@@ -48,6 +53,7 @@ test("can submit the form", async () => {
       lastName: "mock last name",
     },
     [],
+    [],
   );
 });
 
@@ -58,6 +64,18 @@ test("submit button is disabled when email is not provided", async () => {
   expect(
     screen.getByRole("button", { name: "Create local user" }),
   ).toBeDisabled();
+});
+
+test("should display the roles form", async () => {
+  renderComponent(
+    <UserPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
+  expect(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should display the entitlements form", async () => {

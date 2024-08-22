@@ -1,10 +1,11 @@
 import { useState } from "react";
 import * as Yup from "yup";
 
-import type { EntityEntitlement } from "api/api.schemas";
+import type { EntityEntitlement, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
+import RolesPanelForm from "components/pages/Groups/RolesPanelForm";
 
 import { FieldName, Label } from "./types";
 import type { FormFields, Props } from "./types";
@@ -14,6 +15,7 @@ const schema = Yup.object().shape({
 });
 
 const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
+  const [addRoles, setAddRoles] = useState<Role[]>([]);
   const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
   );
@@ -27,8 +29,23 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
         [FieldName.FIRST_NAME]: "",
         [FieldName.LAST_NAME]: "",
       }}
-      onSubmit={async (values) => await onSubmit(values, addEntitlements)}
+      onSubmit={async (values) =>
+        await onSubmit(values, addRoles, addEntitlements)
+      }
       subForms={[
+        {
+          count: addRoles.length,
+          entity: "role",
+          icon: "profile",
+          view: (
+            <RolesPanelForm
+              addRoles={addRoles}
+              setAddRoles={setAddRoles}
+              removeRoles={[]}
+              setRemoveRoles={(_roles: Role[]) => {}}
+            />
+          ),
+        },
         {
           count: addEntitlements.length,
           entity: "entitlement",

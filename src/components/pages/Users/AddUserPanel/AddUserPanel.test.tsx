@@ -11,6 +11,8 @@ import {
 import {
   getPatchIdentitiesItemEntitlementsMockHandler,
   getPatchIdentitiesItemEntitlementsMockHandler400,
+  getPatchIdentitiesItemRolesMockHandler,
+  getPatchIdentitiesItemRolesMockHandler400,
   getPostIdentitiesMockHandler,
   getPostIdentitiesMockHandler400,
   getPostIdentitiesResponseMock,
@@ -20,8 +22,13 @@ import {
   getGetResourcesMockHandler,
   getGetResourcesResponseMock,
 } from "api/resources/resources.msw";
+import {
+  getGetRolesMockHandler,
+  getGetRolesResponseMock,
+} from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm";
 import { hasToast, renderComponent, hasNotification } from "test/utils";
 
 import { UserPanelLabel } from "../UserPanel";
@@ -36,7 +43,17 @@ const mockIdentitiesData = getPostIdentitiesResponseMock({
 
 const mockApiServer = setupServer(
   getPostIdentitiesMockHandler(mockIdentitiesData),
+  getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
+  getGetRolesMockHandler(
+    getGetRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+        { id: "role345", name: "role3" },
+      ],
+    }),
+  ),
   getGetEntitlementsMockHandler(
     getGetEntitlementsResponseMock({
       data: [
@@ -121,6 +138,78 @@ test("should handle no identity id error when adding a user", async () => {
     "mock@gmail.com{Enter}",
   );
   await hasToast(Label.IDENTITY_ID_ERROR, NotificationSeverity.NEGATIVE);
+});
+
+test("should add roles", async () => {
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PATCH" &&
+      requestClone.url.endsWith("/identities/user123/roles")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    "test@test.com{Enter}",
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Create local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Create local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBeTruthy());
+  expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
+  await hasToast(
+    'User with email "test@test.com" was created.',
+    NotificationSeverity.POSITIVE,
+  );
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when adding roles", async () => {
+  mockApiServer.use(getPatchIdentitiesItemRolesMockHandler400());
+  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    "test@test.com{Enter}",
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Create local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Create local user" }),
+  );
+  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
 });
 
 test("should add entitlements", async () => {
