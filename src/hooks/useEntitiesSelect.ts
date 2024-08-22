@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 
-export const useEntitiesSelect = (entities: string[]) => {
+export type EntitiesSelect = {
+  handleSelectEntity: (entity: string) => void;
+  handleSelectAllEntities: () => void;
+  selectedEntities: string[];
+  areAllEntitiesSelected: boolean;
+};
+
+export const useEntitiesSelect = (entities: string[]): EntitiesSelect => {
   const [selectedEntities, setSelectedEntities] = useState<string[]>([]);
   const areAllEntitiesSelected = selectedEntities.length === entities.length;
 

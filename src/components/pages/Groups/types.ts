@@ -1,7 +1,5 @@
 export enum Label {
   ADD = "Create group",
-  ACTION_MENU = "Action menu",
-  EDIT = "Edit",
   DELETE = "Delete",
   FETCHING_GROUPS = "Fetching groups data...",
   FETCHING_GROUPS_ERROR = "Couldn't fetch group data.",
