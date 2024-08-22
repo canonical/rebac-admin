@@ -160,17 +160,15 @@ test("should add roles", async () => {
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  await screen.findByRole("option", {
-    name: "role3",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create local user" })[0],
@@ -195,17 +193,15 @@ test("should handle errors when adding roles", async () => {
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
-  await screen.findByRole("option", {
-    name: "role3",
-  });
-  await userEvent.selectOptions(
+  await userEvent.click(
     screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.ROLE,
+      name: RolesPanelFormLabel.SELECT,
     }),
-    "role3",
   );
   await userEvent.click(
-    screen.getByRole("button", { name: RolesPanelFormLabel.SUBMIT }),
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
   );
   await userEvent.click(
     screen.getAllByRole("button", { name: "Create local user" })[0],

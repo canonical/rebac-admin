@@ -72,7 +72,9 @@ test("should display the roles form", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   expect(
-    screen.getByRole("form", { name: RolesPanelFormLabel.FORM }),
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
   ).toBeInTheDocument();
 });
 
