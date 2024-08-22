@@ -25,9 +25,9 @@ const roleMatches = (role: Role, search: string) =>
 
 const RolesPanelForm = ({
   existingRoles,
-  addRoles,
+  addRoles = [],
   setAddRoles,
-  removeRoles,
+  removeRoles = [],
   setRemoveRoles,
 }: Props) => {
   const [filter, setFilter] = useState("");
@@ -45,7 +45,7 @@ const RolesPanelForm = ({
       error={error?.response?.data.message}
       existingEntities={existingRoles}
       form={
-        <>
+        <fieldset>
           <h5>Add roles</h5>
           <MultiSelectField
             addEntities={addRoles}
@@ -67,7 +67,11 @@ const RolesPanelForm = ({
             setAddEntities={setAddRoles}
             setRemoveEntities={setRemoveRoles}
           />
-        </>
+          <p className="p-form-help-text u-no-margin--bottom">
+            Select roles in this multiselect dropdown. Selected roles will
+            appear in the table below.
+          </p>
+        </fieldset>
       }
       generateCells={({ name }) => ({ name })}
       removeEntities={removeRoles}

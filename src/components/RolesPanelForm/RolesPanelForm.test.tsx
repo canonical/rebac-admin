@@ -9,7 +9,7 @@ import {
   getGetRolesResponseMock,
   getGetRolesResponseMock400,
 } from "api/roles/roles.msw";
-import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { hasNotification, renderComponent } from "test/utils";
 
 import RolesPanelForm from "./RolesPanelForm";
