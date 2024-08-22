@@ -5,10 +5,10 @@ import * as Yup from "yup";
 import type { EntityEntitlement, Identity, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
+import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
-import RolesPanelForm from "../RolesPanelForm";
 
 import type { FormFields } from "./types";
 import { FieldName, Label, type Props } from "./types";

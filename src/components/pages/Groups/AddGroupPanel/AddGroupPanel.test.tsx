@@ -34,7 +34,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { hasNotification, hasToast, renderComponent } from "test/utils";
 
 import { GroupPanelLabel } from "../GroupPanel";

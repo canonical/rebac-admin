@@ -7,7 +7,7 @@ import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw
 import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
-import { Label as RolesPanelFormLabel } from "components/pages/Groups/RolesPanelForm/types";
+import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";

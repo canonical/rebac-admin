@@ -15,6 +15,7 @@ import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import AccountManagementTab from "components/pages/Users/AccountManagementTab";
 import EntitlementsTab from "components/pages/Users/EntitlementsTab";
+import RolesTab from "components/pages/Users/RolesTab";
 import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
@@ -114,7 +115,7 @@ const ReBACAdmin = ({
               />
               <Route
                 path={urls.users.user.roles(null)}
-                element={<>Roles{/* TODO: display user roles */}</>}
+                element={<RolesTab />}
               />
               <Route
                 path={urls.users.user.entitlements(null)}
