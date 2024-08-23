@@ -9,8 +9,14 @@ import {
   getGetEntitlementsResponseMock,
 } from "api/entitlements/entitlements.msw";
 import {
+  getGetGroupsMockHandler,
+  getGetGroupsResponseMock,
+} from "api/groups/groups.msw";
+import {
   getPatchIdentitiesItemEntitlementsMockHandler,
   getPatchIdentitiesItemEntitlementsMockHandler400,
+  getPatchIdentitiesItemGroupsMockHandler,
+  getPatchIdentitiesItemGroupsMockHandler400,
   getPatchIdentitiesItemRolesMockHandler,
   getPatchIdentitiesItemRolesMockHandler400,
   getPostIdentitiesMockHandler,
@@ -28,6 +34,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { hasToast, renderComponent, hasNotification } from "test/utils";
 
@@ -43,8 +50,18 @@ const mockIdentitiesData = getPostIdentitiesResponseMock({
 
 const mockApiServer = setupServer(
   getPostIdentitiesMockHandler(mockIdentitiesData),
+  getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
+  getGetGroupsMockHandler(
+    getGetGroupsResponseMock({
+      data: [
+        { id: "group1", name: "global" },
+        { id: "group2", name: "administrator" },
+        { id: "group3", name: "viewer" },
+      ],
+    }),
+  ),
   getGetRolesMockHandler(
     getGetRolesResponseMock({
       data: [
@@ -138,6 +155,78 @@ test("should handle no identity id error when adding a user", async () => {
     "mock@gmail.com{Enter}",
   );
   await hasToast(Label.IDENTITY_ID_ERROR, NotificationSeverity.NEGATIVE);
+});
+
+test("should add groups", async () => {
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PATCH" &&
+      requestClone.url.endsWith("/identities/user123/groups")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    "test@test.com{Enter}",
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: GroupsPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "global",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Create local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Create local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBeTruthy());
+  expect(patchResponseBody).toBe('{"patches":[{"group":"group1","op":"add"}]}');
+  await hasToast(
+    'User with email "test@test.com" was created.',
+    NotificationSeverity.POSITIVE,
+  );
+});
+
+// eslint-disable-next-line vitest/expect-expect
+test("should handle errors when adding groups", async () => {
+  mockApiServer.use(getPatchIdentitiesItemGroupsMockHandler400());
+  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    "test@test.com{Enter}",
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: GroupsPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "global",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Create local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Create local user" }),
+  );
+  await hasToast(Label.GROUPS_ERROR, NotificationSeverity.NEGATIVE);
 });
 
 test("should add roles", async () => {

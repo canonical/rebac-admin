@@ -4,8 +4,10 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
+import { getGetGroupsMockHandler } from "api/groups/groups.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
@@ -13,6 +15,7 @@ import UserPanel from "./UserPanel";
 import { Label } from "./types";
 
 const mockApiServer = setupServer(
+  getGetGroupsMockHandler(),
   getGetRolesMockHandler(),
   getGetEntitlementsMockHandler(),
 );
@@ -54,6 +57,7 @@ test("can submit the form", async () => {
     },
     [],
     [],
+    [],
   );
 });
 
@@ -64,6 +68,18 @@ test("submit button is disabled when email is not provided", async () => {
   expect(
     screen.getByRole("button", { name: "Create local user" }),
   ).toBeDisabled();
+});
+
+test("should display the groups form", async () => {
+  renderComponent(
+    <UserPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
+  expect(
+    screen.getByRole("combobox", {
+      name: GroupsPanelFormLabel.SELECT,
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should display the roles form", async () => {

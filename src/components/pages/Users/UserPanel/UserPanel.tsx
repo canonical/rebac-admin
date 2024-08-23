@@ -1,9 +1,10 @@
 import { useState } from "react";
 import * as Yup from "yup";
 
-import type { EntityEntitlement, Role } from "api/api.schemas";
+import type { EntityEntitlement, Group, Role } from "api/api.schemas";
 import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
+import GroupsPanelForm from "components/GroupsPanelForm/GroupsPanelForm";
 import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
@@ -15,6 +16,7 @@ const schema = Yup.object().shape({
 });
 
 const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
+  const [addGroups, setAddGroups] = useState<Group[]>([]);
   const [addRoles, setAddRoles] = useState<Role[]>([]);
   const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
@@ -30,9 +32,22 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
         [FieldName.LAST_NAME]: "",
       }}
       onSubmit={async (values) =>
-        await onSubmit(values, addRoles, addEntitlements)
+        await onSubmit(values, addGroups, addRoles, addEntitlements)
       }
       subForms={[
+        {
+          count: addGroups.length,
+          entity: "group",
+          icon: "user-group",
+          view: (
+            <GroupsPanelForm
+              addGroups={addGroups}
+              setAddGroups={setAddGroups}
+              removeGroups={[]}
+              setRemoveGroups={(_groups: Group[]) => {}}
+            />
+          ),
+        },
         {
           count: addRoles.length,
           entity: "role",
