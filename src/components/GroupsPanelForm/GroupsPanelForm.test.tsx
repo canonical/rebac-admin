@@ -19,8 +19,8 @@ const mockApiServer = setupServer(
   getGetGroupsMockHandler(
     getGetGroupsResponseMock({
       data: [
-        mockGroup({ id: "group1", name: "global" }),
-        mockGroup({ id: "group2", name: "administrator" }),
+        mockGroup({ id: "group1" }),
+        mockGroup({ id: "group2" }),
         mockGroup({ id: "group3", name: "viewer" }),
       ],
     }),
@@ -186,7 +186,7 @@ test("filter groups", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/groups?filter=global")
+      requestClone.url.endsWith("/groups?filter=viewer")
     ) {
       getDone = true;
     }
@@ -206,7 +206,7 @@ test("filter groups", async () => {
   );
   await userEvent.type(
     within(screen.getByRole("listbox")).getByRole("searchbox"),
-    "global{enter}",
+    "viewer{enter}",
   );
   await waitFor(() => expect(getDone).toBeTruthy());
 });

@@ -58,8 +58,8 @@ const mockApiServer = setupServer(
     getGetGroupsResponseMock({
       data: [
         mockGroup({ id: "group1", name: "global" }),
-        mockGroup({ id: "group2", name: "administrator" }),
-        mockGroup({ id: "group3", name: "viewer" }),
+        mockGroup({ id: "group2" }),
+        mockGroup({ id: "group3" }),
       ],
     }),
   ),
