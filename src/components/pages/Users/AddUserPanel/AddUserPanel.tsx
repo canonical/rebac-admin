@@ -4,10 +4,12 @@ import reactHotToast from "react-hot-toast";
 
 import {
   IdentityEntitlementsPatchItemAllOfOp,
+  IdentityGroupsPatchItemOp,
   IdentityRolesPatchItemOp,
 } from "api/api.schemas";
 import {
   usePatchIdentitiesItemEntitlements,
+  usePatchIdentitiesItemGroups,
   usePatchIdentitiesItemRoles,
   usePostIdentities,
 } from "api/identities/identities";
@@ -28,6 +30,10 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
     isPending: isPostIdentitiesPending,
   } = usePostIdentities();
   const {
+    mutateAsync: patchIdentitiesItemGroups,
+    isPending: isPatchIdentitiesItemGroupsPending,
+  } = usePatchIdentitiesItemGroups();
+  const {
     mutateAsync: patchIdentitiesItemRoles,
     isPending: isPatchIdentitiesItemRolesPending,
   } = usePatchIdentitiesItemRoles();
@@ -42,6 +48,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
       setPanelWidth={setPanelWidth}
       isSaving={
         isPostIdentitiesPending ||
+        isPatchIdentitiesItemGroupsPending ||
         isPatchIdentitiesItemRolesPending ||
         isPatchIdentitiesItemEntitlementsPending
       }
@@ -52,10 +59,12 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
       }
       onSubmit={async (
         { email, firstName, lastName },
+        addGroups,
         addRoles,
         addEntitlements,
       ) => {
         let hasIdentityIdError = false;
+        let hasGroupsError = false;
         let hasRolesError = false;
         let hasEntitlementsError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
@@ -71,6 +80,24 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           });
           const identityId = identity.id;
           if (identityId) {
+            if (addGroups.length) {
+              queue.push(async (done) => {
+                try {
+                  await patchIdentitiesItemGroups({
+                    id: identityId,
+                    data: {
+                      patches: getIds(addGroups).map((id) => ({
+                        group: id,
+                        op: IdentityGroupsPatchItemOp.add,
+                      })),
+                    },
+                  });
+                } catch (error) {
+                  hasGroupsError = true;
+                }
+                done();
+              });
+            }
             if (addRoles.length) {
               queue.push(async (done) => {
                 try {
@@ -123,6 +150,13 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
                 {Label.IDENTITY_ID_ERROR}
+              </ToastCard>
+            ));
+          }
+          if (hasGroupsError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.GROUPS_ERROR}
               </ToastCard>
             ));
           }

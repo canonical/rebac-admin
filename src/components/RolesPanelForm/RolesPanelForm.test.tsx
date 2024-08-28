@@ -9,10 +9,10 @@ import {
   getGetRolesResponseMock,
   getGetRolesResponseMock400,
 } from "api/roles/roles.msw";
-import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { hasNotification, renderComponent } from "test/utils";
 
 import RolesPanelForm from "./RolesPanelForm";
+import { Label as RolesPanelFormLabel } from "./types";
 
 const mockApiServer = setupServer(
   getGetRolesMockHandler(
@@ -134,7 +134,7 @@ test("can remove newly added roles", async () => {
     />,
   );
   await userEvent.click(
-    screen.getAllByRole("button", { name: "Remove role" })[1],
+    screen.getAllByRole("button", { name: RolesPanelFormLabel.REMOVE })[1],
   );
   expect(setAddRoles).toHaveBeenCalledWith([{ name: "devops" }]);
 });
@@ -152,7 +152,7 @@ test("can remove roles from the API", async () => {
     />,
   );
   await userEvent.click(
-    screen.getAllByRole("button", { name: "Remove role" })[0],
+    screen.getAllByRole("button", { name: RolesPanelFormLabel.REMOVE })[0],
   );
   expect(setRemoveRoles).toHaveBeenCalledWith([
     { name: "viewer" },
