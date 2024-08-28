@@ -1,3 +1,4 @@
+import { Spinner } from "@canonical/react-components";
 import { useState } from "react";
 import * as Yup from "yup";
 
@@ -15,24 +16,49 @@ const schema = Yup.object().shape({
   [FieldName.EMAIL]: Yup.string().required("Required"),
 });
 
-const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
+const UserPanel = ({
+  existingEntitlements,
+  isEditing,
+  isFetchingExistingEntitlements,
+  isFetchingUser,
+  user,
+  onSubmit,
+  isSaving,
+  ...props
+}: Props) => {
   const [addGroups, setAddGroups] = useState<Group[]>([]);
   const [addRoles, setAddRoles] = useState<Role[]>([]);
   const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
   );
+  const [removeEntitlements, setRemoveEntitlements] = useState<
+    EntityEntitlement[]
+  >([]);
   return (
     <SubFormPanel<FormFields>
       {...props}
-      submitEnabled={!!addEntitlements.length}
+      submitEnabled={
+        !!addGroups.length ||
+        !!addRoles.length ||
+        !!addEntitlements.length ||
+        !!removeEntitlements.length
+      }
       entity="local user"
       initialValues={{
-        [FieldName.EMAIL]: "",
-        [FieldName.FIRST_NAME]: "",
-        [FieldName.LAST_NAME]: "",
+        [FieldName.EMAIL]: user?.email ?? "",
+        [FieldName.FIRST_NAME]: user?.firstName ?? "",
+        [FieldName.LAST_NAME]: user?.lastName ?? "",
       }}
+      isEditing={isEditing}
+      isFetching={isFetchingUser}
       onSubmit={async (values) =>
-        await onSubmit(values, addGroups, addRoles, addEntitlements)
+        await onSubmit(
+          values,
+          addGroups,
+          addRoles,
+          addEntitlements,
+          removeEntitlements,
+        )
       }
       subForms={[
         {
@@ -62,14 +88,21 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
           ),
         },
         {
-          count: addEntitlements.length,
+          count:
+            (existingEntitlements?.length ?? 0) +
+            addEntitlements.length -
+            removeEntitlements.length,
           entity: "entitlement",
           icon: "lock-locked",
-          view: (
+          view: isFetchingExistingEntitlements ? (
+            <Spinner />
+          ) : (
             <EntitlementsPanelForm
               addEntitlements={addEntitlements}
+              existingEntitlements={existingEntitlements}
+              removeEntitlements={removeEntitlements}
               setAddEntitlements={setAddEntitlements}
-              setRemoveEntitlements={(_entitlements: EntityEntitlement[]) => {}}
+              setRemoveEntitlements={setRemoveEntitlements}
             />
           ),
         },
@@ -78,19 +111,24 @@ const UserPanel = ({ onSubmit, isSaving, ...props }: Props) => {
     >
       <h5>Personal details</h5>
       <CleanFormikField
+        disabled={isEditing}
         label={Label.EMAIL}
         name={FieldName.EMAIL}
-        takeFocus={true}
+        takeFocus={!isEditing}
         type="email"
       />
       <CleanFormikField
+        disabled={isEditing}
         label={Label.FIRST_NAME}
         name={FieldName.FIRST_NAME}
+        takeFocus={!isEditing}
         type="text"
       />
       <CleanFormikField
+        disabled={isEditing}
         label={Label.LAST_NAME}
         name={FieldName.LAST_NAME}
+        takeFocus={!isEditing}
         type="text"
       />
     </SubFormPanel>

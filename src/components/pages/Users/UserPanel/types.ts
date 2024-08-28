@@ -1,4 +1,4 @@
-import type { EntityEntitlement, Group, Role } from "api/api.schemas";
+import type { EntityEntitlement, Group, Identity, Role } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
@@ -17,12 +17,18 @@ export type FormFields = {
 export type Props = {
   close: SubFormPanelProps<FormFields>["close"];
   error?: SubFormPanelProps<FormFields>["error"];
+  existingEntitlements?: EntityEntitlement[];
+  isFetchingExistingEntitlements?: boolean;
+  isEditing?: boolean;
+  isFetchingUser?: boolean;
   onSubmit: (
     values: FormFields,
     addGroups: Group[],
     addRoles: Role[],
     addEntitlements: EntityEntitlement[],
+    removeEntitlements: EntityEntitlement[],
   ) => Promise<void>;
+  user?: Identity | null;
   setPanelWidth: SetPanelWidth;
   isSaving?: boolean;
 };

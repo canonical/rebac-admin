@@ -237,7 +237,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
               </ToastCard>
             ));
           }
-          if (!hasIdentitiesError && !hasEntitlementsError) {
+          if (!hasIdentitiesError && !hasEntitlementsError && !hasRolesError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
                 {`Group "${group?.name}" was updated.`}
