@@ -36,6 +36,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { mockGroup } from "mocks/groups";
 import { hasToast, renderComponent, hasNotification } from "test/utils";
 
 import { UserPanelLabel } from "../UserPanel";
@@ -56,9 +57,9 @@ const mockApiServer = setupServer(
   getGetGroupsMockHandler(
     getGetGroupsResponseMock({
       data: [
-        { id: "group1", name: "global" },
-        { id: "group2", name: "administrator" },
-        { id: "group3", name: "viewer" },
+        mockGroup({ id: "group1", name: "global" }),
+        mockGroup({ id: "group2", name: "administrator" }),
+        mockGroup({ id: "group3", name: "viewer" }),
       ],
     }),
   ),

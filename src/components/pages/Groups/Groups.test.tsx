@@ -16,6 +16,7 @@ import { EntityTableLabel } from "components/EntityTable";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { mockGroup } from "mocks/groups";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
@@ -24,9 +25,9 @@ import { Label as GroupsLabel, Label } from "./types";
 
 const mockGroupsData = getGetGroupsResponseMock({
   data: [
-    { id: "group1", name: "global" },
-    { id: "group2", name: "administrator" },
-    { id: "group3", name: "viewer" },
+    mockGroup({ id: "group1", name: "global" }),
+    mockGroup({ id: "group2", name: "administrator" }),
+    mockGroup({ id: "group3", name: "viewer" }),
   ],
 });
 const mockApiServer = setupServer(
@@ -125,9 +126,6 @@ test("should display error notification and refetch data", async () => {
 });
 
 test("displays the add panel", async () => {
-  mockApiServer.use(
-    getGetGroupsMockHandler(getGetGroupsResponseMock({ data: [] })),
-  );
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
       <aside id="aside-panel"></aside>

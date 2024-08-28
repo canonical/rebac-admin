@@ -10,6 +10,7 @@ import {
   getGetGroupsResponseMock400,
 } from "api/groups/groups.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { mockGroup } from "mocks/groups";
 import { hasNotification, renderComponent } from "test/utils";
 
 import GroupsPanelForm from "./GroupsPanelForm";
@@ -18,9 +19,9 @@ const mockApiServer = setupServer(
   getGetGroupsMockHandler(
     getGetGroupsResponseMock({
       data: [
-        { id: "group1", name: "global" },
-        { id: "group2", name: "administrator" },
-        { id: "group3", name: "viewer" },
+        mockGroup({ id: "group1", name: "global" }),
+        mockGroup({ id: "group2", name: "administrator" }),
+        mockGroup({ id: "group3", name: "viewer" }),
       ],
     }),
   ),
