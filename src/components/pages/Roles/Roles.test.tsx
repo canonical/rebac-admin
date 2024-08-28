@@ -11,6 +11,7 @@ import {
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
 import { EntityTableLabel } from "components/EntityTable";
+import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePagination";
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
@@ -85,6 +86,26 @@ test("search roles", async () => {
   });
   renderComponent(<Roles />);
   await userEvent.type(screen.getByRole("searchbox"), "role1{enter}");
+  await waitFor(() => expect(getDone).toBeTruthy());
+});
+
+test("paginates", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/roles?page=1&size=5")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(<Roles />);
+
+  await userEvent.click(
+    screen.getByRole("button", { name: EntityTablePaginationLabel.NEXT_PAGE }),
+  );
   await waitFor(() => expect(getDone).toBeTruthy());
 });
 

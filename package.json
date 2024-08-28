@@ -62,6 +62,7 @@
   "dependencies": {
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",
+    "lodash.isequal": "4.5.0",
     "loglevel": "1.9.1",
     "react-hot-toast": "2.4.1"
   },
@@ -104,7 +105,6 @@
     "formik": "2.4.6",
     "happy-dom": "14.10.1",
     "ip": "2.0.1",
-    "lodash.isequal": "4.5.0",
     "msw": "2.3.0",
     "npm-package-json-lint": "7.1.0",
     "orval": "6.28.2",

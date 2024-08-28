@@ -8,6 +8,7 @@ import {
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
+import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePagination";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
@@ -83,6 +84,25 @@ test("search users", async () => {
   });
   renderComponent(<Users />);
   await userEvent.type(screen.getByRole("searchbox"), "joe{enter}");
+  await waitFor(() => expect(getDone).toBeTruthy());
+});
+
+test("paginates", async () => {
+  let getDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "GET" &&
+      requestClone.url.endsWith("/identities?page=1&size=5")
+    ) {
+      getDone = true;
+    }
+  });
+  renderComponent(<Users />);
+  await userEvent.click(
+    screen.getByRole("button", { name: EntityTablePaginationLabel.NEXT_PAGE }),
+  );
   await waitFor(() => expect(getDone).toBeTruthy());
 });
 

@@ -12,6 +12,21 @@ type Entity = {
   name: string;
 };
 
+const pagination = {
+  hasNextPage: true,
+  hasPreviousPage: true,
+  nextPage: vi.fn(),
+  pageData: {
+    page: 0,
+    size: 10,
+  },
+  previousPage: vi.fn(),
+  setPage: vi.fn(),
+  resetPage: vi.fn(),
+  setResponse: vi.fn(),
+  setSize: vi.fn(),
+};
+
 test("it appends checkbox and actions headers", async () => {
   renderComponent(
     <EntityTable<Entity>
@@ -27,6 +42,7 @@ test("it appends checkbox and actions headers", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={vi.fn()}
       onEdit={vi.fn()}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),
@@ -66,6 +82,7 @@ test("displays the indeterminate state in the header", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={vi.fn()}
       onEdit={vi.fn()}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),
@@ -96,6 +113,7 @@ test("displays checkbox and actions", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={vi.fn()}
       onEdit={vi.fn()}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),
@@ -129,6 +147,7 @@ test("calls the onEdit prop", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={vi.fn()}
       onEdit={onEdit}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),
@@ -160,6 +179,7 @@ test("calls the onDelete prop", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={onDelete}
       onEdit={vi.fn()}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),
@@ -190,6 +210,7 @@ test("can disable the checkboxes", async () => {
       generateColumns={({ name }) => ({ name })}
       onDelete={vi.fn()}
       onEdit={vi.fn()}
+      pagination={pagination}
       selected={{
         handleSelectEntity: vi.fn(),
         handleSelectAllEntities: vi.fn(),

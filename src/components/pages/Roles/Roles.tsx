@@ -10,6 +10,7 @@ import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { useDeleteModal } from "hooks/useDeleteModal";
+import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
@@ -27,9 +28,12 @@ const COLUMN_DATA = [
 
 const Roles = () => {
   const [filter, setFilter] = useState("");
+  const pagination = usePagination();
   const { data, isFetching, isError, error, refetch } = useGetRoles({
     filter: filter || undefined,
+    ...pagination.pageData,
   });
+  pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRole?: Role | null;
   }>((closePanel, data, setPanelWidth) => {
@@ -92,6 +96,7 @@ const Roles = () => {
           })}
           onDelete={(role) => role.id && openModal([role.id])}
           onEdit={(role) => openPanel({ editRole: role })}
+          pagination={pagination}
           selected={selected}
         />
       );

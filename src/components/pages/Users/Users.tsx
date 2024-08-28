@@ -9,6 +9,7 @@ import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
 import { useDeleteModal } from "hooks/useDeleteModal";
+import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
 import urls from "urls";
 import { getIds } from "utils/getIds";
@@ -42,9 +43,13 @@ const COLUMN_DATA = [
 
 const Users = () => {
   const [filter, setFilter] = useState("");
-  const { data, isFetching, isError, error, refetch } = useGetIdentities({
-    filter: filter || undefined,
-  });
+  const pagination = usePagination();
+  const { data, isFetching, isError, isRefetching, error, refetch } =
+    useGetIdentities({
+      filter: filter || undefined,
+      ...pagination.pageData,
+    });
+  pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editIdentityId?: string | null;
   }>((closePanel, data, setPanelWidth) => {
@@ -70,7 +75,7 @@ const Users = () => {
   );
 
   const generateContent = (): JSX.Element => {
-    if (isFetching) {
+    if (isFetching && !isRefetching) {
       return <Spinner text={Label.FETCHING_USERS} />;
     } else if (isError) {
       return (
@@ -105,6 +110,7 @@ const Users = () => {
           }}
           onDelete={(user) => user.id && openModal([user.id])}
           onEdit={(user) => openPanel({ editIdentityId: user.id })}
+          pagination={pagination}
           selected={selected}
         />
       );
