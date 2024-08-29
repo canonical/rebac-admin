@@ -10,6 +10,7 @@ import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
 import { useDeleteModal } from "hooks/useDeleteModal";
+import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
@@ -27,9 +28,12 @@ const COLUMN_DATA = [
 
 const Groups = () => {
   const [filter, setFilter] = useState("");
+  const pagination = usePagination();
   const { data, isFetching, isError, error, refetch } = useGetGroups({
     filter: filter || undefined,
+    ...pagination.pageData,
   });
+  pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroup?: Group | null;
   }>((closePanel, data, setPanelWidth) => {
@@ -92,6 +96,7 @@ const Groups = () => {
           })}
           onDelete={(group) => group.id && openModal([group.id])}
           onEdit={(group) => openPanel({ editGroup: group })}
+          pagination={pagination}
           selected={selected}
         />
       );

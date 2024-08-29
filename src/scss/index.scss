@@ -1,5 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 @include vanilla;
+@include vf-p-icon-back-to-top;
 @include vf-p-icon-edit;
 @include vf-p-icon-user-group;
 @include vf-p-icon-lock-locked;
@@ -10,4 +11,8 @@
 
 .l-application .l-aside.is-medium {
   width: 45rem;
+}
+
+.p-icon--rotate-270 {
+  transform: rotate(270deg);
 }

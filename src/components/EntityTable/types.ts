@@ -5,6 +5,7 @@ import type {
 import type { ReactNode } from "react";
 
 import type { EntitiesSelect } from "hooks/useEntitiesSelect";
+import type { PaginationParams } from "hooks/usePagination";
 
 export type TableEntity = {
   id?: string;
@@ -17,6 +18,7 @@ export type Props<E extends TableEntity> = PropsWithSpread<
     generateColumns: (entity: E) => Record<string, ReactNode>;
     onDelete: (entity: E) => void;
     onEdit: (entity: E) => void;
+    pagination: PaginationParams;
     selected: EntitiesSelect;
   },
   Omit<

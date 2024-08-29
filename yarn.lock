@@ -1873,9 +1873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@canonical/react-components@npm:1.2.0"
+"@canonical/react-components@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@canonical/react-components@npm:1.2.1"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -1889,13 +1889,13 @@ __metadata:
     react-table: "npm:7.8.0"
     react-useportal: "npm:1.0.19"
   peerDependencies:
-    "@types/react": ^17.0.2 || ^18.0.0
-    "@types/react-dom": ^17.0.2 || ^18.0.0
+    "@types/react": ^18.0.0
+    "@types/react-dom": ^18.0.0
     formik: ^2.4.5
-    react: ^17.0.2 || ^18.0.0
-    react-dom: ^17.0.2 || ^18.0.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/71dd39654b87f60b45828b3c5059619adb9b68f22424f7fdc84a719cc6d8c3c1899ccf5eaa0fe06a5777888e513c625e7f050d87403d8f3a20edde3905f7961d
+  checksum: 10c0/f510bd3760c70cd7b66aaeeadd8c8507bb0e3ac9a97ce7502ca9ae5149b7da57089cc306baed74bce24924c5abe63da78e61932ee304a7a6cbce04086f2e8255
   languageName: node
   linkType: hard
 
@@ -1903,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@canonical/rebac-admin@workspace:."
   dependencies:
-    "@canonical/react-components": "npm:1.2.0"
+    "@canonical/react-components": "npm:1.2.1"
     "@faker-js/faker": "npm:8.4.1"
     "@mswjs/http-middleware": "npm:0.10.1"
     "@tanstack/eslint-plugin-query": "npm:5.32.1"
@@ -1970,7 +1970,7 @@ __metadata:
     vitest: "npm:1.6.0"
     yup: "npm:1.4.0"
   peerDependencies:
-    "@canonical/react-components": ^1.2.0
+    "@canonical/react-components": ^1.2.1
     "@tanstack/react-query": ^5.24.7
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
