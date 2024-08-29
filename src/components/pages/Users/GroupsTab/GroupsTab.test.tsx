@@ -16,6 +16,7 @@ import {
   getGetIdentitiesItemGroupsMockHandler400,
 } from "api/identities/identities.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { mockGroup } from "mocks/groups";
 import { hasNotification, hasSpinner, renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";
@@ -30,18 +31,15 @@ const mockApiServer = setupServer(
   getPatchIdentitiesItemGroupsMockHandler(),
   getGetIdentitiesItemGroupsMockHandler(
     getGetIdentitiesItemGroupsResponseMock({
-      data: [
-        { id: "group123", name: "group1" },
-        { id: "group234", name: "group2" },
-      ],
+      data: [mockGroup({ id: "group123" }), mockGroup()],
     }),
   ),
   getGetGroupsMockHandler(
     getGetGroupsResponseMock({
       data: [
-        { id: "group123", name: "group1" },
-        { id: "group234", name: "group2" },
-        { id: "group345", name: "group3" },
+        mockGroup(),
+        mockGroup(),
+        mockGroup({ id: "group345", name: "group3" }),
       ],
     }),
   ),
