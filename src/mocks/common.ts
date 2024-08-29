@@ -5,11 +5,10 @@ import type { Response } from "api/api.schemas";
 export const mockResponse = (overrides?: Partial<Response>): Response => ({
   _links: {
     next: {
-      href: faker.word.sample(),
+      href: "",
     },
   },
   _meta: {
-    page: faker.number.int(),
     size: faker.number.int(),
   },
   message: faker.word.sample(),

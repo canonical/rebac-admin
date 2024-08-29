@@ -101,7 +101,7 @@ const EntityTable = <E extends TableEntity>({
   );
   return (
     <>
-      {<EntityTablePagination pagination={pagination} />}
+      <EntityTablePagination pagination={pagination} />
       <ModularTable
         {...props}
         columns={allColumns}

@@ -25,10 +25,15 @@ import Groups from "./Groups";
 import { Label as GroupsLabel, Label } from "./types";
 
 const mockGroupsData = getGetGroupsResponseMock({
+  _meta: {
+    page: 0,
+    size: 10,
+  },
   data: [
     mockGroup({ id: "group1", name: "global" }),
     mockGroup({ id: "group2", name: "administrator" }),
     mockGroup({ id: "group3", name: "viewer" }),
+    ...Array.from({ length: 8 }, mockGroup),
   ],
 });
 const mockApiServer = setupServer(
@@ -69,7 +74,7 @@ test("should display correct group data after fetching groups", async () => {
   const rows = await screen.findAllByRole("row");
   // The first row contains the column header and the next 3 rows contain
   // group data.
-  expect(rows).toHaveLength(4);
+  expect(rows).toHaveLength(12);
   expect(within(rows[1]).getAllByRole("cell")[1]).toHaveTextContent("global");
   expect(within(rows[2]).getAllByRole("cell")[1]).toHaveTextContent(
     "administrator",
@@ -84,7 +89,7 @@ test("search groups", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/groups?filter=group1")
+      requestClone.url.endsWith("/groups?filter=group1&size=10&page=0")
     ) {
       getDone = true;
     }
@@ -101,15 +106,16 @@ test("paginates", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/groups?page=1&size=5")
+      requestClone.url.endsWith("/groups?size=10&page=1")
     ) {
       getDone = true;
     }
   });
   renderComponent(<Groups />);
-
   await userEvent.click(
-    screen.getByRole("button", { name: EntityTablePaginationLabel.NEXT_PAGE }),
+    await screen.findByRole("button", {
+      name: EntityTablePaginationLabel.NEXT_PAGE,
+    }),
   );
   await waitFor(() => expect(getDone).toBeTruthy());
 });
@@ -143,7 +149,7 @@ test("should display error notification and refetch data", async () => {
     await screen.findByText(GroupsLabel.FETCHING_GROUPS),
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
-  expect(rows).toHaveLength(4);
+  expect(rows).toHaveLength(12);
 });
 
 test("displays the add panel", async () => {

@@ -20,7 +20,7 @@ const EntityTablePagination = ({ pagination }: Props) => {
         // The API uses zero indexed page numbers so reduce the count by 1.
         page > 0 && pagination.setPage(page - 1)
       }
-      onNextPage={() => pagination.nextPage()}
+      onNextPage={pagination.nextPage}
       onPreviousPage={() => {
         if (pagination.previousPage) {
           pagination.previousPage?.();

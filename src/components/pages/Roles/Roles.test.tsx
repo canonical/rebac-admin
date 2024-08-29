@@ -15,6 +15,7 @@ import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePa
 import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { mockRole } from "mocks/roles";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
@@ -22,10 +23,15 @@ import Roles from "./Roles";
 import { Label, Label as RolesLabel } from "./types";
 
 const mockRolesData = getGetRolesResponseMock({
+  _meta: {
+    page: 0,
+    size: 10,
+  },
   data: [
     { id: "role1", name: "global" },
     { id: "role2", name: "administrator" },
     { id: "role3", name: "viewer" },
+    ...Array.from({ length: 8 }, mockRole),
   ],
 });
 const mockApiServer = setupServer(
@@ -64,7 +70,7 @@ test("should display correct role data after fetching roles", async () => {
   const rows = await screen.findAllByRole("row");
   // The first row contains the column header and the next 3 rows contain
   // role data.
-  expect(rows).toHaveLength(4);
+  expect(rows).toHaveLength(12);
   expect(within(rows[1]).getAllByRole("cell")[1]).toHaveTextContent("global");
   expect(within(rows[2]).getAllByRole("cell")[1]).toHaveTextContent(
     "administrator",
@@ -79,7 +85,7 @@ test("search roles", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/roles?filter=role1")
+      requestClone.url.endsWith("/roles?filter=role1&size=10&page=0")
     ) {
       getDone = true;
     }
@@ -96,7 +102,7 @@ test("paginates", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/roles?page=1&size=5")
+      requestClone.url.endsWith("/roles?size=10&page=1")
     ) {
       getDone = true;
     }
@@ -104,7 +110,9 @@ test("paginates", async () => {
   renderComponent(<Roles />);
 
   await userEvent.click(
-    screen.getByRole("button", { name: EntityTablePaginationLabel.NEXT_PAGE }),
+    await screen.findByRole("button", {
+      name: EntityTablePaginationLabel.NEXT_PAGE,
+    }),
   );
   await waitFor(() => expect(getDone).toBeTruthy());
 });
@@ -138,7 +146,7 @@ test("should display error notification and refetch data", async () => {
     await screen.findByText(RolesLabel.FETCHING_ROLES),
   ).toBeInTheDocument();
   const rows = await screen.findAllByRole("row");
-  expect(rows).toHaveLength(4);
+  expect(rows).toHaveLength(12);
 });
 
 test("displays the add panel", async () => {

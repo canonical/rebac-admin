@@ -46,7 +46,7 @@ test("displays token pagination", () => {
           nextToken: faker.word.sample(),
           size: 10,
         },
-        previousPage: vi.fn(),
+        previousPage: null,
         setPage: vi.fn(),
         resetPage: vi.fn(),
         setResponse: vi.fn(),
@@ -83,7 +83,7 @@ test("handles page input changes", async () => {
     />,
   );
   await userEvent.type(screen.getByRole("spinbutton"), "2");
-  expect(setPage).toHaveBeenCalledWith(12);
+  expect(setPage).toHaveBeenCalledWith(11);
 });
 
 test("handles next page", async () => {
@@ -148,7 +148,7 @@ test("handles previous page for token pagination", async () => {
           nextToken: faker.word.sample(),
           size: 10,
         },
-        previousPage: vi.fn(),
+        previousPage: null,
         setPage: vi.fn(),
         resetPage,
         setResponse: vi.fn(),
@@ -156,7 +156,9 @@ test("handles previous page for token pagination", async () => {
       }}
     />,
   );
-  await userEvent.click(screen.getByRole("button", { name: Label.FIRST_PAGE }));
+  await userEvent.click(
+    screen.getByRole("button", { name: Label.PREVIOUS_PAGE }),
+  );
   expect(resetPage).toHaveBeenCalled();
 });
 
@@ -176,10 +178,10 @@ test("changes page size", async () => {
         setPage: vi.fn(),
         resetPage: vi.fn(),
         setResponse: vi.fn(),
-        setSize: vi.fn(),
+        setSize,
       }}
     />,
   );
-  await userEvent.selectOptions(screen.getByRole("selectbox"), "25");
+  await userEvent.selectOptions(screen.getByRole("combobox"), "25");
   expect(setSize).toHaveBeenCalledWith(25);
 });

@@ -19,6 +19,10 @@ import Users from "./Users";
 import { Label, Label as UsersLabel } from "./types";
 
 const mockUserData = getGetIdentitiesResponseMock({
+  _meta: {
+    page: 0,
+    size: 10,
+  },
   data: [
     getGetIdentitiesItemResponseMock({
       id: "user1",
@@ -28,7 +32,7 @@ const mockUserData = getGetIdentitiesResponseMock({
       lastName: undefined,
       source: "noteworthy",
     }),
-    ...Array.from({ length: 6 }, () => getGetIdentitiesItemResponseMock()),
+    ...Array.from({ length: 10 }, () => getGetIdentitiesItemResponseMock()),
   ],
 });
 const mockApiServer = setupServer(
@@ -60,7 +64,7 @@ test("should display correct user data after fetching users", async () => {
   const rows = screen.getAllByRole("row");
   // The first row contains the column headers and the next 7 rows contain
   // user data.
-  expect(rows).toHaveLength(8);
+  expect(rows).toHaveLength(12);
   const firstUserCells = within(rows[1]).getAllByRole("cell");
   expect(firstUserCells).toHaveLength(7);
   expect(firstUserCells[1]).toHaveTextContent("really");
@@ -77,7 +81,7 @@ test("search users", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/identities?filter=joe")
+      requestClone.url.endsWith("/identities?filter=joe&size=10&page=0")
     ) {
       getDone = true;
     }
@@ -94,14 +98,16 @@ test("paginates", async () => {
     const requestClone = request.clone();
     if (
       requestClone.method === "GET" &&
-      requestClone.url.endsWith("/identities?page=1&size=5")
+      requestClone.url.endsWith("/identities?size=10&page=1")
     ) {
       getDone = true;
     }
   });
   renderComponent(<Users />);
   await userEvent.click(
-    screen.getByRole("button", { name: EntityTablePaginationLabel.NEXT_PAGE }),
+    await screen.findByRole("button", {
+      name: EntityTablePaginationLabel.NEXT_PAGE,
+    }),
   );
   await waitFor(() => expect(getDone).toBeTruthy());
 });
