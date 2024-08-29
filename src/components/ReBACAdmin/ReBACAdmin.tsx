@@ -15,6 +15,7 @@ import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import AccountManagementTab from "components/pages/Users/AccountManagementTab";
 import EntitlementsTab from "components/pages/Users/EntitlementsTab";
+import GroupsTab from "components/pages/Users/GroupsTab";
 import RolesTab from "components/pages/Users/RolesTab";
 import SummaryTab from "components/pages/Users/SummaryTab";
 import User from "components/pages/Users/User";
@@ -111,7 +112,7 @@ const ReBACAdmin = ({
               />
               <Route
                 path={urls.users.user.groups(null)}
-                element={<>Groups{/* TODO: display user groups */}</>}
+                element={<GroupsTab />}
               />
               <Route
                 path={urls.users.user.roles(null)}
