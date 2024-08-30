@@ -12,6 +12,7 @@ import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePa
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
+import { customWithin } from "test/queries/within";
 import { renderComponent } from "test/utils";
 import urls from "urls";
 
@@ -27,9 +28,9 @@ const mockUserData = getGetIdentitiesResponseMock({
     getGetIdentitiesItemResponseMock({
       id: "user1",
       addedBy: "within",
-      email: "pfft",
+      email: "pfft@example.com",
       firstName: "really",
-      lastName: undefined,
+      lastName: "good",
       source: "noteworthy",
     }),
     ...Array.from({ length: 10 }, () => getGetIdentitiesItemResponseMock()),
@@ -59,19 +60,19 @@ test("should display spinner on mount", () => {
 
 test("should display correct user data after fetching users", async () => {
   renderComponent(<Users />);
-  const columnHeaders = await screen.findAllByRole("columnheader");
-  expect(columnHeaders).toHaveLength(7);
-  const rows = screen.getAllByRole("row");
-  // The first row contains the column headers and the next 7 rows contain
-  // user data.
-  expect(rows).toHaveLength(12);
-  const firstUserCells = within(rows[1]).getAllByRole("cell");
-  expect(firstUserCells).toHaveLength(7);
-  expect(firstUserCells[1]).toHaveTextContent("really");
-  expect(firstUserCells[2]).toHaveTextContent("Unknown");
-  expect(firstUserCells[3]).toHaveTextContent("within");
-  expect(firstUserCells[4]).toHaveTextContent("pfft");
-  expect(firstUserCells[5]).toHaveTextContent("noteworthy");
+  const row = await screen.findByRole("row", { name: /pfft@example.com/ });
+  expect(
+    customWithin(row).getCellByHeader(Label.HEADER_EMAIL),
+  ).toHaveTextContent("pfft@example.com");
+  expect(
+    customWithin(row).getCellByHeader(Label.HEADER_FULL_NAME),
+  ).toHaveTextContent("really good");
+  expect(
+    customWithin(row).getCellByHeader(Label.HEADER_SOURCE),
+  ).toHaveTextContent("noteworthy");
+  expect(
+    customWithin(row).getCellByHeader(Label.HEADER_ADDED_BY),
+  ).toHaveTextContent("within");
 });
 
 test("search users", async () => {
@@ -182,8 +183,7 @@ test("displays the delete panel", async () => {
 
 test("links to user details", async () => {
   renderComponent(<Users />);
-  expect(await screen.findByRole("link", { name: "really" })).toHaveAttribute(
-    "href",
-    urls.users.user.index({ id: "user1" }),
-  );
+  expect(
+    await screen.findByRole("link", { name: "pfft@example.com" }),
+  ).toHaveAttribute("href", urls.users.user.index({ id: "user1" }));
 });

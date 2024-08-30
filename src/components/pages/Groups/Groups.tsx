@@ -21,7 +21,7 @@ import { Label } from "./types";
 
 const COLUMN_DATA = [
   {
-    Header: "group name",
+    Header: Label.HEADER_NAME,
     accessor: "groupName",
   },
 ];
