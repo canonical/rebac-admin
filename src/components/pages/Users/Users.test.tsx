@@ -5,13 +5,13 @@ import { setupServer } from "msw/node";
 import {
   getGetIdentitiesItemResponseMock,
   getGetIdentitiesMockHandler,
+  getGetIdentitiesMockHandler404,
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePagination";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
-import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
 import { customWithin } from "test/queries/within";
 import { renderComponent } from "test/utils";
 import urls from "urls";
@@ -122,7 +122,7 @@ test("should display no users data when no users are available", async () => {
 });
 
 test("should display error notification and refetch data", async () => {
-  mockApiServer.use(getGetIdentitiesErrorMockHandler());
+  mockApiServer.use(getGetIdentitiesMockHandler404());
   renderComponent(<Users />);
   const usersErrorNotification = await screen.findByText(
     UsersLabel.FETCHING_USERS_ERROR,
