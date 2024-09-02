@@ -6,6 +6,7 @@ import {
 } from "@canonical/react-components";
 import { useMemo } from "react";
 
+import EntityTablePagination from "./EntityTablePagination";
 import type { TableEntity } from "./types";
 import { Label, type Props } from "./types";
 
@@ -16,6 +17,7 @@ const EntityTable = <E extends TableEntity>({
   generateColumns,
   onDelete,
   onEdit,
+  pagination,
   selected,
   ...props
 }: Props<E>) => {
@@ -98,39 +100,42 @@ const EntityTable = <E extends TableEntity>({
     [checkboxesDisabled, entities, generateColumns, onDelete, onEdit, selected],
   );
   return (
-    <ModularTable
-      {...props}
-      columns={allColumns}
-      data={tableData}
-      getCellProps={({ column }) => {
-        switch (column.id) {
-          case "selectEntity":
-            return {
-              className: "select-entity-checkbox",
-            };
-          case "actions":
-            return {
-              className: "u-align--right",
-            };
-          default:
-            return {};
-        }
-      }}
-      getHeaderProps={({ id }) => {
-        switch (id) {
-          case "selectEntity":
-            return {
-              className: "select-entity-checkbox",
-            };
-          case "actions":
-            return {
-              className: "u-align--right",
-            };
-          default:
-            return {};
-        }
-      }}
-    />
+    <>
+      <EntityTablePagination pagination={pagination} />
+      <ModularTable
+        {...props}
+        columns={allColumns}
+        data={tableData}
+        getCellProps={({ column }) => {
+          switch (column.id) {
+            case "selectEntity":
+              return {
+                className: "select-entity-checkbox",
+              };
+            case "actions":
+              return {
+                className: "u-align--right",
+              };
+            default:
+              return {};
+          }
+        }}
+        getHeaderProps={({ id }) => {
+          switch (id) {
+            case "selectEntity":
+              return {
+                className: "select-entity-checkbox",
+              };
+            case "actions":
+              return {
+                className: "u-align--right",
+              };
+            default:
+              return {};
+          }
+        }}
+      />
+    </>
   );
 };
 

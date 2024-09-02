@@ -47,7 +47,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^1.2.0",
+    "@canonical/react-components": "^1.2.1",
     "@tanstack/react-query": "^5.24.7",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
@@ -62,11 +62,12 @@
   "dependencies": {
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",
+    "lodash.isequal": "4.5.0",
     "loglevel": "1.9.1",
     "react-hot-toast": "2.4.1"
   },
   "devDependencies": {
-    "@canonical/react-components": "1.2.0",
+    "@canonical/react-components": "1.2.1",
     "@faker-js/faker": "8.4.1",
     "@mswjs/http-middleware": "0.10.1",
     "@tanstack/eslint-plugin-query": "5.32.1",
@@ -89,7 +90,7 @@
     "@vitest/coverage-v8": "1.6.0",
     "@vitest/ui": "1.6.0",
     "async-limiter": "2.0.0",
-    "axios": "1.6.8",
+    "axios": "1.7.4",
     "cors": "2.8.5",
     "dotenv": "16.4.5",
     "eslint": "8.57.0",
@@ -104,7 +105,6 @@
     "formik": "2.4.6",
     "happy-dom": "14.10.1",
     "ip": "2.0.1",
-    "lodash.isequal": "4.5.0",
     "msw": "2.3.0",
     "npm-package-json-lint": "7.1.0",
     "orval": "6.28.2",
@@ -121,7 +121,7 @@
     "stylelint-order": "6.0.4",
     "tsx": "4.9.3",
     "typescript": "5.4.5",
-    "vanilla-framework": "4.13.0",
+    "vanilla-framework": "4.15.0",
     "vite": "5.2.11",
     "vite-plugin-dts": "3.9.1",
     "vite-plugin-node-polyfills": "0.22.0",

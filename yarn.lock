@@ -1873,9 +1873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@canonical/react-components@npm:1.2.0"
+"@canonical/react-components@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@canonical/react-components@npm:1.2.1"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -1889,13 +1889,13 @@ __metadata:
     react-table: "npm:7.8.0"
     react-useportal: "npm:1.0.19"
   peerDependencies:
-    "@types/react": ^17.0.2 || ^18.0.0
-    "@types/react-dom": ^17.0.2 || ^18.0.0
+    "@types/react": ^18.0.0
+    "@types/react-dom": ^18.0.0
     formik: ^2.4.5
-    react: ^17.0.2 || ^18.0.0
-    react-dom: ^17.0.2 || ^18.0.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/71dd39654b87f60b45828b3c5059619adb9b68f22424f7fdc84a719cc6d8c3c1899ccf5eaa0fe06a5777888e513c625e7f050d87403d8f3a20edde3905f7961d
+  checksum: 10c0/f510bd3760c70cd7b66aaeeadd8c8507bb0e3ac9a97ce7502ca9ae5149b7da57089cc306baed74bce24924c5abe63da78e61932ee304a7a6cbce04086f2e8255
   languageName: node
   linkType: hard
 
@@ -1903,7 +1903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@canonical/rebac-admin@workspace:."
   dependencies:
-    "@canonical/react-components": "npm:1.2.0"
+    "@canonical/react-components": "npm:1.2.1"
     "@faker-js/faker": "npm:8.4.1"
     "@mswjs/http-middleware": "npm:0.10.1"
     "@tanstack/eslint-plugin-query": "npm:5.32.1"
@@ -1926,7 +1926,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:1.6.0"
     "@vitest/ui": "npm:1.6.0"
     async-limiter: "npm:2.0.0"
-    axios: "npm:1.6.8"
+    axios: "npm:1.7.4"
     classnames: "npm:2.5.1"
     clone-deep: "npm:4.0.1"
     cors: "npm:2.8.5"
@@ -1962,7 +1962,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     tsx: "npm:4.9.3"
     typescript: "npm:5.4.5"
-    vanilla-framework: "npm:4.13.0"
+    vanilla-framework: "npm:4.15.0"
     vite: "npm:5.2.11"
     vite-plugin-dts: "npm:3.9.1"
     vite-plugin-node-polyfills: "npm:0.22.0"
@@ -1970,7 +1970,7 @@ __metadata:
     vitest: "npm:1.6.0"
     yup: "npm:1.4.0"
   peerDependencies:
-    "@canonical/react-components": ^1.2.0
+    "@canonical/react-components": ^1.2.1
     "@tanstack/react-query": ^5.24.7
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
@@ -5267,14 +5267,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.6.8":
-  version: 1.6.8
-  resolution: "axios@npm:1.6.8"
+"axios@npm:1.7.4":
+  version: 1.7.4
+  resolution: "axios@npm:1.7.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/0f22da6f490335479a89878bc7d5a1419484fbb437b564a80c34888fc36759ae4f56ea28d55a191695e5ed327f0bad56e7ff60fb6770c14d1be6501505d47ab9
+  checksum: 10c0/5ea1a93140ca1d49db25ef8e1bd8cfc59da6f9220159a944168860ad15a2743ea21c5df2967795acb15cbe81362f5b157fdebbea39d53117ca27658bab9f7f17
   languageName: node
   linkType: hard
 
@@ -5466,7 +5466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"braces@npm:^3.0.2, braces@npm:~3.0.2":
+"braces@npm:^3.0.3, braces@npm:~3.0.2":
   version: 3.0.3
   resolution: "braces@npm:3.0.3"
   dependencies:
@@ -6520,8 +6520,8 @@ __metadata:
   linkType: hard
 
 "elliptic@npm:^6.5.3, elliptic@npm:^6.5.5":
-  version: 6.5.5
-  resolution: "elliptic@npm:6.5.5"
+  version: 6.5.7
+  resolution: "elliptic@npm:6.5.7"
   dependencies:
     bn.js: "npm:^4.11.9"
     brorand: "npm:^1.1.0"
@@ -6530,7 +6530,7 @@ __metadata:
     inherits: "npm:^2.0.4"
     minimalistic-assert: "npm:^1.0.1"
     minimalistic-crypto-utils: "npm:^1.0.1"
-  checksum: 10c0/3e591e93783a1b66f234ebf5bd3a8a9a8e063a75073a35a671e03e3b25253b6e33ac121f7efe9b8808890fffb17b40596cc19d01e6e8d1fa13b9a56ff65597c8
+  checksum: 10c0/799959b6c54ea3564e8961f35abdf8c77e37617f3051614b05ab1fb6a04ddb65bd1caa75ed1bae375b15dda312a0f79fed26ebe76ecf05c5a7af244152a601b8
   languageName: node
   linkType: hard
 
@@ -9878,12 +9878,12 @@ __metadata:
   linkType: hard
 
 "micromatch@npm:^4.0.4, micromatch@npm:^4.0.5":
-  version: 4.0.5
-  resolution: "micromatch@npm:4.0.5"
+  version: 4.0.8
+  resolution: "micromatch@npm:4.0.8"
   dependencies:
-    braces: "npm:^3.0.2"
+    braces: "npm:^3.0.3"
     picomatch: "npm:^2.3.1"
-  checksum: 10c0/3d6505b20f9fa804af5d8c596cb1c5e475b9b0cd05f652c5b56141cf941bd72adaeb7a436fda344235cef93a7f29b7472efc779fcdb83b478eab0867b95cdeff
+  checksum: 10c0/166fa6eb926b9553f32ef81f5f531d27b4ce7da60e5baf8c021d043b27a388fb95e46a8038d5045877881e673f8134122b59624d5cecbd16eb50a42e7a6b5ca8
   languageName: node
   linkType: hard
 
@@ -13523,10 +13523,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.13.0":
-  version: 4.13.0
-  resolution: "vanilla-framework@npm:4.13.0"
-  checksum: 10c0/c0fb1aed71b04d9b880119da1acc7632f8d89cbf1f9eaa231d9b422045e91930d1b768730fcd072cac3adf80c0d2775f5c954f47f3faed1ddb1c931417716a55
+"vanilla-framework@npm:4.15.0":
+  version: 4.15.0
+  resolution: "vanilla-framework@npm:4.15.0"
+  checksum: 10c0/a4346eb6600ed93a1159a3bfcc6410338e13e8c884c91342264173c856ab62688ff0fb43c20ac1a717790e3079e55768fae22603ab2b54e2a6edc1bcf107834f
   languageName: node
   linkType: hard
 
