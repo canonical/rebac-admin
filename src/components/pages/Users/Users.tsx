@@ -20,24 +20,20 @@ import { Label } from "./types";
 
 const COLUMN_DATA = [
   {
-    Header: "first name",
-    accessor: "firstName",
-  },
-  {
-    Header: "last name",
-    accessor: "lastName",
-  },
-  {
-    Header: "added by",
-    accessor: "addedBy",
-  },
-  {
-    Header: "email",
+    Header: Label.HEADER_EMAIL,
     accessor: "email",
   },
   {
-    Header: "source",
+    Header: Label.HEADER_FULL_NAME,
+    accessor: "name",
+  },
+  {
+    Header: Label.HEADER_SOURCE,
     accessor: "source",
+  },
+  {
+    Header: Label.HEADER_ADDED_BY,
+    accessor: "addedBy",
   },
 ];
 
@@ -92,22 +88,20 @@ const Users = () => {
           columns={COLUMN_DATA}
           entities={data?.data.data}
           emptyMsg={Label.NO_USERS}
-          generateColumns={(user) => {
-            const firstName = user.firstName || "Unknown";
-            return {
-              firstName: user.id ? (
-                <Link to={`..${urls.users.user.index({ id: user.id })}`}>
-                  {firstName}
-                </Link>
-              ) : (
-                firstName
-              ),
-              lastName: user.lastName || "Unknown",
-              addedBy: user.addedBy,
-              email: user.email,
-              source: user.source,
-            };
-          }}
+          generateColumns={(user) => ({
+            addedBy: user.addedBy,
+            email: user.id ? (
+              <Link to={`..${urls.users.user.index({ id: user.id })}`}>
+                {user.email}
+              </Link>
+            ) : (
+              user.email
+            ),
+            name:
+              [user.firstName, user.lastName].filter(Boolean).join(" ") ||
+              "Unknown",
+            source: user.source,
+          })}
           onDelete={(user) => user.id && openModal([user.id])}
           onEdit={(user) => openPanel({ editIdentityId: user.id })}
           pagination={pagination}

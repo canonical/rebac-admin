@@ -1,10 +1,17 @@
 import { NotificationSeverity } from "@canonical/react-components";
 import { QueryClient } from "@tanstack/react-query";
-import { render, renderHook, screen, waitFor } from "@testing-library/react";
+import {
+  render,
+  renderHook,
+  screen,
+  waitFor,
+  queries,
+} from "@testing-library/react";
 import React from "react";
 
 import ComponentProviders from "./ComponentProviders";
 import type { ComponentProps } from "./ComponentProviders";
+import * as tableQueries from "./queries/tables";
 
 type Options = {
   url?: string;
@@ -34,6 +41,10 @@ export const renderComponent = (
   const queryClient = getQueryClient(options);
   changeURL(options?.url ?? "/");
   const result = render(component, {
+    queries: {
+      ...queries,
+      ...tableQueries,
+    },
     wrapper: (props) => (
       <ComponentProviders
         {...props}

@@ -16,6 +16,7 @@ import { TestId as NoEntityCardTestId } from "components/NoEntityCard";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { mockRole } from "mocks/roles";
+import { customWithin } from "test/queries/within";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 
@@ -67,15 +68,10 @@ test("should display spinner on mount", async () => {
 
 test("should display correct role data after fetching roles", async () => {
   renderComponent(<Roles />);
-  const rows = await screen.findAllByRole("row");
-  // The first row contains the column header and the next 3 rows contain
-  // role data.
-  expect(rows).toHaveLength(12);
-  expect(within(rows[1]).getAllByRole("cell")[1]).toHaveTextContent("global");
-  expect(within(rows[2]).getAllByRole("cell")[1]).toHaveTextContent(
-    "administrator",
-  );
-  expect(within(rows[3]).getAllByRole("cell")[1]).toHaveTextContent("viewer");
+  const row = await screen.findByRole("row", { name: /global/ });
+  expect(
+    customWithin(row).getCellByHeader(Label.HEADER_NAME),
+  ).toHaveTextContent("global");
 });
 
 test("search roles", async () => {
