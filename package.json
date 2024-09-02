@@ -90,7 +90,7 @@
     "@vitest/coverage-v8": "1.6.0",
     "@vitest/ui": "1.6.0",
     "async-limiter": "2.0.0",
-    "axios": "1.6.8",
+    "axios": "1.7.4",
     "cors": "2.8.5",
     "dotenv": "16.4.5",
     "eslint": "8.57.0",
