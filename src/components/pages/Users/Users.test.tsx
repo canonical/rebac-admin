@@ -3,11 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
 import {
+  getGetIdentitiesItemEntitlementsMockHandler,
   getGetIdentitiesItemResponseMock,
   getGetIdentitiesMockHandler,
   getGetIdentitiesResponseMock,
 } from "api/identities/identities.msw";
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
+import { EntityTableLabel } from "components/EntityTable";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "mocks/capabilities";
 import { getGetIdentitiesErrorMockHandler } from "mocks/identities";
@@ -134,6 +136,45 @@ test("should display the add panel", async () => {
   await userEvent.click(screen.getByRole("button", { name: UsersLabel.ADD }));
   const panel = await screen.findByRole("complementary", {
     name: "Create local user",
+  });
+  expect(panel).toBeInTheDocument();
+});
+
+test("should display the edit panel", async () => {
+  mockApiServer.use(
+    getGetIdentitiesMockHandler(
+      getGetIdentitiesResponseMock({
+        data: [
+          {
+            id: "user1",
+            addedBy: "within",
+            email: "pfft@example.com",
+            firstName: "really",
+            lastName: "good",
+            source: "noteworthy",
+          },
+        ],
+      }),
+    ),
+    getGetIdentitiesItemEntitlementsMockHandler(),
+  );
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <Users />
+    </ReBACAdminContext.Provider>,
+  );
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: EntityTableLabel.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  await userEvent.click(
+    screen.getByRole("button", { name: EntityTableLabel.EDIT }),
+  );
+  const panel = await screen.findByRole("complementary", {
+    name: "Edit local user",
   });
   expect(panel).toBeInTheDocument();
 });

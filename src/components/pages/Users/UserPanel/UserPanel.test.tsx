@@ -32,6 +32,36 @@ afterAll(() => {
   mockApiServer.close();
 });
 
+const mockUser = {
+  id: "user1",
+  addedBy: "within",
+  email: "pfft@example.com",
+  firstName: "really",
+  lastName: "good",
+  source: "noteworthy",
+};
+
+test("the input is set from the user data", async () => {
+  renderComponent(
+    <UserPanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      onSubmit={vi.fn()}
+      isEditing
+      user={mockUser}
+    />,
+  );
+  expect(screen.getByRole("textbox", { name: Label.EMAIL })).toHaveValue(
+    "pfft@example.com",
+  );
+  expect(screen.getByRole("textbox", { name: Label.FIRST_NAME })).toHaveValue(
+    "really",
+  );
+  expect(screen.getByRole("textbox", { name: Label.LAST_NAME })).toHaveValue(
+    "good",
+  );
+});
+
 test("can submit the form", async () => {
   const onSubmit = vi.fn();
   renderComponent(
@@ -55,6 +85,7 @@ test("can submit the form", async () => {
       firstName: "mock first name",
       lastName: "mock last name",
     },
+    [],
     [],
     [],
     [],
@@ -105,4 +136,38 @@ test("should display the entitlements form", async () => {
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
+});
+
+test("should have submit button disabled if there are no changes", async () => {
+  renderComponent(
+    <UserPanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      onSubmit={vi.fn()}
+      isEditing
+      user={mockUser}
+    />,
+  );
+  expect(
+    screen.getByRole("button", { name: "Update local user" }),
+  ).toBeDisabled();
+});
+
+test("should have submit button enabled if there are changes", async () => {
+  renderComponent(
+    <UserPanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      onSubmit={vi.fn()}
+      isEditing
+      user={mockUser}
+    />,
+  );
+  await userEvent.type(
+    screen.getByRole("textbox", { name: Label.EMAIL }),
+    "new-email@gmail.com",
+  );
+  expect(
+    screen.getByRole("button", { name: "Update local user" }),
+  ).toBeEnabled();
 });

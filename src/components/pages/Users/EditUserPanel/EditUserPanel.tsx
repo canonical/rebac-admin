@@ -3,20 +3,13 @@ import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
 
 import type { IdentityEntitlementsPatchItem, Response } from "api/api.schemas";
-import {
-  IdentityEntitlementsPatchItemAllOfOp,
-  IdentityGroupsPatchItemOp,
-  IdentityRolesPatchItemOp,
-} from "api/api.schemas";
+import { IdentityEntitlementsPatchItemAllOfOp } from "api/api.schemas";
 import {
   useGetIdentitiesItemEntitlements,
   usePatchIdentitiesItemEntitlements,
-  usePatchIdentitiesItemGroups,
-  usePatchIdentitiesItemRoles,
 } from "api/identities/identities";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
-import { getIds } from "utils/getIds";
 
 import UserPanel from "../UserPanel";
 
@@ -39,14 +32,6 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
     isFetching: isFetchingExistingEntitlements,
   } = useGetIdentitiesItemEntitlements(userId);
   const {
-    mutateAsync: patchIdentitiesItemGroups,
-    isPending: isPatchIdentitiesItemGroupsPending,
-  } = usePatchIdentitiesItemGroups();
-  const {
-    mutateAsync: patchIdentitiesItemRoles,
-    isPending: isPatchIdentitiesItemRolesPending,
-  } = usePatchIdentitiesItemRoles();
-  const {
     mutateAsync: patchIdentitiesItemEntitlements,
     isPending: isPatchIdentitiesItemEntitlementsPending,
   } = usePatchIdentitiesItemEntitlements();
@@ -57,58 +42,16 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
       existingEntitlements={existingEntitlements?.data.data}
       isEditing
       isFetchingExistingEntitlements={isFetchingExistingEntitlements}
-      isSaving={
-        isPatchIdentitiesItemGroupsPending ||
-        isPatchIdentitiesItemRolesPending ||
-        isPatchIdentitiesItemEntitlementsPending
-      }
+      isSaving={isPatchIdentitiesItemEntitlementsPending}
       onSubmit={async (
         _values,
-        addGroups,
-        addRoles,
+        _addGroups,
+        _addRoles,
         addEntitlements,
         removeEntitlements,
       ) => {
-        let hasGroupsError = false;
-        let hasRolesError = false;
         let hasEntitlementsError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
-        if (addGroups.length) {
-          queue.push(async (done) => {
-            try {
-              await patchIdentitiesItemGroups({
-                id: userId,
-                data: {
-                  patches: getIds(addGroups).map((id) => ({
-                    group: id,
-                    op: IdentityGroupsPatchItemOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasGroupsError = true;
-            }
-            done();
-          });
-        }
-        if (addRoles.length) {
-          queue.push(async (done) => {
-            try {
-              await patchIdentitiesItemRoles({
-                id: userId,
-                data: {
-                  patches: getIds(addRoles).map((id) => ({
-                    role: id,
-                    op: IdentityRolesPatchItemOp.add,
-                  })),
-                },
-              });
-            } catch (error) {
-              hasRolesError = true;
-            }
-            done();
-          });
-        }
         if (addEntitlements.length || removeEntitlements?.length) {
           let patches: IdentityEntitlementsPatchItem[] = [];
           if (addEntitlements.length) {
@@ -143,20 +86,6 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
         }
         queue.onDone(() => {
           close();
-          if (hasGroupsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.GROUPS_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasRolesError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ROLES_ERROR}
-              </ToastCard>
-            ));
-          }
           if (hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
@@ -164,10 +93,10 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
               </ToastCard>
             ));
           }
-          if (!hasGroupsError && !hasRolesError && !hasEntitlementsError) {
+          if (!hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`User "${user?.firstName}" "${user?.lastName}" was updated.`}
+                {`User "${user?.firstName} ${user?.lastName}" was updated.`}
               </ToastCard>
             ));
           }

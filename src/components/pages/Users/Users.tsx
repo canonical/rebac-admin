@@ -15,7 +15,7 @@ import { getIds } from "utils/getIds";
 
 import AddUserPanel from "./AddUserPanel";
 import DeleteUsersModal from "./DeleteUsersModal";
-import EditUserPanel from "./EditUserPanel/EditUserPanel";
+import EditUserPanel from "./EditUserPanel";
 import { Label } from "./types";
 
 const COLUMN_DATA = [

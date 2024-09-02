@@ -111,24 +111,19 @@ const UserPanel = ({
     >
       <h5>Personal details</h5>
       <CleanFormikField
-        disabled={isEditing}
         label={Label.EMAIL}
         name={FieldName.EMAIL}
-        takeFocus={!isEditing}
+        takeFocus={true}
         type="email"
       />
       <CleanFormikField
-        disabled={isEditing}
         label={Label.FIRST_NAME}
         name={FieldName.FIRST_NAME}
-        takeFocus={!isEditing}
         type="text"
       />
       <CleanFormikField
-        disabled={isEditing}
         label={Label.LAST_NAME}
         name={FieldName.LAST_NAME}
-        takeFocus={!isEditing}
         type="text"
       />
     </SubFormPanel>
