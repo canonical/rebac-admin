@@ -1962,7 +1962,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     tsx: "npm:4.9.3"
     typescript: "npm:5.4.5"
-    vanilla-framework: "npm:4.13.0"
+    vanilla-framework: "npm:4.15.0"
     vite: "npm:5.2.11"
     vite-plugin-dts: "npm:3.9.1"
     vite-plugin-node-polyfills: "npm:0.22.0"
@@ -13523,10 +13523,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.13.0":
-  version: 4.13.0
-  resolution: "vanilla-framework@npm:4.13.0"
-  checksum: 10c0/c0fb1aed71b04d9b880119da1acc7632f8d89cbf1f9eaa231d9b422045e91930d1b768730fcd072cac3adf80c0d2775f5c954f47f3faed1ddb1c931417716a55
+"vanilla-framework@npm:4.15.0":
+  version: 4.15.0
+  resolution: "vanilla-framework@npm:4.15.0"
+  checksum: 10c0/a4346eb6600ed93a1159a3bfcc6410338e13e8c884c91342264173c856ab62688ff0fb43c20ac1a717790e3079e55768fae22603ab2b54e2a6edc1bcf107834f
   languageName: node
   linkType: hard
 
