@@ -4,7 +4,7 @@ import { vi } from "vitest";
 
 import CleanFormikField from "components/CleanFormikField";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import PanelForm from "./PanelForm";
 import { Label } from "./types";
@@ -23,9 +23,10 @@ test("can display contents", async () => {
   expect(screen.getByText("Form content")).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <PanelForm<{ name: string }>
       close={vi.fn()}
       error="Uh oh!"
@@ -36,7 +37,7 @@ test("can display errors", async () => {
       Form content
     </PanelForm>,
   );
-  await hasNotification("Uh oh!");
+  expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
 });
 
 test("can cancel", async () => {

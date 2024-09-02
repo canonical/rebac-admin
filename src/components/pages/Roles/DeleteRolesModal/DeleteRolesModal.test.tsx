@@ -9,7 +9,7 @@ import {
   getDeleteRolesItemResponseMock400,
 } from "api/roles/roles.msw";
 import { DeleteEntityModalLabel } from "components/DeleteEntityModal";
-import { renderComponent, hasToast } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import DeleteRolesModal from "./DeleteRolesModal";
 import { Label as DeleteRolesModalLabel } from "./types";
@@ -29,7 +29,9 @@ afterAll(() => {
 });
 
 test("should delete roles", async () => {
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <DeleteRolesModal roles={["role1", "role2"]} close={vi.fn()} />,
   );
   const textBoxes = screen.getAllByRole("textbox");
@@ -37,7 +39,12 @@ test("should delete roles", async () => {
   const confirmationMessageTextBox = textBoxes[0];
   await userEvent.type(confirmationMessageTextBox, "delete 2 roles");
   await userEvent.click(screen.getByText(DeleteEntityModalLabel.DELETE));
-  await hasToast(DeleteRolesModalLabel.DEELTE_SUCCESS_MESSAGE, "positive");
+  expect(
+    await findNotificationByText(DeleteRolesModalLabel.DEELTE_SUCCESS_MESSAGE, {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should handle errors when deleting roles", async () => {
@@ -46,11 +53,17 @@ test("should handle errors when deleting roles", async () => {
       getDeleteRolesItemResponseMock400({ message: "Can't delete role" }),
     ),
   );
-  renderComponent(<DeleteRolesModal roles={["role1"]} close={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<DeleteRolesModal roles={["role1"]} close={vi.fn()} />);
   const textBoxes = screen.getAllByRole("textbox");
   expect(textBoxes).toHaveLength(1);
   const confirmationMessageTextBox = textBoxes[0];
   await userEvent.type(confirmationMessageTextBox, "delete 1 role");
   await userEvent.click(screen.getByText(DeleteEntityModalLabel.DELETE));
-  await hasToast(DeleteRolesModalLabel.DELETE_ERROR_MESSAGE, "negative");
+  expect(
+    await findNotificationByText(DeleteRolesModalLabel.DELETE_ERROR_MESSAGE, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });

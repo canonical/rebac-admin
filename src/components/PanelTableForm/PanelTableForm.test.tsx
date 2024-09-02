@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import type { EntityEntitlement } from "api/api.schemas";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import PanelTableForm from "./PanelTableForm";
 
@@ -399,9 +399,10 @@ test("can remove existing entities", async () => {
   ]);
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <PanelTableForm<EntityEntitlement>
       error="Uh oh!"
       addEntities={[]}
@@ -417,7 +418,7 @@ test("can display errors", async () => {
       setRemoveEntities={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
 });
 
 test("should display the loading state", async () => {

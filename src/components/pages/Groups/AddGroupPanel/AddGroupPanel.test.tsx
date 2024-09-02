@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -35,7 +34,7 @@ import {
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
-import { hasNotification, hasToast, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import { GroupPanelLabel } from "../GroupPanel";
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
@@ -107,35 +106,46 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should add a group", async () => {
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
-  await hasToast('Group "group1" was created.', "positive");
+  expect(
+    await findNotificationByText('Group "group1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding groups", async () => {
   mockApiServer.use(
     getPostGroupsMockHandler400(
       getPostGroupsResponseMock400({ message: "That group already exists" }),
     ),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
-  await hasNotification(
-    "Unable to create group: That group already exists",
-    "negative",
-  );
+  expect(
+    await findNotificationByText(
+      "Unable to create group: That group already exists",
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle no id in the group response", async () => {
   mockApiServer.use(
     getPostGroupsMockHandler(
@@ -145,12 +155,18 @@ test("should handle no id in the group response", async () => {
       }),
     ),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
-  await hasToast(Label.GROUP_ID_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.GROUP_ID_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });
 
 test("should add entitlements", async () => {
@@ -167,7 +183,11 @@ test("should add entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -206,16 +226,24 @@ test("should add entitlements", async () => {
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
-  await hasToast('Group "group1" was created.', "positive");
+  expect(
+    await findNotificationByText('Group "group1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding entitlements", async () => {
   mockApiServer.use(
     getPostGroupsMockHandler(mockGroupsData),
     getPatchGroupsItemEntitlementsMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -250,7 +278,11 @@ test("should handle errors when adding entitlements", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await hasToast(Label.ENTITLEMENTS_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ENTITLEMENTS_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add users", async () => {
@@ -267,7 +299,11 @@ test("should add users", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -291,17 +327,25 @@ test("should add users", async () => {
   expect(patchResponseBody).toBe(
     '{"patches":[{"identity":"user2","op":"add"}]}',
   );
-  await hasToast('Group "group1" was created.', "positive");
+  expect(
+    await findNotificationByText('Group "group1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding users", async () => {
   mockApiServer.use(
     getPostGroupsMockHandler(mockGroupsData),
     getPatchGroupsItemEntitlementsMockHandler(),
     getPatchGroupsItemIdentitiesMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -321,7 +365,11 @@ test("should handle errors when adding users", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await hasToast(Label.IDENTITIES_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.IDENTITIES_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add roles", async () => {
@@ -338,7 +386,11 @@ test("should add roles", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -360,17 +412,25 @@ test("should add roles", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
-  await hasToast('Group "group1" was created.', "positive");
+  expect(
+    await findNotificationByText('Group "group1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding roles", async () => {
   mockApiServer.use(
     getPostGroupsMockHandler(mockGroupsData),
     getPatchGroupsItemEntitlementsMockHandler(),
     getPatchGroupsItemRolesMockHandler400(),
   );
-  renderComponent(<AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
+  );
   await userEvent.type(
     screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
@@ -390,5 +450,7 @@ test("should handle errors when adding roles", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ROLES_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });

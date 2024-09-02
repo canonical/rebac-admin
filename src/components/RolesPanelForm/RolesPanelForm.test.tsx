@@ -9,7 +9,7 @@ import {
   getGetRolesResponseMock,
   getGetRolesResponseMock400,
 } from "api/roles/roles.msw";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import RolesPanelForm from "./RolesPanelForm";
 import { Label as RolesPanelFormLabel } from "./types";
@@ -160,14 +160,15 @@ test("can remove roles from the API", async () => {
   ]);
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display fetch errors", async () => {
   mockApiServer.use(
     getGetRolesMockHandler400(
       getGetRolesResponseMock400({ message: "Uh oh!" }),
     ),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <RolesPanelForm
       addRoles={[]}
       setAddRoles={vi.fn()}
@@ -175,7 +176,7 @@ test("can display fetch errors", async () => {
       setRemoveRoles={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
 });
 
 test("filter roles", async () => {

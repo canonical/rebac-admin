@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -25,7 +24,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { hasNotification, hasToast, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import { Label as RolePanelLabel } from "../RolePanel";
 
@@ -76,14 +75,20 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should add a role", async () => {
-  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1{Enter}",
   );
-  await hasToast('Role "role1" was created.', "positive");
+  expect(
+    await findNotificationByText('Role "role1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add a role and entitlements", async () => {
@@ -100,7 +105,9 @@ test("should add a role and entitlements", async () => {
       done = true;
     }
   });
-  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
@@ -135,36 +142,44 @@ test("should add a role and entitlements", async () => {
     screen.getAllByRole("button", { name: "Create role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create role" }));
-  await hasToast('Role "role1" was created.', "positive");
+  expect(
+    await findNotificationByText('Role "role1" was created.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
   await waitFor(() => expect(done).toBeTruthy());
   expect(responseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding roles", async () => {
   mockApiServer.use(
     getPostRolesMockHandler400(
       getPostRolesResponseMock400({ message: "That role already exists" }),
     ),
   );
-  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1{Enter}",
   );
-  await hasNotification(
-    "Unable to create role: That role already exists",
-    "negative",
-  );
+  expect(
+    await findNotificationByText(
+      "Unable to create role: That role already exists",
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("handles the role not in the response", async () => {
   // Handle a role not returned by the API which is not a valid type.
   mockApiServer.use(getPostRolesMockHandler200(null as unknown as Role));
-  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
@@ -199,13 +214,14 @@ test("handles the role not in the response", async () => {
     screen.getAllByRole("button", { name: "Create role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create role" }));
-  await hasToast(
-    'Entitlements couldn\'t be added to role "role1".',
-    NotificationSeverity.NEGATIVE,
-  );
+  expect(
+    await findNotificationByText(
+      'Entitlements couldn\'t be added to role "role1".',
+      { appearance: "toast" },
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding entitlements", async () => {
   mockApiServer.use(
     getPostRolesMockHandler(mockRolesData),
@@ -215,7 +231,9 @@ test("should handle errors when adding entitlements", async () => {
       }),
     ),
   );
-  renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
@@ -250,8 +268,10 @@ test("should handle errors when adding entitlements", async () => {
     screen.getAllByRole("button", { name: "Create role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create role" }));
-  await hasToast(
-    'Entitlements couldn\'t be added: "No resource with that name found".',
-    NotificationSeverity.NEGATIVE,
-  );
+  expect(
+    await findNotificationByText(
+      'Entitlements couldn\'t be added: "No resource with that name found".',
+      { appearance: "toast" },
+    ),
+  ).toBeInTheDocument();
 });
