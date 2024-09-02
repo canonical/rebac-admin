@@ -9,7 +9,7 @@ import {
   getDeleteIdentitiesItemResponseMock400,
 } from "api/identities/identities.msw";
 import { DeleteEntityModalLabel } from "components/DeleteEntityModal";
-import { renderComponent, hasToast } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import DeleteUsersModal from "./DeleteUsersModal";
 import { Label as DeleteUsersModalLabel } from "./types";
@@ -29,7 +29,9 @@ afterAll(() => {
 });
 
 test("should delete identities", async () => {
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <DeleteUsersModal identities={["user1", "user2"]} close={vi.fn()} />,
   );
   const textBoxes = screen.getAllByRole("textbox");
@@ -37,7 +39,12 @@ test("should delete identities", async () => {
   const confirmationMessageTextBox = textBoxes[0];
   await userEvent.type(confirmationMessageTextBox, "delete 2 users");
   await userEvent.click(screen.getByText(DeleteEntityModalLabel.DELETE));
-  await hasToast(DeleteUsersModalLabel.DEELTE_SUCCESS_MESSAGE, "positive");
+  expect(
+    await findNotificationByText(DeleteUsersModalLabel.DEELTE_SUCCESS_MESSAGE, {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should handle errors when deleting identities", async () => {
@@ -46,11 +53,19 @@ test("should handle errors when deleting identities", async () => {
       getDeleteIdentitiesItemResponseMock400({ message: "Can't delete user" }),
     ),
   );
-  renderComponent(<DeleteUsersModal identities={["user1"]} close={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <DeleteUsersModal identities={["user1"]} close={vi.fn()} />,
+  );
   const textBoxes = screen.getAllByRole("textbox");
   expect(textBoxes).toHaveLength(1);
   const confirmationMessageTextBox = textBoxes[0];
   await userEvent.type(confirmationMessageTextBox, "delete 1 user");
   await userEvent.click(screen.getByText(DeleteEntityModalLabel.DELETE));
-  await hasToast(DeleteUsersModalLabel.DELETE_ERROR_MESSAGE, "negative");
+  expect(
+    await findNotificationByText(DeleteUsersModalLabel.DELETE_ERROR_MESSAGE, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });

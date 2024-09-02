@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
@@ -23,7 +22,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { mockEntityEntitlement } from "mocks/entitlements";
 import { mockEntity, mockResource } from "mocks/resources";
-import { hasNotification, hasSpinner, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";
 
@@ -73,41 +72,43 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("display fetch errors", async () => {
   mockApiServer.use(getGetIdentitiesItemEntitlementsMockHandler400());
-  renderComponent(<EntitlementsTab />, {
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<EntitlementsTab />, {
     path,
     url,
   });
-  await hasNotification(
-    Label.FETCH_ENTITLEMENTS_ERROR,
-    NotificationSeverity.NEGATIVE,
-  );
+  expect(
+    await findNotificationByText(Label.FETCH_ENTITLEMENTS_ERROR),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("display loading spinner", async () => {
   mockApiServer.use(
     http.get(`*/${Endpoint.IDENTITIES}/*`, async () => {
       await delay(100);
     }),
   );
-  renderComponent(<EntitlementsTab />, {
+  const {
+    result: { findSpinnerByLabel },
+  } = renderComponent(<EntitlementsTab />, {
     path,
     url,
   });
-  await hasSpinner();
+  expect(await findSpinnerByLabel("Loading")).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("does not display loading spinner when refetching", async () => {
   mockApiServer.use(
     http.get(`*/${Endpoint.IDENTITIES}/*`, async () => {
       await delay(100);
     }),
   );
-  renderComponent(<EntitlementsTab />, {
+  const {
+    result: { findSpinnerByLabel },
+  } = renderComponent(<EntitlementsTab />, {
     path,
     url,
   });
@@ -118,7 +119,9 @@ test("does not display loading spinner when refetching", async () => {
       })
     )[0],
   );
-  await hasSpinner(undefined, false);
+  // Check that the spinner doesn't exist using findBy* so that the component is
+  // given time to rerender.
+  await expect(findSpinnerByLabel("Loading")).rejects.toBeTruthy();
 });
 
 test("should add entitlements", async () => {
@@ -198,7 +201,6 @@ test("should remove entitlements", async () => {
   );
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating entitlements", async () => {
   mockApiServer.use(
     getGetIdentitiesItemEntitlementsMockHandler(
@@ -209,7 +211,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchIdentitiesItemEntitlementsMockHandler400(),
     getGetIdentitiesItemEntitlementsMockHandler400(),
   );
-  renderComponent(<EntitlementsTab />, {
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<EntitlementsTab />, {
     path,
     url,
   });
@@ -220,8 +224,7 @@ test("should handle errors when updating entitlements", async () => {
       })
     )[0],
   );
-  await hasNotification(
-    Label.PATCH_ENTITLEMENTS_ERROR,
-    NotificationSeverity.NEGATIVE,
-  );
+  expect(
+    await findNotificationByText(Label.PATCH_ENTITLEMENTS_ERROR),
+  ).toBeInTheDocument();
 });

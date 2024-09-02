@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { hasSpinner } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import MultiSelectField from "./MultiSelectField";
 
@@ -34,9 +34,10 @@ describe("MultiSelectField", () => {
     expect(onSearch).toHaveBeenCalledWith("role1");
   });
 
-  // eslint-disable-next-line vitest/expect-expect
   test("displays a spinner while searching", async () => {
-    render(
+    const {
+      result: { findSpinnerByLabel },
+    } = renderComponent(
       <MultiSelectField
         addEntities={[]}
         entities={[]}
@@ -59,7 +60,7 @@ describe("MultiSelectField", () => {
       within(screen.getByRole("listbox")).getByRole("searchbox"),
       "role1{enter}",
     );
-    await hasSpinner();
+    expect(await findSpinnerByLabel("Loading")).toBeInTheDocument();
   });
 
   test("displays items", async () => {

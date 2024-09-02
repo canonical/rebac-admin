@@ -12,7 +12,7 @@ import {
   getGetResourcesMockHandler,
   getGetResourcesResponseMock,
 } from "api/resources/resources.msw";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "./Fields";
@@ -295,10 +295,11 @@ test("can remove entitlements from the API", async () => {
   ]);
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display errors", async () => {
   mockApiServer.use(getGetEntitlementsMockHandler404());
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EntitlementsPanelForm
       addEntitlements={[]}
       setAddEntitlements={vi.fn()}
@@ -306,5 +307,7 @@ test("can display errors", async () => {
       setRemoveEntitlements={vi.fn()}
     />,
   );
-  await hasNotification("Request failed with status code 404");
+  expect(
+    await findNotificationByText("Request failed with status code 404"),
+  ).toBeInTheDocument();
 });

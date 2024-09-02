@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
@@ -16,7 +15,7 @@ import {
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
-import { hasNotification, hasSpinner, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";
 
@@ -59,38 +58,41 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("display fetch errors", async () => {
   mockApiServer.use(getGetIdentitiesItemRolesMockHandler400());
-  renderComponent(<RolesTab />, {
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<RolesTab />, {
     path,
     url,
   });
-  await hasNotification(Label.FETCH_ERROR, NotificationSeverity.NEGATIVE);
+  expect(await findNotificationByText(Label.FETCH_ERROR)).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("display loading spinner", async () => {
   mockApiServer.use(
     http.get(`*/${Endpoint.IDENTITIES}/*`, async () => {
       await delay(100);
     }),
   );
-  renderComponent(<RolesTab />, {
+  const {
+    result: { findSpinnerByLabel },
+  } = renderComponent(<RolesTab />, {
     path,
     url,
   });
-  await hasSpinner();
+  expect(await findSpinnerByLabel("Loading")).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("does not display loading spinner when refetching", async () => {
   mockApiServer.use(
     http.get(`*/${Endpoint.IDENTITIES}/*`, async () => {
       await delay(100);
     }),
   );
-  renderComponent(<RolesTab />, {
+  const {
+    result: { findSpinnerByLabel },
+  } = renderComponent(<RolesTab />, {
     path,
     url,
   });
@@ -101,7 +103,9 @@ test("does not display loading spinner when refetching", async () => {
       })
     )[0],
   );
-  await hasSpinner(undefined, false);
+  // Check that the spinner doesn't exist using findBy* so that the component is
+  // given time to rerender.
+  await expect(findSpinnerByLabel("Loading")).rejects.toBeTruthy();
 });
 
 test("should add roles", async () => {
@@ -179,7 +183,6 @@ test("should remove roles", async () => {
   });
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating roles", async () => {
   mockApiServer.use(
     getGetIdentitiesItemRolesMockHandler(
@@ -190,7 +193,9 @@ test("should handle errors when updating roles", async () => {
     getPatchIdentitiesItemRolesMockHandler400(),
     getGetIdentitiesItemRolesMockHandler400(),
   );
-  renderComponent(<RolesTab />, {
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<RolesTab />, {
     path,
     url,
   });
@@ -201,5 +206,5 @@ test("should handle errors when updating roles", async () => {
       })
     )[0],
   );
-  await hasNotification(Label.PATCH_ERROR, NotificationSeverity.NEGATIVE);
+  expect(await findNotificationByText(Label.PATCH_ERROR)).toBeInTheDocument();
 });

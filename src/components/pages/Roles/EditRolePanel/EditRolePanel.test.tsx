@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -23,7 +22,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { hasToast, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import EditRolePanel from "./EditRolePanel";
 
@@ -103,7 +102,9 @@ test("should add and remove entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditRolePanel
       role={{
         id: "admin123",
@@ -155,10 +156,14 @@ test("should add and remove entitlements", async () => {
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement":"can_edit","entity_id":"moderators","entity_type":"collection"},"op":"remove"}]}',
   );
-  await hasToast('Role "admin1" was updated.', "positive");
+  expect(
+    await findNotificationByText('Role "admin1" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating entitlements", async () => {
   mockApiServer.use(
     getGetRolesItemEntitlementsMockHandler(
@@ -180,7 +185,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchRolesItemEntitlementsMockHandler400(),
     getGetRolesItemEntitlementsMockHandler400(),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditRolePanel
       role={{
         id: "admin123",
@@ -228,8 +235,9 @@ test("should handle errors when updating entitlements", async () => {
     screen.getAllByRole("button", { name: "Edit role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
-  await hasToast(
-    "Some entitlements couldn't be updated",
-    NotificationSeverity.NEGATIVE,
-  );
+  expect(
+    await findNotificationByText("Some entitlements couldn't be updated", {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
