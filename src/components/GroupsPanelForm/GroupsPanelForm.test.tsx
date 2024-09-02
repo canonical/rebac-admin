@@ -11,7 +11,7 @@ import {
 } from "api/groups/groups.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { mockGroup } from "mocks/groups";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import GroupsPanelForm from "./GroupsPanelForm";
 
@@ -161,14 +161,15 @@ test("can remove groups from the API", async () => {
   ]);
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display fetch errors", async () => {
   mockApiServer.use(
     getGetGroupsMockHandler400(
       getGetGroupsResponseMock400({ message: "Uh oh!" }),
     ),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <GroupsPanelForm
       addGroups={[]}
       setAddGroups={vi.fn()}
@@ -176,7 +177,7 @@ test("can display fetch errors", async () => {
       setRemoveGroups={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
 });
 
 test("filter groups", async () => {

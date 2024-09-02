@@ -1,4 +1,3 @@
-import { NotificationSeverity } from "@canonical/react-components";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -41,7 +40,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
-import { hasToast, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
@@ -159,7 +158,9 @@ test("should add and remove entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -225,10 +226,14 @@ test("should add and remove entitlements", async () => {
       },
     ],
   });
-  await hasToast('Group "admin" was updated.', "positive");
+  expect(
+    await findNotificationByText('Group "admin" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating entitlements", async () => {
   mockApiServer.use(
     getGetGroupsItemEntitlementsMockHandler(
@@ -239,7 +244,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchGroupsItemEntitlementsMockHandler400(),
     getGetGroupsItemEntitlementsMockHandler400(),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -284,7 +291,11 @@ test("should handle errors when updating entitlements", async () => {
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
-  await hasToast(Label.ENTITLEMENTS_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ENTITLEMENTS_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add and remove users", async () => {
@@ -301,7 +312,9 @@ test("should add and remove users", async () => {
       patchDone = true;
     }
   });
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -338,13 +351,19 @@ test("should add and remove users", async () => {
       { identity: "user1", op: "remove" },
     ],
   });
-  await hasToast('Group "admin" was updated.', "positive");
+  expect(
+    await findNotificationByText('Group "admin" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating users", async () => {
   mockApiServer.use(getPatchGroupsItemIdentitiesMockHandler400());
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -369,7 +388,11 @@ test("should handle errors when updating users", async () => {
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
-  await hasToast(Label.IDENTITIES_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.IDENTITIES_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add and remove roles", async () => {
@@ -386,7 +409,9 @@ test("should add and remove roles", async () => {
       patchDone = true;
     }
   });
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -423,13 +448,19 @@ test("should add and remove roles", async () => {
       { role: "role123", op: "remove" },
     ],
   });
-  await hasToast('Group "admin" was updated.', "positive");
+  expect(
+    await findNotificationByText('Group "admin" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating roles", async () => {
   mockApiServer.use(getPatchGroupsItemRolesMockHandler400());
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditGroupPanel
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
@@ -454,5 +485,7 @@ test("should handle errors when updating roles", async () => {
     screen.getAllByRole("button", { name: "Edit group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
-  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ROLES_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });

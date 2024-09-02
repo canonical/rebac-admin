@@ -1,6 +1,5 @@
-import { queries, within } from "@testing-library/react";
+import { within } from "@testing-library/react";
 
-import * as tableQueries from "./tables";
+import queries from "./queries";
 
-export const customWithin = (element: HTMLElement) =>
-  within(element, { ...queries, ...tableQueries });
+export const customWithin = (element: HTMLElement) => within(element, queries);

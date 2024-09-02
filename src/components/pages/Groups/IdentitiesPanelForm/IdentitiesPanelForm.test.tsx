@@ -9,7 +9,7 @@ import {
   getGetIdentitiesResponseMock,
   getGetIdentitiesResponseMock400,
 } from "api/identities/identities.msw";
-import { hasNotification, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import IdentitiesPanelForm from "./IdentitiesPanelForm";
 import { Label } from "./types";
@@ -182,14 +182,15 @@ test("can remove identities from the API", async () => {
   ]);
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("can display fetch errors", async () => {
   mockApiServer.use(
     getGetIdentitiesMockHandler400(
       getGetIdentitiesResponseMock400({ message: "Uh oh!" }),
     ),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <IdentitiesPanelForm
       addIdentities={[]}
       setAddIdentities={vi.fn()}
@@ -197,7 +198,7 @@ test("can display fetch errors", async () => {
       setRemoveIdentities={vi.fn()}
     />,
   );
-  await hasNotification("Uh oh!");
+  expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
 });
 
 test("filter identities", async () => {

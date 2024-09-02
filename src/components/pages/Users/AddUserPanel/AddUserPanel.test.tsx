@@ -37,7 +37,7 @@ import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelFor
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { mockGroup } from "mocks/groups";
-import { hasToast, renderComponent, hasNotification } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import { UserPanelLabel } from "../UserPanel";
 
@@ -110,17 +110,22 @@ afterAll(() => {
   mockApiServer.close();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should add a user", async () => {
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
-  await hasToast('User with email "test@test.com" was created.', "positive");
+  expect(
+    await findNotificationByText(
+      'User with email "test@test.com" was created.',
+      { appearance: "toast", severity: "positive" },
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding a user", async () => {
   mockApiServer.use(
     getPostIdentitiesMockHandler400(
@@ -129,18 +134,20 @@ test("should handle errors when adding a user", async () => {
       }),
     ),
   );
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
-  await hasNotification(
-    "Unable to create local user: That local user already exists",
-    "negative",
-  );
+  expect(
+    await findNotificationByText(
+      "Unable to create local user: That local user already exists",
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle no identity id error when adding a user", async () => {
   mockApiServer.use(
     getPostIdentitiesMockHandler(
@@ -150,12 +157,18 @@ test("should handle no identity id error when adding a user", async () => {
       }),
     ),
   );
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "mock@gmail.com{Enter}",
   );
-  await hasToast(Label.IDENTITY_ID_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.IDENTITY_ID_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
 
 test("should add groups", async () => {
@@ -172,7 +185,9 @@ test("should add groups", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -196,16 +211,19 @@ test("should add groups", async () => {
   );
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe('{"patches":[{"group":"group1","op":"add"}]}');
-  await hasToast(
-    'User with email "test@test.com" was created.',
-    NotificationSeverity.POSITIVE,
-  );
+  expect(
+    await findNotificationByText(
+      'User with email "test@test.com" was created.',
+      { appearance: "toast", severity: NotificationSeverity.POSITIVE },
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding groups", async () => {
   mockApiServer.use(getPatchIdentitiesItemGroupsMockHandler400());
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -227,7 +245,9 @@ test("should handle errors when adding groups", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Create local user" }),
   );
-  await hasToast(Label.GROUPS_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.GROUPS_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });
 
 test("should add roles", async () => {
@@ -244,7 +264,9 @@ test("should add roles", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -268,16 +290,19 @@ test("should add roles", async () => {
   );
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
-  await hasToast(
-    'User with email "test@test.com" was created.',
-    NotificationSeverity.POSITIVE,
-  );
+  expect(
+    await findNotificationByText(
+      'User with email "test@test.com" was created.',
+      { appearance: "toast", severity: NotificationSeverity.POSITIVE },
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding roles", async () => {
   mockApiServer.use(getPatchIdentitiesItemRolesMockHandler400());
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -299,7 +324,9 @@ test("should handle errors when adding roles", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Create local user" }),
   );
-  await hasToast(Label.ROLES_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ROLES_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });
 
 test("should add entitlements", async () => {
@@ -316,7 +343,9 @@ test("should add entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -357,16 +386,19 @@ test("should add entitlements", async () => {
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
-  await hasToast(
-    'User with email "test@test.com" was created.',
-    NotificationSeverity.POSITIVE,
-  );
+  expect(
+    await findNotificationByText(
+      'User with email "test@test.com" was created.',
+      { appearance: "toast", severity: NotificationSeverity.POSITIVE },
+    ),
+  ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when adding entitlements", async () => {
   mockApiServer.use(getPatchIdentitiesItemEntitlementsMockHandler400());
-  renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
     screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
@@ -403,5 +435,9 @@ test("should handle errors when adding entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Create local user" }),
   );
-  await hasToast(Label.ENTITLEMENTS_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ENTITLEMENTS_ERROR, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
 });
