@@ -186,7 +186,6 @@ test("should add and remove entitlements", async () => {
   ).toBeInTheDocument();
 });
 
-// eslint-disable-next-line vitest/expect-expect
 test("should handle errors when updating entitlements", async () => {
   mockApiServer.use(
     getGetIdentitiesItemEntitlementsMockHandler(
