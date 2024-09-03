@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
@@ -26,10 +27,12 @@ const generateError = (
 };
 
 const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
+  const queryClient = useQueryClient();
   const {
     error: getIdentitiesItemEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExistingEntitlements,
+    queryKey: entitlementsQueryKey,
   } = useGetIdentitiesItemEntitlements(userId);
   const {
     mutateAsync: patchIdentitiesItemEntitlements,
@@ -85,6 +88,9 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
           });
         }
         queue.onDone(() => {
+          void queryClient.invalidateQueries({
+            queryKey: entitlementsQueryKey,
+          });
           close();
           if (hasEntitlementsError) {
             reactHotToast.custom((t) => (

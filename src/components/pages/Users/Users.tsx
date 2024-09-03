@@ -50,7 +50,7 @@ const Users = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editUser?: Identity | null;
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editUser && data.editUser?.id) {
+    if (data?.editUser?.id) {
       return (
         <EditUserPanel
           close={closePanel}

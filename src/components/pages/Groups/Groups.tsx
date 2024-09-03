@@ -37,7 +37,7 @@ const Groups = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroup?: Group | null;
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editGroup && data?.editGroup.id) {
+    if (data?.editGroup?.id) {
       return (
         <EditGroupPanel
           group={data.editGroup}
