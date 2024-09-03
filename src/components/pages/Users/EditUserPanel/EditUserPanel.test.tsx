@@ -23,7 +23,7 @@ import {
 } from "api/resources/resources.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { hasToast, renderComponent } from "test/utils";
+import { renderComponent } from "test/utils";
 
 import EditUserPanel from "./EditUserPanel";
 import { Label } from "./types";
@@ -108,7 +108,9 @@ test("should add and remove entitlements", async () => {
       patchDone = true;
     }
   });
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditUserPanel
       user={mockUser}
       userId="user1"
@@ -176,7 +178,12 @@ test("should add and remove entitlements", async () => {
       },
     ],
   });
-  await hasToast('User "really good" was updated.', "positive");
+  expect(
+    await findNotificationByText('User "really good" was updated.', {
+      appearance: "toast",
+      severity: NotificationSeverity.POSITIVE,
+    }),
+  ).toBeInTheDocument();
 });
 
 // eslint-disable-next-line vitest/expect-expect
@@ -190,7 +197,9 @@ test("should handle errors when updating entitlements", async () => {
     getPatchIdentitiesItemEntitlementsMockHandler400(),
     getGetIdentitiesItemEntitlementsMockHandler400(),
   );
-  renderComponent(
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
     <EditUserPanel
       user={mockUser}
       userId="user1"
@@ -237,5 +246,10 @@ test("should handle errors when updating entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
-  await hasToast(Label.ENTITLEMENTS_ERROR, NotificationSeverity.NEGATIVE);
+  expect(
+    await findNotificationByText(Label.ENTITLEMENTS_ERROR, {
+      appearance: "toast",
+      severity: NotificationSeverity.NEGATIVE,
+    }),
+  ).toBeInTheDocument();
 });
