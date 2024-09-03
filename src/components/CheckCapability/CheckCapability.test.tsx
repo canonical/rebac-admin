@@ -6,7 +6,7 @@ import { CapabilityAction } from "hooks/capabilities";
 import {
   getGetActualCapabilitiesMock,
   getGetCapabilitiesErrorMockHandler,
-} from "mocks/capabilities";
+} from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 

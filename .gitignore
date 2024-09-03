@@ -20,4 +20,5 @@ yarn-error.log
 openapi.yaml
 .pnp.*
 .vite.config.ts.timestamp-*
+tsconfig.vitest-temp.json
 demo/public/mockServiceWorker.js

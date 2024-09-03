@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
-import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 

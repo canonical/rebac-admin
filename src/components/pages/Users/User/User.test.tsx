@@ -8,7 +8,7 @@ import {
   getGetIdentitiesItemMockHandler400,
   getGetIdentitiesItemResponseMock,
 } from "api/identities/identities.msw";
-import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";

@@ -20,8 +20,8 @@ import {
 } from "api/resources/resources.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { mockEntityEntitlement } from "mocks/entitlements";
-import { mockEntity, mockResource } from "mocks/resources";
+import { mockEntityEntitlement } from "test/mocks/entitlements";
+import { mockEntity, mockResource } from "test/mocks/resources";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";

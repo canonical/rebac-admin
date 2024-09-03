@@ -11,7 +11,7 @@ import {
 import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { EntityTablePaginationLabel } from "components/EntityTable/EntityTablePagination";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
-import { getGetActualCapabilitiesMock } from "mocks/capabilities";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { customWithin } from "test/queries/within";
 import { renderComponent } from "test/utils";
 import urls from "urls";

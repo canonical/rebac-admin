@@ -10,7 +10,7 @@ import {
   getGetGroupsResponseMock400,
 } from "api/groups/groups.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
-import { mockGroup } from "mocks/groups";
+import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
 import GroupsPanelForm from "./GroupsPanelForm";
