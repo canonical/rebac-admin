@@ -34,8 +34,6 @@ test("displays the form", async () => {
       ]}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form aria-label="Add form"></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -53,8 +51,6 @@ test("displays the empty state", async () => {
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -96,8 +92,6 @@ test("can display entities", async () => {
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -170,8 +164,6 @@ test("can filter entities", async () => {
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -215,6 +207,80 @@ test("can filter entities", async () => {
   ).not.toBeInTheDocument();
 });
 
+test("can filter entities using a custom function", async () => {
+  const addEntities = [
+    {
+      entitlement: "can_view",
+      entity_id: "admins",
+      entity_type: "group",
+    },
+    {
+      entitlement: "can_read",
+      entity_id: "editors",
+      entity_type: "client",
+    },
+  ];
+  const existingEntities = [
+    {
+      entitlement: "can_view",
+      entity_id: "moderators",
+      entity_type: "collection",
+    },
+    {
+      entitlement: "can_remove",
+      entity_id: "staff",
+      entity_type: "team",
+    },
+  ];
+  renderComponent(
+    <PanelTableForm<EntityEntitlement>
+      addEntities={addEntities}
+      columns={COLUMNS}
+      entityMatches={(entity, search) => entity.entity_id.includes(search)}
+      entityName="entitlement"
+      existingEntities={existingEntities}
+      form={<form></form>}
+      generateCells={(entitlement) => ({ ...entitlement })}
+      removeEntities={[]}
+      setAddEntities={vi.fn()}
+      setRemoveEntities={vi.fn()}
+    />,
+  );
+  await userEvent.type(screen.getByRole("searchbox"), "editors");
+  expect(
+    screen.queryByRole("row", {
+      name: new RegExp(
+        [
+          addEntities[0].entity_type,
+          addEntities[0].entity_id,
+          addEntities[0].entitlement,
+        ].join(" "),
+      ),
+    }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole("row", {
+      name: new RegExp(
+        [
+          addEntities[1].entity_type,
+          addEntities[1].entity_id,
+          addEntities[1].entitlement,
+        ].join(" "),
+      ),
+    }),
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByRole("row", {
+      name: /collection moderators can_view/,
+    }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("row", {
+      name: /team staff can_remove/,
+    }),
+  ).not.toBeInTheDocument();
+});
+
 test("displays a message when there are no matches", async () => {
   const addEntities = [
     {
@@ -233,8 +299,6 @@ test("displays a message when there are no matches", async () => {
       addEntities={addEntities}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -274,8 +338,6 @@ test("does not display removed entities", async () => {
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={existingEntities}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -320,8 +382,6 @@ test("can remove newly added entities", async () => {
       addEntities={entities}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -376,8 +436,6 @@ test("can remove existing entities", async () => {
       setRemoveEntities={setRemoveEntities}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
     />,
@@ -408,8 +466,6 @@ test("can display errors", async () => {
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}
@@ -428,8 +484,6 @@ test("should display the loading state", async () => {
       addEntities={[]}
       columns={COLUMNS}
       entityName="entitlement"
-      entityEqual={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
-      entityMatches={(entity, search) => entity.entitlement.includes(search)}
       existingEntities={[]}
       form={<form></form>}
       generateCells={(entitlement) => ({ ...entitlement })}

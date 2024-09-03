@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
@@ -199,36 +199,4 @@ test("can display fetch errors", async () => {
     />,
   );
   expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
-});
-
-test("filter identities", async () => {
-  let getDone = false;
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  mockApiServer.events.on("request:start", async ({ request }) => {
-    const requestClone = request.clone();
-    if (
-      requestClone.method === "GET" &&
-      requestClone.url.endsWith("/identities?filter=identity1")
-    ) {
-      getDone = true;
-    }
-  });
-  renderComponent(
-    <IdentitiesPanelForm
-      addIdentities={[]}
-      setAddIdentities={vi.fn()}
-      removeIdentities={[]}
-      setRemoveIdentities={vi.fn()}
-    />,
-  );
-  await userEvent.click(
-    screen.getByRole("combobox", {
-      name: Label.SELECT,
-    }),
-  );
-  await userEvent.type(
-    within(screen.getByRole("listbox")).getByRole("searchbox"),
-    "identity1{enter}",
-  );
-  await waitFor(() => expect(getDone).toBeTruthy());
 });

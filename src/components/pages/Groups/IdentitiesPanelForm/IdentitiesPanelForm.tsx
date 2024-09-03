@@ -14,15 +14,6 @@ const COLUMN_DATA = [
   },
 ];
 
-const identityEqual = (identityA: Identity, identityB: Identity) =>
-  !Object.keys(identityA).some((key) => {
-    const identityKey = key as keyof Identity;
-    return identityA[identityKey] !== identityB[identityKey];
-  });
-
-const identityMatches = (identity: Identity, search: string) =>
-  Object.values(identity).some((value) => value.includes(search));
-
 const IdentitiesPanelForm = ({
   existingIdentities,
   addIdentities,
@@ -39,8 +30,6 @@ const IdentitiesPanelForm = ({
     <PanelTableForm
       addEntities={addIdentities}
       columns={COLUMN_DATA}
-      entityEqual={identityEqual}
-      entityMatches={identityMatches}
       entityName="user"
       error={error?.response?.data.message}
       existingEntities={existingIdentities}

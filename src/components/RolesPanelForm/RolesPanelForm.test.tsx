@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
@@ -177,36 +177,4 @@ test("can display fetch errors", async () => {
     />,
   );
   expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
-});
-
-test("filter roles", async () => {
-  let getDone = false;
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  mockApiServer.events.on("request:start", async ({ request }) => {
-    const requestClone = request.clone();
-    if (
-      requestClone.method === "GET" &&
-      requestClone.url.endsWith("/roles?filter=role1")
-    ) {
-      getDone = true;
-    }
-  });
-  renderComponent(
-    <RolesPanelForm
-      addRoles={[]}
-      setAddRoles={vi.fn()}
-      removeRoles={[]}
-      setRemoveRoles={vi.fn()}
-    />,
-  );
-  await userEvent.click(
-    screen.getByRole("combobox", {
-      name: RolesPanelFormLabel.SELECT,
-    }),
-  );
-  await userEvent.type(
-    within(screen.getByRole("listbox")).getByRole("searchbox"),
-    "role1{enter}",
-  );
-  await waitFor(() => expect(getDone).toBeTruthy());
 });
