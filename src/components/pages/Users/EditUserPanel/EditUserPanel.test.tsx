@@ -9,6 +9,10 @@ import {
   getGetEntitlementsResponseMock,
 } from "api/entitlements/entitlements.msw";
 import {
+  getGetGroupsMockHandler,
+  getGetGroupsResponseMock,
+} from "api/groups/groups.msw";
+import {
   getPatchIdentitiesItemEntitlementsMockHandler,
   getPatchIdentitiesItemEntitlementsMockHandler400,
   getGetIdentitiesItemEntitlementsMockHandler,
@@ -16,6 +20,10 @@ import {
   getGetIdentitiesItemEntitlementsMockHandler400,
   getGetIdentitiesItemMockHandler,
   getGetIdentitiesItemResponseMock,
+  getPatchIdentitiesItemGroupsMockHandler400,
+  getGetIdentitiesItemGroupsResponseMock,
+  getGetIdentitiesItemGroupsMockHandler,
+  getPatchIdentitiesItemGroupsMockHandler,
 } from "api/identities/identities.msw";
 import {
   getGetResourcesMockHandler,
@@ -23,6 +31,8 @@ import {
 } from "api/resources/resources.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { mockGroup } from "mocks/groups";
 import { renderComponent } from "test/utils";
 
 import EditUserPanel from "./EditUserPanel";
@@ -38,6 +48,7 @@ const mockUser = {
 };
 
 const mockApiServer = setupServer(
+  getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
   getGetIdentitiesItemEntitlementsMockHandler(
     getGetIdentitiesItemEntitlementsResponseMock({
@@ -56,6 +67,23 @@ const mockApiServer = setupServer(
     }),
   ),
   getGetIdentitiesItemMockHandler(getGetIdentitiesItemResponseMock(mockUser)),
+  getGetIdentitiesItemGroupsMockHandler(
+    getGetIdentitiesItemGroupsResponseMock({
+      data: [
+        { id: "1", name: "group1" },
+        { id: "2", name: "group2" },
+      ],
+    }),
+  ),
+  getGetGroupsMockHandler(
+    getGetGroupsResponseMock({
+      data: [
+        mockGroup({ id: "1", name: "group1" }),
+        mockGroup({ id: "2", name: "group2" }),
+        mockGroup({ id: "3", name: "group3" }),
+      ],
+    }),
+  ),
   getGetEntitlementsMockHandler(
     getGetEntitlementsResponseMock({
       data: [
@@ -92,6 +120,102 @@ afterEach(() => {
 
 afterAll(() => {
   mockApiServer.close();
+});
+
+test("should add and remove groups", async () => {
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PATCH" &&
+      requestClone.url.endsWith("/identities/user1/groups")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  // Wait until the groups have loaded.
+  await screen.findByText("2 groups");
+  await userEvent.click(screen.getByRole("button", { name: /Edit groups/ }));
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: GroupsPanelFormLabel.REMOVE,
+    })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: GroupsPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "group3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Edit local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBeTruthy());
+  expect(patchResponseBody).toBe(
+    '{"patches":[{"group":"3","op":"add"},{"group":"1","op":"remove"}]}',
+  );
+  expect(
+    await findNotificationByText(
+      'User with email "pfft@example.com" was updated.',
+      { appearance: "toast", severity: NotificationSeverity.POSITIVE },
+    ),
+  ).toBeInTheDocument();
+});
+
+test("should handle errors when updating groups", async () => {
+  mockApiServer.use(getPatchIdentitiesItemGroupsMockHandler400());
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  // Wait until the groups have loaded.
+  await screen.findByText("2 groups");
+  await userEvent.click(screen.getByRole("button", { name: /Edit groups/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: GroupsPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "group3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Edit local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  expect(
+    await findNotificationByText(Label.GROUPS_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
 });
 
 test("should add and remove entitlements", async () => {
@@ -179,10 +303,13 @@ test("should add and remove entitlements", async () => {
     ],
   });
   expect(
-    await findNotificationByText('User "really good" was updated.', {
-      appearance: "toast",
-      severity: NotificationSeverity.POSITIVE,
-    }),
+    await findNotificationByText(
+      'User with email "pfft@example.com" was updated.',
+      {
+        appearance: "toast",
+        severity: NotificationSeverity.POSITIVE,
+      },
+    ),
   ).toBeInTheDocument();
 });
 
