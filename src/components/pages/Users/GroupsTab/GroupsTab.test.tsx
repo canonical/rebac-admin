@@ -15,7 +15,7 @@ import {
   getGetIdentitiesItemGroupsMockHandler400,
 } from "api/identities/identities.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
-import { mockGroup } from "mocks/groups";
+import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";

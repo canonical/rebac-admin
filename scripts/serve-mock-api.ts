@@ -7,7 +7,7 @@ import { parse } from "dotenv";
 import express from "express";
 import ip from "ip";
 
-import { handlers } from "../src/mocks/handlers";
+import { handlers } from "../src/test/mocks/handlers";
 
 const env = parse(readFileSync(path.resolve(process.cwd(), ".env")));
 

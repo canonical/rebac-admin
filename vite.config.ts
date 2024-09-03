@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
       dts({
         rollupTypes: true,
         include: ["src"],
-        exclude: ["**/*.msw.ts", "src/test", "src/mocks"],
+        exclude: ["**/*.msw.ts", "src/test"],
       }),
       nodePolyfills({
         globals: {
@@ -57,8 +57,13 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       coverage: {
+        exclude: ["src/api/**", "src/test/**", "src/**/*.?(test-)d.ts"],
+        include: ["src/**/*.[jt]s?(x)"],
         reporter: ["text", "json-summary", "json", "cobertura"],
         reportOnFailure: true,
+        thresholds: {
+          lines: 95,
+        },
       },
       environment: "happy-dom",
       globals: true,

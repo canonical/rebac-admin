@@ -6,7 +6,7 @@ import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetActualCapabilitiesMock,
   getGetCapabilitiesErrorMockHandler,
-} from "mocks/capabilities";
+} from "test/mocks/capabilities";
 import { renderWrappedHook } from "test/utils";
 import { Endpoint } from "types/api";
 
