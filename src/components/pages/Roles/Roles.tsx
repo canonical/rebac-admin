@@ -37,7 +37,7 @@ const Roles = () => {
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editRole?: Role | null;
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editRole && data.editRole.id) {
+    if (data?.editRole?.id) {
       return (
         <EditRolePanel
           role={data.editRole}

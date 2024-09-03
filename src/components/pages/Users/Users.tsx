@@ -16,6 +16,7 @@ import { getIds } from "utils/getIds";
 
 import AddUserPanel from "./AddUserPanel";
 import DeleteUsersModal from "./DeleteUsersModal";
+import EditUserPanel from "./EditUserPanel";
 import { Label } from "./types";
 
 const COLUMN_DATA = [
@@ -47,10 +48,17 @@ const Users = () => {
     });
   pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
-    editIdentityId?: string | null;
+    editUser?: Identity | null;
   }>((closePanel, data, setPanelWidth) => {
-    if (data?.editIdentityId) {
-      // TODO: Edit user panel.
+    if (data?.editUser?.id) {
+      return (
+        <EditUserPanel
+          close={closePanel}
+          user={data.editUser}
+          userId={data.editUser.id}
+          setPanelWidth={setPanelWidth}
+        />
+      );
     } else {
       return <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
@@ -103,7 +111,7 @@ const Users = () => {
             source: user.source,
           })}
           onDelete={(user) => user.id && openModal([user.id])}
-          onEdit={(user) => openPanel({ editIdentityId: user.id })}
+          onEdit={(user) => openPanel({ editUser: user })}
           pagination={pagination}
           selected={selected}
         />
