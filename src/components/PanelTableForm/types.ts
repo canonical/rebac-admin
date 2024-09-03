@@ -7,8 +7,7 @@ export type Props<E> = {
   addEntities: E[];
   columns: Column<RowData>[];
   entityName: string;
-  entityEqual: (entityA: E, entityB: E) => boolean;
-  entityMatches: (entity: E, search: string) => boolean;
+  entityMatches?: (entity: E, search: string) => boolean;
   error?: string | null;
   existingEntities?: E[];
   form: ReactNode;

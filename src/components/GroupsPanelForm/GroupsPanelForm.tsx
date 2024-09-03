@@ -14,15 +14,6 @@ const COLUMN_DATA = [
   },
 ];
 
-const groupEqual = (groupA: Group, groupB: Group) =>
-  !Object.keys(groupA).some((key) => {
-    const groupKey = key as keyof Group;
-    return groupA[groupKey] !== groupB[groupKey];
-  });
-
-const groupMatches = (group: Group, search: string) =>
-  Object.values(group).some((value) => value.includes(search));
-
 const GroupsPanelForm = ({
   existingGroups,
   addGroups = [],
@@ -39,8 +30,6 @@ const GroupsPanelForm = ({
     <PanelTableForm
       addEntities={addGroups}
       columns={COLUMN_DATA}
-      entityEqual={groupEqual}
-      entityMatches={groupMatches}
       entityName="group"
       error={error?.response?.data.message}
       existingEntities={existingGroups}

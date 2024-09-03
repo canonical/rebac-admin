@@ -9,6 +9,7 @@ import {
   SearchBox,
   Spinner,
 } from "@canonical/react-components";
+import isEqual from "lodash/isEqual";
 import { useMemo, useState } from "react";
 import type { Column } from "react-table";
 
@@ -39,11 +40,18 @@ const generateRow = <E,>(
   ),
 });
 
+// Search all string values in the entity for the substring.
+const matches = <E,>(entity: E, search: string) =>
+  entity &&
+  typeof entity === "object" &&
+  Object.values(entity).some(
+    (value) => typeof value === "string" && value.includes(search.trim()),
+  );
+
 const PanelTableForm = <E,>({
   addEntities,
   columns,
-  entityEqual,
-  entityMatches,
+  entityMatches = matches,
   entityName,
   error,
   existingEntities,
@@ -69,7 +77,7 @@ const PanelTableForm = <E,>({
           filtered.push(
             generateRow(generateCells, entityName, newEntity, (newEntity) =>
               setAddEntities(
-                addEntities.filter((entity) => !entityEqual(entity, newEntity)),
+                addEntities.filter((entity) => !isEqual(entity, newEntity)),
               ),
             ),
           );
@@ -79,9 +87,7 @@ const PanelTableForm = <E,>({
     const existing =
       existingEntities?.reduce<RowData[]>((filtered, existingEntity) => {
         if (
-          !removeEntities.find((removed) =>
-            entityEqual(existingEntity, removed),
-          ) &&
+          !removeEntities.find((removed) => isEqual(existingEntity, removed)) &&
           (!search || entityMatches(existingEntity, search))
         ) {
           filtered.push(
@@ -106,7 +112,6 @@ const PanelTableForm = <E,>({
     generateCells,
     entityName,
     setAddEntities,
-    entityEqual,
     removeEntities,
     setRemoveEntities,
   ]);

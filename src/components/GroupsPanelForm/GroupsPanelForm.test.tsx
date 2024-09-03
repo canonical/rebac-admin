@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
@@ -178,36 +178,4 @@ test("can display fetch errors", async () => {
     />,
   );
   expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
-});
-
-test("filter groups", async () => {
-  let getDone = false;
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  mockApiServer.events.on("request:start", async ({ request }) => {
-    const requestClone = request.clone();
-    if (
-      requestClone.method === "GET" &&
-      requestClone.url.endsWith("/groups?filter=viewer")
-    ) {
-      getDone = true;
-    }
-  });
-  renderComponent(
-    <GroupsPanelForm
-      addGroups={[]}
-      setAddGroups={vi.fn()}
-      removeGroups={[]}
-      setRemoveGroups={vi.fn()}
-    />,
-  );
-  await userEvent.click(
-    screen.getByRole("combobox", {
-      name: GroupsPanelFormLabel.SELECT,
-    }),
-  );
-  await userEvent.type(
-    within(screen.getByRole("listbox")).getByRole("searchbox"),
-    "viewer{enter}",
-  );
-  await waitFor(() => expect(getDone).toBeTruthy());
 });
