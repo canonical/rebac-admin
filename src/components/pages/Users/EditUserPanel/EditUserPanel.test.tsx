@@ -32,7 +32,7 @@ import {
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
-import { mockGroup } from "mocks/groups";
+import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
 import EditUserPanel from "./EditUserPanel";
