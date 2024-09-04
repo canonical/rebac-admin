@@ -241,7 +241,7 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
               </ToastCard>
             ));
           }
-          if (!hasEntitlementsError) {
+          if (!hasGroupsError && !hasRolesError && !hasEntitlementsError) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
                 {`User with email "${user.email}" was updated.`}

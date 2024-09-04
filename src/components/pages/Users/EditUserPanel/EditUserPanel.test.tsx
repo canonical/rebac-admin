@@ -24,14 +24,23 @@ import {
   getGetIdentitiesItemGroupsResponseMock,
   getGetIdentitiesItemGroupsMockHandler,
   getPatchIdentitiesItemGroupsMockHandler,
+  getGetIdentitiesItemRolesMockHandler,
+  getGetIdentitiesItemRolesResponseMock,
+  getPatchIdentitiesItemRolesMockHandler,
+  getPatchIdentitiesItemRolesMockHandler400,
 } from "api/identities/identities.msw";
 import {
   getGetResourcesMockHandler,
   getGetResourcesResponseMock,
 } from "api/resources/resources.msw";
+import {
+  getGetRolesMockHandler,
+  getGetRolesResponseMock,
+} from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { RolesPanelFormLabel } from "components/RolesPanelForm";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -49,6 +58,7 @@ const mockUser = {
 
 const mockApiServer = setupServer(
   getPatchIdentitiesItemGroupsMockHandler(),
+  getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
   getGetIdentitiesItemEntitlementsMockHandler(
     getGetIdentitiesItemEntitlementsResponseMock({
@@ -81,6 +91,23 @@ const mockApiServer = setupServer(
         mockGroup({ id: "1", name: "group1" }),
         mockGroup({ id: "2", name: "group2" }),
         mockGroup({ id: "3", name: "group3" }),
+      ],
+    }),
+  ),
+  getGetIdentitiesItemRolesMockHandler(
+    getGetIdentitiesItemRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+      ],
+    }),
+  ),
+  getGetRolesMockHandler(
+    getGetRolesResponseMock({
+      data: [
+        { id: "role123", name: "role1" },
+        { id: "role234", name: "role2" },
+        { id: "role345", name: "role3" },
       ],
     }),
   ),
@@ -214,7 +241,115 @@ test("should handle errors when updating groups", async () => {
     screen.getByRole("button", { name: "Update local user" }),
   );
   expect(
-    await findNotificationByText(Label.GROUPS_ERROR, { appearance: "toast" }),
+    await findNotificationByText(Label.GROUPS_ERROR, {
+      appearance: "toast",
+      severity: NotificationSeverity.NEGATIVE,
+    }),
+  ).toBeInTheDocument();
+});
+
+test("should add and remove roles", async () => {
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PATCH" &&
+      requestClone.url.endsWith("/identities/user1/roles")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  // Wait until the roles have loaded.
+  await screen.findByText("2 roles");
+  await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: RolesPanelFormLabel.REMOVE,
+    })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Edit local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    patches: [
+      { role: "role345", op: "add" },
+      { role: "role123", op: "remove" },
+    ],
+  });
+  expect(
+    await findNotificationByText(
+      'User with email "pfft@example.com" was updated.',
+      {
+        appearance: "toast",
+        severity: NotificationSeverity.POSITIVE,
+      },
+    ),
+  ).toBeInTheDocument();
+});
+
+test("should handle errors when updating roles", async () => {
+  mockApiServer.use(getPatchIdentitiesItemRolesMockHandler400());
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  // Wait until the roles have loaded.
+  await screen.findByText("2 roles");
+  await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
+  await userEvent.click(
+    screen.getByRole("combobox", {
+      name: RolesPanelFormLabel.SELECT,
+    }),
+  );
+  await userEvent.click(
+    await screen.findByRole("checkbox", {
+      name: "role3",
+    }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Edit local user" })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  expect(
+    await findNotificationByText(Label.ROLES_ERROR, {
+      appearance: "toast",
+      severity: NotificationSeverity.NEGATIVE,
+    }),
   ).toBeInTheDocument();
 });
 
