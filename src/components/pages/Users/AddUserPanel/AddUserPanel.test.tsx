@@ -34,8 +34,8 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
-import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
-import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { RolesPanelFormLabel } from "components/RolesPanelForm";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
