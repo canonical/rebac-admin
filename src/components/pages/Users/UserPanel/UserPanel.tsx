@@ -18,6 +18,7 @@ const schema = Yup.object().shape({
 
 const UserPanel = ({
   existingGroups,
+  existingRoles,
   existingEntitlements,
   isEditing,
   isFetchingExistingGroups,
@@ -31,6 +32,7 @@ const UserPanel = ({
   const [addGroups, setAddGroups] = useState<Group[]>([]);
   const [removeGroups, setRemoveGroups] = useState<Group[]>([]);
   const [addRoles, setAddRoles] = useState<Role[]>([]);
+  const [removeRoles, setRemoveRoles] = useState<Role[]>([]);
   const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
   );
@@ -45,6 +47,7 @@ const UserPanel = ({
         !!addRoles.length ||
         !!addEntitlements.length ||
         !!removeGroups.length ||
+        !!removeRoles.length ||
         !!removeEntitlements.length
       }
       entity="local user"
@@ -62,6 +65,7 @@ const UserPanel = ({
           addRoles,
           addEntitlements,
           removeGroups,
+          removeRoles,
           removeEntitlements,
         )
       }
@@ -86,15 +90,17 @@ const UserPanel = ({
           ),
         },
         {
-          count: addRoles.length,
+          count:
+            (existingRoles?.length ?? 0) + addRoles.length - removeRoles.length,
           entity: "role",
           icon: "profile",
           view: (
             <RolesPanelForm
               addRoles={addRoles}
+              existingRoles={existingRoles}
               setAddRoles={setAddRoles}
-              removeRoles={[]}
-              setRemoveRoles={(_roles: Role[]) => {}}
+              removeRoles={removeRoles}
+              setRemoveRoles={setRemoveRoles}
             />
           ),
         },

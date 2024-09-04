@@ -18,8 +18,10 @@ export type Props = {
   close: SubFormPanelProps<FormFields>["close"];
   error?: SubFormPanelProps<FormFields>["error"];
   existingGroups?: Group[];
+  existingRoles?: Role[];
   existingEntitlements?: EntityEntitlement[];
   isFetchingExistingGroups?: boolean;
+  isFetchingExistingRoles?: boolean;
   isFetchingExistingEntitlements?: boolean;
   isEditing?: boolean;
   isFetchingUser?: boolean;
@@ -29,6 +31,7 @@ export type Props = {
     addRoles: Role[],
     addEntitlements: EntityEntitlement[],
     removeGroups: Group[],
+    removeRoles: Role[],
     removeEntitlements: EntityEntitlement[],
   ) => Promise<void>;
   user?: Identity | null;
