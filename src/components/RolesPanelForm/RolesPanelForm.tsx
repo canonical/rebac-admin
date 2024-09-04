@@ -14,15 +14,6 @@ const COLUMN_DATA = [
   },
 ];
 
-const roleEqual = (roleA: Role, roleB: Role) =>
-  !Object.keys(roleA).some((key) => {
-    const roleKey = key as keyof Role;
-    return roleA[roleKey] !== roleB[roleKey];
-  });
-
-const roleMatches = (role: Role, search: string) =>
-  Object.values(role).some((value) => value.includes(search));
-
 const RolesPanelForm = ({
   existingRoles,
   addRoles = [],
@@ -39,8 +30,6 @@ const RolesPanelForm = ({
     <PanelTableForm
       addEntities={addRoles}
       columns={COLUMN_DATA}
-      entityEqual={roleEqual}
-      entityMatches={roleMatches}
       entityName="role"
       error={error?.response?.data.message}
       existingEntities={existingRoles}

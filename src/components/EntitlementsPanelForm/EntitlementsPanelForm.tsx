@@ -29,18 +29,6 @@ const COLUMN_DATA = [
   },
 ];
 
-const entitlementEqual = (
-  entitlementA: EntityEntitlement,
-  entitlementB: EntityEntitlement,
-) =>
-  !Object.keys(entitlementA).some((key) => {
-    const entitlementKey = key as keyof EntityEntitlement;
-    return entitlementA[entitlementKey] !== entitlementB[entitlementKey];
-  });
-
-const entitlementMatches = (entitlement: EntityEntitlement, search: string) =>
-  Object.values(entitlement).some((value) => value.includes(search));
-
 const EntitlementsPanelForm = ({
   existingEntitlements,
   addEntitlements = [],
@@ -59,8 +47,6 @@ const EntitlementsPanelForm = ({
     <PanelTableForm<EntityEntitlement>
       addEntities={addEntitlements}
       columns={COLUMN_DATA}
-      entityEqual={entitlementEqual}
-      entityMatches={entitlementMatches}
       entityName="entitlement"
       error={getEntitlementsError?.message}
       existingEntities={existingEntitlements}

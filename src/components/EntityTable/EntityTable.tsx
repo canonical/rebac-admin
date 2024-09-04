@@ -10,6 +10,21 @@ import EntityTablePagination from "./EntityTablePagination";
 import type { TableEntity } from "./types";
 import { Label, type Props } from "./types";
 
+const getProps = (id: string) => {
+  switch (id) {
+    case "selectEntity":
+      return {
+        className: "select-entity-checkbox",
+      };
+    case "actions":
+      return {
+        className: "u-align--right",
+      };
+    default:
+      return {};
+  }
+};
+
 const EntityTable = <E extends TableEntity>({
   columns,
   checkboxesDisabled,
@@ -106,34 +121,8 @@ const EntityTable = <E extends TableEntity>({
         {...props}
         columns={allColumns}
         data={tableData}
-        getCellProps={({ column }) => {
-          switch (column.id) {
-            case "selectEntity":
-              return {
-                className: "select-entity-checkbox",
-              };
-            case "actions":
-              return {
-                className: "u-align--right",
-              };
-            default:
-              return {};
-          }
-        }}
-        getHeaderProps={({ id }) => {
-          switch (id) {
-            case "selectEntity":
-              return {
-                className: "select-entity-checkbox",
-              };
-            case "actions":
-              return {
-                className: "u-align--right",
-              };
-            default:
-              return {};
-          }
-        }}
+        getCellProps={({ column: { id } }) => getProps(id)}
+        getHeaderProps={({ id }) => getProps(id)}
       />
     </>
   );

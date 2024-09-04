@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { act, renderHook } from "@testing-library/react";
 
-import { mockResponse } from "mocks/common";
+import { mockResponse } from "test/mocks/common";
 
 import { usePagination } from "./usePagination";
 

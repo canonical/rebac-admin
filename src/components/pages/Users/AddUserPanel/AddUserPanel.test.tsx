@@ -36,7 +36,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
-import { mockGroup } from "mocks/groups";
+import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
 import { UserPanelLabel } from "../UserPanel";
