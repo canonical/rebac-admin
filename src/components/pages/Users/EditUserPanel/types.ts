@@ -11,5 +11,6 @@ export type Props = {
 
 export enum Label {
   GROUPS_ERROR = "Some groups couldn't be updated.",
+  ROLES_ERROR = "Some roles couldn't be updated.",
   ENTITLEMENTS_ERROR = "Some entitlements couldn't be updated.",
 }
