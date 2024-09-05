@@ -10,6 +10,7 @@ import { useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
+import Entitlements from "components/pages/Entitlements";
 import Groups from "components/pages/Groups";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
@@ -95,10 +96,7 @@ const ReBACAdmin = ({
               path={urls.authentication.index}
               element={<Panel title="Authentication" />}
             />
-            <Route
-              path={urls.entitlements}
-              element={<Panel title="Entitlements" />}
-            />
+            <Route path={urls.entitlements} element={<Entitlements />} />
             <Route path={urls.groups.index} element={<Groups />} />
             <Route
               path={urls.resources.index}
