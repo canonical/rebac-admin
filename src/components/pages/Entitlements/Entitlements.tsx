@@ -67,7 +67,7 @@ const Entitlements = () => {
 
   return (
     <Content
-      endpoint={Endpoint.GROUPS}
+      endpoint={Endpoint.ENTITLEMENTS}
       onSearch={setFilter}
       title="Entitlements"
     >
