@@ -109,7 +109,7 @@ test("paginates", async () => {
   await waitFor(() => expect(getDone).toBeTruthy());
 });
 
-test("should display no entitlements messgae", async () => {
+test("should display no entitlements message", async () => {
   mockApiServer.use(
     getGetEntitlementsMockHandler(getGetEntitlementsResponseMock({ data: [] })),
   );

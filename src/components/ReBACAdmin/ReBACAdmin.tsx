@@ -12,6 +12,7 @@ import { Route, Routes } from "react-router-dom";
 import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
 import Entitlements from "components/pages/Entitlements";
 import Groups from "components/pages/Groups";
+import Resources from "components/pages/Resources";
 import Roles from "components/pages/Roles";
 import Users from "components/pages/Users";
 import AccountManagementTab from "components/pages/Users/AccountManagementTab";
@@ -98,10 +99,7 @@ const ReBACAdmin = ({
             />
             <Route path={urls.entitlements} element={<Entitlements />} />
             <Route path={urls.groups.index} element={<Groups />} />
-            <Route
-              path={urls.resources.index}
-              element={<Panel title="Resources" />}
-            />
+            <Route path={urls.resources.index} element={<Resources />} />
             <Route path={urls.roles.index} element={<Roles />} />
             <Route path={urls.users.user.index(null)} element={<User />}>
               <Route
