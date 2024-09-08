@@ -67,7 +67,7 @@
     "react-hot-toast": "2.4.1"
   },
   "devDependencies": {
-    "@canonical/react-components": "1.2.1",
+    "@canonical/react-components": "1.2.2",
     "@faker-js/faker": "8.4.1",
     "@mswjs/http-middleware": "0.10.1",
     "@tanstack/eslint-plugin-query": "5.32.1",
