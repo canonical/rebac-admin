@@ -1,4 +1,10 @@
-import { Spinner, Tabs } from "@canonical/react-components";
+import {
+  Button,
+  ButtonAppearance,
+  Spinner,
+  Tabs,
+  Icon,
+} from "@canonical/react-components";
 import type { ReactNode } from "react";
 import type { UIMatch } from "react-router-dom";
 import {
@@ -9,12 +15,16 @@ import {
   useParams,
 } from "react-router-dom";
 
+import type { Identity } from "api/api.schemas";
 import { useGetIdentitiesItem } from "api/identities/identities";
 import BreadcrumbNavigation from "components/BreadcrumbNavigation";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
+import { usePanel } from "hooks";
 import { Endpoint } from "types/api";
 import urls from "urls";
+
+import EditUserPanel from "../EditUserPanel";
 
 import { Label } from "./types";
 
@@ -33,6 +43,22 @@ const User = () => {
   const navigate = useNavigate();
   const matches = useMatches();
   const user = data?.data;
+
+  const { generatePanel, openPanel } = usePanel<{
+    editUser?: Identity | null;
+  }>((closePanel, data, setPanelWidth) => {
+    if (data?.editUser?.id) {
+      return (
+        <EditUserPanel
+          close={closePanel}
+          user={data.editUser}
+          userId={data.editUser.id}
+          setPanelWidth={setPanelWidth}
+        />
+      );
+    }
+    return null;
+  });
 
   const tabs = userId
     ? [
@@ -74,8 +100,18 @@ const User = () => {
     content = <Outlet />;
   }
 
+  const generateEditUserButton = () => (
+    <Button
+      appearance={ButtonAppearance.DEFAULT}
+      onClick={() => openPanel({ editUser: user })}
+    >
+      <Icon name="edit" /> {Label.EDIT}
+    </Button>
+  );
+
   return (
     <Content
+      controls={generateEditUserButton()}
       title={
         <BreadcrumbNavigation
           backTitle="Users"
@@ -104,6 +140,7 @@ const User = () => {
         }))}
       />
       {content}
+      {generatePanel()}
     </Content>
   );
 };

@@ -4,17 +4,21 @@ import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
 import {
+  getGetIdentitiesItemEntitlementsMockHandler,
+  getGetIdentitiesItemGroupsMockHandler,
   getGetIdentitiesItemMockHandler,
   getGetIdentitiesItemMockHandler400,
   getGetIdentitiesItemResponseMock,
+  getGetIdentitiesItemRolesMockHandler,
 } from "api/identities/identities.msw";
+import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";
 
 import User from "./User";
-import { Label, Label as UserLabel } from "./types";
+import { Label as UserLabel } from "./types";
 
 const mockUserData = getGetIdentitiesItemResponseMock({
   id: "user1",
@@ -51,7 +55,7 @@ test("displays loading state", async () => {
     }),
   );
   renderComponent(<User />, { path, url });
-  expect(await screen.findByText(Label.FETCHING_USER)).toBeInTheDocument();
+  expect(await screen.findByText(UserLabel.FETCHING_USER)).toBeInTheDocument();
 });
 
 test("displays content", async () => {
@@ -95,4 +99,26 @@ test("sets the active tab", async () => {
     "aria-selected",
     "true",
   );
+});
+
+test("should display the edit panel", async () => {
+  mockApiServer.use(
+    getGetIdentitiesItemGroupsMockHandler(),
+    getGetIdentitiesItemRolesMockHandler(),
+    getGetIdentitiesItemEntitlementsMockHandler(),
+  );
+  renderComponent(
+    <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>
+      <aside id="aside-panel"></aside>
+      <User />
+    </ReBACAdminContext.Provider>,
+    { path, url },
+  );
+  // Wait for user data to load, so that it can be passed to the edit panel.
+  expect(await screen.findByText(mockUserData.email)).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: UserLabel.EDIT }));
+  const panel = await screen.findByRole("complementary", {
+    name: "Edit local user",
+  });
+  expect(panel).toBeInTheDocument();
 });
