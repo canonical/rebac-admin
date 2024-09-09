@@ -1,3 +1,4 @@
+import * as reactQuery from "@tanstack/react-query";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -44,6 +45,14 @@ import { renderComponent } from "test/utils";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
+
+vi.mock("@tanstack/react-query", async () => {
+  const actual = await vi.importActual("@tanstack/react-query");
+  return {
+    ...actual,
+    useQueryClient: vi.fn().mockReturnValue({ invalidateQueries: vi.fn() }),
+  };
+});
 
 const mockApiServer = setupServer(
   // Needs to be before getGetIdentitiesMockHandler so that the path matches
@@ -145,6 +154,10 @@ afterAll(() => {
 });
 
 test("should add and remove entitlements", async () => {
+  const invalidateQueries = vi.fn();
+  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
+    invalidateQueries,
+  } as unknown as reactQuery.QueryClient);
   let patchResponseBody: string | null = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -232,6 +245,9 @@ test("should add and remove entitlements", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
+  expect(invalidateQueries).toHaveBeenCalledWith({
+    queryKey: ["/groups/admin1/entitlements"],
+  });
 });
 
 test("should handle errors when updating entitlements", async () => {
@@ -299,6 +315,10 @@ test("should handle errors when updating entitlements", async () => {
 });
 
 test("should add and remove users", async () => {
+  const invalidateQueries = vi.fn();
+  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
+    invalidateQueries,
+  } as unknown as reactQuery.QueryClient);
   let patchResponseBody: string | null = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -357,6 +377,9 @@ test("should add and remove users", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
+  expect(invalidateQueries).toHaveBeenCalledWith({
+    queryKey: ["/groups/admin1/identities"],
+  });
 });
 
 test("should handle errors when updating users", async () => {
@@ -396,6 +419,10 @@ test("should handle errors when updating users", async () => {
 });
 
 test("should add and remove roles", async () => {
+  const invalidateQueries = vi.fn();
+  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
+    invalidateQueries,
+  } as unknown as reactQuery.QueryClient);
   let patchResponseBody: string | null = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -454,6 +481,9 @@ test("should add and remove roles", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
+  expect(invalidateQueries).toHaveBeenCalledWith({
+    queryKey: ["/groups/admin1/roles"],
+  });
 });
 
 test("should handle errors when updating roles", async () => {

@@ -54,6 +54,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
     error: getGroupsItemEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExistingEntitlements,
+    queryKey: entitlementsQueryKey,
   } = useGetGroupsItemEntitlements(groupId);
   const {
     mutateAsync: patchGroupsItemEntitlements,
@@ -138,6 +139,9 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                   patches,
                 },
               });
+              await queryClient.invalidateQueries({
+                queryKey: entitlementsQueryKey,
+              });
             } catch (error) {
               hasEntitlementsError = true;
             }
@@ -169,6 +173,9 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                 data: {
                   patches,
                 },
+              });
+              await queryClient.invalidateQueries({
+                queryKey: identitiesQueryKey,
               });
             } catch (error) {
               hasIdentitiesError = true;
@@ -202,6 +209,9 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                   patches,
                 },
               });
+              await queryClient.invalidateQueries({
+                queryKey: rolesQueryKey,
+              });
             } catch (error) {
               hasRolesError = true;
             }
@@ -209,12 +219,6 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
           });
         }
         queue.onDone(() => {
-          void queryClient.invalidateQueries({
-            queryKey: rolesQueryKey,
-          });
-          void queryClient.invalidateQueries({
-            queryKey: identitiesQueryKey,
-          });
           close();
           if (hasEntitlementsError) {
             reactHotToast.custom((t) => (
