@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
 import reactHotToast from "react-hot-toast";
@@ -25,10 +26,12 @@ const generateError = (
 };
 
 const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
+  const queryClient = useQueryClient();
   const {
     error: getRolesItemEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExisting,
+    queryKey: entitlementsQueryKey,
   } = useGetRolesItemEntitlements(roleId);
   const {
     mutateAsync: patchRolesItemEntitlements,
@@ -70,6 +73,9 @@ const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
                 data: {
                   patches,
                 },
+              });
+              await queryClient.invalidateQueries({
+                queryKey: entitlementsQueryKey,
               });
             } catch (error) {
               hasError = true;
