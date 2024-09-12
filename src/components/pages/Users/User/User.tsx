@@ -100,18 +100,16 @@ const User = () => {
     content = <Outlet />;
   }
 
-  const generateEditUserButton = () => (
-    <Button
-      appearance={ButtonAppearance.DEFAULT}
-      onClick={() => openPanel({ editUser: user })}
-    >
-      <Icon name="edit" /> {Label.EDIT}
-    </Button>
-  );
-
   return (
     <Content
-      controls={generateEditUserButton()}
+      controls={
+        <Button
+          appearance={ButtonAppearance.DEFAULT}
+          onClick={() => openPanel({ editUser: user })}
+        >
+          <Icon name="edit" /> {Label.EDIT}
+        </Button>
+      }
       title={
         <BreadcrumbNavigation
           backTitle="Users"
