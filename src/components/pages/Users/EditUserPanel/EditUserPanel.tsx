@@ -139,6 +139,9 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
                   patches,
                 },
               });
+              await queryClient.invalidateQueries({
+                queryKey: groupsQueryKey,
+              });
             } catch (error) {
               hasGroupsError = true;
             }
@@ -170,6 +173,9 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
                 data: {
                   patches,
                 },
+              });
+              await queryClient.invalidateQueries({
+                queryKey: rolesQueryKey,
               });
             } catch (error) {
               hasRolesError = true;
@@ -203,6 +209,9 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
                   patches,
                 },
               });
+              await queryClient.invalidateQueries({
+                queryKey: entitlementsQueryKey,
+              });
             } catch (error) {
               hasEntitlementsError = true;
             }
@@ -210,15 +219,6 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
           });
         }
         queue.onDone(() => {
-          void queryClient.invalidateQueries({
-            queryKey: groupsQueryKey,
-          });
-          void queryClient.invalidateQueries({
-            queryKey: rolesQueryKey,
-          });
-          void queryClient.invalidateQueries({
-            queryKey: entitlementsQueryKey,
-          });
           close();
           if (hasGroupsError) {
             reactHotToast.custom((t) => (
