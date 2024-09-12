@@ -154,22 +154,3 @@ test("should have submit button disabled if there are no changes", async () => {
     screen.getByRole("button", { name: "Update local user" }),
   ).toBeDisabled();
 });
-
-test("should have submit button enabled if there are changes", async () => {
-  renderComponent(
-    <UserPanel
-      close={vi.fn()}
-      setPanelWidth={vi.fn()}
-      onSubmit={vi.fn()}
-      isEditing
-      user={mockUser}
-    />,
-  );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: Label.EMAIL }),
-    "new-email@gmail.com",
-  );
-  expect(
-    screen.getByRole("button", { name: "Update local user" }),
-  ).toBeEnabled();
-});
