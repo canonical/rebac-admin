@@ -191,5 +191,5 @@ test("should have submit button enabled if there are changes", async () => {
   );
   expect(
     screen.getByRole("button", { name: "Update local user" }),
-  ).not.toBeDisabled();
+  ).toBeEnabled();
 });
