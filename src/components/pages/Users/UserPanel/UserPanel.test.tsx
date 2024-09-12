@@ -154,3 +154,42 @@ test("should have submit button disabled if there are no changes", async () => {
     screen.getByRole("button", { name: "Update local user" }),
   ).toBeDisabled();
 });
+
+test("should have submit button enabled if there are changes", async () => {
+  renderComponent(
+    <UserPanel
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      onSubmit={vi.fn()}
+      existingEntitlements={[
+        {
+          entitlement: "can_edit",
+          entity_id: "moderators",
+          entity_type: "collection",
+        },
+        {
+          entitlement: "can_remove",
+          entity_id: "staff",
+          entity_type: "team",
+        },
+      ]}
+      isEditing
+      user={mockUser}
+    />,
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: /Edit entitlements/ }),
+  );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: EntitlementsPanelFormLabel.REMOVE,
+    })[0],
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Update local user" })[0],
+  );
+  expect(
+    screen.getByRole("button", { name: "Update local user" }),
+  ).not.toBeDisabled();
+});
