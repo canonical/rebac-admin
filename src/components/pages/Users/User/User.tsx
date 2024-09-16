@@ -37,9 +37,8 @@ const isActive = (matches: UIMatch[], url: string) =>
 
 const User = () => {
   const { id: userId } = useParams<{ id: string }>();
-  const { data, isFetching, isError, error, refetch } = useGetIdentitiesItem(
-    userId ?? "",
-  );
+  const { data, isFetching, isError, error, refetch, queryKey } =
+    useGetIdentitiesItem(userId ?? "");
   const navigate = useNavigate();
   const matches = useMatches();
   const user = data?.data;
@@ -54,6 +53,7 @@ const User = () => {
           user={data.editUser}
           userId={data.editUser.id}
           setPanelWidth={setPanelWidth}
+          userQueryKey={queryKey}
         />
       );
     }

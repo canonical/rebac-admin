@@ -41,7 +41,7 @@ const COLUMN_DATA = [
 const Users = () => {
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, isRefetching, error, refetch } =
+  const { data, isFetching, isError, isRefetching, error, refetch, queryKey } =
     useGetIdentities({
       filter: filter || undefined,
       ...pagination.pageData,
@@ -57,6 +57,7 @@ const Users = () => {
           user={data.editUser}
           userId={data.editUser.id}
           setPanelWidth={setPanelWidth}
+          userQueryKey={queryKey}
         />
       );
     } else {

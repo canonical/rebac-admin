@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
+import isEqual from "lodash.isequal";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -21,6 +22,7 @@ import {
   usePatchIdentitiesItemEntitlements,
   usePatchIdentitiesItemGroups,
   usePatchIdentitiesItemRoles,
+  usePutIdentitiesItem,
 } from "api/identities/identities";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
@@ -48,7 +50,13 @@ const generateError = (
   return null;
 };
 
-const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
+const EditUserPanel = ({
+  close,
+  user,
+  userId,
+  setPanelWidth,
+  userQueryKey,
+}: Props) => {
   const queryClient = useQueryClient();
   const {
     error: getIdentitiesItemGroupsError,
@@ -80,6 +88,10 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
     mutateAsync: patchIdentitiesItemEntitlements,
     isPending: isPatchIdentitiesItemEntitlementsPending,
   } = usePatchIdentitiesItemEntitlements();
+  const {
+    mutateAsync: putIdentitiesItem,
+    isPending: isPutIdentitiesItemPending,
+  } = usePutIdentitiesItem();
   return (
     <UserPanel
       close={close}
@@ -98,10 +110,11 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
       isSaving={
         isPatchIdentitiesItemGroupsPending ||
         isPatchIdentitiesItemRolesPending ||
-        isPatchIdentitiesItemEntitlementsPending
+        isPatchIdentitiesItemEntitlementsPending ||
+        isPutIdentitiesItemPending
       }
       onSubmit={async (
-        _values,
+        values,
         addGroups,
         addRoles,
         addEntitlements,
@@ -112,6 +125,7 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
         let hasGroupsError = false;
         let hasRolesError = false;
         let hasEntitlementsError = false;
+        let hasUserError = false;
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addGroups.length || removeGroups?.length) {
           let patches: IdentityGroupsPatchItem[] = [];
@@ -218,6 +232,30 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
             done();
           });
         }
+        if (
+          !isEqual(values, {
+            email: user.email,
+            firstName: user.firstName ?? "",
+            lastName: user.lastName ?? "",
+          })
+        ) {
+          queue.push(async (done) => {
+            try {
+              await putIdentitiesItem({
+                id: userId,
+                data: {
+                  ...user,
+                  email: values.email,
+                  firstName: values.firstName ? values.firstName : undefined,
+                  lastName: values.lastName ? values.lastName : undefined,
+                },
+              });
+            } catch (error) {
+              hasUserError = true;
+            }
+            done();
+          });
+        }
         queue.onDone(() => {
           close();
           if (hasGroupsError) {
@@ -241,12 +279,29 @@ const EditUserPanel = ({ close, user, userId, setPanelWidth }: Props) => {
               </ToastCard>
             ));
           }
-          if (!hasGroupsError && !hasRolesError && !hasEntitlementsError) {
+          if (hasUserError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="negative">
+                {Label.USER_ERROR}
+              </ToastCard>
+            ));
+          }
+          if (
+            !hasGroupsError &&
+            !hasRolesError &&
+            !hasEntitlementsError &&
+            !hasUserError
+          ) {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
                 {`User with email "${user.email}" was updated.`}
               </ToastCard>
             ));
+          }
+          if (userQueryKey && !hasUserError) {
+            void queryClient.invalidateQueries({
+              queryKey: userQueryKey,
+            });
           }
         });
       }}
