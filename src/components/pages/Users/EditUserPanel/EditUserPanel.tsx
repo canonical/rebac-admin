@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
-import isEqual from "lodash.isequal";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -232,13 +231,7 @@ const EditUserPanel = ({
             done();
           });
         }
-        if (
-          !isEqual(values, {
-            email: user.email,
-            firstName: user.firstName ?? "",
-            lastName: user.lastName ?? "",
-          })
-        ) {
+        if (values) {
           queue.push(async (done) => {
             try {
               await putIdentitiesItem({

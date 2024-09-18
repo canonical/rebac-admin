@@ -57,12 +57,13 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           ? `Unable to create local user: ${postIdentitiesError.response?.data.message}`
           : null
       }
-      onSubmit={async (
-        { email, firstName, lastName },
-        addGroups,
-        addRoles,
-        addEntitlements,
-      ) => {
+      onSubmit={async (values, addGroups, addRoles, addEntitlements) => {
+        if (!values) {
+          // Code execution won't arrive here, as the form can't be submitted
+          // without the email field populated, thus, values won't be null.
+          return;
+        }
+        const { email, firstName, lastName } = values;
         let hasIdentityIdError = false;
         let hasGroupsError = false;
         let hasRolesError = false;

@@ -2,11 +2,7 @@ import type { EntityEntitlement, Group, Identity, Role } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
-export enum FieldName {
-  EMAIL = "email",
-  FIRST_NAME = "firstName",
-  LAST_NAME = "lastName",
-}
+import type { FieldName } from "./Fields/types";
 
 export type FormFields = {
   [FieldName.EMAIL]: string;
@@ -26,7 +22,7 @@ export type Props = {
   isEditing?: boolean;
   isFetchingUser?: boolean;
   onSubmit: (
-    values: FormFields,
+    values: FormFields | null,
     addGroups: Group[],
     addRoles: Role[],
     addEntitlements: EntityEntitlement[],
@@ -38,9 +34,3 @@ export type Props = {
   setPanelWidth: SetPanelWidth;
   isSaving?: boolean;
 };
-
-export enum Label {
-  EMAIL = "Email",
-  FIRST_NAME = "First name (optional)",
-  LAST_NAME = "Last name (optional)",
-}
