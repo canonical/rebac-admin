@@ -8,13 +8,14 @@ import { RoleEntitlementsPatchItemAllOfOp } from "api/api.schemas";
 import {
   useGetRolesItemEntitlements,
   usePatchRolesItemEntitlements,
+  usePutRolesItem,
 } from "api/roles/roles";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
 
 import RolePanel from "../RolePanel";
 
-import type { Props } from "./types";
+import { Label, type Props } from "./types";
 
 const generateError = (
   getRolesItemEntitlementsError: AxiosError<Response> | null,
@@ -25,7 +26,13 @@ const generateError = (
   return null;
 };
 
-const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
+const EditRolePanel = ({
+  close,
+  onRoleUpdated,
+  roleId,
+  role,
+  setPanelWidth,
+}: Props) => {
   const queryClient = useQueryClient();
   const {
     error: getRolesItemEntitlementsError,
@@ -37,6 +44,8 @@ const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
     mutateAsync: patchRolesItemEntitlements,
     isPending: isPatchRolesItemEntitlementsPending,
   } = usePatchRolesItemEntitlements();
+  const { mutateAsync: putRolesItem, isPending: isPutRolesItemPending } =
+    usePutRolesItem();
   return (
     <RolePanel
       close={close}
@@ -44,10 +53,32 @@ const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
       existingEntitlements={existingEntitlements?.data.data}
       isEditing
       isFetchingExisting={isFetchingExisting}
-      isSaving={isPatchRolesItemEntitlementsPending}
-      onSubmit={async (_values, addEntitlements, removeEntitlements) => {
-        let hasError = false;
+      isSaving={isPatchRolesItemEntitlementsPending || isPutRolesItemPending}
+      onSubmit={async (
+        values,
+        roleChanged,
+        addEntitlements,
+        removeEntitlements,
+      ) => {
+        const errors: string[] = [];
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        if (roleChanged) {
+          queue.push(async (done) => {
+            try {
+              await putRolesItem({
+                id: roleId,
+                data: {
+                  ...role,
+                  ...values,
+                },
+              });
+              onRoleUpdated();
+            } catch (error) {
+              errors.push(Label.ERROR_ROLE);
+            }
+            done();
+          });
+        }
         if (addEntitlements.length || removeEntitlements?.length) {
           let patches: RoleEntitlementsPatchItem[] = [];
           if (addEntitlements.length) {
@@ -78,23 +109,25 @@ const EditRolePanel = ({ close, roleId, role, setPanelWidth }: Props) => {
                 queryKey: entitlementsQueryKey,
               });
             } catch (error) {
-              hasError = true;
+              errors.push(Label.ERROR_ENTITLEMENTS);
             }
             done();
           });
         }
         queue.onDone(() => {
           close();
-          if (hasError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                Some entitlements couldn't be updated
-              </ToastCard>
-            ));
+          if (errors.length) {
+            errors.forEach((error) => {
+              reactHotToast.custom((t) => (
+                <ToastCard toastInstance={t} type="negative">
+                  {error}
+                </ToastCard>
+              ));
+            });
           } else {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`Role "${role?.name}" was updated.`}
+                {`Role "${values.name}" was updated.`}
               </ToastCard>
             ));
           }
