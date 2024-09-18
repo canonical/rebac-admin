@@ -8,7 +8,7 @@ import GroupsPanelForm from "components/GroupsPanelForm/GroupsPanelForm";
 import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
-import Fields from "./Fields/Fields";
+import Fields from "./Fields";
 import { FieldName, type FormFields } from "./Fields/types";
 import type { Props } from "./types";
 

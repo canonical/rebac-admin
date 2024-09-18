@@ -29,6 +29,8 @@ import {
   getGetIdentitiesItemRolesResponseMock,
   getPatchIdentitiesItemRolesMockHandler,
   getPatchIdentitiesItemRolesMockHandler400,
+  getPutIdentitiesItemMockHandler,
+  getPutIdentitiesItemMockHandler400,
 } from "api/identities/identities.msw";
 import {
   getGetResourcesMockHandler,
@@ -42,6 +44,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
+import { UserPanelLabel } from "components/pages/Users/UserPanel";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -144,6 +147,7 @@ const mockApiServer = setupServer(
       ],
     }),
   ),
+  getPutIdentitiesItemMockHandler(),
 );
 
 beforeAll(() => {
@@ -543,4 +547,98 @@ test("should handle errors when updating entitlements", async () => {
       severity: NotificationSeverity.NEGATIVE,
     }),
   ).toBeInTheDocument();
+});
+
+test("should change user details", async () => {
+  const invalidateQueries = vi.fn();
+  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
+    invalidateQueries,
+  } as unknown as reactQuery.QueryClient);
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PUT" &&
+      requestClone.url.endsWith("/identities/user1")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      userQueryKey={["/identities"]}
+    />,
+  );
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
+    "First",
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    addedBy: "within",
+    email: "pfft@example.com",
+    firstName: "really",
+    id: "user1",
+    lastName: "good",
+    source: "noteworthy",
+  });
+  expect(
+    await findNotificationByText(
+      'User with email "pfft@example.com" was updated.',
+      {
+        appearance: "toast",
+        severity: NotificationSeverity.POSITIVE,
+      },
+    ),
+  ).toBeInTheDocument();
+  expect(invalidateQueries).toHaveBeenCalledWith({
+    queryKey: ["/identities"],
+  });
+});
+
+test("should handle errors when updating user details", async () => {
+  mockApiServer.use(getPutIdentitiesItemMockHandler400());
+  const invalidateQueries = vi.fn();
+  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
+    invalidateQueries,
+  } as unknown as reactQuery.QueryClient);
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+      userQueryKey={["/identities"]}
+    />,
+  );
+  await userEvent.type(
+    screen.getByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
+    "First",
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  expect(
+    await findNotificationByText(Label.USER_ERROR, {
+      appearance: "toast",
+      severity: NotificationSeverity.NEGATIVE,
+    }),
+  ).toBeInTheDocument();
+  expect(invalidateQueries).not.toHaveBeenCalledWith({
+    queryKey: ["/identities"],
+  });
 });

@@ -232,15 +232,16 @@ const EditUserPanel = ({
           });
         }
         if (values) {
+          const { email, firstName, lastName } = user;
           queue.push(async (done) => {
             try {
               await putIdentitiesItem({
                 id: userId,
                 data: {
                   ...user,
-                  email: values.email,
-                  firstName: values.firstName ? values.firstName : undefined,
-                  lastName: values.lastName ? values.lastName : undefined,
+                  email,
+                  firstName: firstName || undefined,
+                  lastName: lastName || undefined,
                 },
               });
             } catch (error) {
