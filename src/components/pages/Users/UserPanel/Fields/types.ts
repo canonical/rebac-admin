@@ -13,3 +13,9 @@ export enum Label {
   FIRST_NAME = "First name (optional)",
   LAST_NAME = "Last name (optional)",
 }
+
+export type FormFields = {
+  [FieldName.EMAIL]: string;
+  [FieldName.FIRST_NAME]?: string;
+  [FieldName.LAST_NAME]?: string;
+};

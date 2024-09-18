@@ -2,13 +2,7 @@ import type { EntityEntitlement, Group, Identity, Role } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
-import type { FieldName } from "./Fields/types";
-
-export type FormFields = {
-  [FieldName.EMAIL]: string;
-  [FieldName.FIRST_NAME]?: string;
-  [FieldName.LAST_NAME]?: string;
-};
+import type { FormFields } from "./Fields/types";
 
 export type Props = {
   close: SubFormPanelProps<FormFields>["close"];

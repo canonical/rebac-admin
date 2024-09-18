@@ -9,8 +9,8 @@ import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
 import Fields from "./Fields/Fields";
-import { FieldName } from "./Fields/types";
-import type { FormFields, Props } from "./types";
+import { FieldName, type FormFields } from "./Fields/types";
+import type { Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.EMAIL]: Yup.string().required("Required"),
