@@ -33,7 +33,7 @@ const AddRolePanel = ({ close, setPanelWidth }: Props) => {
           : null
       }
       isSaving={isPostRolesPending || isPatchRolesItemEntitlementsPending}
-      onSubmit={async ({ name }, addEntitlements) => {
+      onSubmit={async ({ name }, _roleChanged, addEntitlements) => {
         let id: Role["id"] | null = null;
         try {
           const { data: role } = await postRoles({ data: { name } });

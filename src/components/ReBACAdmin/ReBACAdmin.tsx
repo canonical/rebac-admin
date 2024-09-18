@@ -7,6 +7,7 @@ import {
 import type { AxiosInstance } from "axios";
 import type { LogLevelDesc } from "loglevel";
 import { useContext, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 
 import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
@@ -126,6 +127,7 @@ const ReBACAdmin = ({
             <Route path={urls.users.index} element={<Users />} />
           </Route>
         </Routes>
+        <Toaster position="bottom-right" />
       </QueryClientProvider>
     </ReBACAdminContext.Provider>
   );
