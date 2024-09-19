@@ -61,7 +61,8 @@ const UserPanel = ({
       isFetching={isFetchingUser}
       onSubmit={async (values) =>
         await onSubmit(
-          isDirty ? values : null,
+          values,
+          isDirty,
           addGroups,
           addRoles,
           addEntitlements,

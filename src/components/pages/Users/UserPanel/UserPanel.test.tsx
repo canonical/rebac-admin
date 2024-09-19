@@ -85,6 +85,7 @@ test("can submit the form", async () => {
       firstName: "mock first name",
       lastName: "mock last name",
     },
+    true,
     [],
     [],
     [],

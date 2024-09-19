@@ -16,7 +16,8 @@ export type Props = {
   isEditing?: boolean;
   isFetchingUser?: boolean;
   onSubmit: (
-    values: FormFields | null,
+    values: FormFields,
+    isDirty: boolean,
     addGroups: Group[],
     addRoles: Role[],
     addEntitlements: EntityEntitlement[],

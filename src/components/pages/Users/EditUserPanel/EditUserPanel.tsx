@@ -51,10 +51,10 @@ const generateError = (
 
 const EditUserPanel = ({
   close,
+  onUserUpdate,
   user,
   userId,
   setPanelWidth,
-  userQueryKey,
 }: Props) => {
   const queryClient = useQueryClient();
   const {
@@ -114,6 +114,7 @@ const EditUserPanel = ({
       }
       onSubmit={async (
         values,
+        userChanged,
         addGroups,
         addRoles,
         addEntitlements,
@@ -121,10 +122,7 @@ const EditUserPanel = ({
         removeRoles,
         removeEntitlements,
       ) => {
-        let hasGroupsError = false;
-        let hasRolesError = false;
-        let hasEntitlementsError = false;
-        let hasUserError = false;
+        const errors: string[] = [];
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addGroups.length || removeGroups?.length) {
           let patches: IdentityGroupsPatchItem[] = [];
@@ -156,7 +154,7 @@ const EditUserPanel = ({
                 queryKey: groupsQueryKey,
               });
             } catch (error) {
-              hasGroupsError = true;
+              errors.push(Label.GROUPS_ERROR);
             }
             done();
           });
@@ -191,7 +189,7 @@ const EditUserPanel = ({
                 queryKey: rolesQueryKey,
               });
             } catch (error) {
-              hasRolesError = true;
+              errors.push(Label.ROLES_ERROR);
             }
             done();
           });
@@ -226,13 +224,13 @@ const EditUserPanel = ({
                 queryKey: entitlementsQueryKey,
               });
             } catch (error) {
-              hasEntitlementsError = true;
+              errors.push(Label.ENTITLEMENTS_ERROR);
             }
             done();
           });
         }
-        if (values) {
-          const { email, firstName, lastName } = user;
+        if (userChanged) {
+          const { email, firstName, lastName } = values;
           queue.push(async (done) => {
             try {
               await putIdentitiesItem({
@@ -244,58 +242,29 @@ const EditUserPanel = ({
                   lastName: lastName || undefined,
                 },
               });
+              onUserUpdate();
             } catch (error) {
-              hasUserError = true;
+              errors.push(Label.USER_ERROR);
             }
             done();
           });
         }
         queue.onDone(() => {
           close();
-          if (hasGroupsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.GROUPS_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasRolesError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ROLES_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasEntitlementsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ENTITLEMENTS_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasUserError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.USER_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (
-            !hasGroupsError &&
-            !hasRolesError &&
-            !hasEntitlementsError &&
-            !hasUserError
-          ) {
+          if (errors.length) {
+            errors.forEach((error) => {
+              reactHotToast.custom((t) => (
+                <ToastCard toastInstance={t} type="negative">
+                  {error}
+                </ToastCard>
+              ));
+            });
+          } else {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`User with email "${user.email}" was updated.`}
+                {`User with email "${values.email}" was updated.`}
               </ToastCard>
             ));
-          }
-          if (userQueryKey && !hasUserError) {
-            void queryClient.invalidateQueries({
-              queryKey: userQueryKey,
-            });
           }
         });
       }}

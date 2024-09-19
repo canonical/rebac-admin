@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
@@ -39,6 +40,7 @@ const COLUMN_DATA = [
 ];
 
 const Users = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
   const { data, isFetching, isError, isRefetching, error, refetch, queryKey } =
@@ -54,10 +56,10 @@ const Users = () => {
       return (
         <EditUserPanel
           close={closePanel}
+          onUserUpdate={() => void queryClient.invalidateQueries({ queryKey })}
           user={data.editUser}
           userId={data.editUser.id}
           setPanelWidth={setPanelWidth}
-          userQueryKey={queryKey}
         />
       );
     } else {

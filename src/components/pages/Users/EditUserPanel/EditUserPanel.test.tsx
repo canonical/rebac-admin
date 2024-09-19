@@ -185,6 +185,7 @@ test("should add and remove groups", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -236,6 +237,7 @@ test("should handle errors when updating groups", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -291,6 +293,7 @@ test("should add and remove roles", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -348,6 +351,7 @@ test("should handle errors when updating roles", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -403,6 +407,7 @@ test("should add and remove entitlements", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -497,6 +502,7 @@ test("should handle errors when updating entitlements", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -572,16 +578,17 @@ test("should change user details", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={() => void invalidateQueries({ queryKey: ["/identities"] })}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
-      userQueryKey={["/identities"]}
     />,
   );
-  await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
-    "First",
-  );
+  const firstNameField = screen.getByRole("textbox", {
+    name: UserPanelLabel.FIRST_NAME,
+  });
+  await userEvent.clear(firstNameField);
+  await userEvent.type(firstNameField, "First Name modified");
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
@@ -589,7 +596,7 @@ test("should change user details", async () => {
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     addedBy: "within",
     email: "pfft@example.com",
-    firstName: "really",
+    firstName: "First Name modified",
     id: "user1",
     lastName: "good",
     source: "noteworthy",
@@ -619,10 +626,10 @@ test("should handle errors when updating user details", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
-      userQueryKey={["/identities"]}
     />,
   );
   await userEvent.type(
