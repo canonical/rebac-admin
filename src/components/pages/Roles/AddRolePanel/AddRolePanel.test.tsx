@@ -26,7 +26,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { renderComponent } from "test/utils";
 
-import { Label as RolePanelLabel } from "../RolePanel";
+import { FieldsLabel as RolePanelLabel } from "../RolePanel/Fields";
 
 import AddRolePanel from "./AddRolePanel";
 

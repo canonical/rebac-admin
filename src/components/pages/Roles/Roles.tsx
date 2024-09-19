@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState } from "react";
 
@@ -27,9 +28,10 @@ const COLUMN_DATA = [
 ];
 
 const Roles = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, error, refetch } = useGetRoles({
+  const { data, isFetching, isError, error, queryKey, refetch } = useGetRoles({
     filter: filter || undefined,
     ...pagination.pageData,
   });
@@ -40,9 +42,14 @@ const Roles = () => {
     if (data?.editRole?.id) {
       return (
         <EditRolePanel
+          close={closePanel}
+          onRoleUpdated={() =>
+            void queryClient.invalidateQueries({
+              queryKey: queryKey,
+            })
+          }
           role={data.editRole}
           roleId={data.editRole.id}
-          close={closePanel}
           setPanelWidth={setPanelWidth}
         />
       );
