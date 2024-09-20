@@ -3,14 +3,14 @@ import { useState } from "react";
 import * as Yup from "yup";
 
 import type { EntityEntitlement, Group, Role } from "api/api.schemas";
-import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import GroupsPanelForm from "components/GroupsPanelForm/GroupsPanelForm";
 import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
-import { FieldName, Label } from "./types";
-import type { FormFields, Props } from "./types";
+import Fields from "./Fields";
+import { FieldName, type FormFields } from "./Fields/types";
+import type { Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.EMAIL]: Yup.string().required("Required"),
@@ -29,6 +29,7 @@ const UserPanel = ({
   isSaving,
   ...props
 }: Props) => {
+  const [isDirty, setIsDirty] = useState(false);
   const [addGroups, setAddGroups] = useState<Group[]>([]);
   const [removeGroups, setRemoveGroups] = useState<Group[]>([]);
   const [addRoles, setAddRoles] = useState<Role[]>([]);
@@ -61,6 +62,7 @@ const UserPanel = ({
       onSubmit={async (values) =>
         await onSubmit(
           values,
+          isDirty,
           addGroups,
           addRoles,
           addEntitlements,
@@ -126,26 +128,7 @@ const UserPanel = ({
       ]}
       validationSchema={schema}
     >
-      <h5>Personal details</h5>
-      <CleanFormikField
-        disabled={isEditing}
-        label={Label.EMAIL}
-        name={FieldName.EMAIL}
-        takeFocus={!isEditing}
-        type="email"
-      />
-      <CleanFormikField
-        disabled={isEditing}
-        label={Label.FIRST_NAME}
-        name={FieldName.FIRST_NAME}
-        type="text"
-      />
-      <CleanFormikField
-        disabled={isEditing}
-        label={Label.LAST_NAME}
-        name={FieldName.LAST_NAME}
-        type="text"
-      />
+      <Fields setIsDirty={setIsDirty} />
     </SubFormPanel>
   );
 };

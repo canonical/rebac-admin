@@ -5,6 +5,7 @@ import {
   Tabs,
   Icon,
 } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import type { UIMatch } from "react-router-dom";
 import {
@@ -36,10 +37,10 @@ const isActive = (matches: UIMatch[], url: string) =>
   );
 
 const User = () => {
+  const queryClient = useQueryClient();
   const { id: userId } = useParams<{ id: string }>();
-  const { data, isFetching, isError, error, refetch } = useGetIdentitiesItem(
-    userId ?? "",
-  );
+  const { data, isFetching, isError, error, refetch, queryKey } =
+    useGetIdentitiesItem(userId ?? "");
   const navigate = useNavigate();
   const matches = useMatches();
   const user = data?.data;
@@ -51,6 +52,7 @@ const User = () => {
       return (
         <EditUserPanel
           close={closePanel}
+          onUserUpdate={() => void queryClient.invalidateQueries({ queryKey })}
           user={data.editUser}
           userId={data.editUser.id}
           setPanelWidth={setPanelWidth}

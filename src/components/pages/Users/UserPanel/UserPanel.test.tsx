@@ -11,8 +11,8 @@ import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
+import { Label } from "./Fields/types";
 import UserPanel from "./UserPanel";
-import { Label } from "./types";
 
 const mockApiServer = setupServer(
   getGetGroupsMockHandler(),
@@ -85,6 +85,7 @@ test("can submit the form", async () => {
       firstName: "mock first name",
       lastName: "mock last name",
     },
+    true,
     [],
     [],
     [],
