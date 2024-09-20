@@ -556,6 +556,7 @@ test("should handle errors when updating entitlements", async () => {
 });
 
 test("should change user details", async () => {
+  const mockUserUpdate = vi.fn();
   let patchResponseBody: string | null = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -574,7 +575,7 @@ test("should change user details", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
-      onUserUpdate={vi.fn()}
+      onUserUpdate={mockUserUpdate}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -606,20 +607,18 @@ test("should change user details", async () => {
       },
     ),
   ).toBeInTheDocument();
+  expect(mockUserUpdate).toHaveBeenCalledTimes(1);
 });
 
 test("should handle errors when updating user details", async () => {
+  const mockUserUpdate = vi.fn();
   mockApiServer.use(getPutIdentitiesItemMockHandler400());
-  const invalidateQueries = vi.fn();
-  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
-    invalidateQueries,
-  } as unknown as reactQuery.QueryClient);
   const {
     result: { findNotificationByText },
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
-      onUserUpdate={vi.fn()}
+      onUserUpdate={mockUserUpdate}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -638,7 +637,5 @@ test("should handle errors when updating user details", async () => {
       severity: NotificationSeverity.NEGATIVE,
     }),
   ).toBeInTheDocument();
-  expect(invalidateQueries).not.toHaveBeenCalledWith({
-    queryKey: ["/identities"],
-  });
+  expect(mockUserUpdate).not.toHaveBeenCalled();
 });
