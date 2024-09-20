@@ -39,12 +39,12 @@ test("should set isDirty to true when fields are modified", async () => {
       <Fields setIsDirty={mockIsDirty} />
     </Formik>,
   );
-  expect(mockIsDirty).toHaveBeenCalledWith(false);
+  expect(mockIsDirty).toHaveBeenLastCalledWith(false);
   await userEvent.type(
     screen.getByRole("textbox", { name: Label.EMAIL }),
     "test@email.com",
   );
-  expect(mockIsDirty).toHaveBeenCalledWith(true);
+  expect(mockIsDirty).toHaveBeenLastCalledWith(true);
 });
 
 test("should set isDirty to false when fields are reset", async () => {

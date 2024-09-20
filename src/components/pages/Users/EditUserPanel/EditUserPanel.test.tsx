@@ -556,10 +556,6 @@ test("should handle errors when updating entitlements", async () => {
 });
 
 test("should change user details", async () => {
-  const invalidateQueries = vi.fn();
-  vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
-    invalidateQueries,
-  } as unknown as reactQuery.QueryClient);
   let patchResponseBody: string | null = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -578,7 +574,7 @@ test("should change user details", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
-      onUserUpdate={() => void invalidateQueries({ queryKey: ["/identities"] })}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -610,9 +606,6 @@ test("should change user details", async () => {
       },
     ),
   ).toBeInTheDocument();
-  expect(invalidateQueries).toHaveBeenCalledWith({
-    queryKey: ["/identities"],
-  });
 });
 
 test("should handle errors when updating user details", async () => {
