@@ -4,7 +4,7 @@ import type { GroupPanelProps } from "../GroupPanel";
 
 export type Props = {
   close: GroupPanelProps["close"];
-  onGroupUpdate: () => void;
+  onGroupUpdated: () => void;
   group: Group;
   groupId: NonNullable<Group["id"]>;
   setPanelWidth: GroupPanelProps["setPanelWidth"];

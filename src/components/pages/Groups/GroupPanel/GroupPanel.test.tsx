@@ -47,7 +47,7 @@ test("the input is set from the name", async () => {
   );
 });
 
-test("can submit the form", async () => {
+test("can submit the form and pass whever the group has changed to onSubmit", async () => {
   const onSubmit = vi.fn();
   renderComponent(
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
@@ -56,7 +56,16 @@ test("can submit the form", async () => {
     screen.getByRole("textbox", { name: FieldsLabel.NAME }),
     "group1{Enter}",
   );
-  expect(onSubmit).toHaveBeenCalled();
+  expect(onSubmit).toHaveBeenCalledWith(
+    { name: "group1" },
+    true,
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  );
 });
 
 test("the entitlement form can be displayed", async () => {

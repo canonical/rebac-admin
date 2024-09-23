@@ -51,7 +51,7 @@ const generateError = (
 
 const EditGroupPanel = ({
   close,
-  onGroupUpdate,
+  onGroupUpdated,
   group,
   groupId,
   setPanelWidth,
@@ -234,7 +234,7 @@ const EditGroupPanel = ({
                 id: groupId,
                 data: { ...group, ...values },
               });
-              onGroupUpdate();
+              onGroupUpdated();
             } catch (error) {
               errors.push(Label.GROUP_ERROR);
             }

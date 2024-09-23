@@ -43,7 +43,9 @@ const Groups = () => {
       return (
         <EditGroupPanel
           group={data.editGroup}
-          onGroupUpdate={() => void queryClient.invalidateQueries({ queryKey })}
+          onGroupUpdated={() =>
+            void queryClient.invalidateQueries({ queryKey })
+          }
           groupId={data.editGroup.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}
