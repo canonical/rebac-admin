@@ -175,6 +175,7 @@ test("should add and remove entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -264,6 +265,7 @@ test("should handle errors when updating entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -336,6 +338,7 @@ test("should add and remove users", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -388,6 +391,7 @@ test("should handle errors when updating users", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -440,6 +444,7 @@ test("should add and remove roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -492,6 +497,7 @@ test("should handle errors when updating roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdate={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
