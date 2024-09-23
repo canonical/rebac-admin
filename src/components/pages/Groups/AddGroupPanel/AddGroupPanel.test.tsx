@@ -36,7 +36,7 @@ import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelFor
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { renderComponent } from "test/utils";
 
-import { GroupPanelLabel } from "../GroupPanel";
+import { FieldsLabel as GroupPanelLabel } from "../GroupPanel/Fields";
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm/types";
 
 import AddGroupPanel from "./AddGroupPanel";

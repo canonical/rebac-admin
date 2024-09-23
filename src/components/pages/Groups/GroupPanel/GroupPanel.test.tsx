@@ -12,8 +12,8 @@ import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
 
+import { FieldsLabel } from "./Fields";
 import GroupPanel from "./GroupPanel";
-import { Label } from "./types";
 
 const mockApiServer = setupServer(
   getGetEntitlementsMockHandler(),
@@ -42,7 +42,7 @@ test("the input is set from the name", async () => {
       onSubmit={vi.fn()}
     />,
   );
-  expect(screen.getByRole("textbox", { name: Label.NAME })).toHaveValue(
+  expect(screen.getByRole("textbox", { name: FieldsLabel.NAME })).toHaveValue(
     "admin",
   );
 });
@@ -53,23 +53,10 @@ test("can submit the form", async () => {
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: Label.NAME }),
+    screen.getByRole("textbox", { name: FieldsLabel.NAME }),
     "group1{Enter}",
   );
   expect(onSubmit).toHaveBeenCalled();
-});
-
-test("the input is disabled when editing", async () => {
-  renderComponent(
-    <GroupPanel
-      close={vi.fn()}
-      isEditing
-      setPanelWidth={vi.fn()}
-      group={{ id: "group1", name: "admin" }}
-      onSubmit={vi.fn()}
-    />,
-  );
-  expect(screen.getByRole("textbox", { name: Label.NAME })).toBeDisabled();
 });
 
 test("the entitlement form can be displayed", async () => {

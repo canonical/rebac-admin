@@ -21,6 +21,7 @@ import {
   usePatchGroupsItemEntitlements,
   usePatchGroupsItemIdentities,
   usePatchGroupsItemRoles,
+  usePutGroupsItem,
 } from "api/groups/groups";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
@@ -48,7 +49,13 @@ const generateError = (
   return null;
 };
 
-const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
+const EditGroupPanel = ({
+  close,
+  onGroupUpdate,
+  group,
+  groupId,
+  setPanelWidth,
+}: Props) => {
   const queryClient = useQueryClient();
   const {
     error: getGroupsItemEntitlementsError,
@@ -80,6 +87,8 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
     mutateAsync: patchGroupsItemRoles,
     isPending: isPatchGroupsItemRolesPending,
   } = usePatchGroupsItemRoles();
+  const { mutateAsync: putGroupsItem, isPending: isPutGroupsItemPending } =
+    usePutGroupsItem();
   return (
     <GroupPanel
       close={close}
@@ -98,10 +107,12 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
       isSaving={
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
-        isPatchGroupsItemRolesPending
+        isPatchGroupsItemRolesPending ||
+        isPutGroupsItemPending
       }
       onSubmit={async (
-        _values,
+        values,
+        groupChanged,
         addEntitlements,
         addIdentities,
         addRoles,
@@ -109,9 +120,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
         removeIdentities,
         removeRoles,
       ) => {
-        let hasEntitlementsError = false;
-        let hasIdentitiesError = false;
-        let hasRolesError = false;
+        const errors: string[] = [];
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length || removeEntitlements?.length) {
           let patches: GroupEntitlementsPatchItem[] = [];
@@ -143,7 +152,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                 queryKey: entitlementsQueryKey,
               });
             } catch (error) {
-              hasEntitlementsError = true;
+              errors.push(Label.ENTITLEMENTS_ERROR);
             }
             done();
           });
@@ -178,7 +187,7 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                 queryKey: identitiesQueryKey,
               });
             } catch (error) {
-              hasIdentitiesError = true;
+              errors.push(Label.IDENTITIES_ERROR);
             }
             done();
           });
@@ -213,38 +222,39 @@ const EditGroupPanel = ({ close, group, groupId, setPanelWidth }: Props) => {
                 queryKey: rolesQueryKey,
               });
             } catch (error) {
-              hasRolesError = true;
+              errors.push(Label.ROLES_ERROR);
+            }
+            done();
+          });
+        }
+        if (groupChanged) {
+          queue.push(async (done) => {
+            try {
+              await putGroupsItem({
+                id: groupId,
+                data: { ...group, ...values },
+              });
+              onGroupUpdate();
+            } catch (error) {
+              errors.push(Label.GROUP_ERROR);
             }
             done();
           });
         }
         queue.onDone(() => {
           close();
-          if (hasEntitlementsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ENTITLEMENTS_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasIdentitiesError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.IDENTITIES_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasRolesError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ROLES_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (!hasIdentitiesError && !hasEntitlementsError && !hasRolesError) {
+          if (errors.length) {
+            errors.forEach((error) => {
+              reactHotToast.custom((t) => (
+                <ToastCard toastInstance={t} type="negative">
+                  {error}
+                </ToastCard>
+              ));
+            });
+          } else {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="positive">
-                {`Group "${group?.name}" was updated.`}
+                {`Group "${values.name}" was updated.`}
               </ToastCard>
             ));
           }

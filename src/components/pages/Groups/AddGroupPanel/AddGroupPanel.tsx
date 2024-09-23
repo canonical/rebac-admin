@@ -57,7 +57,13 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
         isPatchGroupsItemIdentitiesPending ||
         isPostGroupsItemRolesPending
       }
-      onSubmit={async ({ name }, addEntitlements, addIdentities, addRoles) => {
+      onSubmit={async (
+        { name },
+        _groupChanged,
+        addEntitlements,
+        addIdentities,
+        addRoles,
+      ) => {
         let hasEntitlementsError = false;
         let hasIdentitiesError = false;
         let hasRolesError = false;
