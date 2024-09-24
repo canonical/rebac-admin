@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState } from "react";
 
@@ -27,9 +28,10 @@ const COLUMN_DATA = [
 ];
 
 const Groups = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, error, refetch } = useGetGroups({
+  const { data, isFetching, isError, error, refetch, queryKey } = useGetGroups({
     filter: filter || undefined,
     ...pagination.pageData,
   });
@@ -41,6 +43,9 @@ const Groups = () => {
       return (
         <EditGroupPanel
           group={data.editGroup}
+          onGroupUpdated={() =>
+            void queryClient.invalidateQueries({ queryKey })
+          }
           groupId={data.editGroup.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}

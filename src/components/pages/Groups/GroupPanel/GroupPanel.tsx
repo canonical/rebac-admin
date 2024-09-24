@@ -3,15 +3,15 @@ import { useState } from "react";
 import * as Yup from "yup";
 
 import type { EntityEntitlement, Identity, Role } from "api/api.schemas";
-import CleanFormikField from "components/CleanFormikField";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import RolesPanelForm from "components/RolesPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
 
-import type { FormFields } from "./types";
-import { FieldName, Label, type Props } from "./types";
+import type { FormFields } from "./Fields";
+import Fields, { FieldName } from "./Fields";
+import type { Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.NAME]: Yup.string().required("Required"),
@@ -31,6 +31,7 @@ const GroupPanel = ({
   isSaving,
   ...props
 }: Props) => {
+  const [isDirty, setIsDirty] = useState(false);
   const [addEntitlements, setAddEntitlements] = useState<EntityEntitlement[]>(
     [],
   );
@@ -62,6 +63,7 @@ const GroupPanel = ({
       onSubmit={async (values) =>
         await onSubmit(
           values,
+          isDirty,
           addEntitlements,
           addIdentities,
           addRoles,
@@ -129,13 +131,7 @@ const GroupPanel = ({
       ]}
       validationSchema={schema}
     >
-      <CleanFormikField
-        disabled={isEditing}
-        label={Label.NAME}
-        name={FieldName.NAME}
-        takeFocus={!isEditing}
-        type="text"
-      />
+      <Fields setIsDirty={setIsDirty} />
     </SubFormPanel>
   );
 };
