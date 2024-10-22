@@ -1,6 +1,7 @@
 # Canonical ReBAC Admin
 
-This is a shared UI for managing ReBAC permissions.
+This is a shared UI for managing ReBAC permissions. This package is for the v0 APIs
+used in [Admin UI](https://github.com/canonical/identity-platform-admin-ui).
 
 - [Install](#install)
 - [Displaying the component](#displaying-the-component)
@@ -16,7 +17,7 @@ This is a shared UI for managing ReBAC permissions.
 You can add the rebac-admin package with:
 
 ```bash
-yarn add @canonical/rebac-admin
+yarn add @canonical/rebac-admin-admin-ui
 ```
 
 You will also need the following peer dependencies if you don't have them already:
@@ -35,7 +36,7 @@ child routes.
 Make sure to also [import the css](#import-css).
 
 ```jsx
-import { ReBACAdmin } from "@canonical/rebac-admin";
+import { ReBACAdmin } from "@canonical/rebac-admin-admin-ui";
 import { Route, Routes } from "react-router-dom";
 
 const App = (): JSX.Element => (
@@ -55,7 +56,7 @@ will need to be wrapped in a router, with `basename` set to the path that the
 admin component is displayed at.
 
 ```jsx
-import { ReBACAdmin } from "@canonical/rebac-admin";
+import { ReBACAdmin } from "@canonical/rebac-admin-admin-ui";
 import { BrowserRouter } from "react-router-dom";
 
 const Permissions = (): JSX.Element => (
@@ -70,7 +71,7 @@ const Permissions = (): JSX.Element => (
 Inside your main CSS file add the following:
 
 ```css
-@import "@canonical/rebac-admin/dist/rebac-admin.css";
+@import "@canonical/rebac-admin-admin-ui/dist/rebac-admin.css";
 ```
 
 ## Config
@@ -105,7 +106,7 @@ import {
   ResourcesLink,
   RolesLink,
   UsersLink,
-} from "@canonical/rebac-admin";
+} from "@canonical/rebac-admin-admin-ui";
 
 const Nav = (): JSX.Element => (
   <>
@@ -128,7 +129,7 @@ Some URLs are functions that take an object of the params required by the
 URL. These params are provided in the function signatures.
 
 ```jsx
-import { urls } from "@canonical/rebac-admin";
+import { urls } from "@canonical/rebac-admin-admin-ui";
 
 const Links = (): JSX.Element => {
   const adminURLs = urls("/permissions");
