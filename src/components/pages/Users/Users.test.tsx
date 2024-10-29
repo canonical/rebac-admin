@@ -5,7 +5,9 @@ import { setupServer } from "msw/node";
 import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetIdentitiesItemEntitlementsMockHandler,
+  getGetIdentitiesItemGroupsMockHandler,
   getGetIdentitiesItemResponseMock,
+  getGetIdentitiesItemRolesMockHandler,
   getGetIdentitiesMockHandler,
   getGetIdentitiesMockHandler404,
   getGetIdentitiesResponseMock,
@@ -188,6 +190,8 @@ test("should display the edit panel", async () => {
       }),
     ),
     getGetIdentitiesItemEntitlementsMockHandler(),
+    getGetIdentitiesItemGroupsMockHandler(),
+    getGetIdentitiesItemRolesMockHandler(),
   );
   renderComponent(
     <ReBACAdminContext.Provider value={{ asidePanelId: "aside-panel" }}>

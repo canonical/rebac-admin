@@ -134,7 +134,7 @@ test("updates the role", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", {
+    await screen.findByRole("textbox", {
       name: FieldsLabel.NAME,
     }),
     "changed",
@@ -171,7 +171,7 @@ test("handle errors when updating the role", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", {
+    await screen.findByRole("textbox", {
       name: FieldsLabel.NAME,
     }),
     "changed",
