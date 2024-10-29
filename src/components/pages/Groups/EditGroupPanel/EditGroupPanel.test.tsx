@@ -43,6 +43,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import { FieldsLabel } from "../GroupPanel/Fields";
@@ -59,6 +60,7 @@ vi.mock("@tanstack/react-query", async () => {
 });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   // Needs to be before getGetIdentitiesMockHandler so that the path matches
   // `*/groups/:id/identities` before `*/identities`.
   getGetGroupsItemIdentitiesMockHandler(
@@ -558,7 +560,7 @@ test("updates the role", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", {
+    await screen.findByRole("textbox", {
       name: FieldsLabel.NAME,
     }),
     "changed",
@@ -592,7 +594,7 @@ test("handle errors when updating the role", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", {
+    await screen.findByRole("textbox", {
       name: FieldsLabel.NAME,
     }),
     "changed",
