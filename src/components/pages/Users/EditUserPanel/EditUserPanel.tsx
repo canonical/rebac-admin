@@ -25,6 +25,8 @@ import {
 } from "api/identities/identities";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import UserPanel from "../UserPanel";
@@ -57,12 +59,28 @@ const EditUserPanel = ({
   setPanelWidth,
 }: Props) => {
   const queryClient = useQueryClient();
+  const { hasCapability: canRelateGroups } = useCheckCapability(
+    Endpoint.IDENTITY_GROUPS,
+    CapabilityAction.RELATE,
+  );
+  const { hasCapability: canRelateRoles } = useCheckCapability(
+    Endpoint.IDENTITY_ROLES,
+    CapabilityAction.RELATE,
+  );
+  const { hasCapability: canRelateEntitlements } = useCheckCapability(
+    Endpoint.IDENTITY_ENTITLEMENTS,
+    CapabilityAction.RELATE,
+  );
   const {
     error: getIdentitiesItemGroupsError,
     data: existingGroups,
     isFetching: isFetchingExistingGroups,
     queryKey: groupsQueryKey,
-  } = useGetIdentitiesItemGroups(userId);
+  } = useGetIdentitiesItemGroups(userId, undefined, {
+    query: {
+      enabled: canRelateGroups,
+    },
+  });
   const {
     mutateAsync: patchIdentitiesItemGroups,
     isPending: isPatchIdentitiesItemGroupsPending,
@@ -72,7 +90,11 @@ const EditUserPanel = ({
     data: existingRoles,
     isFetching: isFetchingExistingRoles,
     queryKey: rolesQueryKey,
-  } = useGetIdentitiesItemRoles(userId);
+  } = useGetIdentitiesItemRoles(userId, undefined, {
+    query: {
+      enabled: canRelateRoles,
+    },
+  });
   const {
     mutateAsync: patchIdentitiesItemRoles,
     isPending: isPatchIdentitiesItemRolesPending,
@@ -82,7 +104,11 @@ const EditUserPanel = ({
     data: existingEntitlements,
     isFetching: isFetchingExistingEntitlements,
     queryKey: entitlementsQueryKey,
-  } = useGetIdentitiesItemEntitlements(userId);
+  } = useGetIdentitiesItemEntitlements(userId, undefined, {
+    query: {
+      enabled: canRelateEntitlements,
+    },
+  });
   const {
     mutateAsync: patchIdentitiesItemEntitlements,
     isPending: isPatchIdentitiesItemEntitlementsPending,

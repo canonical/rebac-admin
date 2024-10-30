@@ -45,6 +45,7 @@ import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelFor
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
 import { UserPanelLabel } from "components/pages/Users/UserPanel";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -69,6 +70,7 @@ const mockUser = {
 };
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
@@ -581,7 +583,7 @@ test("should change user details", async () => {
       setPanelWidth={vi.fn()}
     />,
   );
-  const firstNameField = screen.getByRole("textbox", {
+  const firstNameField = await screen.findByRole("textbox", {
     name: UserPanelLabel.FIRST_NAME,
   });
   await userEvent.clear(firstNameField);
@@ -625,7 +627,7 @@ test("should handle errors when updating user details", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
     "First",
   );
   await userEvent.click(
