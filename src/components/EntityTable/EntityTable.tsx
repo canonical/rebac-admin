@@ -1,3 +1,4 @@
+import type { MenuLink } from "@canonical/react-components";
 import {
   ModularTable,
   CheckboxInput,
@@ -64,6 +65,29 @@ const EntityTable = <E extends TableEntity>({
   const tableData = useMemo(
     () =>
       (entities || []).map((entity) => {
+        const actions: MenuLink[] = [];
+        if (onEdit) {
+          actions.push({
+            appearance: "link",
+            children: (
+              <>
+                <Icon name="edit" /> {Label.EDIT}
+              </>
+            ),
+            onClick: () => onEdit(entity),
+          });
+        }
+        if (onDelete) {
+          actions.push({
+            appearance: "link",
+            children: (
+              <>
+                <Icon name="delete" /> {Label.DELETE}
+              </>
+            ),
+            onClick: () => onDelete(entity),
+          });
+        }
         return {
           selectEntity: (
             <CheckboxInput
@@ -81,35 +105,16 @@ const EntityTable = <E extends TableEntity>({
             />
           ),
           ...generateColumns(entity),
-          actions: (
+          actions: actions.length ? (
             <ContextualMenu
-              links={[
-                {
-                  appearance: "link",
-                  children: (
-                    <>
-                      <Icon name="edit" /> {Label.EDIT}
-                    </>
-                  ),
-                  onClick: () => onEdit(entity),
-                },
-                {
-                  appearance: "link",
-                  children: (
-                    <>
-                      <Icon name="delete" /> {Label.DELETE}
-                    </>
-                  ),
-                  onClick: () => onDelete(entity),
-                },
-              ]}
+              links={actions}
               position="right"
               scrollOverflow
               toggleAppearance="base"
               toggleClassName="has-icon u-no-margin--bottom is-small"
               toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
             />
-          ),
+          ) : null,
         };
       }),
     [checkboxesDisabled, entities, generateColumns, onDelete, onEdit, selected],

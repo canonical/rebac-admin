@@ -2,6 +2,7 @@ import { screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetIdentitiesItemEntitlementsMockHandler,
   getGetIdentitiesItemResponseMock,
@@ -16,6 +17,7 @@ import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { customWithin } from "test/queries/within";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 import urls from "urls";
 
 import Users from "./Users";
@@ -160,7 +162,9 @@ test("should display the add panel", async () => {
       <Users />
     </ReBACAdminContext.Provider>,
   );
-  await userEvent.click(screen.getByRole("button", { name: UsersLabel.ADD }));
+  await userEvent.click(
+    await screen.findByRole("button", { name: UsersLabel.ADD }),
+  );
   const panel = await screen.findByRole("complementary", {
     name: "Create local user",
   });
@@ -227,4 +231,91 @@ test("links to user details", async () => {
   expect(
     await screen.findByRole("link", { name: "pfft@example.com" }),
   ).toHaveAttribute("href", urls.users.user.index({ id: "user1" }));
+});
+
+test("does not link to user details if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITIES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY,
+        methods: [CapabilityMethodsItem.DELETE],
+      },
+    ]),
+  );
+  renderComponent(<Users />);
+  await screen.findAllByRole("row");
+  expect(
+    screen.queryByRole("link", { name: "pfft@example.com" }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the add button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITIES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<Users />);
+  expect(
+    screen.queryByRole("button", { name: UsersLabel.ADD }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the edit button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITIES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY,
+        methods: [CapabilityMethodsItem.GET, CapabilityMethodsItem.DELETE],
+      },
+    ]),
+  );
+  renderComponent(<Users />);
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: EntityTableLabel.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  expect(
+    screen.queryByRole("button", { name: EntityTableLabel.EDIT }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the delete button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITIES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY,
+        methods: [CapabilityMethodsItem.GET, CapabilityMethodsItem.PUT],
+      },
+    ]),
+  );
+  renderComponent(<Users />);
+  const rows = await screen.findAllByRole("row");
+  expect(within(rows[1]).getByRole("checkbox")).toBeDisabled();
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: EntityTableLabel.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  expect(
+    screen.queryByRole("button", { name: EntityTableLabel.DELETE }),
+  ).not.toBeInTheDocument();
 });
