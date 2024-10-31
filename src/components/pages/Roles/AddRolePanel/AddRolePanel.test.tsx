@@ -24,6 +24,7 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import { FieldsLabel as RolePanelLabel } from "../RolePanel/Fields";
@@ -35,6 +36,7 @@ const mockRolesData = getPostRolesResponseMock({
   name: "role1",
 });
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPostRolesMockHandler(mockRolesData),
   getPatchRolesItemEntitlementsMockHandler(),
   getGetEntitlementsMockHandler(

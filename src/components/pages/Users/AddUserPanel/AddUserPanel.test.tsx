@@ -36,6 +36,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -50,6 +51,7 @@ const mockIdentitiesData = getPostIdentitiesResponseMock({
 });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPostIdentitiesMockHandler(mockIdentitiesData),
   getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
@@ -194,7 +196,7 @@ test("should add groups", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -230,7 +232,7 @@ test("should handle errors when adding groups", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -273,7 +275,7 @@ test("should add roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -309,7 +311,7 @@ test("should handle errors when adding roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -355,20 +357,20 @@ test("should add entitlements", async () => {
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -408,20 +410,20 @@ test("should handle errors when adding entitlements", async () => {
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",

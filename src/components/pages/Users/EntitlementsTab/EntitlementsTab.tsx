@@ -14,6 +14,8 @@ import {
   usePatchIdentitiesItemEntitlements,
 } from "api/identities/identities";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 
 import { Label } from "./types";
 
@@ -49,13 +51,23 @@ const updateEntitlements = (
 const EntitlementsTab = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const { hasCapability: canGetEntitlements } = useCheckCapability(
+    Endpoint.IDENTITY_ENTITLEMENTS,
+    CapabilityAction.READ,
+  );
+  const { hasCapability: canRelateEntitlements } = useCheckCapability(
+    Endpoint.IDENTITY_ENTITLEMENTS,
+    CapabilityAction.RELATE,
+  );
   const {
     isError: isFetchError,
     data,
     isFetching,
     isRefetching,
     queryKey,
-  } = useGetIdentitiesItemEntitlements(userId ?? "");
+  } = useGetIdentitiesItemEntitlements(userId ?? "", undefined, {
+    query: { enabled: canGetEntitlements },
+  });
   const existingEntitlements = data?.data.data;
   const {
     mutateAsync,
@@ -88,26 +100,33 @@ const EntitlementsTab = () => {
   return (
     <EntitlementsPanelForm
       existingEntitlements={existingEntitlements}
-      setAddEntitlements={(addEntitlements) =>
-        updateEntitlements(
-          userId,
-          addEntitlements,
-          queryClient,
-          queryKey,
-          IdentityEntitlementsPatchItemAllOfOp.add,
-          mutateAsync,
-        )
+      setAddEntitlements={
+        canRelateEntitlements
+          ? (addEntitlements) =>
+              updateEntitlements(
+                userId,
+                addEntitlements,
+                queryClient,
+                queryKey,
+                IdentityEntitlementsPatchItemAllOfOp.add,
+                mutateAsync,
+              )
+          : null
       }
-      setRemoveEntitlements={(removeEntitlements) =>
-        updateEntitlements(
-          userId,
-          removeEntitlements,
-          queryClient,
-          queryKey,
-          IdentityEntitlementsPatchItemAllOfOp.remove,
-          mutateAsync,
-        )
+      setRemoveEntitlements={
+        canRelateEntitlements
+          ? (removeEntitlements) =>
+              updateEntitlements(
+                userId,
+                removeEntitlements,
+                queryClient,
+                queryKey,
+                IdentityEntitlementsPatchItemAllOfOp.remove,
+                mutateAsync,
+              )
+          : null
       }
+      showTable={canGetEntitlements}
       submitProps={{ loading: isPending }}
     />
   );

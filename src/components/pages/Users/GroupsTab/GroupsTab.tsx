@@ -14,6 +14,8 @@ import {
   usePatchIdentitiesItemGroups,
 } from "api/identities/identities";
 import GroupsPanelForm from "components/GroupsPanelForm";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import { Label } from "./types";
@@ -48,13 +50,23 @@ const updateGroups = (
 const GroupsTab = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const { hasCapability: canGetGroups } = useCheckCapability(
+    Endpoint.IDENTITY_GROUPS,
+    CapabilityAction.READ,
+  );
+  const { hasCapability: canRelateGroups } = useCheckCapability(
+    Endpoint.IDENTITY_GROUPS,
+    CapabilityAction.RELATE,
+  );
   const {
     isError: isFetchError,
     data,
     isFetching,
     isRefetching,
     queryKey,
-  } = useGetIdentitiesItemGroups(userId ?? "");
+  } = useGetIdentitiesItemGroups(userId ?? "", undefined, {
+    query: { enabled: canGetGroups },
+  });
   const existingGroups = data?.data.data;
   const { mutateAsync, isError: isPatchError } = usePatchIdentitiesItemGroups();
 
@@ -83,26 +95,33 @@ const GroupsTab = () => {
   return (
     <GroupsPanelForm
       existingGroups={existingGroups}
-      setAddGroups={(addGroups) =>
-        updateGroups(
-          userId,
-          addGroups,
-          queryClient,
-          queryKey,
-          IdentityGroupsPatchItemOp.add,
-          mutateAsync,
-        )
+      setAddGroups={
+        canRelateGroups
+          ? (addGroups) =>
+              updateGroups(
+                userId,
+                addGroups,
+                queryClient,
+                queryKey,
+                IdentityGroupsPatchItemOp.add,
+                mutateAsync,
+              )
+          : null
       }
-      setRemoveGroups={(removeGroups) =>
-        updateGroups(
-          userId,
-          removeGroups,
-          queryClient,
-          queryKey,
-          IdentityGroupsPatchItemOp.remove,
-          mutateAsync,
-        )
+      setRemoveGroups={
+        canRelateGroups
+          ? (removeGroups) =>
+              updateGroups(
+                userId,
+                removeGroups,
+                queryClient,
+                queryKey,
+                IdentityGroupsPatchItemOp.remove,
+                mutateAsync,
+              )
+          : null
       }
+      showTable={canGetGroups}
     />
   );
 };

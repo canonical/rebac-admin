@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetEntitlementsMockHandler,
   getGetEntitlementsMockHandler404,
@@ -12,13 +13,16 @@ import {
   getGetResourcesMockHandler,
   getGetResourcesResponseMock,
 } from "api/resources/resources.msw";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 
 import EntitlementsPanelForm from "./EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "./Fields";
 import { Label } from "./types";
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetEntitlementsMockHandler(
     getGetEntitlementsResponseMock({
       data: [
@@ -310,4 +314,37 @@ test("can display errors", async () => {
   expect(
     await findNotificationByText("Request failed with status code 404"),
   ).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ENTITLEMENTS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(
+    <EntitlementsPanelForm
+      addEntitlements={[]}
+      setAddEntitlements={vi.fn()}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
+    />,
+  );
+  expect(screen.queryByRole("form")).not.toBeInTheDocument();
+});
+
+test("can hide the table", async () => {
+  renderComponent(
+    <EntitlementsPanelForm
+      addEntitlements={[]}
+      setAddEntitlements={vi.fn()}
+      removeEntitlements={[]}
+      setRemoveEntitlements={vi.fn()}
+      showTable={false}
+    />,
+  );
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

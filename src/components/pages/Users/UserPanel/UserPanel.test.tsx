@@ -9,12 +9,14 @@ import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import { Label } from "./Fields/types";
 import UserPanel from "./UserPanel";
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetGroupsMockHandler(),
   getGetRolesMockHandler(),
   getGetEntitlementsMockHandler(),
@@ -110,7 +112,7 @@ test("should display the groups form", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
   expect(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   ).toBeInTheDocument();
@@ -122,7 +124,7 @@ test("should display the roles form", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   expect(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   ).toBeInTheDocument();

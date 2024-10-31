@@ -5,13 +5,17 @@ import { vi } from "vitest";
 
 import { getGetEntitlementsMockHandler } from "api/entitlements/entitlements.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockEntityEntitlement } from "test/mocks/entitlements";
 import { renderComponent } from "test/utils";
 
 import { FieldsLabel } from "./Fields";
 import RolePanel from "./RolePanel";
 
-const mockApiServer = setupServer(getGetEntitlementsMockHandler());
+const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
+  getGetEntitlementsMockHandler(),
+);
 
 beforeAll(() => {
   mockApiServer.listen();

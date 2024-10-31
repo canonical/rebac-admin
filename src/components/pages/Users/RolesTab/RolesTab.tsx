@@ -14,6 +14,8 @@ import {
   usePatchIdentitiesItemRoles,
 } from "api/identities/identities";
 import RolesPanelForm from "components/RolesPanelForm";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import { Label } from "./types";
@@ -48,13 +50,23 @@ const updateRoles = (
 const RolesTab = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const { hasCapability: canGetRoles } = useCheckCapability(
+    Endpoint.IDENTITY_ROLES,
+    CapabilityAction.READ,
+  );
+  const { hasCapability: canRelateRoles } = useCheckCapability(
+    Endpoint.IDENTITY_ROLES,
+    CapabilityAction.RELATE,
+  );
   const {
     isError: isFetchError,
     data,
     isFetching,
     isRefetching,
     queryKey,
-  } = useGetIdentitiesItemRoles(userId ?? "");
+  } = useGetIdentitiesItemRoles(userId ?? "", undefined, {
+    query: { enabled: canGetRoles },
+  });
   const existingRoles = data?.data.data;
   const { mutateAsync, isError: isPatchError } = usePatchIdentitiesItemRoles();
 
@@ -83,26 +95,33 @@ const RolesTab = () => {
   return (
     <RolesPanelForm
       existingRoles={existingRoles}
-      setAddRoles={(addRoles) =>
-        updateRoles(
-          userId,
-          addRoles,
-          queryClient,
-          queryKey,
-          IdentityRolesPatchItemOp.add,
-          mutateAsync,
-        )
+      setAddRoles={
+        canRelateRoles
+          ? (addRoles) =>
+              updateRoles(
+                userId,
+                addRoles,
+                queryClient,
+                queryKey,
+                IdentityRolesPatchItemOp.add,
+                mutateAsync,
+              )
+          : null
       }
-      setRemoveRoles={(removeRoles) =>
-        updateRoles(
-          userId,
-          removeRoles,
-          queryClient,
-          queryKey,
-          IdentityRolesPatchItemOp.remove,
-          mutateAsync,
-        )
+      setRemoveRoles={
+        canRelateRoles
+          ? (removeRoles) =>
+              updateRoles(
+                userId,
+                removeRoles,
+                queryClient,
+                queryKey,
+                IdentityRolesPatchItemOp.remove,
+                mutateAsync,
+              )
+          : null
       }
+      showTable={canGetRoles}
     />
   );
 };

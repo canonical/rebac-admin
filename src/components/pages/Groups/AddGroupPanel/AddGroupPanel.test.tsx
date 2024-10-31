@@ -34,6 +34,7 @@ import {
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import { FieldsLabel as GroupPanelLabel } from "../GroupPanel/Fields";
@@ -47,6 +48,7 @@ const mockGroupsData = getPostGroupsResponseMock({
   name: "group1",
 });
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetIdentitiesMockHandler(
     getGetIdentitiesResponseMock({
       data: [
@@ -397,7 +399,7 @@ test("should add roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -437,7 +439,7 @@ test("should handle errors when adding roles", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );

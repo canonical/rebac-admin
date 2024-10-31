@@ -4,8 +4,9 @@ export type Props = {
   addRoles?: Role[];
   existingRoles?: Role[];
   removeRoles?: Role[];
-  setAddRoles: (addRoles: Role[]) => void;
-  setRemoveRoles: (removeRoles: Role[]) => void;
+  setAddRoles?: ((addRoles: Role[]) => void) | null;
+  setRemoveRoles?: ((removeRoles: Role[]) => void) | null;
+  showTable?: boolean;
 };
 
 export enum Label {
