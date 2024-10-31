@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetIdentitiesItemEntitlementsMockHandler,
   getGetIdentitiesItemGroupsMockHandler,
@@ -11,6 +12,7 @@ import {
   getGetIdentitiesItemResponseMock,
   getGetIdentitiesItemRolesMockHandler,
 } from "api/identities/identities.msw";
+import { Label as CheckCapabilityLabel } from "components/CheckCapability";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
@@ -18,7 +20,7 @@ import { Endpoint } from "types/api";
 import urls from "urls";
 
 import User from "./User";
-import { Label as UserLabel } from "./types";
+import { Label, Label as UserLabel } from "./types";
 
 const mockUserData = getGetIdentitiesItemResponseMock({
   id: "user1",
@@ -56,6 +58,30 @@ test("displays loading state", async () => {
   );
   renderComponent(<User />, { path, url });
   expect(await screen.findByText(UserLabel.FETCHING_USER)).toBeInTheDocument();
+});
+
+test("does not display if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITY,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(<User />, {
+    routeChildren: [
+      {
+        path: urls.users.user.groups(null),
+        element: <>Groups</>,
+      },
+    ],
+    path,
+    url: urls.users.user.groups({ id: "user1" }),
+  });
+  expect(
+    await screen.findByText(CheckCapabilityLabel.DISABLED_FEATURE),
+  ).toBeInTheDocument();
 });
 
 test("displays content", async () => {
@@ -121,4 +147,117 @@ test("should display the edit panel", async () => {
     name: "Edit local user",
   });
   expect(panel).toBeInTheDocument();
+});
+
+test("does not display the edit button if no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITY,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<User />, { path, url });
+  expect(await screen.findByText(mockUserData.email)).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: UserLabel.EDIT }),
+  ).not.toBeInTheDocument();
+});
+
+test("displays optional tabs", async () => {
+  renderComponent(<User />, {
+    routeChildren: [
+      {
+        path: urls.users.user.groups(null),
+        element: <>Groups</>,
+      },
+    ],
+    path,
+    url: urls.users.user.groups({ id: "user1" }),
+  });
+  expect(
+    await screen.findByRole("link", { name: Label.TAB_GROUPS }),
+  ).toBeInTheDocument();
+  expect(
+    await screen.findByRole("link", { name: Label.TAB_ROLES }),
+  ).toBeInTheDocument();
+  expect(
+    await screen.findByRole("link", { name: Label.TAB_ENTITLEMENTS }),
+  ).toBeInTheDocument();
+});
+
+test("does not display the entitlements tab if no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITY_ENTITLEMENTS,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(<User />, {
+    routeChildren: [
+      {
+        path: urls.users.user.groups(null),
+        element: <>Groups</>,
+      },
+    ],
+    path,
+    url: urls.users.user.groups({ id: "user1" }),
+  });
+  await screen.findByText(mockUserData.email);
+  expect(
+    screen.queryByRole("link", { name: Label.TAB_ENTITLEMENTS }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the roles tab if no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITY_ROLES,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(<User />, {
+    routeChildren: [
+      {
+        path: urls.users.user.groups(null),
+        element: <>Groups</>,
+      },
+    ],
+    path,
+    url: urls.users.user.groups({ id: "user1" }),
+  });
+  await screen.findByText(mockUserData.email);
+  expect(
+    screen.queryByRole("link", { name: Label.TAB_ROLES }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the groups tab if no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.IDENTITY_GROUPS,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(<User />, {
+    routeChildren: [
+      {
+        path: urls.users.user.groups(null),
+        element: <>Groups</>,
+      },
+    ],
+    path,
+    url: urls.users.user.groups({ id: "user1" }),
+  });
+  await screen.findByText(mockUserData.email);
+  expect(
+    screen.queryByRole("link", { name: Label.TAB_GROUPS }),
+  ).not.toBeInTheDocument();
 });

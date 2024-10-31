@@ -8,6 +8,7 @@ import { getGetIdentitiesMockHandler } from "api/identities/identities.msw";
 import { getGetRolesMockHandler } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
@@ -16,6 +17,7 @@ import { FieldsLabel } from "./Fields";
 import GroupPanel from "./GroupPanel";
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetEntitlementsMockHandler(),
   getGetIdentitiesMockHandler(),
   getGetRolesMockHandler(),
@@ -87,7 +89,9 @@ test("the user form can be displayed", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
   expect(
-    screen.getByRole("combobox", { name: IdentitiesPanelFormLabel.SELECT }),
+    await screen.findByRole("combobox", {
+      name: IdentitiesPanelFormLabel.SELECT,
+    }),
   ).toBeInTheDocument();
 });
 
@@ -98,7 +102,7 @@ test("the role form can be displayed", async () => {
 
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   expect(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   ).toBeInTheDocument();

@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import type { EntityEntitlement } from "api/api.schemas";
 import { useGetEntitlements } from "api/entitlements/entitlements";
 import PanelTableForm from "components/PanelTableForm";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 
 import Fields from "./Fields";
 import { Label, type Props } from "./types";
@@ -33,15 +35,20 @@ const EntitlementsPanelForm = ({
   existingEntitlements,
   addEntitlements = [],
   setAddEntitlements,
+  showTable = true,
   removeEntitlements = [],
   setRemoveEntitlements,
   submitProps,
 }: Props) => {
+  const { hasCapability: canGetEntitlements } = useCheckCapability(
+    Endpoint.ENTITLEMENTS,
+    CapabilityAction.READ,
+  );
   const {
     data: getEntitlementsData,
     isFetching: isGetEntitlementsFetching,
     error: getEntitlementsError,
-  } = useGetEntitlements();
+  } = useGetEntitlements(undefined, { query: { enabled: canGetEntitlements } });
 
   return (
     <PanelTableForm<EntityEntitlement>
@@ -52,42 +59,45 @@ const EntitlementsPanelForm = ({
       existingEntities={existingEntitlements}
       isFetching={isGetEntitlementsFetching}
       form={
-        <Formik<EntityEntitlement>
-          initialValues={{
-            entity_type: "",
-            entitlement: "",
-            entity_id: "",
-          }}
-          onSubmit={(values, helpers) => {
-            setAddEntitlements([...addEntitlements, values]);
-            helpers.resetForm();
-            document
-              .querySelector<HTMLInputElement>("input[name='entity_id']")
-              ?.focus();
-          }}
-          validationSchema={schema}
-        >
-          <Form aria-label={Label.FORM}>
-            <fieldset>
-              <h5>{Label.ADD_ENTITLEMENT}</h5>
-              <p className="p-text--small u-text--muted">
-                In fine-grained authorisation entitlements need to be given in
-                relation to a specific resource. Select the appropriate resource
-                and entitlement below and add it to the list of entitlements for
-                this role.{" "}
-              </p>
-              <Fields
-                entitlements={getEntitlementsData?.data.data ?? []}
-                submitProps={submitProps}
-              />
-            </fieldset>
-          </Form>
-        </Formik>
+        canGetEntitlements && setAddEntitlements ? (
+          <Formik<EntityEntitlement>
+            initialValues={{
+              entity_type: "",
+              entitlement: "",
+              entity_id: "",
+            }}
+            onSubmit={(values, helpers) => {
+              setAddEntitlements([...addEntitlements, values]);
+              helpers.resetForm();
+              document
+                .querySelector<HTMLInputElement>("input[name='entity_id']")
+                ?.focus();
+            }}
+            validationSchema={schema}
+          >
+            <Form aria-label={Label.FORM}>
+              <fieldset>
+                <h5>{Label.ADD_ENTITLEMENT}</h5>
+                <p className="p-text--small u-text--muted">
+                  In fine-grained authorisation entitlements need to be given in
+                  relation to a specific resource. Select the appropriate
+                  resource and entitlement below and add it to the list of
+                  entitlements for this role.{" "}
+                </p>
+                <Fields
+                  entitlements={getEntitlementsData?.data.data ?? []}
+                  submitProps={submitProps}
+                />
+              </fieldset>
+            </Form>
+          </Formik>
+        ) : null
       }
       generateCells={(entitlement) => ({ ...entitlement })}
       removeEntities={removeEntitlements}
       setAddEntities={setAddEntitlements}
       setRemoveEntities={setRemoveEntitlements}
+      showTable={showTable}
     />
   );
 };
