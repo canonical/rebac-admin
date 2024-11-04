@@ -59,18 +59,18 @@ const EditGroupPanel = ({
   setPanelWidth,
 }: Props) => {
   const queryClient = useQueryClient();
-  const { hasCapability: canRelateUsers } = useCheckCapability(
-    Endpoint.GROUP_IDENTITIES,
-    CapabilityAction.RELATE,
-  );
-  const { hasCapability: canRelateRoles } = useCheckCapability(
-    Endpoint.GROUP_ROLES,
-    CapabilityAction.RELATE,
-  );
-  const { hasCapability: canRelateEntitlements } = useCheckCapability(
-    Endpoint.GROUP_ENTITLEMENTS,
-    CapabilityAction.RELATE,
-  );
+  const {
+    hasCapability: canRelateUsers,
+    isFetching: isFetchingIdentityCapability,
+  } = useCheckCapability(Endpoint.GROUP_IDENTITIES, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateRoles,
+    isFetching: isFetchingRoleCapability,
+  } = useCheckCapability(Endpoint.GROUP_ROLES, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateEntitlements,
+    isFetching: isFetchingEntitlementCapability,
+  } = useCheckCapability(Endpoint.GROUP_ENTITLEMENTS, CapabilityAction.RELATE);
   const {
     error: getGroupsItemEntitlementsError,
     data: existingEntitlements,
@@ -127,9 +127,15 @@ const EditGroupPanel = ({
       existingIdentities={existingIdentities?.data.data}
       existingRoles={existingRoles?.data.data}
       isEditing
-      isFetchingExistingEntitlements={isFetchingExistingEntitlements}
-      isFetchingExistingIdentities={isFetchingExistingIdentities}
-      isFetchingExistingRoles={isFetchingExistingRoles}
+      isFetchingExistingEntitlements={
+        isFetchingExistingEntitlements || isFetchingEntitlementCapability
+      }
+      isFetchingExistingIdentities={
+        isFetchingExistingIdentities || isFetchingIdentityCapability
+      }
+      isFetchingExistingRoles={
+        isFetchingExistingRoles || isFetchingRoleCapability
+      }
       isSaving={
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
