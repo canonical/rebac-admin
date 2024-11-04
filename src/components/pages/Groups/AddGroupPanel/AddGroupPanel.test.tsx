@@ -115,7 +115,7 @@ test("should add a group", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
   expect(
@@ -138,7 +138,7 @@ test("should handle errors when adding groups", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
   expect(
@@ -163,7 +163,7 @@ test("should handle no id in the group response", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1{Enter}",
   );
   expect(
@@ -191,7 +191,7 @@ test("should add entitlements", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(
@@ -247,7 +247,7 @@ test("should handle errors when adding entitlements", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(
@@ -307,7 +307,7 @@ test("should add users", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
@@ -349,7 +349,7 @@ test("should handle errors when adding users", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
@@ -394,7 +394,7 @@ test("should add roles", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
@@ -434,7 +434,7 @@ test("should handle errors when adding roles", async () => {
     <AddGroupPanel close={vi.fn()} setPanelWidth={vi.fn()} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: GroupPanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: GroupPanelLabel.NAME }),
     "group1",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));

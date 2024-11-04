@@ -10,6 +10,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 
 import { Label as IdentitiesPanelFormLabel } from "../IdentitiesPanelForm";
 
@@ -44,18 +45,18 @@ test("the input is set from the name", async () => {
       onSubmit={vi.fn()}
     />,
   );
-  expect(screen.getByRole("textbox", { name: FieldsLabel.NAME })).toHaveValue(
-    "admin",
-  );
+  expect(
+    await screen.findByRole("textbox", { name: FieldsLabel.NAME }),
+  ).toHaveValue("admin");
 });
 
-test("can submit the form and pass whever the group has changed to onSubmit", async () => {
+test("can submit the form and pass whether the group has changed to onSubmit", async () => {
   const onSubmit = vi.fn();
   renderComponent(
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={onSubmit} />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: FieldsLabel.NAME }),
+    await screen.findByRole("textbox", { name: FieldsLabel.NAME }),
     "group1{Enter}",
   );
   expect(onSubmit).toHaveBeenCalledWith(
@@ -75,7 +76,7 @@ test("the entitlement form can be displayed", async () => {
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
   await userEvent.click(
-    screen.getByRole("button", { name: /Add entitlements/ }),
+    await screen.findByRole("button", { name: /Add entitlements/ }),
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   expect(
@@ -87,7 +88,9 @@ test("the user form can be displayed", async () => {
   renderComponent(
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
-  await userEvent.click(screen.getByRole("button", { name: /Add users/ }));
+  await userEvent.click(
+    await screen.findByRole("button", { name: /Add users/ }),
+  );
   expect(
     await screen.findByRole("combobox", {
       name: IdentitiesPanelFormLabel.SELECT,
@@ -99,13 +102,68 @@ test("the role form can be displayed", async () => {
   renderComponent(
     <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
-
-  await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
+  await userEvent.click(
+    await screen.findByRole("button", { name: /Add roles/ }),
+  );
   expect(
     await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   ).toBeInTheDocument();
+});
+
+test("it does not display the entitlement form if it doesn't have the capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUP_ENTITLEMENTS,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await screen.findByRole("textbox", { name: FieldsLabel.NAME });
+  expect(
+    screen.queryByRole("button", { name: /Add entitlements/ }),
+  ).not.toBeInTheDocument();
+});
+
+test("it does not display the user form if it doesn't have the capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUP_IDENTITIES,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await screen.findByRole("textbox", { name: FieldsLabel.NAME });
+  expect(
+    screen.queryByRole("button", { name: /Add users/ }),
+  ).not.toBeInTheDocument();
+});
+
+test("it does not display the role form if it doesn't have the capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUP_ROLES,
+        methods: [],
+      },
+    ]),
+  );
+  renderComponent(
+    <GroupPanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
+  );
+  await screen.findByRole("textbox", { name: FieldsLabel.NAME });
+  expect(
+    screen.queryByRole("button", { name: /Add roles/ }),
+  ).not.toBeInTheDocument();
 });
 
 test("submit button is disabled when editing and there are no changes", async () => {
@@ -130,7 +188,9 @@ test("submit button is disabled when editing and there are no changes", async ()
       onSubmit={vi.fn()}
     />,
   );
-  expect(screen.getByRole("button", { name: "Update group" })).toBeDisabled();
+  expect(
+    await screen.findByRole("button", { name: "Update group" }),
+  ).toBeDisabled();
 });
 
 test("submit button is enabled when editing and there are changes", async () => {
@@ -156,7 +216,7 @@ test("submit button is enabled when editing and there are changes", async () => 
     />,
   );
   await userEvent.click(
-    screen.getByRole("button", { name: /Edit entitlements/ }),
+    await screen.findByRole("button", { name: /Edit entitlements/ }),
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.click(

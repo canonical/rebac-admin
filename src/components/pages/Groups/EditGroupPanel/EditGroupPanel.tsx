@@ -25,6 +25,8 @@ import {
 } from "api/groups/groups";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 import { getIds } from "utils/getIds";
 
 import GroupPanel from "../GroupPanel";
@@ -58,11 +60,27 @@ const EditGroupPanel = ({
 }: Props) => {
   const queryClient = useQueryClient();
   const {
+    hasCapability: canRelateUsers,
+    isFetching: isFetchingIdentityCapability,
+  } = useCheckCapability(Endpoint.GROUP_IDENTITIES, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateRoles,
+    isFetching: isFetchingRoleCapability,
+  } = useCheckCapability(Endpoint.GROUP_ROLES, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateEntitlements,
+    isFetching: isFetchingEntitlementCapability,
+  } = useCheckCapability(Endpoint.GROUP_ENTITLEMENTS, CapabilityAction.RELATE);
+  const {
     error: getGroupsItemEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExistingEntitlements,
     queryKey: entitlementsQueryKey,
-  } = useGetGroupsItemEntitlements(groupId);
+  } = useGetGroupsItemEntitlements(groupId, undefined, {
+    query: {
+      enabled: canRelateEntitlements,
+    },
+  });
   const {
     mutateAsync: patchGroupsItemEntitlements,
     isPending: isPatchGroupsItemEntitlementsPending,
@@ -72,7 +90,11 @@ const EditGroupPanel = ({
     data: existingIdentities,
     isFetching: isFetchingExistingIdentities,
     queryKey: identitiesQueryKey,
-  } = useGetGroupsItemIdentities(groupId);
+  } = useGetGroupsItemIdentities(groupId, undefined, {
+    query: {
+      enabled: canRelateUsers,
+    },
+  });
   const {
     mutateAsync: patchGroupsItemIdentities,
     isPending: isPatchGroupsItemIdentitiesPending,
@@ -82,7 +104,11 @@ const EditGroupPanel = ({
     data: existingRoles,
     isFetching: isFetchingExistingRoles,
     queryKey: rolesQueryKey,
-  } = useGetGroupsItemRoles(groupId);
+  } = useGetGroupsItemRoles(groupId, undefined, {
+    query: {
+      enabled: canRelateRoles,
+    },
+  });
   const {
     mutateAsync: patchGroupsItemRoles,
     isPending: isPatchGroupsItemRolesPending,
@@ -101,9 +127,15 @@ const EditGroupPanel = ({
       existingIdentities={existingIdentities?.data.data}
       existingRoles={existingRoles?.data.data}
       isEditing
-      isFetchingExistingEntitlements={isFetchingExistingEntitlements}
-      isFetchingExistingIdentities={isFetchingExistingIdentities}
-      isFetchingExistingRoles={isFetchingExistingRoles}
+      isFetchingExistingEntitlements={
+        isFetchingExistingEntitlements || isFetchingEntitlementCapability
+      }
+      isFetchingExistingIdentities={
+        isFetchingExistingIdentities || isFetchingIdentityCapability
+      }
+      isFetchingExistingRoles={
+        isFetchingExistingRoles || isFetchingRoleCapability
+      }
       isSaving={
         isPatchGroupsItemEntitlementsPending ||
         isPatchGroupsItemIdentitiesPending ||
