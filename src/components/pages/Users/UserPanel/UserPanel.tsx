@@ -6,7 +6,10 @@ import type { EntityEntitlement, Group, Role } from "api/api.schemas";
 import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import GroupsPanelForm from "components/GroupsPanelForm/GroupsPanelForm";
 import RolesPanelForm from "components/RolesPanelForm";
+import type { SubForm } from "components/SubFormPanel";
 import SubFormPanel from "components/SubFormPanel";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 
 import Fields from "./Fields";
 import { FieldName, type FormFields } from "./Fields/types";
@@ -40,6 +43,79 @@ const UserPanel = ({
   const [removeEntitlements, setRemoveEntitlements] = useState<
     EntityEntitlement[]
   >([]);
+  const {
+    hasCapability: canRelateGroups,
+    isFetching: isFetchingGroupCapability,
+  } = useCheckCapability(Endpoint.IDENTITY_GROUPS, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateRoles,
+    isFetching: isFetchingRoleCapability,
+  } = useCheckCapability(Endpoint.IDENTITY_ROLES, CapabilityAction.RELATE);
+  const {
+    hasCapability: canRelateEntitlements,
+    isFetching: isFetchingEntitlementCapability,
+  } = useCheckCapability(
+    Endpoint.IDENTITY_ENTITLEMENTS,
+    CapabilityAction.RELATE,
+  );
+  const subForms: SubForm[] = [];
+  if (canRelateGroups) {
+    subForms.push({
+      count:
+        (existingGroups?.length ?? 0) + addGroups.length - removeGroups.length,
+      entity: "group",
+      icon: "user-group",
+      view: isFetchingExistingGroups ? (
+        <Spinner />
+      ) : (
+        <GroupsPanelForm
+          addGroups={addGroups}
+          existingGroups={existingGroups}
+          setAddGroups={setAddGroups}
+          removeGroups={removeGroups}
+          setRemoveGroups={setRemoveGroups}
+        />
+      ),
+    });
+  }
+  if (canRelateRoles) {
+    subForms.push({
+      count:
+        (existingRoles?.length ?? 0) + addRoles.length - removeRoles.length,
+      entity: "role",
+      icon: "profile",
+      view: (
+        <RolesPanelForm
+          addRoles={addRoles}
+          existingRoles={existingRoles}
+          setAddRoles={setAddRoles}
+          removeRoles={removeRoles}
+          setRemoveRoles={setRemoveRoles}
+        />
+      ),
+    });
+  }
+  if (canRelateEntitlements) {
+    subForms.push({
+      count:
+        (existingEntitlements?.length ?? 0) +
+        addEntitlements.length -
+        removeEntitlements.length,
+      entity: "entitlement",
+      icon: "lock-locked",
+      view: isFetchingExistingEntitlements ? (
+        <Spinner />
+      ) : (
+        <EntitlementsPanelForm
+          addEntitlements={addEntitlements}
+          existingEntitlements={existingEntitlements}
+          removeEntitlements={removeEntitlements}
+          setAddEntitlements={setAddEntitlements}
+          setRemoveEntitlements={setRemoveEntitlements}
+        />
+      ),
+    });
+  }
   return (
     <SubFormPanel<FormFields>
       {...props}
@@ -58,7 +134,12 @@ const UserPanel = ({
         [FieldName.LAST_NAME]: user?.lastName ?? "",
       }}
       isEditing={isEditing}
-      isFetching={isFetchingUser}
+      isFetching={
+        isFetchingUser ||
+        isFetchingGroupCapability ||
+        isFetchingRoleCapability ||
+        isFetchingEntitlementCapability
+      }
       onSubmit={async (values) =>
         await onSubmit(
           values,
@@ -71,61 +152,7 @@ const UserPanel = ({
           removeEntitlements,
         )
       }
-      subForms={[
-        {
-          count:
-            (existingGroups?.length ?? 0) +
-            addGroups.length -
-            removeGroups.length,
-          entity: "group",
-          icon: "user-group",
-          view: isFetchingExistingGroups ? (
-            <Spinner />
-          ) : (
-            <GroupsPanelForm
-              addGroups={addGroups}
-              existingGroups={existingGroups}
-              setAddGroups={setAddGroups}
-              removeGroups={removeGroups}
-              setRemoveGroups={setRemoveGroups}
-            />
-          ),
-        },
-        {
-          count:
-            (existingRoles?.length ?? 0) + addRoles.length - removeRoles.length,
-          entity: "role",
-          icon: "profile",
-          view: (
-            <RolesPanelForm
-              addRoles={addRoles}
-              existingRoles={existingRoles}
-              setAddRoles={setAddRoles}
-              removeRoles={removeRoles}
-              setRemoveRoles={setRemoveRoles}
-            />
-          ),
-        },
-        {
-          count:
-            (existingEntitlements?.length ?? 0) +
-            addEntitlements.length -
-            removeEntitlements.length,
-          entity: "entitlement",
-          icon: "lock-locked",
-          view: isFetchingExistingEntitlements ? (
-            <Spinner />
-          ) : (
-            <EntitlementsPanelForm
-              addEntitlements={addEntitlements}
-              existingEntitlements={existingEntitlements}
-              removeEntitlements={removeEntitlements}
-              setAddEntitlements={setAddEntitlements}
-              setRemoveEntitlements={setRemoveEntitlements}
-            />
-          ),
-        },
-      ]}
+      subForms={subForms}
       validationSchema={schema}
     >
       <Fields setIsDirty={setIsDirty} />

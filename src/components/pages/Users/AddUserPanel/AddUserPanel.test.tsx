@@ -117,7 +117,7 @@ test("should add a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   expect(
@@ -140,7 +140,7 @@ test("should handle errors when adding a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   expect(
@@ -163,7 +163,7 @@ test("should handle no identity id error when adding a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "mock@gmail.com{Enter}",
   );
   expect(
@@ -191,7 +191,7 @@ test("should add groups", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
@@ -227,7 +227,7 @@ test("should handle errors when adding groups", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
@@ -270,7 +270,7 @@ test("should add roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
@@ -306,7 +306,7 @@ test("should handle errors when adding roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
@@ -349,7 +349,7 @@ test("should add entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(
@@ -402,7 +402,7 @@ test("should handle errors when adding entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(
