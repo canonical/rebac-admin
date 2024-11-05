@@ -176,7 +176,7 @@ test("displays the edit panel", async () => {
   )[0];
   await userEvent.click(contextMenu);
   await userEvent.click(
-    screen.getByRole("button", { name: EntityTableLabel.EDIT }),
+    await screen.findByRole("button", { name: EntityTableLabel.EDIT }),
   );
   const panel = await screen.findByRole("complementary", {
     name: "Edit role",

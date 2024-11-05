@@ -95,7 +95,7 @@ test("displays the indeterminate state in the header", async () => {
     within(screen.getAllByRole("columnheader")[0]).getByRole("checkbox", {
       name: Label.SELECT_ALL,
     }),
-  ).toHaveAttribute("indeterminate");
+  ).toBePartiallyChecked();
 });
 
 test("displays checkbox and actions", async () => {
