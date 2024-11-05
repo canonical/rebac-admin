@@ -36,6 +36,7 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -50,6 +51,7 @@ const mockIdentitiesData = getPostIdentitiesResponseMock({
 });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPostIdentitiesMockHandler(mockIdentitiesData),
   getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
@@ -115,7 +117,7 @@ test("should add a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   expect(
@@ -138,7 +140,7 @@ test("should handle errors when adding a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   expect(
@@ -161,7 +163,7 @@ test("should handle no identity id error when adding a user", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "mock@gmail.com{Enter}",
   );
   expect(
@@ -189,12 +191,12 @@ test("should add groups", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -225,12 +227,12 @@ test("should handle errors when adding groups", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -268,12 +270,12 @@ test("should add roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -304,12 +306,12 @@ test("should handle errors when adding roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(screen.getByRole("button", { name: /Add roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -347,7 +349,7 @@ test("should add entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(
@@ -355,20 +357,20 @@ test("should add entitlements", async () => {
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -400,7 +402,7 @@ test("should handle errors when adding entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddUserPanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.EMAIL }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.EMAIL }),
     "test@test.com{Enter}",
   );
   await userEvent.click(
@@ -408,20 +410,20 @@ test("should handle errors when adding entitlements", async () => {
   );
   await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",

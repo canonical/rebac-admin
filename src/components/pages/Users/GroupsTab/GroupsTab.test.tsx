@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetGroupsMockHandler,
   getGetGroupsResponseMock,
@@ -15,6 +16,7 @@ import {
   getGetIdentitiesItemGroupsMockHandler400,
 } from "api/identities/identities.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
@@ -27,6 +29,7 @@ const path = urls.users.user.groups(null);
 const url = urls.users.user.groups({ id: "user1" });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPatchIdentitiesItemGroupsMockHandler(),
   getGetIdentitiesItemGroupsMockHandler(
     getGetIdentitiesItemGroupsResponseMock({
@@ -205,4 +208,46 @@ test("should handle errors when updating groups", async () => {
     )[0],
   );
   expect(await findNotificationByText(Label.PATCH_ERROR)).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUPS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_GROUPS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<GroupsTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("table");
+  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+});
+
+test("hides the table if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUPS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_GROUPS,
+        methods: [CapabilityMethodsItem.PATCH],
+      },
+    ]),
+  );
+  renderComponent(<GroupsTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("combobox");
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

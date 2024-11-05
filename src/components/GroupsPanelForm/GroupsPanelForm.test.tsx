@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetGroupsMockHandler,
   getGetGroupsMockHandler400,
@@ -10,12 +11,15 @@ import {
   getGetGroupsResponseMock400,
 } from "api/groups/groups.msw";
 import { Label as GroupsPanelFormLabel } from "components/GroupsPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 
 import GroupsPanelForm from "./GroupsPanelForm";
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetGroupsMockHandler(
     getGetGroupsResponseMock({
       data: [
@@ -50,7 +54,7 @@ test("can add groups", async () => {
     />,
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -178,4 +182,37 @@ test("can display fetch errors", async () => {
     />,
   );
   expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.GROUPS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(
+    <GroupsPanelForm
+      addGroups={[]}
+      setAddGroups={vi.fn()}
+      removeGroups={[]}
+      setRemoveGroups={vi.fn()}
+    />,
+  );
+  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+});
+
+test("can hide the table", async () => {
+  renderComponent(
+    <GroupsPanelForm
+      addGroups={[]}
+      setAddGroups={vi.fn()}
+      removeGroups={[]}
+      setRemoveGroups={vi.fn()}
+      showTable={false}
+    />,
+  );
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

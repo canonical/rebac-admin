@@ -59,14 +59,12 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
       }
       onSubmit={async (
         { email, firstName, lastName },
+        _userChanged,
         addGroups,
         addRoles,
         addEntitlements,
       ) => {
-        let hasIdentityIdError = false;
-        let hasGroupsError = false;
-        let hasRolesError = false;
-        let hasEntitlementsError = false;
+        const errors: string[] = [];
         const queue = new Limiter({ concurrency: API_CONCURRENCY });
         try {
           const { data: identity } = await postIdentities({
@@ -93,7 +91,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                     },
                   });
                 } catch (error) {
-                  hasGroupsError = true;
+                  errors.push(Label.GROUPS_ERROR);
                 }
                 done();
               });
@@ -111,7 +109,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                     },
                   });
                 } catch (error) {
-                  hasRolesError = true;
+                  errors.push(Label.ROLES_ERROR);
                 }
                 done();
               });
@@ -129,13 +127,13 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                     },
                   });
                 } catch (error) {
-                  hasEntitlementsError = true;
+                  errors.push(Label.ENTITLEMENTS_ERROR);
                 }
                 done();
               });
             }
           } else {
-            hasIdentityIdError = true;
+            errors.push(Label.IDENTITY_ID_ERROR);
           }
         } catch {
           // These errors are handled by the errors returned by `usePostIdentities`.
@@ -146,39 +144,20 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
             queryKey: [Endpoint.IDENTITIES],
           });
           close();
-          if (hasIdentityIdError) {
+          errors.forEach((error) => {
             reactHotToast.custom((t) => (
               <ToastCard toastInstance={t} type="negative">
-                {Label.IDENTITY_ID_ERROR}
+                {error}
+              </ToastCard>
+            ));
+          });
+          if (!postIdentitiesError) {
+            reactHotToast.custom((t) => (
+              <ToastCard toastInstance={t} type="positive">
+                {`User with email "${email}" was created.`}
               </ToastCard>
             ));
           }
-          if (hasGroupsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.GROUPS_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasRolesError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ROLES_ERROR}
-              </ToastCard>
-            ));
-          }
-          if (hasEntitlementsError) {
-            reactHotToast.custom((t) => (
-              <ToastCard toastInstance={t} type="negative">
-                {Label.ENTITLEMENTS_ERROR}
-              </ToastCard>
-            ));
-          }
-          reactHotToast.custom((t) => (
-            <ToastCard toastInstance={t} type="positive">
-              {`User with email "${email}" was created.`}
-            </ToastCard>
-          ));
         });
       }}
     />

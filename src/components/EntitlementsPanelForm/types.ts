@@ -5,8 +5,11 @@ export type Props = {
   addEntitlements?: EntityEntitlement[];
   existingEntitlements?: EntityEntitlement[];
   removeEntitlements?: EntityEntitlement[];
-  setAddEntitlements: (addEntitlements: EntityEntitlement[]) => void;
-  setRemoveEntitlements: (removeEntitlements: EntityEntitlement[]) => void;
+  setAddEntitlements?: ((addEntitlements: EntityEntitlement[]) => void) | null;
+  setRemoveEntitlements?:
+    | ((removeEntitlements: EntityEntitlement[]) => void)
+    | null;
+  showTable?: boolean;
   submitProps?: Partial<FormikSubmitButtonProps>;
 };
 

@@ -24,9 +24,10 @@ import {
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
-import { Label as RolePanelLabel } from "../RolePanel";
+import { FieldsLabel as RolePanelLabel } from "../RolePanel/Fields";
 
 import AddRolePanel from "./AddRolePanel";
 
@@ -35,6 +36,7 @@ const mockRolesData = getPostRolesResponseMock({
   name: "role1",
 });
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPostRolesMockHandler(mockRolesData),
   getPatchRolesItemEntitlementsMockHandler(),
   getGetEntitlementsMockHandler(
@@ -80,7 +82,7 @@ test("should add a role", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1{Enter}",
   );
   expect(
@@ -109,7 +111,7 @@ test("should add a role and entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
   );
   await userEvent.click(
@@ -164,7 +166,7 @@ test("should handle errors when adding roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1{Enter}",
   );
   expect(
@@ -181,7 +183,7 @@ test("handles the role not in the response", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
   );
   await userEvent.click(
@@ -235,7 +237,7 @@ test("should handle errors when adding entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(<AddRolePanel close={vi.fn()} setPanelWidth={vi.fn()} />);
   await userEvent.type(
-    screen.getByRole("textbox", { name: RolePanelLabel.NAME }),
+    await screen.findByRole("textbox", { name: RolePanelLabel.NAME }),
     "role1",
   );
   await userEvent.click(

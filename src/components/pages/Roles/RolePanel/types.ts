@@ -2,13 +2,7 @@ import type { EntityEntitlement, Role } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 
-export enum FieldName {
-  NAME = "name",
-}
-
-export type FormFields = {
-  [FieldName.NAME]: string;
-};
+import type { FormFields } from "./Fields";
 
 export type Props = {
   close: SubFormPanelProps<FormFields>["close"];
@@ -20,13 +14,10 @@ export type Props = {
   isSaving?: boolean;
   onSubmit: (
     values: FormFields,
+    roleChanged: boolean,
     addEntitlements: EntityEntitlement[],
     removeEntitlements?: EntityEntitlement[],
   ) => Promise<void>;
   role?: Role | null;
   setPanelWidth: SetPanelWidth;
 };
-
-export enum Label {
-  NAME = "Role name",
-}

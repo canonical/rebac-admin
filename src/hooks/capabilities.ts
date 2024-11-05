@@ -43,12 +43,16 @@ export const useGetCapabilityActions = (endpoint: Endpoint) => {
 
 export const useCheckCapability = (
   endpoint: Endpoint,
-  action: CapabilityAction,
+  action: CapabilityAction | CapabilityAction[],
+  allRequired = true,
 ) => {
   const { actions, isFetching, isError, error, refetch } =
     useGetCapabilityActions(endpoint);
+  const actionArray = Array.isArray(action) ? action : [action];
   return {
-    hasCapability: actions?.includes(action) ?? false,
+    hasCapability: actionArray[allRequired ? "every" : "some"]((actionName) =>
+      actions.includes(actionName),
+    ),
     isFetching,
     isError,
     error,

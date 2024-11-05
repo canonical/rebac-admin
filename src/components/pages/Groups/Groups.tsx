@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState } from "react";
 
@@ -9,6 +10,7 @@ import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
 import { useDeleteModal } from "hooks/useDeleteModal";
 import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
@@ -27,9 +29,10 @@ const COLUMN_DATA = [
 ];
 
 const Groups = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, error, refetch } = useGetGroups({
+  const { data, isFetching, isError, error, refetch, queryKey } = useGetGroups({
     filter: filter || undefined,
     ...pagination.pageData,
   });
@@ -41,6 +44,9 @@ const Groups = () => {
       return (
         <EditGroupPanel
           group={data.editGroup}
+          onGroupUpdated={() =>
+            void queryClient.invalidateQueries({ queryKey })
+          }
           groupId={data.editGroup.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}
@@ -50,7 +56,18 @@ const Groups = () => {
       return <AddGroupPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
-
+  const { hasCapability: canCreateGroup } = useCheckCapability(
+    Endpoint.GROUPS,
+    CapabilityAction.CREATE,
+  );
+  const { hasCapability: canDeleteGroup } = useCheckCapability(
+    Endpoint.GROUP,
+    CapabilityAction.DELETE,
+  );
+  const { hasCapability: canUpdateGroup } = useCheckCapability(
+    Endpoint.GROUP,
+    CapabilityAction.UPDATE,
+  );
   const { generateModal, openModal } = useDeleteModal<
     NonNullable<Group["id"]>[]
   >((closeModal, groups) => (
@@ -59,11 +76,11 @@ const Groups = () => {
 
   const selected = useEntitiesSelect(getIds(data?.data.data));
 
-  const generateCreateGroupButton = () => (
+  const createGroupButton = canCreateGroup ? (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
       {Label.ADD}
     </Button>
-  );
+  ) : null;
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {
@@ -81,21 +98,25 @@ const Groups = () => {
         <NoEntityCard
           title="No groups"
           message={Label.NO_GROUPS}
-          actionButton={generateCreateGroupButton()}
+          actionButton={createGroupButton}
         />
       );
     } else {
       return (
         <EntityTable<Group>
-          checkboxesDisabled={isPanelOpen}
+          checkboxesDisabled={isPanelOpen || !canDeleteGroup}
           columns={COLUMN_DATA}
           entities={data?.data.data}
           emptyMsg={Label.NO_GROUPS}
           generateColumns={(group) => ({
             groupName: group.name,
           })}
-          onDelete={(group) => group.id && openModal([group.id])}
-          onEdit={(group) => openPanel({ editGroup: group })}
+          onDelete={
+            canDeleteGroup ? (group) => group.id && openModal([group.id]) : null
+          }
+          onEdit={
+            canUpdateGroup ? (group) => openPanel({ editGroup: group }) : null
+          }
           pagination={pagination}
           selected={selected}
         />
@@ -107,16 +128,18 @@ const Groups = () => {
     <Content
       endpoint={Endpoint.GROUPS}
       controls={
-        <>
-          <Button
-            appearance={ButtonAppearance.NEGATIVE}
-            disabled={!selected.selectedEntities.length}
-            onClick={() => openModal(selected.selectedEntities)}
-          >
-            {Label.DELETE}
-          </Button>
-          {generateCreateGroupButton()}
-        </>
+        canDeleteGroup ? (
+          <>
+            <Button
+              appearance={ButtonAppearance.NEGATIVE}
+              disabled={!selected.selectedEntities.length}
+              onClick={() => openModal(selected.selectedEntities)}
+            >
+              {Label.DELETE}
+            </Button>
+            {createGroupButton}
+          </>
+        ) : null
       }
       onSearch={setFilter}
       title="Groups"

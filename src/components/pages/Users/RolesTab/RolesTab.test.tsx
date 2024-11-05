@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getPatchIdentitiesItemRolesMockHandler,
   getGetIdentitiesItemRolesMockHandler,
@@ -15,6 +16,7 @@ import {
   getGetRolesResponseMock,
 } from "api/roles/roles.msw";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 import { Endpoint } from "types/api";
 import urls from "urls";
@@ -26,6 +28,7 @@ const path = urls.users.user.roles(null);
 const url = urls.users.user.roles({ id: "user1" });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPatchIdentitiesItemRolesMockHandler(),
   getGetIdentitiesItemRolesMockHandler(
     getGetIdentitiesItemRolesResponseMock({
@@ -207,4 +210,46 @@ test("should handle errors when updating roles", async () => {
     )[0],
   );
   expect(await findNotificationByText(Label.PATCH_ERROR)).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<RolesTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("table");
+  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+});
+
+test("hides the table if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_ROLES,
+        methods: [CapabilityMethodsItem.PATCH],
+      },
+    ]),
+  );
+  renderComponent(<RolesTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("combobox");
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

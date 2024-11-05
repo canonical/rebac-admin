@@ -195,6 +195,95 @@ test("calls the onDelete prop", async () => {
   expect(onDelete).toHaveBeenCalledWith({ id: "1", name: "name1" });
 });
 
+test("can not display the edit action", async () => {
+  renderComponent(
+    <EntityTable<Entity>
+      checkboxesDisabled={false}
+      columns={[
+        {
+          Header: "name",
+          accessor: "name",
+        },
+      ]}
+      entities={[{ id: "1", name: "name1" }]}
+      emptyMsg="None!"
+      generateColumns={({ name }) => ({ name })}
+      onDelete={vi.fn()}
+      pagination={pagination}
+      selected={{
+        handleSelectEntity: vi.fn(),
+        handleSelectAllEntities: vi.fn(),
+        selectedEntities: [],
+        areAllEntitiesSelected: false,
+      }}
+    />,
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: Label.ACTION_MENU }),
+  );
+  expect(
+    screen.queryByRole("button", { name: Label.EDIT }),
+  ).not.toBeInTheDocument();
+});
+
+test("can not display the delete action", async () => {
+  renderComponent(
+    <EntityTable<Entity>
+      checkboxesDisabled={false}
+      columns={[
+        {
+          Header: "name",
+          accessor: "name",
+        },
+      ]}
+      entities={[{ id: "1", name: "name1" }]}
+      emptyMsg="None!"
+      generateColumns={({ name }) => ({ name })}
+      onEdit={vi.fn()}
+      pagination={pagination}
+      selected={{
+        handleSelectEntity: vi.fn(),
+        handleSelectAllEntities: vi.fn(),
+        selectedEntities: [],
+        areAllEntitiesSelected: false,
+      }}
+    />,
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: Label.ACTION_MENU }),
+  );
+  expect(
+    screen.queryByRole("button", { name: Label.DELETE }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the action menu if there are no actions", async () => {
+  renderComponent(
+    <EntityTable<Entity>
+      checkboxesDisabled={false}
+      columns={[
+        {
+          Header: "name",
+          accessor: "name",
+        },
+      ]}
+      entities={[{ id: "1", name: "name1" }]}
+      emptyMsg="None!"
+      generateColumns={({ name }) => ({ name })}
+      pagination={pagination}
+      selected={{
+        handleSelectEntity: vi.fn(),
+        handleSelectAllEntities: vi.fn(),
+        selectedEntities: [],
+        areAllEntitiesSelected: false,
+      }}
+    />,
+  );
+  expect(
+    screen.queryByRole("button", { name: Label.ACTION_MENU }),
+  ).not.toBeInTheDocument();
+});
+
 test("can disable the checkboxes", async () => {
   renderComponent(
     <EntityTable<Entity>

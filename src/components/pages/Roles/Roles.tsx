@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState } from "react";
 
@@ -9,6 +10,7 @@ import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import NoEntityCard from "components/NoEntityCard";
 import { useEntitiesSelect, usePanel } from "hooks";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
 import { useDeleteModal } from "hooks/useDeleteModal";
 import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
@@ -27,9 +29,10 @@ const COLUMN_DATA = [
 ];
 
 const Roles = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, error, refetch } = useGetRoles({
+  const { data, isFetching, isError, error, queryKey, refetch } = useGetRoles({
     filter: filter || undefined,
     ...pagination.pageData,
   });
@@ -40,9 +43,14 @@ const Roles = () => {
     if (data?.editRole?.id) {
       return (
         <EditRolePanel
+          close={closePanel}
+          onRoleUpdated={() =>
+            void queryClient.invalidateQueries({
+              queryKey: queryKey,
+            })
+          }
           role={data.editRole}
           roleId={data.editRole.id}
-          close={closePanel}
           setPanelWidth={setPanelWidth}
         />
       );
@@ -50,7 +58,18 @@ const Roles = () => {
       return <AddRolePanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
-
+  const { hasCapability: canCreateRole } = useCheckCapability(
+    Endpoint.ROLES,
+    CapabilityAction.CREATE,
+  );
+  const { hasCapability: canDeleteRole } = useCheckCapability(
+    Endpoint.ROLE,
+    CapabilityAction.DELETE,
+  );
+  const { hasCapability: canUpdateRole } = useCheckCapability(
+    Endpoint.ROLE,
+    CapabilityAction.UPDATE,
+  );
   const { generateModal, openModal } = useDeleteModal<
     NonNullable<Role["id"]>[]
   >((closeModal, roles) => (
@@ -59,11 +78,11 @@ const Roles = () => {
 
   const selected = useEntitiesSelect(getIds(data?.data.data));
 
-  const generateCreateRoleButton = () => (
+  const createRoleButton = canCreateRole ? (
     <Button appearance={ButtonAppearance.POSITIVE} onClick={openPanel}>
       {Label.ADD}
     </Button>
-  );
+  ) : null;
 
   const generateContent = (): JSX.Element => {
     if (isFetching) {
@@ -81,21 +100,25 @@ const Roles = () => {
         <NoEntityCard
           title="No roles"
           message={Label.NO_ROLES}
-          actionButton={generateCreateRoleButton()}
+          actionButton={createRoleButton}
         />
       );
     } else {
       return (
         <EntityTable<Role>
-          checkboxesDisabled={isPanelOpen}
+          checkboxesDisabled={isPanelOpen || !canDeleteRole}
           columns={COLUMN_DATA}
           entities={data?.data.data}
           emptyMsg={Label.NO_ROLES}
           generateColumns={(role) => ({
             roleName: role.name,
           })}
-          onDelete={(role) => role.id && openModal([role.id])}
-          onEdit={(role) => openPanel({ editRole: role })}
+          onDelete={
+            canDeleteRole ? (role) => role.id && openModal([role.id]) : null
+          }
+          onEdit={
+            canUpdateRole ? (role) => openPanel({ editRole: role }) : null
+          }
           pagination={pagination}
           selected={selected}
         />
@@ -106,16 +129,18 @@ const Roles = () => {
   return (
     <Content
       controls={
-        <>
-          <Button
-            appearance={ButtonAppearance.NEGATIVE}
-            disabled={!selected.selectedEntities.length}
-            onClick={() => openModal(selected.selectedEntities)}
-          >
-            {Label.DELETE}
-          </Button>
-          {generateCreateRoleButton()}
-        </>
+        canDeleteRole ? (
+          <>
+            <Button
+              appearance={ButtonAppearance.NEGATIVE}
+              disabled={!selected.selectedEntities.length}
+              onClick={() => openModal(selected.selectedEntities)}
+            >
+              {Label.DELETE}
+            </Button>
+            {createRoleButton}
+          </>
+        ) : null
       }
       endpoint={Endpoint.ROLES}
       onSearch={setFilter}

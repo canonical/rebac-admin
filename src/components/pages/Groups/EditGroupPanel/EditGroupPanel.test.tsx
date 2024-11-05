@@ -24,6 +24,8 @@ import {
   getPatchGroupsItemRolesMockHandler400,
   getGetGroupsItemMockHandler,
   getGetGroupsItemResponseMock,
+  getPutGroupsItemMockHandler,
+  getPutGroupsItemMockHandler400,
 } from "api/groups/groups.msw";
 import {
   getGetIdentitiesMockHandler,
@@ -41,7 +43,10 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { Label as RolesPanelFormLabel } from "components/RolesPanelForm";
 import { Label as IdentitiesPanelFormLabel } from "components/pages/Groups/IdentitiesPanelForm/types";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
+
+import { FieldsLabel } from "../GroupPanel/Fields";
 
 import EditGroupPanel from "./EditGroupPanel";
 import { Label } from "./types";
@@ -55,6 +60,7 @@ vi.mock("@tanstack/react-query", async () => {
 });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   // Needs to be before getGetIdentitiesMockHandler so that the path matches
   // `*/groups/:id/identities` before `*/identities`.
   getGetGroupsItemIdentitiesMockHandler(
@@ -139,6 +145,7 @@ const mockApiServer = setupServer(
       ],
     }),
   ),
+  getPutGroupsItemMockHandler(),
 );
 
 beforeAll(() => {
@@ -175,6 +182,7 @@ test("should add and remove entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -193,20 +201,20 @@ test("should add and remove entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -264,6 +272,7 @@ test("should handle errors when updating entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -282,20 +291,20 @@ test("should handle errors when updating entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -336,6 +345,7 @@ test("should add and remove users", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -351,7 +361,7 @@ test("should add and remove users", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: IdentitiesPanelFormLabel.SELECT,
     }),
   );
@@ -388,6 +398,7 @@ test("should handle errors when updating users", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -398,7 +409,7 @@ test("should handle errors when updating users", async () => {
   await screen.findByText("2 users");
   await userEvent.click(screen.getByRole("button", { name: /Edit users/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: IdentitiesPanelFormLabel.SELECT,
     }),
   );
@@ -440,6 +451,7 @@ test("should add and remove roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -455,7 +467,7 @@ test("should add and remove roles", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -492,6 +504,7 @@ test("should handle errors when updating roles", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditGroupPanel
+      onGroupUpdated={vi.fn()}
       group={{ id: "admin1", name: "admin" }}
       groupId="admin1"
       close={vi.fn()}
@@ -502,7 +515,7 @@ test("should handle errors when updating roles", async () => {
   await screen.findByText("2 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -517,5 +530,79 @@ test("should handle errors when updating roles", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Update group" }));
   expect(
     await findNotificationByText(Label.ROLES_ERROR, { appearance: "toast" }),
+  ).toBeInTheDocument();
+});
+
+test("updates the role", async () => {
+  const onGroupUpdated = vi.fn();
+  let putResponseBody: string | null = null;
+  let putDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PUT" &&
+      requestClone.url.endsWith("/groups/admin1")
+    ) {
+      putResponseBody = await requestClone.text();
+      putDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditGroupPanel
+      onGroupUpdated={onGroupUpdated}
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  await userEvent.type(
+    await screen.findByRole("textbox", {
+      name: FieldsLabel.NAME,
+    }),
+    "changed",
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Update group" }));
+  await waitFor(() => expect(putDone).toBe(true));
+  expect(putResponseBody && JSON.parse(putResponseBody)).toMatchObject({
+    id: "admin1",
+    name: "adminchanged",
+  });
+  expect(
+    await findNotificationByText('Group "adminchanged" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
+  expect(onGroupUpdated).toHaveBeenCalled();
+});
+
+test("handle errors when updating the role", async () => {
+  mockApiServer.use(getPutGroupsItemMockHandler400());
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditGroupPanel
+      onGroupUpdated={vi.fn()}
+      group={{ id: "admin1", name: "admin" }}
+      groupId="admin1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  await userEvent.type(
+    await screen.findByRole("textbox", {
+      name: FieldsLabel.NAME,
+    }),
+    "changed",
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Update group" }));
+  expect(
+    await findNotificationByText(Label.GROUP_ERROR, {
+      appearance: "toast",
+    }),
   ).toBeInTheDocument();
 });

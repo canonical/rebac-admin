@@ -1,4 +1,5 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, type JSX } from "react";
 import { Link } from "react-router-dom";
 
@@ -8,6 +9,7 @@ import Content from "components/Content";
 import EntityTable from "components/EntityTable";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel, useEntitiesSelect } from "hooks";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
 import { useDeleteModal } from "hooks/useDeleteModal";
 import { usePagination } from "hooks/usePagination";
 import { Endpoint } from "types/api";
@@ -39,9 +41,10 @@ const COLUMN_DATA = [
 ];
 
 const Users = () => {
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
-  const { data, isFetching, isError, isRefetching, error, refetch } =
+  const { data, isFetching, isError, isRefetching, error, refetch, queryKey } =
     useGetIdentities({
       filter: filter || undefined,
       ...pagination.pageData,
@@ -54,6 +57,7 @@ const Users = () => {
       return (
         <EditUserPanel
           close={closePanel}
+          onUserUpdate={() => void queryClient.invalidateQueries({ queryKey })}
           user={data.editUser}
           userId={data.editUser.id}
           setPanelWidth={setPanelWidth}
@@ -63,7 +67,22 @@ const Users = () => {
       return <AddUserPanel close={closePanel} setPanelWidth={setPanelWidth} />;
     }
   });
-
+  const { hasCapability: canCreateUser } = useCheckCapability(
+    Endpoint.IDENTITIES,
+    CapabilityAction.CREATE,
+  );
+  const { hasCapability: canDeleteUser } = useCheckCapability(
+    Endpoint.IDENTITY,
+    CapabilityAction.DELETE,
+  );
+  const { hasCapability: canGetUser } = useCheckCapability(
+    Endpoint.IDENTITY,
+    CapabilityAction.READ,
+  );
+  const { hasCapability: canUpdateUser } = useCheckCapability(
+    Endpoint.IDENTITY,
+    CapabilityAction.UPDATE,
+  );
   const { generateModal, openModal } = useDeleteModal<
     NonNullable<Identity["id"]>[]
   >((closeModal, identities) => (
@@ -72,11 +91,11 @@ const Users = () => {
 
   const selected = useEntitiesSelect(getIds(data?.data.data));
 
-  const generateCreateUserButton = () => (
+  const createUserButton = canCreateUser ? (
     <Button appearance={ButtonAppearance.DEFAULT} onClick={openPanel}>
       {Label.ADD}
     </Button>
-  );
+  ) : null;
 
   const generateContent = (): JSX.Element => {
     if (isFetching && !isRefetching) {
@@ -92,26 +111,31 @@ const Users = () => {
     } else {
       return (
         <EntityTable<Identity>
-          checkboxesDisabled={isPanelOpen}
+          checkboxesDisabled={isPanelOpen || !canDeleteUser}
           columns={COLUMN_DATA}
           entities={data?.data.data}
           emptyMsg={Label.NO_USERS}
           generateColumns={(user) => ({
             addedBy: user.addedBy,
-            email: user.id ? (
-              <Link to={`..${urls.users.user.index({ id: user.id })}`}>
-                {user.email}
-              </Link>
-            ) : (
-              user.email
-            ),
+            email:
+              user.id && canGetUser ? (
+                <Link to={`..${urls.users.user.index({ id: user.id })}`}>
+                  {user.email}
+                </Link>
+              ) : (
+                user.email
+              ),
             name:
               [user.firstName, user.lastName].filter(Boolean).join(" ") ||
               "Unknown",
             source: user.source,
           })}
-          onDelete={(user) => user.id && openModal([user.id])}
-          onEdit={(user) => openPanel({ editUser: user })}
+          onDelete={
+            canDeleteUser ? (user) => user.id && openModal([user.id]) : null
+          }
+          onEdit={
+            canUpdateUser ? (user) => openPanel({ editUser: user }) : null
+          }
           pagination={pagination}
           selected={selected}
         />
@@ -122,16 +146,18 @@ const Users = () => {
   return (
     <Content
       controls={
-        <>
-          <Button
-            appearance={ButtonAppearance.NEGATIVE}
-            disabled={!selected.selectedEntities.length}
-            onClick={() => openModal(selected.selectedEntities)}
-          >
-            {Label.DELETE}
-          </Button>
-          {generateCreateUserButton()}
-        </>
+        canDeleteUser ? (
+          <>
+            <Button
+              appearance={ButtonAppearance.NEGATIVE}
+              disabled={!selected.selectedEntities.length}
+              onClick={() => openModal(selected.selectedEntities)}
+            >
+              {Label.DELETE}
+            </Button>
+            {createUserButton}
+          </>
+        ) : null
       }
       onSearch={setFilter}
       title="Users"

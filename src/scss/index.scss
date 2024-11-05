@@ -9,8 +9,10 @@
 @import "tables";
 @import "vanilla-overrides";
 
-.l-application .l-aside.is-medium {
-  width: 45rem;
+@media (min-width: $breakpoint-small) {
+  .l-application .l-aside.is-medium {
+    width: 45rem;
+  }
 }
 
 .p-icon--rotate-270 {

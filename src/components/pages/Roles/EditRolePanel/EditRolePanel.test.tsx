@@ -20,12 +20,17 @@ import {
   getGetRolesItemEntitlementsMockHandler400,
   getGetRolesItemMockHandler,
   getGetRolesItemResponseMock,
+  getPutRolesItemMockHandler,
+  getPutRolesItemMockHandler400,
 } from "api/roles/roles.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { FieldsLabel } from "components/pages/Roles/RolePanel/Fields";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
 
 import EditRolePanel from "./EditRolePanel";
+import { Label } from "./types";
 
 vi.mock("@tanstack/react-query", async () => {
   const actual = await vi.importActual("@tanstack/react-query");
@@ -36,6 +41,8 @@ vi.mock("@tanstack/react-query", async () => {
 });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
+  getPutRolesItemMockHandler(),
   getPatchRolesItemEntitlementsMockHandler(),
   getGetRolesItemEntitlementsMockHandler(
     getGetRolesItemEntitlementsResponseMock({
@@ -97,6 +104,133 @@ afterAll(() => {
   mockApiServer.close();
 });
 
+test("updates the role", async () => {
+  const onRoleUpdated = vi.fn();
+  let putResponseBody: string | null = null;
+  let putDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PUT" &&
+      requestClone.url.endsWith("/roles/admin123")
+    ) {
+      putResponseBody = await requestClone.text();
+      putDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditRolePanel
+      onRoleUpdated={onRoleUpdated}
+      role={{
+        id: "admin123",
+        name: "admin1",
+      }}
+      roleId="admin123"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  await userEvent.type(
+    await screen.findByRole("textbox", {
+      name: FieldsLabel.NAME,
+    }),
+    "changed",
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Update role" }));
+  await waitFor(() => expect(putDone).toBe(true));
+  expect(putResponseBody && JSON.parse(putResponseBody)).toMatchObject({
+    id: "admin123",
+    name: "admin1changed",
+  });
+  expect(
+    await findNotificationByText('Role "admin1changed" was updated.', {
+      appearance: "toast",
+      severity: "positive",
+    }),
+  ).toBeInTheDocument();
+  expect(onRoleUpdated).toHaveBeenCalled();
+});
+
+test("handle errors when updating the role", async () => {
+  mockApiServer.use(getPutRolesItemMockHandler400());
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditRolePanel
+      onRoleUpdated={vi.fn()}
+      role={{
+        id: "admin123",
+        name: "admin1",
+      }}
+      roleId="admin123"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  await userEvent.type(
+    await screen.findByRole("textbox", {
+      name: FieldsLabel.NAME,
+    }),
+    "changed",
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Update role" }));
+  expect(
+    await findNotificationByText(Label.ERROR_ROLE, {
+      appearance: "toast",
+    }),
+  ).toBeInTheDocument();
+});
+
+test("should not call onRoleUpdated if the role wasn't changed", async () => {
+  const onRoleUpdated = vi.fn();
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PATCH" &&
+      requestClone.url.endsWith("/roles/admin123/entitlements")
+    ) {
+      patchDone = true;
+    }
+  });
+  renderComponent(
+    <EditRolePanel
+      onRoleUpdated={onRoleUpdated}
+      role={{
+        id: "admin123",
+        name: "admin1",
+      }}
+      roleId="admin123"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  // Wait until the entitlements have loaded.
+  await screen.findByText("2 entitlements");
+  await userEvent.click(
+    screen.getByRole("button", { name: /Edit entitlements/ }),
+  );
+  await screen.findByText(EntitlementsPanelFormLabel.ADD_ENTITLEMENT);
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: EntitlementsPanelFormLabel.REMOVE,
+    })[0],
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: EntitlementsPanelFormLabel.SUBMIT }),
+  );
+  await userEvent.click(
+    screen.getAllByRole("button", { name: "Edit role" })[0],
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Update role" }));
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(onRoleUpdated).not.toHaveBeenCalled();
+});
+
 test("should add and remove entitlements", async () => {
   const invalidateQueries = vi.fn();
   vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
@@ -119,6 +253,7 @@ test("should add and remove entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditRolePanel
+      onRoleUpdated={vi.fn()}
       role={{
         id: "admin123",
         name: "admin1",
@@ -175,9 +310,11 @@ test("should add and remove entitlements", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
-  expect(invalidateQueries).toHaveBeenCalledWith({
-    queryKey: ["/roles/admin123/entitlements"],
-  });
+  await waitFor(() =>
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ["/roles/admin123/entitlements"],
+    }),
+  );
 });
 
 test("should handle errors when updating entitlements", async () => {
@@ -205,6 +342,7 @@ test("should handle errors when updating entitlements", async () => {
     result: { findNotificationByText },
   } = renderComponent(
     <EditRolePanel
+      onRoleUpdated={vi.fn()}
       role={{
         id: "admin123",
         name: "admin1",
@@ -252,7 +390,7 @@ test("should handle errors when updating entitlements", async () => {
   );
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
   expect(
-    await findNotificationByText("Some entitlements couldn't be updated", {
+    await findNotificationByText(Label.ERROR_ENTITLEMENTS, {
       appearance: "toast",
     }),
   ).toBeInTheDocument();

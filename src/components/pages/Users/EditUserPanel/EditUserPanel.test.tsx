@@ -29,6 +29,8 @@ import {
   getGetIdentitiesItemRolesResponseMock,
   getPatchIdentitiesItemRolesMockHandler,
   getPatchIdentitiesItemRolesMockHandler400,
+  getPutIdentitiesItemMockHandler,
+  getPutIdentitiesItemMockHandler400,
 } from "api/identities/identities.msw";
 import {
   getGetResourcesMockHandler,
@@ -42,6 +44,8 @@ import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
+import { UserPanelLabel } from "components/pages/Users/UserPanel";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -66,6 +70,7 @@ const mockUser = {
 };
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
@@ -144,6 +149,7 @@ const mockApiServer = setupServer(
       ],
     }),
   ),
+  getPutIdentitiesItemMockHandler(),
 );
 
 beforeAll(() => {
@@ -181,6 +187,7 @@ test("should add and remove groups", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -195,7 +202,7 @@ test("should add and remove groups", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -232,6 +239,7 @@ test("should handle errors when updating groups", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -241,7 +249,7 @@ test("should handle errors when updating groups", async () => {
   await screen.findByText("2 groups");
   await userEvent.click(screen.getByRole("button", { name: /Edit groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -287,6 +295,7 @@ test("should add and remove roles", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -301,7 +310,7 @@ test("should add and remove roles", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -344,6 +353,7 @@ test("should handle errors when updating roles", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -353,7 +363,7 @@ test("should handle errors when updating roles", async () => {
   await screen.findByText("2 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -399,6 +409,7 @@ test("should add and remove entitlements", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -416,20 +427,20 @@ test("should add and remove entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -493,6 +504,7 @@ test("should handle errors when updating entitlements", async () => {
   } = renderComponent(
     <EditUserPanel
       user={mockUser}
+      onUserUpdate={vi.fn()}
       userId="user1"
       close={vi.fn()}
       setPanelWidth={vi.fn()}
@@ -510,20 +522,20 @@ test("should handle errors when updating entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -543,4 +555,89 @@ test("should handle errors when updating entitlements", async () => {
       severity: NotificationSeverity.NEGATIVE,
     }),
   ).toBeInTheDocument();
+});
+
+test("should change user details", async () => {
+  const mockUserUpdate = vi.fn();
+  let patchResponseBody: string | null = null;
+  let patchDone = false;
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  mockApiServer.events.on("request:start", async ({ request }) => {
+    const requestClone = request.clone();
+    if (
+      requestClone.method === "PUT" &&
+      requestClone.url.endsWith("/identities/user1")
+    ) {
+      patchResponseBody = await requestClone.text();
+      patchDone = true;
+    }
+  });
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      onUserUpdate={mockUserUpdate}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  const firstNameField = await screen.findByRole("textbox", {
+    name: UserPanelLabel.FIRST_NAME,
+  });
+  await userEvent.clear(firstNameField);
+  await userEvent.type(firstNameField, "First Name modified");
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  await waitFor(() => expect(patchDone).toBe(true));
+  expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
+    addedBy: "within",
+    email: "pfft@example.com",
+    firstName: "First Name modified",
+    id: "user1",
+    lastName: "good",
+    source: "noteworthy",
+  });
+  expect(
+    await findNotificationByText(
+      'User with email "pfft@example.com" was updated.',
+      {
+        appearance: "toast",
+        severity: NotificationSeverity.POSITIVE,
+      },
+    ),
+  ).toBeInTheDocument();
+  expect(mockUserUpdate).toHaveBeenCalledTimes(1);
+});
+
+test("should handle errors when updating user details", async () => {
+  const mockUserUpdate = vi.fn();
+  mockApiServer.use(getPutIdentitiesItemMockHandler400());
+  const {
+    result: { findNotificationByText },
+  } = renderComponent(
+    <EditUserPanel
+      user={mockUser}
+      onUserUpdate={mockUserUpdate}
+      userId="user1"
+      close={vi.fn()}
+      setPanelWidth={vi.fn()}
+    />,
+  );
+  await userEvent.type(
+    await screen.findByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
+    "First",
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "Update local user" }),
+  );
+  expect(
+    await findNotificationByText(Label.USER_ERROR, {
+      appearance: "toast",
+      severity: NotificationSeverity.NEGATIVE,
+    }),
+  ).toBeInTheDocument();
+  expect(mockUserUpdate).not.toHaveBeenCalled();
 });
