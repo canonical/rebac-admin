@@ -113,7 +113,7 @@
     "react-dom": "18.3.1",
     "react-router": "6.23.0",
     "react-router-dom": "6.23.0",
-    "sass": "1.77.0",
+    "sass": "1.80.6",
     "strict-event-emitter": "0.5.1",
     "stylelint": "16.5.0",
     "stylelint-config-standard-scss": "13.1.0",
