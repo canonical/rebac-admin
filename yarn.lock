@@ -1963,7 +1963,7 @@ __metadata:
     tsx: "npm:4.9.3"
     typescript: "npm:5.4.5"
     vanilla-framework: "npm:4.18.2"
-    vite: "npm:5.2.11"
+    vite: "npm:5.2.14"
     vite-plugin-dts: "npm:3.9.1"
     vite-plugin-node-polyfills: "npm:0.22.0"
     vite-tsconfig-paths: "npm:4.3.2"
@@ -13729,9 +13729,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.2.11":
-  version: 5.2.11
-  resolution: "vite@npm:5.2.11"
+"vite@npm:5.2.14":
+  version: 5.2.14
+  resolution: "vite@npm:5.2.14"
   dependencies:
     esbuild: "npm:^0.20.1"
     fsevents: "npm:~2.3.3"
@@ -13765,7 +13765,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/664b8d68e4f5152ae16bd2041af1bbaf11c43630ac461835bc31ff7d019913b33e465386e09f66dc1037d7aeefbb06939e0173787c063319bc2bd30c3b9ad8e4
+  checksum: 10c0/0ed7a8f8274d14bbd01be2ca5c7c539f915e75d884a97f6051cdf494997832bc02c7db9fc9c5ba8f057d5fece28a3bf215761815e6014e843abe2c38a9424fb7
   languageName: node
   linkType: hard
 
