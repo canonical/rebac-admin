@@ -13,7 +13,7 @@ export const usePanelPortal = (
   const portal = usePortal({
     ...options,
     bindTo: asidePanelId
-      ? document.getElementById(asidePanelId) ?? undefined
+      ? (document.getElementById(asidePanelId) ?? undefined)
       : undefined,
     closeOnEsc: false,
     closeOnOutsideClick: false,
