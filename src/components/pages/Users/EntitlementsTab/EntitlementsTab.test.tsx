@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetEntitlementsMockHandler,
   getGetEntitlementsResponseMock,
@@ -20,6 +21,7 @@ import {
 } from "api/resources/resources.msw";
 import { EntitlementsPanelFormLabel } from "components/EntitlementsPanelForm";
 import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelForm/Fields";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockEntityEntitlement } from "test/mocks/entitlements";
 import { mockEntity, mockResource } from "test/mocks/resources";
 import { renderComponent } from "test/utils";
@@ -33,6 +35,7 @@ const path = urls.users.user.entitlements(null);
 const url = urls.users.user.entitlements({ id: "user1" });
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetEntitlementsMockHandler(
     getGetEntitlementsResponseMock({
       data: [
@@ -150,13 +153,13 @@ test("should add entitlements", async () => {
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -227,4 +230,46 @@ test("should handle errors when updating entitlements", async () => {
   expect(
     await findNotificationByText(Label.PATCH_ENTITLEMENTS_ERROR),
   ).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ENTITLEMENTS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_ENTITLEMENTS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<EntitlementsTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("table");
+  expect(screen.queryByRole("form")).not.toBeInTheDocument();
+});
+
+test("hides the table if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ENTITLEMENTS,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.IDENTITY_ENTITLEMENTS,
+        methods: [CapabilityMethodsItem.PATCH],
+      },
+    ]),
+  );
+  renderComponent(<EntitlementsTab />, {
+    path,
+    url,
+  });
+  await screen.findByRole("form");
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

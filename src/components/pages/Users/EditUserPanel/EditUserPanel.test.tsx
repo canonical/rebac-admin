@@ -45,6 +45,7 @@ import { EntitlementPanelFormFieldsLabel } from "components/EntitlementsPanelFor
 import { GroupsPanelFormLabel } from "components/GroupsPanelForm";
 import { RolesPanelFormLabel } from "components/RolesPanelForm";
 import { UserPanelLabel } from "components/pages/Users/UserPanel";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { mockGroup } from "test/mocks/groups";
 import { renderComponent } from "test/utils";
 
@@ -69,6 +70,7 @@ const mockUser = {
 };
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getPatchIdentitiesItemGroupsMockHandler(),
   getPatchIdentitiesItemRolesMockHandler(),
   getPatchIdentitiesItemEntitlementsMockHandler(),
@@ -200,7 +202,7 @@ test("should add and remove groups", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -247,7 +249,7 @@ test("should handle errors when updating groups", async () => {
   await screen.findByText("2 groups");
   await userEvent.click(screen.getByRole("button", { name: /Edit groups/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: GroupsPanelFormLabel.SELECT,
     }),
   );
@@ -308,7 +310,7 @@ test("should add and remove roles", async () => {
     })[0],
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -361,7 +363,7 @@ test("should handle errors when updating roles", async () => {
   await screen.findByText("2 roles");
   await userEvent.click(screen.getByRole("button", { name: /Edit roles/ }));
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -425,20 +427,20 @@ test("should add and remove entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -520,20 +522,20 @@ test("should handle errors when updating entitlements", async () => {
     })[0],
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITY,
     }),
     "client",
   );
   await screen.findByText(EntitlementPanelFormFieldsLabel.SELECT_RESOURCE);
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.RESOURCE,
     }),
     "editors",
   );
   await userEvent.selectOptions(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: EntitlementsPanelFormLabel.ENTITLEMENT,
     }),
     "can_read",
@@ -581,7 +583,7 @@ test("should change user details", async () => {
       setPanelWidth={vi.fn()}
     />,
   );
-  const firstNameField = screen.getByRole("textbox", {
+  const firstNameField = await screen.findByRole("textbox", {
     name: UserPanelLabel.FIRST_NAME,
   });
   await userEvent.clear(firstNameField);
@@ -625,7 +627,7 @@ test("should handle errors when updating user details", async () => {
     />,
   );
   await userEvent.type(
-    screen.getByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
+    await screen.findByRole("textbox", { name: UserPanelLabel.FIRST_NAME }),
     "First",
   );
   await userEvent.click(

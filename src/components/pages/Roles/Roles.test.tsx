@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, delay } from "msw";
 import { setupServer } from "msw/node";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetRolesItemEntitlementsMockHandler,
   getGetRolesItemMockHandler,
@@ -155,7 +156,9 @@ test("displays the add panel", async () => {
       <Roles />
     </ReBACAdminContext.Provider>,
   );
-  await userEvent.click(screen.getByRole("button", { name: RolesLabel.ADD }));
+  await userEvent.click(
+    await screen.findByRole("button", { name: RolesLabel.ADD }),
+  );
   const panel = await screen.findByRole("complementary", {
     name: "Create role",
   });
@@ -198,4 +201,71 @@ test("displays the delete panel", async () => {
     name: "Delete 1 role",
   });
   expect(panel).toBeInTheDocument();
+});
+
+test("does not display the add button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(<Roles />);
+  expect(
+    screen.queryByRole("button", { name: RolesLabel.ADD }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the edit button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.ROLE,
+        methods: [CapabilityMethodsItem.GET, CapabilityMethodsItem.DELETE],
+      },
+    ]),
+  );
+  renderComponent(<Roles />);
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: EntityTableLabel.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  expect(
+    screen.queryByRole("button", { name: EntityTableLabel.EDIT }),
+  ).not.toBeInTheDocument();
+});
+
+test("does not display the delete button if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+      {
+        endpoint: Endpoint.ROLE,
+        methods: [CapabilityMethodsItem.GET, CapabilityMethodsItem.PUT],
+      },
+    ]),
+  );
+  renderComponent(<Roles />);
+  const rows = await screen.findAllByRole("row");
+  expect(within(rows[1]).getByRole("checkbox")).toBeDisabled();
+  const contextMenu = (
+    await screen.findAllByRole("button", {
+      name: EntityTableLabel.ACTION_MENU,
+    })
+  )[0];
+  await userEvent.click(contextMenu);
+  expect(
+    screen.queryByRole("button", { name: EntityTableLabel.DELETE }),
+  ).not.toBeInTheDocument();
 });

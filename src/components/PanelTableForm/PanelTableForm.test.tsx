@@ -45,6 +45,30 @@ test("displays the form", async () => {
   expect(screen.getByRole("form", { name: "Add form" })).toBeInTheDocument();
 });
 
+test("can not display the table", async () => {
+  renderComponent(
+    <PanelTableForm<EntityEntitlement>
+      addEntities={[
+        {
+          entitlement: "can_view",
+          entity_id: "admins",
+          entity_type: "group",
+        },
+      ]}
+      columns={COLUMNS}
+      entityName="entitlement"
+      existingEntities={[]}
+      form={<form aria-label="Add form"></form>}
+      generateCells={(entitlement) => ({ ...entitlement })}
+      removeEntities={[]}
+      setAddEntities={vi.fn()}
+      setRemoveEntities={vi.fn()}
+      showTable={false}
+    />,
+  );
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
+});
+
 test("displays the empty state", async () => {
   renderComponent(
     <PanelTableForm<EntityEntitlement>
@@ -455,6 +479,42 @@ test("can remove existing entities", async () => {
       entity_type: "collection",
     },
   ]);
+});
+
+test("can hide the remove action", async () => {
+  const existingEntities = [
+    {
+      entitlement: "can_edit",
+      entity_id: "moderators",
+      entity_type: "collection",
+    },
+    {
+      entitlement: "can_remove",
+      entity_id: "staff",
+      entity_type: "team",
+    },
+  ];
+  renderComponent(
+    <PanelTableForm<EntityEntitlement>
+      addEntities={[]}
+      existingEntities={existingEntities}
+      setAddEntities={vi.fn()}
+      removeEntities={[
+        {
+          entitlement: "can_remove",
+          entity_id: "staff",
+          entity_type: "team",
+        },
+      ]}
+      columns={COLUMNS}
+      entityName="entitlement"
+      form={<form></form>}
+      generateCells={(entitlement) => ({ ...entitlement })}
+    />,
+  );
+  expect(
+    screen.queryByRole("button", { name: "Remove entitlement" }),
+  ).not.toBeInTheDocument();
 });
 
 test("can display errors", async () => {

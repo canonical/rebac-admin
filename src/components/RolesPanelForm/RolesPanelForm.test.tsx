@@ -3,18 +3,22 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
+import { CapabilityMethodsItem } from "api/api.schemas";
 import {
   getGetRolesMockHandler,
   getGetRolesMockHandler400,
   getGetRolesResponseMock,
   getGetRolesResponseMock400,
 } from "api/roles/roles.msw";
+import { getGetActualCapabilitiesMock } from "test/mocks/capabilities";
 import { renderComponent } from "test/utils";
+import { Endpoint } from "types/api";
 
 import RolesPanelForm from "./RolesPanelForm";
 import { Label as RolesPanelFormLabel } from "./types";
 
 const mockApiServer = setupServer(
+  ...getGetActualCapabilitiesMock(),
   getGetRolesMockHandler(
     getGetRolesResponseMock({
       data: [
@@ -49,7 +53,7 @@ test("can add roles", async () => {
     />,
   );
   await userEvent.click(
-    screen.getByRole("combobox", {
+    await screen.findByRole("combobox", {
       name: RolesPanelFormLabel.SELECT,
     }),
   );
@@ -177,4 +181,37 @@ test("can display fetch errors", async () => {
     />,
   );
   expect(await findNotificationByText("Uh oh!")).toBeInTheDocument();
+});
+
+test("hides the form if there is no capability", async () => {
+  mockApiServer.use(
+    ...getGetActualCapabilitiesMock([
+      {
+        endpoint: Endpoint.ROLES,
+        methods: [CapabilityMethodsItem.GET],
+      },
+    ]),
+  );
+  renderComponent(
+    <RolesPanelForm
+      addRoles={[]}
+      setAddRoles={vi.fn()}
+      removeRoles={[]}
+      setRemoveRoles={vi.fn()}
+    />,
+  );
+  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+});
+
+test("can hide the table", async () => {
+  renderComponent(
+    <RolesPanelForm
+      addRoles={[]}
+      setAddRoles={vi.fn()}
+      removeRoles={[]}
+      setRemoveRoles={vi.fn()}
+      showTable={false}
+    />,
+  );
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });

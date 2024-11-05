@@ -12,6 +12,8 @@ import {
 } from "api/roles/roles";
 import ToastCard from "components/ToastCard";
 import { API_CONCURRENCY } from "consts";
+import { useCheckCapability, CapabilityAction } from "hooks/capabilities";
+import { Endpoint } from "types/api";
 
 import RolePanel from "../RolePanel";
 
@@ -35,11 +37,19 @@ const EditRolePanel = ({
 }: Props) => {
   const queryClient = useQueryClient();
   const {
+    hasCapability: canRelateEntitlements,
+    isFetching: isFetchingEntitlementCapability,
+  } = useCheckCapability(Endpoint.ROLE_ENTITLEMENTS, CapabilityAction.RELATE);
+  const {
     error: getRolesItemEntitlementsError,
     data: existingEntitlements,
     isFetching: isFetchingExisting,
     queryKey: entitlementsQueryKey,
-  } = useGetRolesItemEntitlements(roleId);
+  } = useGetRolesItemEntitlements(roleId, undefined, {
+    query: {
+      enabled: canRelateEntitlements,
+    },
+  });
   const {
     mutateAsync: patchRolesItemEntitlements,
     isPending: isPatchRolesItemEntitlementsPending,
@@ -52,7 +62,7 @@ const EditRolePanel = ({
       error={generateError(getRolesItemEntitlementsError)}
       existingEntitlements={existingEntitlements?.data.data}
       isEditing
-      isFetchingExisting={isFetchingExisting}
+      isFetchingExisting={isFetchingExisting || isFetchingEntitlementCapability}
       isSaving={isPatchRolesItemEntitlementsPending || isPutRolesItemPending}
       onSubmit={async (
         values,

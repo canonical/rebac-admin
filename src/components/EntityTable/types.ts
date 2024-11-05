@@ -16,8 +16,8 @@ export type Props<E extends TableEntity> = PropsWithSpread<
     checkboxesDisabled: boolean;
     entities?: E[];
     generateColumns: (entity: E) => Record<string, ReactNode>;
-    onDelete: (entity: E) => void;
-    onEdit: (entity: E) => void;
+    onDelete?: ((entity: E) => void) | null;
+    onEdit?: ((entity: E) => void) | null;
     pagination: PaginationParams;
     selected: EntitiesSelect;
   },

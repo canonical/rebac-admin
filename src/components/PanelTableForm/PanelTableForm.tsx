@@ -25,10 +25,10 @@ const generateRow = <E,>(
   generateCells: Props<E>["generateCells"],
   entityName: string,
   entity: E,
-  onRemove: (entity: E) => void,
+  onRemove?: ((entity: E) => void) | null,
 ) => ({
   ...generateCells(entity),
-  actions: (
+  actions: onRemove ? (
     <Button
       appearance="base"
       className="u-no-margin--bottom is-small"
@@ -37,7 +37,7 @@ const generateRow = <E,>(
     >
       <Icon name="delete">Remove {entityName}</Icon>
     </Button>
-  ),
+  ) : null,
 });
 
 // Search all string values in the entity for the substring.
@@ -60,6 +60,7 @@ const PanelTableForm = <E,>({
   removeEntities,
   setAddEntities,
   setRemoveEntities,
+  showTable = true,
   isFetching,
 }: Props<E>) => {
   const [search, setSearch] = useState("");
@@ -75,10 +76,18 @@ const PanelTableForm = <E,>({
       addEntities.reduce<RowData[]>((filtered, newEntity) => {
         if (!search || entityMatches(newEntity, search)) {
           filtered.push(
-            generateRow(generateCells, entityName, newEntity, (newEntity) =>
-              setAddEntities(
-                addEntities.filter((entity) => !isEqual(entity, newEntity)),
-              ),
+            generateRow(
+              generateCells,
+              entityName,
+              newEntity,
+              setAddEntities
+                ? (newEntity) =>
+                    setAddEntities(
+                      addEntities.filter(
+                        (entity) => !isEqual(entity, newEntity),
+                      ),
+                    )
+                : null,
             ),
           );
         }
@@ -95,8 +104,10 @@ const PanelTableForm = <E,>({
               generateCells,
               entityName,
               existingEntity,
-              (existingEntity) =>
-                setRemoveEntities([...removeEntities, existingEntity]),
+              setRemoveEntities
+                ? (existingEntity) =>
+                    setRemoveEntities([...removeEntities, existingEntity])
+                : null,
             ),
           );
         }
@@ -134,58 +145,64 @@ const PanelTableForm = <E,>({
         </Row>
       ) : (
         <>
-          <Row>
-            <Col size={12}>{form}</Col>
-          </Row>
-          <Row>
-            <Col size={12}>
-              <SearchBox
-                externallyControlled
-                onChange={setSearch}
-                value={search}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col size={12}>
-              {tableData.length || search ? (
-                <ModularTable
-                  getCellProps={({ column }) => {
-                    switch (column.id) {
-                      case "actions":
-                        return {
-                          className: "u-align--right",
-                        };
-                      default:
-                        return {};
-                    }
-                  }}
-                  getHeaderProps={({ id }) => {
-                    switch (id) {
-                      case "actions":
-                        return {
-                          className: "u-align--right",
-                        };
-                      default:
-                        return {};
-                    }
-                  }}
-                  columns={tableColumns}
-                  data={tableData}
-                  emptyMsg={
-                    search
-                      ? `No ${entityName}s match the search criteria.`
-                      : undefined
-                  }
-                />
-              ) : (
-                <NoEntityCard
-                  title={`No ${entityName}s`}
-                  message={`Add ${entityName}s using the form above.`}
-                />
-              )}
-            </Col>
-          </Row>
+          {form ? (
+            <Row>
+              <Col size={12}>{form}</Col>
+            </Row>
+          ) : null}
+          {showTable ? (
+            <>
+              <Row>
+                <Col size={12}>
+                  <SearchBox
+                    externallyControlled
+                    onChange={setSearch}
+                    value={search}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col size={12}>
+                  {tableData.length || search ? (
+                    <ModularTable
+                      getCellProps={({ column }) => {
+                        switch (column.id) {
+                          case "actions":
+                            return {
+                              className: "u-align--right",
+                            };
+                          default:
+                            return {};
+                        }
+                      }}
+                      getHeaderProps={({ id }) => {
+                        switch (id) {
+                          case "actions":
+                            return {
+                              className: "u-align--right",
+                            };
+                          default:
+                            return {};
+                        }
+                      }}
+                      columns={tableColumns}
+                      data={tableData}
+                      emptyMsg={
+                        search
+                          ? `No ${entityName}s match the search criteria.`
+                          : undefined
+                      }
+                    />
+                  ) : (
+                    <NoEntityCard
+                      title={`No ${entityName}s`}
+                      message={`Add ${entityName}s using the form above.`}
+                    />
+                  )}
+                </Col>
+              </Row>
+            </>
+          ) : null}
         </>
       )}
     </>

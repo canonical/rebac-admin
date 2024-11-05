@@ -22,6 +22,7 @@ import BreadcrumbNavigation from "components/BreadcrumbNavigation";
 import Content from "components/Content";
 import ErrorNotification from "components/ErrorNotification";
 import { usePanel } from "hooks";
+import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
 import { Endpoint } from "types/api";
 import urls from "urls";
 
@@ -38,6 +39,25 @@ const isActive = (matches: UIMatch[], url: string) =>
 
 const User = () => {
   const queryClient = useQueryClient();
+  const { hasCapability: canUpdateUser } = useCheckCapability(
+    Endpoint.IDENTITY,
+    CapabilityAction.UPDATE,
+  );
+  const { hasCapability: displayEntitlements } = useCheckCapability(
+    Endpoint.IDENTITY_ENTITLEMENTS,
+    [CapabilityAction.READ, CapabilityAction.RELATE],
+    false,
+  );
+  const { hasCapability: displayRoles } = useCheckCapability(
+    Endpoint.IDENTITY_ROLES,
+    [CapabilityAction.READ, CapabilityAction.RELATE],
+    false,
+  );
+  const { hasCapability: displayGroups } = useCheckCapability(
+    Endpoint.IDENTITY_GROUPS,
+    [CapabilityAction.READ, CapabilityAction.RELATE],
+    false,
+  );
   const { id: userId } = useParams<{ id: string }>();
   const { data, isFetching, isError, error, refetch, queryKey } =
     useGetIdentitiesItem(userId ?? "");
@@ -65,23 +85,35 @@ const User = () => {
   const tabs = userId
     ? [
         {
-          label: "Summary",
+          label: Label.TAB_SUMMARY,
           to: urls.users.user.index({ id: userId }),
         },
+        ...(displayGroups
+          ? [
+              {
+                label: Label.TAB_GROUPS,
+                to: urls.users.user.groups({ id: userId }),
+              },
+            ]
+          : []),
+        ...(displayRoles
+          ? [
+              {
+                label: Label.TAB_ROLES,
+                to: urls.users.user.roles({ id: userId }),
+              },
+            ]
+          : []),
+        ...(displayEntitlements
+          ? [
+              {
+                label: Label.TAB_ENTITLEMENTS,
+                to: urls.users.user.entitlements({ id: userId }),
+              },
+            ]
+          : []),
         {
-          label: "Groups",
-          to: urls.users.user.groups({ id: userId }),
-        },
-        {
-          label: "Roles",
-          to: urls.users.user.roles({ id: userId }),
-        },
-        {
-          label: "Entitlements",
-          to: urls.users.user.entitlements({ id: userId }),
-        },
-        {
-          label: "Account management",
+          label: Label.TAB_ACCOUNT_MANAGEMENT,
           to: urls.users.user.accountManagement({ id: userId }),
         },
       ]
@@ -105,12 +137,14 @@ const User = () => {
   return (
     <Content
       controls={
-        <Button
-          appearance={ButtonAppearance.DEFAULT}
-          onClick={() => openPanel({ editUser: user })}
-        >
-          <Icon name="edit" /> {Label.EDIT}
-        </Button>
+        canUpdateUser ? (
+          <Button
+            appearance={ButtonAppearance.DEFAULT}
+            onClick={() => openPanel({ editUser: user })}
+          >
+            <Icon name="edit" /> {Label.EDIT}
+          </Button>
+        ) : null
       }
       title={
         <BreadcrumbNavigation
@@ -129,7 +163,7 @@ const User = () => {
           }
         />
       }
-      endpoint={Endpoint.IDENTITIES}
+      endpoint={Endpoint.IDENTITY}
     >
       <Tabs
         links={tabs.map(({ label, to }) => ({

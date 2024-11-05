@@ -106,6 +106,78 @@ describe("useCheckCapability", () => {
     expect(isFetching).toBe(false);
   });
 
+  test("has capability when multiple actions are all required", async () => {
+    mockApiServer.use(
+      ...getGetActualCapabilitiesMock([
+        {
+          endpoint: Endpoint.META,
+          methods: [CapabilityMethodsItem.GET, CapabilityMethodsItem.POST],
+        },
+      ]),
+    );
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(
+        Endpoint.META,
+        [CapabilityAction.READ, CapabilityAction.CREATE],
+        true,
+      ),
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    expect(result.current.hasCapability).toBe(true);
+  });
+
+  test("handles no capability when multiple actions are all required", async () => {
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(
+        Endpoint.META,
+        [CapabilityAction.READ, CapabilityAction.CREATE],
+        true,
+      ),
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    expect(result.current.hasCapability).toBe(false);
+  });
+
+  test("has capability when multiple actions and some required", async () => {
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(
+        Endpoint.META,
+        [CapabilityAction.READ, CapabilityAction.CREATE],
+        false,
+      ),
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    expect(result.current.hasCapability).toBe(true);
+  });
+
+  test("handles no capability when multiple actions and some required", async () => {
+    mockApiServer.use(
+      ...getGetActualCapabilitiesMock([
+        {
+          endpoint: Endpoint.META,
+          methods: [],
+        },
+      ]),
+    );
+    const { result } = renderWrappedHook(() =>
+      useCheckCapability(
+        Endpoint.META,
+        [CapabilityAction.READ, CapabilityAction.CREATE],
+        false,
+      ),
+    );
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false);
+    });
+    expect(result.current.hasCapability).toBe(false);
+  });
+
   test("should return error", async () => {
     mockApiServer.use(getGetCapabilitiesErrorMockHandler());
     const { result } = renderWrappedHook(() =>
