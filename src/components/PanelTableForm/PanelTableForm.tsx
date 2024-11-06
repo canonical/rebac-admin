@@ -16,7 +16,7 @@ import type { Column } from "react-table";
 import NoEntityCard from "components/NoEntityCard";
 import { pluralize } from "utils";
 
-import type { RowData, type Props } from "./types";
+import type { RowData, Props } from "./types";
 
 import "./_panel-table-form.scss";
 
