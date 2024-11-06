@@ -109,6 +109,8 @@ test("paginates", async () => {
     }
   });
   renderComponent(<Groups />);
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   await userEvent.click(
     await screen.findByRole("button", {
       name: EntityTablePaginationLabel.NEXT_PAGE,
@@ -170,6 +172,8 @@ test("displays the edit panel", async () => {
       <Groups />
     </ReBACAdminContext.Provider>,
   );
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   const contextMenu = (
     await screen.findAllByRole("button", {
       name: EntityTableLabel.ACTION_MENU,
@@ -192,8 +196,9 @@ test("displays the delete panel", async () => {
       <Groups />
     </ReBACAdminContext.Provider>,
   );
-  const rows = await screen.findAllByRole("row");
-  await userEvent.click(within(rows[1]).getByRole("checkbox"));
+  await screen.findAllByRole("row");
+  const row = await screen.findByRole("row", { name: /global/ });
+  await userEvent.click(within(row).getByRole("checkbox"));
   await userEvent.click(screen.getByRole("button", { name: Label.DELETE }));
   const panel = await screen.findByRole("dialog", {
     name: "Delete 1 group",
