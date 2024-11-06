@@ -1,8 +1,7 @@
 import { act, render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
-import { Toaster } from "react-hot-toast";
-import reactHotToast from "react-hot-toast";
+import reactHotToast, { Toaster } from "react-hot-toast";
 import { vi } from "vitest";
 
 import ToastCard from "./ToastCard";

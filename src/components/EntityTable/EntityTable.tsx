@@ -8,8 +8,7 @@ import {
 import { useMemo } from "react";
 
 import EntityTablePagination from "./EntityTablePagination";
-import type { TableEntity } from "./types";
-import { Label, type Props } from "./types";
+import type { TableEntity, Label, type Props } from "./types";
 
 const getProps = (id: string) => {
   switch (id) {

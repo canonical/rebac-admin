@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { setupServer } from "msw/node";
@@ -121,9 +121,7 @@ test("should select the correct resource", async () => {
     }),
     "mock-entity-type-1",
   );
-  await waitFor(() =>
-    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
-  );
+  await screen.findByText(Label.LOADING_RESOURCES);
   expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
   const resourceSelect = screen.getByRole("combobox", {
     name: EntitlementsPanelFormLabel.RESOURCE,
@@ -150,9 +148,7 @@ test("should select the correct entitlement type", async () => {
     }),
     "mock-entity-type-1",
   );
-  await waitFor(() =>
-    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
-  );
+  await screen.findByText(Label.LOADING_RESOURCES);
   expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
   await userEvent.selectOptions(
     screen.getByRole("combobox", {
@@ -197,9 +193,7 @@ test("should reset resource and entitlement when the resource type changes", asy
     name: EntitlementsPanelFormLabel.ENTITY,
   });
   await userEvent.selectOptions(resourceTypeSelect, "mock-entity-type-1");
-  await waitFor(() =>
-    expect(screen.getByText(Label.LOADING_RESOURCES)).toBeInTheDocument(),
-  );
+  await screen.findByText(Label.LOADING_RESOURCES);
   expect(await screen.findByText(Label.SELECT_RESOURCE)).toBeInTheDocument();
   const resourceSelect = screen.getByRole("combobox", {
     name: EntitlementsPanelFormLabel.RESOURCE,

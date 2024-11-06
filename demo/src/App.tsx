@@ -63,30 +63,37 @@ const App = () => {
             <AccessGovernanceLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="AccessGovernanceLink"
             />,
             <AuthenticationLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="AuthenticationLink"
             />,
             <EntitlementsLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="EntitlementsLink"
             />,
             <GroupsLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="GroupsLink"
             />,
             <ResourcesLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="ResourcesLink"
             />,
             <RolesLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="RolesLink"
             />,
             <UsersLink
               className="p-side-navigation__link"
               baseURL={rebacAdminBaseURL}
+              key="UsersLink"
             />,
           ],
         },

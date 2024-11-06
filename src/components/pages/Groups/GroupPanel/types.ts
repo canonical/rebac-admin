@@ -1,6 +1,4 @@
-import type { Group, Role } from "api/api.schemas";
-import type { EntityEntitlement } from "api/api.schemas";
-import type { Identity } from "api/api.schemas";
+import type { Group, Role, EntityEntitlement, Identity } from "api/api.schemas";
 import type { Props as SubFormPanelProps } from "components/SubFormPanel";
 import type { SetPanelWidth } from "hooks/usePanel";
 

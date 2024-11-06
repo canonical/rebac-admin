@@ -1,8 +1,9 @@
 import isEqual from "lodash/isEqual";
 import { useCallback, useEffect, useState } from "react";
 
-import type { PaginationSizeParameter, Response } from "api/api.schemas";
 import type {
+  PaginationSizeParameter,
+  Response,
   PaginationNextTokenParameter,
   PaginationPageParameter,
 } from "api/api.schemas";
