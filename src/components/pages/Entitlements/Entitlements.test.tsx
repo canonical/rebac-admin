@@ -84,6 +84,8 @@ test("search entitlements", async () => {
     }
   });
   renderComponent(<Entitlements />);
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   await userEvent.type(screen.getByRole("searchbox"), "entitlement1{enter}");
   await waitFor(() => expect(getDone).toBeTruthy());
 });
@@ -101,6 +103,8 @@ test("paginates", async () => {
     }
   });
   renderComponent(<Entitlements />);
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   await userEvent.click(
     await screen.findByRole("button", {
       name: EntityTablePaginationLabel.NEXT_PAGE,

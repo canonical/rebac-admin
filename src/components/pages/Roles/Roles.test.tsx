@@ -105,7 +105,8 @@ test("paginates", async () => {
     }
   });
   renderComponent(<Roles />);
-
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   await userEvent.click(
     await screen.findByRole("button", {
       name: EntityTablePaginationLabel.NEXT_PAGE,
@@ -169,6 +170,8 @@ test("displays the edit panel", async () => {
       <Roles />
     </ReBACAdminContext.Provider>,
   );
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   const contextMenu = (
     await screen.findAllByRole("button", {
       name: EntityTableLabel.ACTION_MENU,
@@ -176,7 +179,7 @@ test("displays the edit panel", async () => {
   )[0];
   await userEvent.click(contextMenu);
   await userEvent.click(
-    screen.getByRole("button", { name: EntityTableLabel.EDIT }),
+    await screen.findByRole("button", { name: EntityTableLabel.EDIT }),
   );
   const panel = await screen.findByRole("complementary", {
     name: "Edit role",
@@ -191,8 +194,9 @@ test("displays the delete panel", async () => {
       <Roles />
     </ReBACAdminContext.Provider>,
   );
-  const rows = await screen.findAllByRole("row");
-  await userEvent.click(within(rows[1]).getByRole("checkbox"));
+  await screen.findAllByRole("row");
+  const row = await screen.findByRole("row", { name: /global/ });
+  await userEvent.click(within(row).getByRole("checkbox"));
   await userEvent.click(screen.getByRole("button", { name: Label.DELETE }));
   const panel = await screen.findByRole("dialog", {
     name: "Delete 1 role",
