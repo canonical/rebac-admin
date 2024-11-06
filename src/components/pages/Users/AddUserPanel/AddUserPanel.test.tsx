@@ -209,7 +209,7 @@ test("should add groups", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe('{"patches":[{"group":"group1","op":"add"}]}');
@@ -245,7 +245,7 @@ test("should handle errors when adding groups", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   expect(
     await findNotificationByText(Label.GROUPS_ERROR, { appearance: "toast" }),
@@ -288,7 +288,7 @@ test("should add roles", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
@@ -324,7 +324,7 @@ test("should handle errors when adding roles", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   expect(
     await findNotificationByText(Label.ROLES_ERROR, { appearance: "toast" }),
@@ -382,7 +382,7 @@ test("should add entitlements", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   await waitFor(() => expect(patchDone).toBeTruthy());
   expect(patchResponseBody).toBe(
@@ -435,7 +435,7 @@ test("should handle errors when adding entitlements", async () => {
     screen.getAllByRole("button", { name: "Create local user" })[0],
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Create local user" }),
+    await screen.findByRole("button", { name: "Create local user" }),
   );
   expect(
     await findNotificationByText(Label.ENTITLEMENTS_ERROR, {

@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { render, renderHook } from "@testing-library/react";
-import React from "react";
+import type React from "react";
 
 import ComponentProviders from "./ComponentProviders";
 import type { ComponentProps } from "./ComponentProviders";

@@ -140,6 +140,7 @@ const UserPanel = ({
         isFetchingRoleCapability ||
         isFetchingEntitlementCapability
       }
+      isSaving={isSaving}
       onSubmit={async (values) =>
         await onSubmit(
           values,

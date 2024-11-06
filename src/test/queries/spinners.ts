@@ -4,7 +4,7 @@ export const queryAllSpinnersByLabel = (
   container: HTMLElement,
   label: string,
 ) => {
-  let labels = within(container).queryAllByText(label);
+  const labels = within(container).queryAllByText(label);
   const spinners: HTMLElement[] = [];
   labels.forEach((text) => {
     const spinner: HTMLElement | null = text?.closest('[role="alert"]') ?? null;
