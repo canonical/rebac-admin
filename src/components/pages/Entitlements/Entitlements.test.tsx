@@ -101,6 +101,8 @@ test("paginates", async () => {
     }
   });
   renderComponent(<Entitlements />);
+  // Wait for rows to appear.
+  await screen.findAllByRole("row");
   await userEvent.click(
     await screen.findByRole("button", {
       name: EntityTablePaginationLabel.NEXT_PAGE,
