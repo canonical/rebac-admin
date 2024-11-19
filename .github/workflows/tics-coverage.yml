@@ -36,4 +36,5 @@ jobs:
           export TICSAUTHTOKEN=${{ secrets.TICSAUTHTOKEN }}
           curl --silent --show-error "https://canonical.tiobe.com/tiobeweb/TICS/api/public/v1/fapi/installtics/Script?cfg=default&platform=linux&url=https://canonical.tiobe.com/tiobeweb/TICS/" > install_tics.sh
           . ./install_tics.sh
-          TICSQServer -project rebac-admin -tmpdir /tmp/tics -branchdir .
+          cp .github/workflows/tiobe_archive.txt /tmp/
+          TICSQServer -project rebac-admin -tmpdir /tmp/tics -archivefile /tmp/tiobe_archive.txt -branchdir .
