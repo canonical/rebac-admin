@@ -506,7 +506,7 @@ __metadata:
     tsx: "npm:4.19.2"
     typescript: "npm:5.6.3"
     typescript-eslint: "npm:8.13.0"
-    vanilla-framework: "npm:4.18.2"
+    vanilla-framework: "npm:4.18.3"
     vite: "npm:5.4.10"
     vite-plugin-dts: "npm:4.3.0"
     vite-plugin-node-polyfills: "npm:0.22.0"
@@ -12723,12 +12723,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.18.2":
-  version: 4.18.2
-  resolution: "vanilla-framework@npm:4.18.2"
+"vanilla-framework@npm:4.18.3":
+  version: 4.18.3
+  resolution: "vanilla-framework@npm:4.18.3"
   peerDependencies:
     sass: ^1.79.0
-  checksum: 10c0/b8d1cd0e97d03265066b3ccea26324888a437cc1d373436b83403cff7699659bf29e233802543be680763d0d026919a1f66bd0b05f46ec52ea948de1a6bfd3af
+  checksum: 10c0/b6aef1cfe4d908d9f690660aaf15057dcc23fa64ec833b8a131a50fbd70809d5ecd43990224336c77cb21f116ef449b1be8517f4bff7099cfb58615336c8250b
   languageName: node
   linkType: hard
 
