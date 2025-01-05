@@ -1,0 +1,9 @@
+'DIR' => 
+  "src/"
+
+'TESTCODE_FILE' =>
+  "/src/test/" || "/src/[^/]+/.+\.test\..+"
+
+
+'GENERATED_FILE' =>
+  "/src/api/"
