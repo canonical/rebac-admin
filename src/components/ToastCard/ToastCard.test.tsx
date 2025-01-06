@@ -10,6 +10,7 @@ import type { Props } from "./types";
 describe("Toast Card", () => {
   const toastInstanceExample: Props["toastInstance"] = {
     createdAt: 1623162274616,
+    dismissed: false,
     duration: 5000,
     id: "2",
     message: "message",
