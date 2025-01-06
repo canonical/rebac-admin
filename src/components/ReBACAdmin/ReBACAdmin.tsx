@@ -8,7 +8,7 @@ import type { AxiosInstance } from "axios";
 import type { LogLevelDesc } from "loglevel";
 import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
 import { createInstance, setInstance } from "api-utils/mutator/custom-instance";
 import Entitlements from "components/pages/Entitlements";

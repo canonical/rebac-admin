@@ -5,7 +5,7 @@ import {
   ICONS,
   Notification,
 } from "@canonical/react-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 
 import type { Identity } from "api/api.schemas";
 import { CapabilityAction, useCheckCapability } from "hooks/capabilities";

@@ -10,8 +10,8 @@ import {
   Row,
 } from "@canonical/react-components";
 import { useState } from "react";
-import type { NavLinkProps } from "react-router-dom";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import type { NavLinkProps } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 
 import {
   AccessGovernanceLink,

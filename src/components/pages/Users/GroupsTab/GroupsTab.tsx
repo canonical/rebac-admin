@@ -5,7 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import { IdentityGroupsPatchItemOp } from "api/api.schemas";
 import type { Group } from "api/api.schemas";

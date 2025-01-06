@@ -7,14 +7,8 @@ import {
 } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { UIMatch } from "react-router-dom";
-import {
-  Link,
-  Outlet,
-  useMatches,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import type { UIMatch } from "react-router";
+import { Link, Outlet, useMatches, useNavigate, useParams } from "react-router";
 
 import type { Identity } from "api/api.schemas";
 import { useGetIdentitiesItem } from "api/identities/identities";
