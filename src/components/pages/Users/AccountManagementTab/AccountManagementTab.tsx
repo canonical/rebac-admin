@@ -31,7 +31,7 @@ const AccountManagementTab = () => {
       identities={identities}
       close={closeModal}
       onDeleted={() => {
-        navigate(`../..${urls.users.index}`);
+        void navigate(`../..${urls.users.index}`);
       }}
     />
   ));

@@ -149,7 +149,7 @@ const User = () => {
       title={
         <BreadcrumbNavigation
           backTitle="Users"
-          onBack={() => navigate(`..${urls.users.index}`)}
+          onBack={() => void navigate(`..${urls.users.index}`)}
           title={
             <>
               {user?.email}{" "}
