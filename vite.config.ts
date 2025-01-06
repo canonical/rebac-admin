@@ -18,13 +18,12 @@ export default defineConfig(({ mode }) => {
         fileName: "rebac-admin",
       },
       rollupOptions: {
-        external: ["react", "react-dom", "react-router-dom"],
+        external: ["react", "react-dom"],
         output: {
           assetFileNames: "rebac-admin.[ext]",
           globals: {
             react: "React",
             "react-dom": "ReactDOM",
-            "react-router-dom": "_ReactRouterDOM",
           },
         },
       },

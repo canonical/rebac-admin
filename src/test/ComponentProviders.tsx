@@ -1,12 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type PropsWithChildren, useEffect } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
-import type { Location, RouteObject } from "react-router-dom";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useLocation,
-} from "react-router-dom";
+import type { Location, RouteObject } from "react-router";
+import { createBrowserRouter, RouterProvider, useLocation } from "react-router";
 
 export type ComponentProps = {
   path: string;

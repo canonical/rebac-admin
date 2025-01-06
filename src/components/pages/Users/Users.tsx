@@ -1,7 +1,7 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type JSX } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import type { Identity } from "api/api.schemas";
 import { useGetIdentities } from "api/identities/identities";

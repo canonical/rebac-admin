@@ -1,7 +1,7 @@
 import { Panel } from "@canonical/react-components";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Link, RouterProvider, createBrowserRouter } from "react-router";
 
 import ReBACAdmin from "components/ReBACAdmin";
 import { logger } from "utils";

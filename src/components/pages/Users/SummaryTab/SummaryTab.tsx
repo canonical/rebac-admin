@@ -1,5 +1,5 @@
 import { Col, Row } from "@canonical/react-components";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import { useGetIdentitiesItem } from "api/identities/identities";
 import ListCard from "components/ListCard";

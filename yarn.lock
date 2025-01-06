@@ -497,7 +497,6 @@ __metadata:
     react-dom: "npm:18.3.1"
     react-hot-toast: "npm:2.5.1"
     react-router: "npm:7.1.1"
-    react-router-dom: "npm:7.1.1"
     sass: "npm:1.83.1"
     strict-event-emitter: "npm:0.5.1"
     stylelint: "npm:16.12.0"
@@ -522,7 +521,6 @@ __metadata:
     formik: ^2.4.5
     react: ^18.0.0
     react-dom: ^18.0.0
-    react-router-dom: ^6.18.0 || ^7.0.0
     vanilla-framework: ^4.0.0
     yup: ^1.4.0
   languageName: unknown
@@ -10961,18 +10959,6 @@ __metadata:
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
   checksum: 10c0/875b72ef56b147a131e33f2abd6ec059d1989854b3ff438898e4f9310bfcc73acff709445b7ba843318a953cb9424bcc2c05af2b3d80011cee28f25aef3e2ebb
-  languageName: node
-  linkType: hard
-
-"react-router-dom@npm:7.1.1":
-  version: 7.1.1
-  resolution: "react-router-dom@npm:7.1.1"
-  dependencies:
-    react-router: "npm:7.1.1"
-  peerDependencies:
-    react: ">=18"
-    react-dom: ">=18"
-  checksum: 10c0/2dc5b231dd21aab21378c615b1e373149007d173e90db984e6f708b5ee4b28923b3cf88ce7d6f727be927829b37ba37c01436f9f7abeb84ba3d1bfc9ecd4bc72
   languageName: node
   linkType: hard
 
