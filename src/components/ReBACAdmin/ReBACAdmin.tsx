@@ -37,8 +37,8 @@ export type Props = {
   logLevel?: LogLevelDesc;
 } & ExclusiveProps<
   {
-    // The absolute API base URL.
-    apiURL: `${"http" | "/"}${string}`;
+    // The API base URL.
+    apiURL: string;
   },
   {
     // An Axios instance to be used by all requests.
