@@ -89,6 +89,7 @@ your host's package.json and link to the modules inside the rebac-admin repo:
     "@canonical/rebac-admin": "portal:/absolute/path/to/rebac-admin",
     "react": "portal:/absolute/path/to/rebac-admin/node_modules/react",
     "react-dom": "portal:/absolute/path/to/rebac-admin/node_modules/react-dom",
+    "react-router": "portal:/absolute/path/to/rebac-admin/node_modules/react-router",
     "@types/react": "portal:/absolute/path/to/rebac-admin/node_modules/@types/react",
     "@types/react-dom": "portal:/absolute/path/to/rebac-admin/node_modules/@types/react-dom"
   }
