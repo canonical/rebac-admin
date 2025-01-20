@@ -22,7 +22,7 @@ yarn add @canonical/rebac-admin
 You will also need the following peer dependencies if you don't have them already:
 
 ```bash
-yarn add @canonical/react-components @types/react @types/react-dom react react-dom vanilla-framework axios @tanstack/react-query formik yup
+yarn add @canonical/react-components @types/react @types/react-dom react react-dom react-router vanilla-framework axios @tanstack/react-query formik yup
 ```
 
 ## Displaying the component
