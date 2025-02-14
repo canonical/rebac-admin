@@ -48,12 +48,12 @@
   "peerDependencies": {
     "@canonical/react-components": "^2.0.0",
     "@tanstack/react-query": "^5.24.7",
-    "@types/react": "^18.0.0 || ^19.0.0",
-    "@types/react-dom": "^18.0.0 || ^19.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "axios": "^1.6.7",
     "formik": "^2.4.5",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router": "^7.1.1",
     "vanilla-framework": "^4.0.0",
     "yup": "^1.4.0"
