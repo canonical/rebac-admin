@@ -134,7 +134,7 @@
     "vite-plugin-dts": "4.4.0",
     "vite-plugin-node-polyfills": "0.22.0",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "2.1.8",
+    "vitest": "2.1.9",
     "yup": "1.6.1"
   },
   "npmpackagejsonlint": {
