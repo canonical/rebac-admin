@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => {
     ],
     publicDir: "demo/public",
     server: {
+      allowedHosts: true,
       host: "0.0.0.0",
       port: Number(env.PORT),
       proxy: {
@@ -69,9 +70,7 @@ export default defineConfig(({ mode }) => {
         include: ["src/**/*.[jt]s?(x)"],
         reporter: ["text", "json-summary", "json", "cobertura"],
         reportOnFailure: true,
-        thresholds: {
-          lines: 95,
-        },
+        thresholds: { lines: 95 },
       },
       environment: "happy-dom",
       globals: true,

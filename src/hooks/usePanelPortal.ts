@@ -1,6 +1,6 @@
+import type { UsePortalOptions } from "@canonical/react-components";
+import { usePortal } from "@canonical/react-components";
 import { useContext, useEffect } from "react";
-import type { UsePortalOptions } from "react-useportal";
-import usePortal from "react-useportal";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 
@@ -10,11 +10,10 @@ export const usePanelPortal = (
   options?: UsePortalOptions,
 ) => {
   const { asidePanelId } = useContext(ReBACAdminContext);
+  const asideNode = asidePanelId ? document.getElementById(asidePanelId) : null;
   const portal = usePortal({
     ...options,
-    bindTo: asidePanelId
-      ? (document.getElementById(asidePanelId) ?? undefined)
-      : undefined,
+    bindTo: asideNode ? { current: asideNode } : undefined,
     closeOnEsc: false,
     closeOnOutsideClick: false,
   });
