@@ -1,4 +1,4 @@
-import isEqual from "lodash/isEqual";
+import fastDeepEqual from "fast-deep-equal";
 import { useCallback, useEffect, useState } from "react";
 
 import type {
@@ -9,12 +9,8 @@ import type {
 } from "api/api.schemas";
 
 type PageData = (
-  | {
-      nextToken: PaginationNextTokenParameter;
-    }
-  | {
-      page: PaginationPageParameter;
-    }
+  | { nextToken: PaginationNextTokenParameter }
+  | { page: PaginationPageParameter }
   | {}
 ) & { size: PaginationSizeParameter };
 
@@ -33,17 +29,15 @@ export type PaginationParams = {
 };
 
 export const usePagination = (): PaginationParams => {
-  const [pageData, setPageData] = useState<PageData>({
-    size: PAGE_SIZE,
-  });
+  const [pageData, setPageData] = useState<PageData>({ size: PAGE_SIZE });
   const [response, setResponse] = useState<Response>();
   const updateResponse = useCallback(
     (next?: Response) => {
       if (
         next &&
         (!response ||
-          !isEqual(response._meta, next?._meta) ||
-          !isEqual(response._links, next?._links))
+          !fastDeepEqual(response._meta, next?._meta) ||
+          !fastDeepEqual(response._links, next?._links))
       ) {
         setResponse(next);
       }
@@ -56,10 +50,7 @@ export const usePagination = (): PaginationParams => {
     }
     const current = response._meta.page ?? 0;
     if ("page" in response._meta) {
-      setPageData({
-        ...pageData,
-        page: current + 1,
-      });
+      setPageData({ ...pageData, page: current + 1 });
     } else {
       const parts = response._links.next.href.split("?");
       if (parts.length > 1) {
@@ -77,18 +68,12 @@ export const usePagination = (): PaginationParams => {
     }
     const current = response._meta.page ?? 0;
     if ("page" in response._meta && current > 0) {
-      setPageData({
-        ...pageData,
-        page: current - 1,
-      });
+      setPageData({ ...pageData, page: current - 1 });
     }
   }, [response, pageData]);
   useEffect(() => {
     if (response?._meta && "page" in response._meta && !("page" in pageData)) {
-      setPageData({
-        ...pageData,
-        page: response._meta.page,
-      });
+      setPageData({ ...pageData, page: response._meta.page });
     }
   }, [pageData, response]);
   return {
@@ -106,10 +91,7 @@ export const usePagination = (): PaginationParams => {
     resetPage: () => setPageData({ size: pageData.size }),
     setResponse: updateResponse,
     setSize: (size) => {
-      setPageData({
-        size,
-        ...("page" in pageData ? { page: 0 } : {}),
-      });
+      setPageData({ size, ...("page" in pageData ? { page: 0 } : {}) });
     },
   };
 };
