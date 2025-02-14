@@ -1,6 +1,6 @@
 import type { MultiSelectItem } from "@canonical/react-components";
 import { MultiSelect, SearchBox, Spinner } from "@canonical/react-components";
-import isEqual from "lodash/isEqual";
+import fastDeepEqual from "fast-deep-equal";
 
 import { pluralize } from "utils";
 
@@ -42,7 +42,7 @@ const MultiSelectField = <E,>({
             .filter(
               (entity) =>
                 !removeEntities.find((removeEntity) =>
-                  isEqual(entity, removeEntity),
+                  fastDeepEqual(entity, removeEntity),
                 ),
             ),
         )}

@@ -9,7 +9,7 @@ import {
   SearchBox,
   Spinner,
 } from "@canonical/react-components";
-import isEqual from "lodash/isEqual";
+import fastDeepEqual from "fast-deep-equal";
 import { useMemo, useState } from "react";
 import type { Column } from "react-table";
 
@@ -65,10 +65,7 @@ const PanelTableForm = <E,>({
   const [search, setSearch] = useState("");
   const tableColumns: Column<RowData>[] = [
     ...columns,
-    {
-      Header: "Actions",
-      accessor: "actions",
-    },
+    { Header: "Actions", accessor: "actions" },
   ];
   const tableData = useMemo<RowData[]>(() => {
     const add =
@@ -83,7 +80,7 @@ const PanelTableForm = <E,>({
                 ? (newEntity) =>
                     setAddEntities(
                       addEntities.filter(
-                        (entity) => !isEqual(entity, newEntity),
+                        (entity) => !fastDeepEqual(entity, newEntity),
                       ),
                     )
                 : null,
@@ -95,7 +92,9 @@ const PanelTableForm = <E,>({
     const existing =
       existingEntities?.reduce<RowData[]>((filtered, existingEntity) => {
         if (
-          !removeEntities.find((removed) => isEqual(existingEntity, removed)) &&
+          !removeEntities.find((removed) =>
+            fastDeepEqual(existingEntity, removed),
+          ) &&
           (!search || entityMatches(existingEntity, search))
         ) {
           filtered.push(
@@ -167,9 +166,7 @@ const PanelTableForm = <E,>({
                       getCellProps={({ column }) => {
                         switch (column.id) {
                           case "actions":
-                            return {
-                              className: "u-align--right",
-                            };
+                            return { className: "u-align--right" };
                           default:
                             return {};
                         }
@@ -177,9 +174,7 @@ const PanelTableForm = <E,>({
                       getHeaderProps={({ id }) => {
                         switch (id) {
                           case "actions":
-                            return {
-                              className: "u-align--right",
-                            };
+                            return { className: "u-align--right" };
                           default:
                             return {};
                         }
