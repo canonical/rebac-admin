@@ -1,6 +1,6 @@
+import { usePortal } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
-import usePortal from "react-useportal";
 
 export const useDeleteModal = <D,>(
   getModal: (closeModal: () => void, data: D) => ReactNode,
