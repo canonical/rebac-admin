@@ -66,9 +66,8 @@ describe("useGetCapabilityActions", () => {
     });
     const { isError, error } = result.current;
     expect(isError).toBe(true);
-    expect(error).toStrictEqual(
-      new axios.AxiosError("Request failed with status code 404"),
-    );
+    expect(error instanceof axios.AxiosError).toBe(true);
+    expect(error?.message).toBe("Request failed with status code 404");
   });
 });
 
@@ -159,10 +158,7 @@ describe("useCheckCapability", () => {
   test("handles no capability when multiple actions and some required", async () => {
     mockApiServer.use(
       ...getGetActualCapabilitiesMock([
-        {
-          endpoint: Endpoint.META,
-          methods: [],
-        },
+        { endpoint: Endpoint.META, methods: [] },
       ]),
     );
     const { result } = renderWrappedHook(() =>
@@ -179,6 +175,7 @@ describe("useCheckCapability", () => {
   });
 
   test("should return error", async () => {
+    vi.clearAllMocks();
     mockApiServer.use(getGetCapabilitiesErrorMockHandler());
     const { result } = renderWrappedHook(() =>
       useCheckCapability(Endpoint.META, CapabilityAction.READ),
@@ -188,8 +185,7 @@ describe("useCheckCapability", () => {
     });
     const { isError, error } = result.current;
     expect(isError).toBe(true);
-    expect(error).toStrictEqual(
-      new axios.AxiosError("Request failed with status code 404"),
-    );
+    expect(error instanceof axios.AxiosError).toBe(true);
+    expect(error?.message).toBe("Request failed with status code 404");
   });
 });
