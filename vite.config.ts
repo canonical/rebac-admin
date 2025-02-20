@@ -17,17 +17,25 @@ export default defineConfig(({ mode }) => {
         fileName: "rebac-admin",
       },
       rollupOptions: {
-        external: ["react", "react-dom", "react-router-dom"],
+        external: ["react", "react-dom", "react-router"],
         output: {
           assetFileNames: "rebac-admin.[ext]",
           globals: {
             react: "React",
             "react-dom": "ReactDOM",
-            "react-router-dom": "_ReactRouterDOM",
+            "react-router": "reactRouter",
           },
         },
       },
       sourcemap: true,
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true,
+          silenceDeprecations: ["import", "global-builtin", "mixed-decls"],
+        },
+      },
     },
     plugins: [
       react(),
@@ -40,6 +48,7 @@ export default defineConfig(({ mode }) => {
     ],
     publicDir: "demo/public",
     server: {
+      allowedHosts: true,
       host: "0.0.0.0",
       port: Number(env.PORT),
       proxy: {

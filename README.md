@@ -23,7 +23,7 @@ yarn add @canonical/rebac-admin-admin-ui
 You will also need the following peer dependencies if you don't have them already:
 
 ```bash
-yarn add @canonical/react-components @types/react @types/react-dom react react-dom vanilla-framework react-router-dom axios @tanstack/react-query formik yup
+yarn add @canonical/react-components @types/react @types/react-dom react react-dom vanilla-framework react-router axios @tanstack/react-query formik yup
 ```
 
 ## Displaying the component
@@ -37,7 +37,7 @@ Make sure to also [import the css](#import-css).
 
 ```jsx
 import { ReBACAdmin } from "@canonical/rebac-admin-admin-ui";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
 const App = (): JSX.Element => (
   <Routes>
@@ -57,7 +57,7 @@ admin component is displayed at.
 
 ```jsx
 import { ReBACAdmin } from "@canonical/rebac-admin-admin-ui";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
 const Permissions = (): JSX.Element => (
   <BrowserRouter basename="/permissions">

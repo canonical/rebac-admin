@@ -1,8 +1,10 @@
 import type { PropsWithChildren } from "react";
 
 import SideNavigationLink from "../SideNavigationLink";
-import type { SideNavigationLinkProps } from "../SideNavigationLink";
-import type { SideNavigationLinkDefaultElement } from "../SideNavigationLink";
+import type {
+  SideNavigationLinkProps,
+  SideNavigationLinkDefaultElement,
+} from "../SideNavigationLink";
 
 export type Props<L = SideNavigationLinkDefaultElement> =
   | PropsWithChildren

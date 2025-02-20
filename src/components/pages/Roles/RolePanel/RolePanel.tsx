@@ -8,8 +8,7 @@ import EntitlementsPanelForm from "components/EntitlementsPanelForm";
 import SubFormPanel from "components/SubFormPanel";
 import { PanelWidth } from "hooks/usePanel";
 
-import type { FormFields } from "./types";
-import { FieldName, Label, type Props } from "./types";
+import { type FormFields, FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.NAME]: Yup.string().required("Required"),

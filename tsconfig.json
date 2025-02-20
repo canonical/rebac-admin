@@ -26,13 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src",
-    "demo",
-    "scripts/serve-mock-api.ts",
-    "src/test/setup.ts",
-    "vite.config.ts",
-    "vite-demo.config.ts"
-  ],
+  "include": ["src", "demo", "scripts/serve-mock-api.ts", "src/test/setup.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

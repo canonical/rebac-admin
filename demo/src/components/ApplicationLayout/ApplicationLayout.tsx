@@ -1,12 +1,15 @@
 import { Button, Icon } from "@canonical/react-components";
 import type { PropsWithSpread } from "@canonical/react-components/dist/types";
 import classNames from "classnames";
-import type { ReactNode } from "react";
-import { useState, type HTMLProps, type PropsWithChildren } from "react";
+import {
+  type ReactNode,
+  useState,
+  type HTMLProps,
+  type PropsWithChildren,
+} from "react";
 
 import Panel from "components/Panel";
-import type { PanelProps } from "components/Panel";
-import type { PanelLogoDefaultElement } from "components/Panel";
+import type { PanelProps, PanelLogoDefaultElement } from "components/Panel";
 
 import type { SideNavigationProps } from "../SideNavigation";
 import SideNavigation from "../SideNavigation";
