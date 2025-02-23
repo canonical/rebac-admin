@@ -61,7 +61,7 @@ export default [
       ecmaVersion: 2018,
       sourceType: "module",
       parserOptions: {
-        project: "./tsconfig.json",
+        project: "./tsconfig.app.json",
         ecmaFeatures: {
           jsx: true,
         },
@@ -136,6 +136,7 @@ export default [
       "no-case-declarations": 0,
       "no-redeclare": 0,
       "prefer-destructuring": 0,
+      "prettier/prettier": "error",
       "react-refresh/only-export-components": [
         "warn",
         {
@@ -153,28 +154,6 @@ export default [
       files: ["**/*.ts?(x)"],
     }),
   ),
-  {
-    files: ["**/*.ts?(x)"],
-    languageOptions: {
-      parser: tseslint.parser,
-      ecmaVersion: 2018,
-      sourceType: "module",
-      parserOptions: {
-        project: "./tsconfig.json",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    rules: {
-      "prettier/prettier": "error",
-    },
-  },
   {
     plugins: {
       "testing-library": fixupPluginRules({
