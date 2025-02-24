@@ -61,7 +61,7 @@ export default [
       ecmaVersion: 2018,
       sourceType: "module",
       parserOptions: {
-        project: "./tsconfig.app.json",
+        project: true,
         ecmaFeatures: {
           jsx: true,
         },
