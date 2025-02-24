@@ -1,8 +1,8 @@
 import { Icon } from "@canonical/react-components";
 import classNames from "classnames";
 import type { PropsWithChildren } from "react";
-import type { NavLinkProps } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import type { NavLinkProps } from "react-router";
+import { NavLink } from "react-router";
 
 export type BaseLinkProps = Omit<NavLinkProps, "to" | "children"> &
   PropsWithChildren & {

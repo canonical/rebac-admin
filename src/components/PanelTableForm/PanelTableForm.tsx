@@ -8,17 +8,14 @@ import {
   Icon,
   SearchBox,
 } from "@canonical/react-components";
-import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import type { Column } from "react-table";
 
 import NoEntityCard from "components/NoEntityCard";
 
-import { type Props } from "./types";
+import type { RowData, Props } from "./types";
 
 import "./_panel-table-form.scss";
-
-type RowData = Record<string, ReactNode>;
 
 const generateRow = <E,>(
   generateCells: Props<E>["generateCells"],
@@ -54,7 +51,7 @@ const PanelTableForm = <E,>({
   setRemoveEntities,
 }: Props<E>) => {
   const [search, setSearch] = useState("");
-  const tableColumns: Column<any>[] = [
+  const tableColumns: Column<RowData>[] = [
     ...columns,
     {
       Header: "Actions",

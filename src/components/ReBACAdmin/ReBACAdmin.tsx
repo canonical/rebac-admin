@@ -8,7 +8,7 @@ import {
 import type { AxiosInstance } from "axios";
 import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
 import { setInstance, createInstance } from "api-utils/mutator/custom-instance";
 import Panel from "components/Panel";

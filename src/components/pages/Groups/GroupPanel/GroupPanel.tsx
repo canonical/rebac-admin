@@ -11,8 +11,7 @@ import { PanelWidth } from "hooks/usePanel";
 import IdentitiesPanelForm from "../IdentitiesPanelForm";
 import RolesPanelForm from "../RolesPanelForm";
 
-import type { FormFields } from "./types";
-import { FieldName, Label, type Props } from "./types";
+import { type FormFields, FieldName, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.NAME]: Yup.string().required("Required"),

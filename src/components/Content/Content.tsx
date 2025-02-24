@@ -1,5 +1,4 @@
-import type { PropsWithChildren, ReactNode } from "react";
-import { type JSX } from "react";
+import type { PropsWithChildren, ReactNode, JSX } from "react";
 
 import Panel from "components/Panel";
 

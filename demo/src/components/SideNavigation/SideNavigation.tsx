@@ -6,7 +6,7 @@ import {
   type ElementType,
   isValidElement,
 } from "react";
-import React from "react";
+import type React from "react";
 
 import type { SideNavigationItemProps } from "./SideNavigationItem";
 import SideNavigationItem from "./SideNavigationItem";
@@ -39,7 +39,6 @@ const generateItem = <L = SideNavigationLinkDefaultElement,>(
 };
 
 const SideNavigation = <L = SideNavigationLinkDefaultElement,>({
-  children,
   className,
   dark,
   hasIcons,

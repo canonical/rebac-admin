@@ -5,8 +5,7 @@ import CleanFormikField from "components/CleanFormikField";
 import FormikSubmitButton from "components/FormikSubmitButton";
 import PanelTableForm from "components/PanelTableForm";
 
-import type { Entitlement } from "./types";
-import { Label, type Props } from "./types";
+import { type Entitlement, Label, type Props } from "./types";
 
 const schema = Yup.object().shape({
   entity: Yup.string().required("Required"),

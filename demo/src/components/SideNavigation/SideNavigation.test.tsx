@@ -35,7 +35,7 @@ test("displays links using a custom component", () => {
         {
           label: "Link one",
         },
-        <Link>Link two</Link>,
+        <Link key="two">Link two</Link>,
       ]}
       linkComponent={Link}
     />,
@@ -52,7 +52,7 @@ test("displays a mix of links and custom components", () => {
           label: "Link one",
           href: "#",
         },
-        <Link>Link two</Link>,
+        <Link key="two">Link two</Link>,
       ]}
     />,
   );

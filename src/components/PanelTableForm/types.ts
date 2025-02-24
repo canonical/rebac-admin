@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import type { Column } from "react-table";
 
+export type RowData = Record<string, ReactNode>;
+
 export type Props<E> = {
   addEntities: E[];
-  columns: Column<any>[];
+  columns: Column<RowData>[];
   entityName: string;
   entityEqual: (entityA: E, entityB: E) => boolean;
   entityMatches: (entity: E, search: string) => boolean;

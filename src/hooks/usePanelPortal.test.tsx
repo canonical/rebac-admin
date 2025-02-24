@@ -28,7 +28,7 @@ test("displays without a portal", async () => {
     </ReBACAdminContext.Provider>,
   );
   expect(screen.queryByText(content)).not.toBeInTheDocument();
-  let container = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
   expect(container).not.toHaveClass("l-aside");
   expect(container?.hasChildNodes()).toBe(false);
 });
@@ -67,7 +67,7 @@ test("can remove a portal", async () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle" })),
   );
   expect(screen.queryByText(content)).not.toBeInTheDocument();
-  let container = document.getElementById(containerId)?.firstChild;
+  const container = document.getElementById(containerId)?.firstChild;
   expect(container).not.toHaveClass("l-aside");
   expect(container).not.toHaveAttribute("role");
 });

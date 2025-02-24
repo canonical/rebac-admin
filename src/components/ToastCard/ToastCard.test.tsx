@@ -1,8 +1,7 @@
 import { act, render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
-import { Toaster } from "react-hot-toast";
-import reactHotToast from "react-hot-toast";
+import reactHotToast, { Toaster } from "react-hot-toast";
 import { vi } from "vitest";
 
 import ToastCard from "./ToastCard";
@@ -11,6 +10,7 @@ import type { Props } from "./types";
 describe("Toast Card", () => {
   const toastInstanceExample: Props["toastInstance"] = {
     createdAt: 1623162274616,
+    dismissed: false,
     duration: 5000,
     id: "2",
     message: "message",
