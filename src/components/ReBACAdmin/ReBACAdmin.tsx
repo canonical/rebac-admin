@@ -30,6 +30,14 @@ import { logger } from "utils";
 import "scss/index.scss";
 import { Label } from "./types";
 
+// Webpack 5 no longer makes node variables available at runtime so we need to
+// attach `process` to the window:
+// https://github.com/facebook/create-react-app/issues/12212
+// This is used by the async limiter.
+if (!window.process) {
+  window.process = process;
+}
+
 export type Props = {
   // The element ID to use to render aside panels into. Should not begin with "#".
   asidePanelId?: string | null;
