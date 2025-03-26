@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import {
@@ -65,7 +65,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
         addEntitlements,
       ) => {
         const errors: string[] = [];
-        const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        const queue = new PQueue({ concurrency: API_CONCURRENCY });
         try {
           const { data: identity } = await postIdentities({
             data: {
@@ -79,7 +79,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           const identityId = identity.id;
           if (identityId) {
             if (addGroups.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await patchIdentitiesItemGroups({
                     id: identityId,
@@ -93,11 +93,10 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   errors.push(Label.GROUPS_ERROR);
                 }
-                done();
               });
             }
             if (addRoles.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await patchIdentitiesItemRoles({
                     id: identityId,
@@ -111,11 +110,10 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   errors.push(Label.ROLES_ERROR);
                 }
-                done();
               });
             }
             if (addEntitlements.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await patchIdentitiesItemEntitlements({
                     id: identityId,
@@ -129,7 +127,6 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   errors.push(Label.ENTITLEMENTS_ERROR);
                 }
-                done();
               });
             }
           } else {
@@ -139,7 +136,7 @@ const AddUserPanel = ({ close, setPanelWidth }: Props) => {
           // These errors are handled by the errors returned by `usePostIdentities`.
           return;
         }
-        queue.onDone(() => {
+        void queue.onIdle().then(() => {
           void queryClient.invalidateQueries({
             queryKey: [Endpoint.IDENTITIES],
           });

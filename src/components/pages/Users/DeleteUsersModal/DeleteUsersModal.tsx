@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import { useDeleteIdentitiesItem } from "api/identities/identities";
@@ -19,9 +19,9 @@ const DeleteUsersModal = ({ identities, close, onDeleted }: Props) => {
 
   const handleDeleteIdentities = async () => {
     let hasError = false;
-    const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    identities.forEach((id) => {
-      queue.push(async (done) => {
+    const queue = new PQueue({ concurrency: API_CONCURRENCY });
+    for (const id of identities) {
+      await queue.add(async () => {
         try {
           await deleteIdentitiesId({
             id,
@@ -29,10 +29,9 @@ const DeleteUsersModal = ({ identities, close, onDeleted }: Props) => {
         } catch (error) {
           hasError = true;
         }
-        done();
       });
-    });
-    queue.onDone(() => {
+    }
+    void queue.onIdle().then(() => {
       void queryClient.invalidateQueries({
         queryKey: [Endpoint.IDENTITIES],
       });

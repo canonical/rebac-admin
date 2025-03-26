@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -158,7 +158,7 @@ const EditUserPanel = ({
         removeEntitlements,
       ) => {
         const errors: string[] = [];
-        const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        const queue = new PQueue({ concurrency: API_CONCURRENCY });
         if (addGroups.length || removeGroups?.length) {
           let patches: IdentityGroupsPatchItem[] = [];
           if (addGroups.length) {
@@ -177,7 +177,7 @@ const EditUserPanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchIdentitiesItemGroups({
                 id: userId,
@@ -191,7 +191,6 @@ const EditUserPanel = ({
             } catch (error) {
               errors.push(Label.GROUPS_ERROR);
             }
-            done();
           });
         }
         if (addRoles.length || removeRoles?.length) {
@@ -212,7 +211,7 @@ const EditUserPanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchIdentitiesItemRoles({
                 id: userId,
@@ -226,7 +225,6 @@ const EditUserPanel = ({
             } catch (error) {
               errors.push(Label.ROLES_ERROR);
             }
-            done();
           });
         }
         if (addEntitlements.length || removeEntitlements?.length) {
@@ -247,7 +245,7 @@ const EditUserPanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchIdentitiesItemEntitlements({
                 id: userId,
@@ -261,12 +259,11 @@ const EditUserPanel = ({
             } catch (error) {
               errors.push(Label.ENTITLEMENTS_ERROR);
             }
-            done();
           });
         }
         if (userChanged) {
           const { email, firstName, lastName } = values;
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await putIdentitiesItem({
                 id: userId,
@@ -281,10 +278,9 @@ const EditUserPanel = ({
             } catch (error) {
               errors.push(Label.USER_ERROR);
             }
-            done();
           });
         }
-        queue.onDone(() => {
+        void queue.onIdle().then(() => {
           close();
           if (errors.length) {
             errors.forEach((error) => {
