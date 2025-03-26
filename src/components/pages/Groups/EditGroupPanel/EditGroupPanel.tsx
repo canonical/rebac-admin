@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -153,7 +153,7 @@ const EditGroupPanel = ({
         removeRoles,
       ) => {
         const errors: string[] = [];
-        const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        const queue = new PQueue({ concurrency: API_CONCURRENCY });
         if (addEntitlements.length || removeEntitlements?.length) {
           let patches: GroupEntitlementsPatchItem[] = [];
           if (addEntitlements.length) {
@@ -172,7 +172,7 @@ const EditGroupPanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchGroupsItemEntitlements({
                 id: groupId,
@@ -186,7 +186,6 @@ const EditGroupPanel = ({
             } catch (error) {
               errors.push(Label.ENTITLEMENTS_ERROR);
             }
-            done();
           });
         }
         if (addIdentities.length || removeIdentities?.length) {
@@ -207,7 +206,7 @@ const EditGroupPanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchGroupsItemIdentities({
                 id: groupId,
@@ -221,11 +220,10 @@ const EditGroupPanel = ({
             } catch (error) {
               errors.push(Label.IDENTITIES_ERROR);
             }
-            done();
           });
         }
         if (addRoles.length || removeRoles?.length) {
-          queue.push(async (done) => {
+          await queue.add(async () => {
             let patches: GroupRolesPatchItem[] = [];
             if (addRoles.length) {
               patches = patches.concat(
@@ -256,11 +254,10 @@ const EditGroupPanel = ({
             } catch (error) {
               errors.push(Label.ROLES_ERROR);
             }
-            done();
           });
         }
         if (groupChanged) {
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await putGroupsItem({
                 id: groupId,
@@ -270,10 +267,9 @@ const EditGroupPanel = ({
             } catch (error) {
               errors.push(Label.GROUP_ERROR);
             }
-            done();
           });
         }
-        queue.onDone(() => {
+        void queue.onIdle().then(() => {
           close();
           if (errors.length) {
             errors.forEach((error) => {

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import { useDeleteRolesItem } from "api/roles/roles";
@@ -17,9 +17,9 @@ const DeleteRolesModal = ({ roles, close }: Props) => {
 
   const handleDeleteRoles = async () => {
     let hasError = false;
-    const queue = new Limiter({ concurrency: API_CONCURRENCY });
-    roles.forEach((id) => {
-      queue.push(async (done) => {
+    const queue = new PQueue({ concurrency: API_CONCURRENCY });
+    for (const id of roles) {
+      await queue.add(async () => {
         try {
           await deleteRolesId({
             id,
@@ -27,10 +27,9 @@ const DeleteRolesModal = ({ roles, close }: Props) => {
         } catch (error) {
           hasError = true;
         }
-        done();
       });
-    });
-    queue.onDone(() => {
+    }
+    void queue.onIdle().then(() => {
       void queryClient.invalidateQueries({
         queryKey: [Endpoint.ROLES],
       });

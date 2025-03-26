@@ -46,12 +46,6 @@ export default defineConfig(({ mode }) => {
         include: ["src"],
         exclude: ["**/*.msw.ts", "src/test"],
       }),
-      nodePolyfills({
-        globals: {
-          // Required by async-limiter.
-          process: true,
-        },
-      }),
     ],
     publicDir: "demo/public",
     server: {

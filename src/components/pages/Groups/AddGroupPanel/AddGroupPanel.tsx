@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import {
@@ -68,13 +68,13 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
         let hasIdentitiesError = false;
         let hasRolesError = false;
         let hasGroupIdError = false;
-        const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        const queue = new PQueue({ concurrency: API_CONCURRENCY });
         try {
           const { data: group } = await postGroups({ data: { name } });
           const groupId = group.id;
           if (groupId) {
             if (addEntitlements.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await patchGroupsItemEntitlements({
                     id: groupId,
@@ -88,11 +88,10 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   hasEntitlementsError = true;
                 }
-                done();
               });
             }
             if (addIdentities.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await patchGroupsItemIdentities({
                     id: groupId,
@@ -106,11 +105,10 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   hasIdentitiesError = true;
                 }
-                done();
               });
             }
             if (addRoles.length) {
-              queue.push(async (done) => {
+              await queue.add(async () => {
                 try {
                   await postGroupsItemRoles({
                     id: groupId,
@@ -124,7 +122,6 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
                 } catch (error) {
                   hasRolesError = true;
                 }
-                done();
               });
             }
           } else {
@@ -134,7 +131,7 @@ const AddGroupPanel = ({ close, setPanelWidth }: Props) => {
           // These errors are handled by the errors returned by `usePostGroups`.
           return;
         }
-        queue.onDone(() => {
+        void queue.onIdle().then(() => {
           void queryClient.invalidateQueries({
             queryKey: [Endpoint.GROUPS],
           });

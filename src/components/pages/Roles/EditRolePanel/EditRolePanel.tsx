@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import Limiter from "async-limiter";
 import type { AxiosError } from "axios";
+import PQueue from "p-queue";
 import reactHotToast from "react-hot-toast";
 
 import type { Response, RoleEntitlementsPatchItem } from "api/api.schemas";
@@ -71,9 +71,9 @@ const EditRolePanel = ({
         removeEntitlements,
       ) => {
         const errors: string[] = [];
-        const queue = new Limiter({ concurrency: API_CONCURRENCY });
+        const queue = new PQueue({ concurrency: API_CONCURRENCY });
         if (roleChanged) {
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await putRolesItem({
                 id: roleId,
@@ -86,7 +86,6 @@ const EditRolePanel = ({
             } catch (error) {
               errors.push(Label.ERROR_ROLE);
             }
-            done();
           });
         }
         if (addEntitlements.length || removeEntitlements?.length) {
@@ -107,7 +106,7 @@ const EditRolePanel = ({
               })),
             );
           }
-          queue.push(async (done) => {
+          await queue.add(async () => {
             try {
               await patchRolesItemEntitlements({
                 id: roleId,
@@ -121,10 +120,9 @@ const EditRolePanel = ({
             } catch (error) {
               errors.push(Label.ERROR_ENTITLEMENTS);
             }
-            done();
           });
         }
-        queue.onDone(() => {
+        void queue.onIdle().then(() => {
           close();
           if (errors.length) {
             errors.forEach((error) => {

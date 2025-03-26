@@ -1,6 +1,6 @@
 {
   "name": "@canonical/rebac-admin",
-  "version": "0.0.1-alpha.10",
+  "version": "0.0.1-alpha.11",
   "description": "A shared UI for managing ReBAC/OpenFGA permissions",
   "repository": "git@github.com:canonical/rebac-admin.git",
   "author": "Canonical Webteam",
@@ -63,6 +63,7 @@
     "clone-deep": "4.0.1",
     "fast-deep-equal": "3.1.3",
     "loglevel": "1.9.2",
+    "p-queue": "8.1.0",
     "react-hot-toast": "2.5.1"
   },
   "devDependencies": {
@@ -91,7 +92,6 @@
     "@vitejs/plugin-react": "4.3.4",
     "@vitest/coverage-v8": "3.0.5",
     "@vitest/ui": "3.0.5",
-    "async-limiter": "2.0.0",
     "axios": "1.7.9",
     "cors": "2.8.5",
     "dotenv": "16.4.7",
@@ -131,7 +131,6 @@
     "vanilla-framework": "4.21.0",
     "vite": "6.1.0",
     "vite-plugin-dts": "4.5.0",
-    "vite-plugin-node-polyfills": "0.23.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.0.5",
     "yup": "1.6.1"
