@@ -6,8 +6,6 @@ import CheckCapability from "components/CheckCapability";
 import { CapabilityAction } from "hooks/capabilities";
 import type { Endpoint } from "types/api";
 
-import "./_content.scss";
-
 type Props = {
   controls?: ReactNode;
   endpoint: Endpoint;

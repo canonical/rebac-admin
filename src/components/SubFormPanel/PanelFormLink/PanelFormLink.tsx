@@ -3,8 +3,6 @@ import { Button, Icon } from "@canonical/react-components";
 import { type Props } from "./types";
 import { generateTitle } from "./utils";
 
-import "./_panel-form-link.scss";
-
 const PanelFormLink = ({ count, entity, icon, isEditing, onClick }: Props) => {
   return (
     <Button

@@ -3,8 +3,6 @@ import { Card, Col, Row } from "@canonical/react-components";
 import ListCardList from "./ListCardList";
 import type { Props } from "./types";
 
-import "./_list-card.scss";
-
 const ListCard = ({ lists, title }: Props) => {
   return (
     <Row>

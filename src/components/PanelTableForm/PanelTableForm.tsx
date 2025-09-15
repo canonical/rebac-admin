@@ -18,8 +18,6 @@ import { pluralize } from "utils";
 
 import type { RowData, Props } from "./types";
 
-import "./_panel-table-form.scss";
-
 const generateRow = <E,>(
   generateCells: Props<E>["generateCells"],
   entityName: string,

@@ -6,8 +6,6 @@ import { pluralize } from "utils";
 
 import type { Props } from "./types";
 
-import "./_multi-select-field.scss";
-
 const mapItems = <E,>(generateItem: Props<E>["generateItem"], entities: E[]) =>
   entities.reduce<MultiSelectItem[]>((items, entity) => {
     const item = generateItem(entity);

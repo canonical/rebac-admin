@@ -46,7 +46,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^2.0.0 || ^3.0.0",
+    "@canonical/react-components": "^3.0.0",
     "@tanstack/react-query": "^5.24.7",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -112,7 +112,7 @@
     "globals": "16.4.0",
     "happy-dom": "18.0.1",
     "ip": "2.0.1",
-    "msw": "2.11.2",
+    "msw": "2.11.1",
     "npm-package-json-lint": "9.0.0",
     "orval": "7.11.2",
     "postcss": "8.5.6",
@@ -128,7 +128,7 @@
     "tsx": "4.20.5",
     "typescript": "5.9.2",
     "typescript-eslint": "8.43.0",
-    "vanilla-framework": "4.29.0",
+    "vanilla-framework": "4.33.0",
     "vite": "7.1.5",
     "vite-plugin-dts": "4.5.4",
     "vite-tsconfig-paths": "5.1.4",
@@ -144,6 +144,8 @@
     }
   },
   "msw": {
-    "workerDirectory": "demo/public"
+    "workerDirectory": [
+      "demo/public"
+    ]
   }
 }
