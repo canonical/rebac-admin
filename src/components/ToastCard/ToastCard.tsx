@@ -2,8 +2,6 @@ import reactHotToast from "react-hot-toast";
 
 import type { Props } from "./types";
 
-import "./_toast-card.scss";
-
 export default function ToastCard({
   children,
   toastInstance,

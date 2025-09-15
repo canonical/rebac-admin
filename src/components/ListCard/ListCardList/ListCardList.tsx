@@ -2,8 +2,6 @@ import { List } from "@canonical/react-components";
 
 import type { Props } from "./types";
 
-import "./_list-card-list.scss";
-
 const ListCardList = ({ title, items }: Props) => {
   return (
     <>

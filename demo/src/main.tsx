@@ -16,7 +16,7 @@ const defferRender = async () => {
   if (import.meta.env.VITE_DEMO_API_MOCKED !== "true") {
     // If the API should not be mocked then prevent the service worker from
     // taking over the network calls.
-    return;
+    return Promise.resolve();
   }
   const { mockApiWorker } = await import("./mockApiWorker");
   return mockApiWorker.start();

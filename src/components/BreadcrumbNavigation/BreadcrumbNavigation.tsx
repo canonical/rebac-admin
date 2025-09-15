@@ -2,8 +2,6 @@ import { Button, Icon } from "@canonical/react-components";
 
 import { type Props } from "./types";
 
-import "./_breadcrumb-navigation.scss";
-
 const BreadcrumbNavigation = ({ backTitle, onBack, title, titleId }: Props) => {
   return (
     <nav className="p-breadcrumbs breadcrumb-navigation">
