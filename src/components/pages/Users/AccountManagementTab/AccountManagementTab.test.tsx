@@ -77,7 +77,9 @@ test("redirects after deleting", async () => {
       screen.queryByRole("dialog", { name: "Delete 1 user" }),
     ).not.toBeInTheDocument();
   });
-  expect((location as Location | null)?.pathname).toBe(urls.users.index);
+  await waitFor(() => {
+    expect((location as Location | null)?.pathname).toBe(urls.users.index);
+  });
 });
 
 test("handles no delete capability", async () => {
