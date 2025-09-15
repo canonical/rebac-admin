@@ -46,7 +46,7 @@
     "typecheck": "vitest --typecheck.only"
   },
   "peerDependencies": {
-    "@canonical/react-components": "^2.0.0",
+    "@canonical/react-components": "^2.0.0 || ^3.0.0",
     "@tanstack/react-query": "^5.24.7",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -67,7 +67,7 @@
     "react-hot-toast": "2.6.0"
   },
   "devDependencies": {
-    "@canonical/react-components": "2.15.0",
+    "@canonical/react-components": "3.0.1",
     "@eslint/compat": "1.3.2",
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.35.0",
