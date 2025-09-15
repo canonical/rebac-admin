@@ -1,17 +1,16 @@
 name: Upload TICS report
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 22 * * 5"
+  workflow_dispatch:
+permissions: read-all
 
 jobs:
   TICS:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    runs-on: [self-hosted, linux, amd64, tiobe, noble]
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -28,13 +27,14 @@ jobs:
         with:
           name: rebac-admin-coverage
           path: coverage
-          retention-days: 1
-      - name: Produce TICS report
-        shell: bash
-        run: |
-          set -x
-          export TICSAUTHTOKEN=${{ secrets.TICSAUTHTOKEN }}
-          curl --silent --show-error "https://canonical.tiobe.com/tiobeweb/TICS/api/public/v1/fapi/installtics/Script?cfg=default&platform=linux&url=https://canonical.tiobe.com/tiobeweb/TICS/" > install_tics.sh
-          . ./install_tics.sh
-          cp .github/workflows/tiobe_archive.txt /tmp/
-          TICSQServer -project rebac-admin -tmpdir /tmp/tics -archivefile /tmp/tiobe_archive.txt -branchdir .
+      - name: Run TICS analysis with github-action
+        uses: tiobe/tics-github-action@v3
+        with:
+          mode: qserver
+          project: rebac-admin
+          branchdir: .
+          viewerUrl: https://canonical.tiobe.com/tiobeweb/TICS/api/cfg?name=default
+          ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
+          installTics: true
+          tmpdir: /tmp/tics
+          additionalFlags: -archivefile '${{ github.workspace }}/.github/workflows/tiobe_archive.txt'
