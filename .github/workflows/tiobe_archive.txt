@@ -2,8 +2,13 @@
   "src/"
 
 'TESTCODE_FILE' =>
-  "/src/test/" || "/src/[^/]+/.+\.test\..+"
-
+  "/src/test/" ||
+  "/src/.+\.test\..+" ||
+  "/src/[^/]+/.+\.test\..+"
 
 'GENERATED_FILE' =>
-  "/src/api/"
+  "/src/api/" ||
+  "/src/.+\.d\.ts"
+
+'INFRA_FILE' =>
+  "/.+\.config\..+"
