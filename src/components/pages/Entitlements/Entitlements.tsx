@@ -34,7 +34,7 @@ const Entitlements: FC = () => {
   pagination.setResponse(data?.data);
   const tableData = useMemo<Record<string, unknown>[]>(
     () =>
-      (entitlements || []).map((entitlement) => ({
+      (entitlements ?? []).map((entitlement) => ({
         entity: entitlement.entity_type,
         entitlement: entitlement.entitlement,
       })),

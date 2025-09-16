@@ -36,7 +36,7 @@ const GroupsPanelForm: FC<Props> = ({
     },
     { query: { enabled: canGetGroups } },
   );
-  const groups = data?.data.data || [];
+  const groups = data?.data.data ?? [];
   return (
     <PanelTableForm
       addEntities={addGroups}

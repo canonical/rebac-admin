@@ -30,16 +30,15 @@ export type WrappedHookResult<Result, Props> = {
 export const changeURL = (url: string): void => window.happyDOM.setURL(url);
 
 const getQueryClient = (options: Options | null | undefined): QueryClient =>
-  options?.queryClient
-    ? options.queryClient
-    : new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: false,
-            staleTime: 1,
-          },
-        },
-      });
+  options?.queryClient ??
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: 1,
+      },
+    },
+  });
 
 export const renderComponent = (
   component: React.JSX.Element,

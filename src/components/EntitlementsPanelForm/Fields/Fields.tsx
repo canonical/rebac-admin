@@ -29,7 +29,7 @@ const Fields: FC<Props> = ({ entitlements, submitProps }: Props) => {
       { entityType: values.entity_type },
       { query: { enabled: !!values.entity_type } },
     );
-  const resources = getResourcesData?.data.data || [];
+  const resources = getResourcesData?.data.data ?? [];
   const entityIdOptions: OptionHTMLAttributes<HTMLOptionElement>[] = [
     {
       disabled: true,

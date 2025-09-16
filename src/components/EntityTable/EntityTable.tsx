@@ -64,7 +64,7 @@ const EntityTable = <E extends TableEntity>({
   ];
   const tableData = useMemo(
     () =>
-      (entities || []).map((entity) => {
+      (entities ?? []).map((entity) => {
         const actions: MenuLink[] = [];
         if (onEdit) {
           actions.push({
