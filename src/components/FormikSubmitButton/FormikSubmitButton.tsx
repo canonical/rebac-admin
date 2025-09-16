@@ -1,9 +1,10 @@
 import { ActionButton } from "@canonical/react-components";
 import { useFormikContext } from "formik";
+import type { FC } from "react";
 
 import type { Props } from "./types";
 
-const FormikSubmitButton = ({
+const FormikSubmitButton: FC<Props> = ({
   appearance = "positive",
   enabled,
   disabled,

@@ -1,4 +1,5 @@
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import * as Yup from "yup";
 
 import type { EntityEntitlement } from "api/api.schemas";
@@ -31,7 +32,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const EntitlementsPanelForm = ({
+const EntitlementsPanelForm: FC<Props> = ({
   existingEntitlements,
   addEntitlements = [],
   setAddEntitlements,

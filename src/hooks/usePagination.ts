@@ -90,7 +90,7 @@ export const usePagination = (): PaginationParams => {
     setPage: (page) => setPageData({ ...pageData, page }),
     resetPage: () => setPageData({ size: pageData.size }),
     setResponse: updateResponse,
-    setSize: (size) => {
+    setSize: (size): void => {
       setPageData({ size, ...("page" in pageData ? { page: 0 } : {}) });
     },
   };

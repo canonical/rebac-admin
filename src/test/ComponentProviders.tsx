@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { type PropsWithChildren, useEffect } from "react";
+import type { PropsWithChildren, FC } from "react";
+import { useEffect } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
 import type { Location, RouteObject } from "react-router";
 import { createBrowserRouter, RouterProvider, useLocation } from "react-router";
@@ -11,10 +12,11 @@ export type ComponentProps = {
   setLocation?: (location: Location) => void;
 } & PropsWithChildren;
 
-const Wrapper = ({
-  children,
-  setLocation,
-}: PropsWithChildren & { setLocation?: (location: Location) => void }) => {
+const Wrapper: FC<
+  PropsWithChildren & {
+    setLocation?: (location: Location) => void;
+  }
+> = ({ children, setLocation }) => {
   const location = useLocation();
   useEffect(() => {
     setLocation?.(location);
@@ -22,7 +24,7 @@ const Wrapper = ({
   return children;
 };
 
-const ComponentProviders = ({
+const ComponentProviders: FC<ComponentProps> = ({
   children,
   routeChildren,
   path,
@@ -34,9 +36,9 @@ const ComponentProviders = ({
     },
   }),
   setLocation,
-}: ComponentProps) => {
+}) => {
   useEffect(
-    () => () => {
+    () => (): void => {
       // Clean up all toast messages to prevent bleed between tests.
       reactHotToast.remove();
     },

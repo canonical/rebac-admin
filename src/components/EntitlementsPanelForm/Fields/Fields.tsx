@@ -1,7 +1,7 @@
 import { Select } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
-import type { OptionHTMLAttributes } from "react";
+import type { FC, OptionHTMLAttributes } from "react";
 
 import type { EntitlementSchema, EntityEntitlement } from "api/api.schemas";
 import { useGetResources } from "api/resources/resources";
@@ -19,7 +19,7 @@ type Props = {
   submitProps?: Partial<FormikSubmitButtonProps>;
 };
 
-const Fields = ({ entitlements, submitProps }: Props) => {
+const Fields: FC<Props> = ({ entitlements, submitProps }: Props) => {
   const queryClient = useQueryClient();
   const { values, setFieldValue, setFieldTouched } =
     useFormikContext<EntityEntitlement>();

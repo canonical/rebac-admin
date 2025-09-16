@@ -8,11 +8,11 @@ import axios from "axios";
 
 export let axiosInstance: AxiosInstance;
 
-export const setInstance = (instance: AxiosInstance) => {
+export const setInstance = (instance: AxiosInstance): void => {
   axiosInstance = instance;
 };
 
-export const createInstance = (apiURL: string) => {
+export const createInstance = (apiURL: string): void => {
   setInstance(axios.create({ baseURL: apiURL }));
 };
 

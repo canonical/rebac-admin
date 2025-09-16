@@ -11,7 +11,7 @@ import EntityTablePagination from "./EntityTablePagination";
 import type { TableEntity, Props } from "./types";
 import { Label } from "./types";
 
-const getProps = (id: string) => {
+const getProps = (id: string): Record<string, string> => {
   switch (id) {
     case "selectEntity":
       return {
@@ -36,7 +36,7 @@ const EntityTable = <E extends TableEntity>({
   pagination,
   selected,
   ...props
-}: Props<E>) => {
+}: Props<E>): JSX.Element => {
   const allColumns = [
     {
       Header: (

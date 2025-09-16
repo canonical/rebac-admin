@@ -1,4 +1,5 @@
 import { Spinner } from "@canonical/react-components";
+import type { FC } from "react";
 import { useState } from "react";
 import * as Yup from "yup";
 
@@ -19,7 +20,7 @@ const schema = Yup.object().shape({
   [FieldName.EMAIL]: Yup.string().required("Required"),
 });
 
-const UserPanel = ({
+const UserPanel: FC<Props> = ({
   existingGroups,
   existingRoles,
   existingEntitlements,

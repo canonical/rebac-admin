@@ -2,7 +2,7 @@
   Pluralizes the supplied word based on the provided dataset.
   @returns The item pluralized if required
 */
-export const pluralize = (string: string, count?: number) => {
+export const pluralize = (string: string, count?: number): string => {
   const special = {
     entity: "entities",
     identity: "identities",

@@ -1,8 +1,9 @@
 import { Icon, TablePaginationControls } from "@canonical/react-components";
+import type { FC } from "react";
 
 import { Label, type Props } from "./types";
 
-const EntityTablePagination = ({ pagination }: Props) => {
+const EntityTablePagination: FC<Props> = ({ pagination }: Props) => {
   if (!pagination) {
     return;
   }

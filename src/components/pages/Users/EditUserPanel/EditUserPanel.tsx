@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -38,7 +39,7 @@ const generateError = (
   getIdentitiesItemGroupsError: AxiosError<Response> | null,
   getIdentitiesItemRolesError: AxiosError<Response> | null,
   getIdentitiesItemEntitlementsError: AxiosError<Response> | null,
-) => {
+): string | null => {
   if (getIdentitiesItemGroupsError) {
     return `Unable to get groups: ${getIdentitiesItemGroupsError.response?.data.message}`;
   }
@@ -51,7 +52,7 @@ const generateError = (
   return null;
 };
 
-const EditUserPanel = ({
+const EditUserPanel: FC<Props> = ({
   close,
   onUserUpdate,
   user,

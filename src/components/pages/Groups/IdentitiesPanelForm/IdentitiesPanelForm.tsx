@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useState } from "react";
 
 import type { Identity } from "api/api.schemas";
@@ -14,7 +15,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const IdentitiesPanelForm = ({
+const IdentitiesPanelForm: FC<Props> = ({
   existingIdentities,
   addIdentities,
   setAddIdentities,
@@ -42,14 +43,14 @@ const IdentitiesPanelForm = ({
             entityMatches={({ id }, { value }) => id === value}
             entityName="user"
             existingEntities={existingIdentities}
-            generateItem={({ id, email }: Identity) => {
-              if (id) {
-                return {
-                  value: id,
-                  label: email,
-                };
-              }
-            }}
+            generateItem={({ id, email }: Identity) =>
+              id
+                ? {
+                    value: id,
+                    label: email,
+                  }
+                : null
+            }
             isLoading={isFetching}
             onSearch={setFilter}
             removeEntities={removeIdentities}

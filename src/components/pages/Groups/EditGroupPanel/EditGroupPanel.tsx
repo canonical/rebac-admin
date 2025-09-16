@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import type {
@@ -38,7 +39,7 @@ const generateError = (
   getGroupsItemEntitlementsError: AxiosError<Response> | null,
   getGroupsItemIdentitiesError: AxiosError<Response> | null,
   getGroupsItemRolesError: AxiosError<Response> | null,
-) => {
+): string | null => {
   if (getGroupsItemEntitlementsError) {
     return `Unable to get entitlements: ${getGroupsItemEntitlementsError.response?.data.message}`;
   }
@@ -51,7 +52,7 @@ const generateError = (
   return null;
 };
 
-const EditGroupPanel = ({
+const EditGroupPanel: FC<Props> = ({
   close,
   onGroupUpdated,
   group,

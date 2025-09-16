@@ -9,6 +9,7 @@ import {
   Panel,
   Row,
 } from "@canonical/react-components";
+import type { FC } from "react";
 import { useState } from "react";
 import type { NavLinkProps } from "react-router";
 import { Link, NavLink, Outlet } from "react-router";
@@ -25,7 +26,7 @@ import {
 
 const rebacAdminBaseURL = "/permissions";
 
-const App = () => {
+const App: FC = () => {
   const [showAside, setShowAside] = useState(false);
   const [asidePinned, setAsidePinned] = useState(false);
 

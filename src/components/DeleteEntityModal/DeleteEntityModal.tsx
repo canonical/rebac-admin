@@ -1,5 +1,6 @@
 import { Icon, ConfirmationModal } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import { useId, useState } from "react";
 import * as Yup from "yup";
 
@@ -7,7 +8,7 @@ import Fields from "./Fields";
 import type { Props, FormFields } from "./types";
 import { Label } from "./types";
 
-const DeleteEntityModal = ({
+const DeleteEntityModal: FC<Props> = ({
   entity,
   count,
   close,

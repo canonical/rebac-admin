@@ -1,6 +1,6 @@
 import { Icon } from "@canonical/react-components";
 import classNames from "classnames";
-import type { PropsWithChildren } from "react";
+import type { FC, PropsWithChildren } from "react";
 import type { NavLinkProps } from "react-router";
 import { NavLink } from "react-router";
 
@@ -12,7 +12,7 @@ export type BaseLinkProps = Omit<NavLinkProps, "to" | "children"> &
     to: string;
   };
 
-const BaseLink = ({
+const BaseLink: FC<BaseLinkProps> = ({
   baseURL,
   children,
   icon,

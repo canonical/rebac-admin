@@ -6,7 +6,10 @@ import { pluralize } from "utils";
 
 import type { Props } from "./types";
 
-const mapItems = <E,>(generateItem: Props<E>["generateItem"], entities: E[]) =>
+const mapItems = <E,>(
+  generateItem: Props<E>["generateItem"],
+  entities: E[],
+): MultiSelectItem[] =>
   entities.reduce<MultiSelectItem[]>((items, entity) => {
     const item = generateItem(entity);
     if (item) {
@@ -28,7 +31,7 @@ const MultiSelectField = <E,>({
   setAddEntities,
   setRemoveEntities,
   ...selectProps
-}: Props<E>) => {
+}: Props<E>): JSX.Element => {
   return (
     <div className="multi-select-field">
       <MultiSelect

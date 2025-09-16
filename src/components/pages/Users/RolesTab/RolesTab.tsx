@@ -5,6 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import { IdentityRolesPatchItemOp } from "api/api.schemas";
@@ -27,7 +28,7 @@ const updateRoles = (
   queryKey: QueryKey,
   op: IdentityRolesPatchItemOp,
   patchRoles: ReturnType<typeof usePatchIdentitiesItemRoles>["mutateAsync"],
-) => {
+): void => {
   patchRoles({
     id: userId,
     data: {
@@ -47,7 +48,7 @@ const updateRoles = (
     });
 };
 
-const RolesTab = () => {
+const RolesTab: FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const { hasCapability: canGetRoles } = useCheckCapability(
@@ -97,7 +98,7 @@ const RolesTab = () => {
       existingRoles={existingRoles}
       setAddRoles={
         canRelateRoles
-          ? (addRoles) =>
+          ? (addRoles): void =>
               updateRoles(
                 userId,
                 addRoles,
@@ -110,7 +111,7 @@ const RolesTab = () => {
       }
       setRemoveRoles={
         canRelateRoles
-          ? (removeRoles) =>
+          ? (removeRoles): void =>
               updateRoles(
                 userId,
                 removeRoles,

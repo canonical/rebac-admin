@@ -1,4 +1,5 @@
 import { Button, Notification } from "@canonical/react-components";
+import type { FC } from "react";
 
 type Props = {
   message: string;
@@ -6,7 +7,7 @@ type Props = {
   onRefetch: () => void;
 };
 
-const ErrorNotification = ({ message, error, onRefetch }: Props) => (
+const ErrorNotification: FC<Props> = ({ message, error, onRefetch }: Props) => (
   <Notification severity="negative" title="Error">
     {message} {error} Try{" "}
     <Button appearance="link" onClick={onRefetch}>

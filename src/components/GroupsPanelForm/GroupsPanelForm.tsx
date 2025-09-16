@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useState } from "react";
 
 import type { Group } from "api/api.schemas";
@@ -16,7 +17,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const GroupsPanelForm = ({
+const GroupsPanelForm: FC<Props> = ({
   existingGroups,
   addGroups = [],
   setAddGroups,
@@ -53,14 +54,14 @@ const GroupsPanelForm = ({
               entityMatches={({ id }, { value }) => id === value}
               entityName="group"
               existingEntities={existingGroups}
-              generateItem={({ id, name }: Group) => {
-                if (id) {
-                  return {
-                    value: id,
-                    label: name,
-                  };
-                }
-              }}
+              generateItem={({ id, name }: Group) =>
+                id
+                  ? {
+                      value: id,
+                      label: name,
+                    }
+                  : null
+              }
               isLoading={isFetching}
               onSearch={setFilter}
               removeEntities={removeGroups}

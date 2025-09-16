@@ -1,10 +1,11 @@
 import { Col, Row } from "@canonical/react-components";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import { useGetIdentitiesItem } from "api/identities/identities";
 import ListCard from "components/ListCard";
 
-const SummaryTab = () => {
+const SummaryTab: FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   // Loading states and errors for the user are handled in the parent `User` component.
   const { data } = useGetIdentitiesItem(userId ?? "");

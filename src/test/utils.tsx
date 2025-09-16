@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import type { RenderHookResult, RenderResult } from "@testing-library/react";
 import { render, renderHook } from "@testing-library/react";
 import type React from "react";
 
@@ -14,8 +15,21 @@ type Options = {
   setLocation?: ComponentProps["setLocation"];
 };
 
-export const changeURL = (url: string) => window.happyDOM.setURL(url);
-const getQueryClient = (options: Options | null | undefined) =>
+export type RenderComponentResult = {
+  changeURL: (url: string) => void;
+  result: RenderResult<typeof queries>;
+  queryClient: QueryClient;
+};
+
+export type WrappedHookResult<Result, Props> = {
+  changeURL: (url: string) => void;
+  queryClient: QueryClient;
+  result: RenderHookResult<Result, Props>["result"];
+};
+
+export const changeURL = (url: string): void => window.happyDOM.setURL(url);
+
+const getQueryClient = (options: Options | null | undefined): QueryClient =>
   options?.queryClient
     ? options.queryClient
     : new QueryClient({
@@ -30,7 +44,7 @@ const getQueryClient = (options: Options | null | undefined) =>
 export const renderComponent = (
   component: React.JSX.Element,
   options?: Options | null,
-) => {
+): RenderComponentResult => {
   const queryClient = getQueryClient(options);
   changeURL(options?.url ?? "/");
   const result = render(component, {
@@ -51,7 +65,7 @@ export const renderComponent = (
 export const renderWrappedHook = <Result, Props>(
   hook: (initialProps: Props) => Result,
   options?: Options | null,
-) => {
+): WrappedHookResult<Result, Props> => {
   const queryClient = getQueryClient(options);
   changeURL(options?.url ?? "/");
   const { result } = renderHook(hook, {

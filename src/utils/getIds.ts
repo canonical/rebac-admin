@@ -4,7 +4,9 @@ type Entity = {
   id?: unknown;
 };
 
-export const getIds = <E extends Entity>(entities?: E[]) => {
+export const getIds = <E extends Entity>(
+  entities?: E[],
+): NonNullable<E["id"]>[] => {
   return (
     entities?.reduce<NonNullable<E["id"]>[]>((ids, entity) => {
       if (entity.id) {

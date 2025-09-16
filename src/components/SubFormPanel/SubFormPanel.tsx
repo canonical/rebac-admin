@@ -19,9 +19,12 @@ const SubFormPanel = <F extends FormikValues>({
   setPanelWidth,
   subForms,
   ...props
-}: Props<F>) => {
+}: Props<F>): JSX.Element => {
   const [view, setView] = useState<string | null>();
-  const changeView = (view: string | null, panelWidth?: PanelWidth | null) => {
+  const changeView = (
+    view: string | null,
+    panelWidth?: PanelWidth | null,
+  ): void => {
     setView(view);
     setPanelWidth(panelWidth);
   };

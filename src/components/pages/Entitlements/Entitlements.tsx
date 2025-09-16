@@ -1,5 +1,5 @@
 import { Spinner, ModularTable } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { useState, useMemo } from "react";
 
 import { useGetEntitlements } from "api/entitlements/entitlements";
@@ -23,7 +23,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const Entitlements = () => {
+const Entitlements: FC = () => {
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
   const { data, isFetching, isError, error, refetch } = useGetEntitlements({

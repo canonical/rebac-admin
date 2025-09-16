@@ -6,7 +6,7 @@ import {
   Icon,
 } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import type { UIMatch } from "react-router";
 import { Link, Outlet, useMatches, useNavigate, useParams } from "react-router";
 
@@ -24,14 +24,15 @@ import EditUserPanel from "../EditUserPanel";
 
 import { Label } from "./types";
 
-const stripSlashes = (url: string) => url.replace(/^\//, "").replace(/\/$/, "");
+const stripSlashes = (url: string): string =>
+  url.replace(/^\//, "").replace(/\/$/, "");
 
-const isActive = (matches: UIMatch[], url: string) =>
+const isActive = (matches: UIMatch[], url: string): boolean =>
   !!matches.find((match) =>
     stripSlashes(match.pathname).endsWith(stripSlashes(url)),
   );
 
-const User = () => {
+const User: FC = () => {
   const queryClient = useQueryClient();
   const { hasCapability: canUpdateUser } = useCheckCapability(
     Endpoint.IDENTITY,

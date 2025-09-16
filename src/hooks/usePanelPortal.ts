@@ -8,7 +8,7 @@ export const usePanelPortal = (
   className?: string | null,
   labelledBy?: string | null,
   options?: UsePortalOptions,
-) => {
+): ReturnType<typeof usePortal> => {
   const { asidePanelId } = useContext(ReBACAdminContext);
   const asideNode = asidePanelId ? document.getElementById(asidePanelId) : null;
   const portal = usePortal({
@@ -36,7 +36,7 @@ export const usePanelPortal = (
         portalNode?.setAttribute("aria-labelledby", labelledBy);
       }
     }
-    return () => {
+    return (): void => {
       portalNode?.classList.remove("l-aside");
       portalNode?.removeAttribute("role");
       if (className) {

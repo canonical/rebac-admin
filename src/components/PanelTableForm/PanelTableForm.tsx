@@ -23,7 +23,7 @@ const generateRow = <E,>(
   entityName: string,
   entity: E,
   onRemove?: ((entity: E) => void) | null,
-) => ({
+): Record<string, React.ReactNode> => ({
   ...generateCells(entity),
   actions: onRemove ? (
     <Button
@@ -38,7 +38,7 @@ const generateRow = <E,>(
 });
 
 // Search all string values in the entity for the substring.
-const matches = <E,>(entity: E, search: string) =>
+const matches = <E,>(entity: E, search: string): boolean =>
   entity &&
   typeof entity === "object" &&
   Object.values(entity).some(
@@ -59,7 +59,7 @@ const PanelTableForm = <E,>({
   setRemoveEntities,
   showTable = true,
   isFetching,
-}: Props<E>) => {
+}: Props<E>): JSX.Element => {
   const [search, setSearch] = useState("");
   const tableColumns: Column<RowData>[] = [
     ...columns,
@@ -75,7 +75,7 @@ const PanelTableForm = <E,>({
               entityName,
               newEntity,
               setAddEntities
-                ? (newEntity) =>
+                ? (newEntity): void =>
                     setAddEntities(
                       addEntities.filter(
                         (entity) => !fastDeepEqual(entity, newEntity),
@@ -101,7 +101,7 @@ const PanelTableForm = <E,>({
               entityName,
               existingEntity,
               setRemoveEntities
-                ? (existingEntity) =>
+                ? (existingEntity): void =>
                     setRemoveEntities([...removeEntities, existingEntity])
                 : null,
             ),

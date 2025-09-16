@@ -5,6 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import type { EntityEntitlement } from "api/api.schemas";
@@ -28,7 +29,7 @@ const updateEntitlements = (
   patchEntitlements: ReturnType<
     typeof usePatchIdentitiesItemEntitlements
   >["mutateAsync"],
-) => {
+): void => {
   patchEntitlements({
     id: userId,
     data: {
@@ -48,7 +49,7 @@ const updateEntitlements = (
     });
 };
 
-const EntitlementsTab = () => {
+const EntitlementsTab: FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const { hasCapability: canGetEntitlements } = useCheckCapability(
@@ -102,7 +103,7 @@ const EntitlementsTab = () => {
       existingEntitlements={existingEntitlements}
       setAddEntitlements={
         canRelateEntitlements
-          ? (addEntitlements) =>
+          ? (addEntitlements): void =>
               updateEntitlements(
                 userId,
                 addEntitlements,
@@ -115,7 +116,7 @@ const EntitlementsTab = () => {
       }
       setRemoveEntitlements={
         canRelateEntitlements
-          ? (removeEntitlements) =>
+          ? (removeEntitlements): void =>
               updateEntitlements(
                 userId,
                 removeEntitlements,

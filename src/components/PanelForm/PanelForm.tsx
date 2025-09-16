@@ -21,7 +21,7 @@ const PanelForm = <F extends FormikValues>({
   submitLabel,
   submitButtonAppearance = "positive",
   ...props
-}: Props<F>) => {
+}: Props<F>): JSX.Element => {
   return (
     <>
       {error ? (

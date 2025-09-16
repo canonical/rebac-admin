@@ -7,7 +7,7 @@ const CleanFormikField = <
   C extends ElementType | ComponentType = typeof Input,
 >({
   ...props
-}: FormikFieldProps<C>) => {
+}: FormikFieldProps<C>): JSX.Element => {
   const { dirty } = useFormikContext();
   return (
     <FormikField<C> {...props} displayError={props.displayError ?? dirty} />

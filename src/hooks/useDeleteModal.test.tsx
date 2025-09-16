@@ -1,11 +1,12 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { FC } from "react";
 
 import { renderComponent } from "test/utils";
 
 import { useDeleteModal } from "./useDeleteModal";
 
-const TestComponent = () => {
+const TestComponent: FC = () => {
   const { generateModal, openModal, closeModal } = useDeleteModal<string[]>(
     (closeModal, data) => (
       <div data-testid="modal">

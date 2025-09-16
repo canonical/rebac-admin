@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import type { Role } from "api/api.schemas";
@@ -12,7 +13,7 @@ import RolePanel from "../RolePanel";
 
 import type { Props } from "./types";
 
-const AddRolePanel = ({ close, setPanelWidth }: Props) => {
+const AddRolePanel: FC<Props> = ({ close, setPanelWidth }: Props) => {
   const queryClient = useQueryClient();
   const {
     error: postRolesError,
