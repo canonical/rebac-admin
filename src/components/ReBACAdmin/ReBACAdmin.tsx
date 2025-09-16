@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import type { AxiosInstance } from "axios";
 import type { LogLevelDesc } from "loglevel";
+import type { FC } from "react";
 import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router";
@@ -46,7 +47,7 @@ export type Props = {
   }
 >;
 
-const ReBACAdmin = ({
+const ReBACAdmin: FC<Props> = ({
   apiURL,
   axiosInstance,
   asidePanelId,

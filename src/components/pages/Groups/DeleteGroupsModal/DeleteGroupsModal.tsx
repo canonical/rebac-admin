@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import { useDeleteGroupsItem } from "api/groups/groups";
@@ -10,12 +11,12 @@ import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteGroupsModal = ({ groups, close }: Props) => {
+const DeleteGroupsModal: FC<Props> = ({ groups, close }: Props) => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteGroupsId, isPending: isDeleteGroupsIdPending } =
     useDeleteGroupsItem();
 
-  const handleDeleteGroups = async () => {
+  const handleDeleteGroups = async (): Promise<void> => {
     let hasError = false;
     const queue = new PQueue({ concurrency: API_CONCURRENCY });
     for (const id of groups) {

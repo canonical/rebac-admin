@@ -6,7 +6,10 @@ import { SidePanelLabelledById } from "consts";
 
 import type { Props } from "./types";
 
-const FormPanel = <F extends FormikValues>({ title, ...props }: Props<F>) => {
+const FormPanel = <F extends FormikValues>({
+  title,
+  ...props
+}: Props<F>): JSX.Element => {
   return (
     <Panel title={title} titleId={SidePanelLabelledById}>
       <PanelForm<F> {...props} />

@@ -13,13 +13,20 @@ export enum PanelWidth {
 
 export type SetPanelWidth = (panelWidth?: PanelWidth | null) => void;
 
+type PanelResult<D> = {
+  generatePanel: () => ReactNode;
+  openPanel: (newData?: D) => void;
+  closePanel: () => void;
+  isPanelOpen: boolean;
+};
+
 export const usePanel = <D extends object>(
   getPanel: (
     closePanel: () => void,
     data: D | null,
     setPanelWidth: SetPanelWidth,
   ) => ReactNode,
-) => {
+): PanelResult<D> => {
   const [data, setData] = useState<D | null>(null);
   const [panelWidth, setPanelWidth] = useState<PanelWidth | null | undefined>();
   const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(

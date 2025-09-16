@@ -1,8 +1,11 @@
+import type { HttpHandler } from "msw";
 import { HttpResponse, delay, http } from "msw";
 
 import { Endpoint } from "types/api";
 
-export const getGetIdentitiesErrorMockHandler = (status: number = 404) => {
+export const getGetIdentitiesErrorMockHandler = (
+  status: number = 404,
+): HttpHandler => {
   return http.get(`*${Endpoint.IDENTITIES}`, async () => {
     await delay(Number(import.meta.env.VITE_MOCK_API_DELAY));
     return new HttpResponse(undefined, {

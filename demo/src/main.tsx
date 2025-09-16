@@ -12,7 +12,9 @@ import "./scss/index.scss";
 
 const root = document.getElementById("root");
 
-const defferRender = async () => {
+const defferRender = async (): Promise<
+  ServiceWorkerRegistration | undefined
+> => {
   if (import.meta.env.VITE_DEMO_API_MOCKED !== "true") {
     // If the API should not be mocked then prevent the service worker from
     // taking over the network calls.
@@ -22,7 +24,7 @@ const defferRender = async () => {
   return mockApiWorker.start();
 };
 
-const admin = () => (
+const admin = (): JSX.Element => (
   <ReBACAdmin
     apiURL={import.meta.env.VITE_DEMO_API_URL}
     asidePanelId="app-layout"

@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { FC } from "react";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
@@ -8,7 +9,7 @@ import { PanelWidth, usePanel } from "./usePanel";
 
 const containerId = "portal-container";
 
-const TestComponent = () => {
+const TestComponent: FC = () => {
   const { generatePanel, openPanel, closePanel } = usePanel<{
     state?: string | null;
   }>((closePanel, data, setPanelWidth) => (

@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useState } from "react";
 
 import type { Role } from "api/api.schemas";
@@ -16,7 +17,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const RolesPanelForm = ({
+const RolesPanelForm: FC<Props> = ({
   existingRoles,
   addRoles = [],
   setAddRoles,
@@ -53,14 +54,14 @@ const RolesPanelForm = ({
               entityMatches={({ id }, { value }) => id === value}
               entityName="role"
               existingEntities={existingRoles}
-              generateItem={({ id, name }: Role) => {
-                if (id) {
-                  return {
-                    value: id,
-                    label: name,
-                  };
-                }
-              }}
+              generateItem={({ id, name }: Role) =>
+                id
+                  ? {
+                      value: id,
+                      label: name,
+                    }
+                  : null
+              }
               isLoading={isFetching}
               onSearch={setFilter}
               removeEntities={removeRoles}

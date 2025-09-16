@@ -7,7 +7,7 @@ export default function ToastCard({
   toastInstance,
   type,
   undo,
-}: Props) {
+}: Props): JSX.Element {
   let iconName;
   switch (type) {
     case "positive":
@@ -23,7 +23,7 @@ export default function ToastCard({
       break;
   }
 
-  const handleClose = (id: string) => {
+  const handleClose = (id: string): void => {
     reactHotToast.remove(id);
   };
 

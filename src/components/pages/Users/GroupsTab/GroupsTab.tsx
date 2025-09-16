@@ -5,6 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import { IdentityGroupsPatchItemOp } from "api/api.schemas";
@@ -27,7 +28,7 @@ const updateGroups = (
   queryKey: QueryKey,
   op: IdentityGroupsPatchItemOp,
   patchGroups: ReturnType<typeof usePatchIdentitiesItemGroups>["mutateAsync"],
-) => {
+): void => {
   patchGroups({
     id: userId,
     data: {
@@ -47,7 +48,7 @@ const updateGroups = (
     });
 };
 
-const GroupsTab = () => {
+const GroupsTab: FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const { hasCapability: canGetGroups } = useCheckCapability(
@@ -97,7 +98,7 @@ const GroupsTab = () => {
       existingGroups={existingGroups}
       setAddGroups={
         canRelateGroups
-          ? (addGroups) =>
+          ? (addGroups): void =>
               updateGroups(
                 userId,
                 addGroups,
@@ -110,7 +111,7 @@ const GroupsTab = () => {
       }
       setRemoveGroups={
         canRelateGroups
-          ? (removeGroups) =>
+          ? (removeGroups): void =>
               updateGroups(
                 userId,
                 removeGroups,

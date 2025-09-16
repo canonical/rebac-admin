@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import { useDeleteRolesItem } from "api/roles/roles";
@@ -10,12 +11,12 @@ import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteRolesModal = ({ roles, close }: Props) => {
+const DeleteRolesModal: FC<Props> = ({ roles, close }: Props) => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteRolesId, isPending: isDeleteRolesIdPending } =
     useDeleteRolesItem();
 
-  const handleDeleteRoles = async () => {
+  const handleDeleteRoles = async (): Promise<void> => {
     let hasError = false;
     const queue = new PQueue({ concurrency: API_CONCURRENCY });
     for (const id of roles) {

@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import { useDeleteIdentitiesItem } from "api/identities/identities";
@@ -10,14 +11,18 @@ import { Endpoint } from "types/api";
 
 import { Label, type Props } from "./types";
 
-const DeleteUsersModal = ({ identities, close, onDeleted }: Props) => {
+const DeleteUsersModal: FC<Props> = ({
+  identities,
+  close,
+  onDeleted,
+}: Props) => {
   const queryClient = useQueryClient();
   const {
     mutateAsync: deleteIdentitiesId,
     isPending: isDeleteIdentitiesIdPending,
   } = useDeleteIdentitiesItem();
 
-  const handleDeleteIdentities = async () => {
+  const handleDeleteIdentities = async (): Promise<void> => {
     let hasError = false;
     const queue = new PQueue({ concurrency: API_CONCURRENCY });
     for (const id of identities) {

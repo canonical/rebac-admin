@@ -1,4 +1,5 @@
 import { useFormikContext } from "formik";
+import type { FC } from "react";
 import { useEffect } from "react";
 
 import CleanFormikField from "components/CleanFormikField";
@@ -6,7 +7,7 @@ import CleanFormikField from "components/CleanFormikField";
 import type { Props } from "./types";
 import { FieldName, Label } from "./types";
 
-const Fields = ({ setIsDirty }: Props) => {
+const Fields: FC<Props> = ({ setIsDirty }: Props) => {
   const { dirty } = useFormikContext();
 
   useEffect(() => {

@@ -98,6 +98,8 @@ export default [
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-import-type-side-effects": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
       "react/jsx-filename-extension": [
         1,
         {

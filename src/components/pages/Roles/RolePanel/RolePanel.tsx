@@ -1,4 +1,5 @@
 import { Spinner } from "@canonical/react-components";
+import type { FC } from "react";
 import { useState } from "react";
 import * as Yup from "yup";
 
@@ -16,7 +17,7 @@ const schema = Yup.object().shape({
   [FieldName.NAME]: Yup.string().required("Required"),
 });
 
-const RolePanel = ({
+const RolePanel: FC<Props> = ({
   existingEntitlements,
   isEditing,
   isFetchingExisting,

@@ -23,7 +23,7 @@ export const useEntitiesSelect = (entities: string[]): EntitiesSelect => {
     }
   }, [entities, selectedEntities]);
 
-  const handleSelectEntity = (entity: string) => {
+  const handleSelectEntity = (entity: string): void => {
     setSelectedEntities((prevSelectedEntities) =>
       prevSelectedEntities.includes(entity)
         ? prevSelectedEntities.filter(
@@ -33,7 +33,7 @@ export const useEntitiesSelect = (entities: string[]): EntitiesSelect => {
     );
   };
 
-  const handleSelectAllEntities = () => {
+  const handleSelectAllEntities = (): void => {
     areAllEntitiesSelected
       ? setSelectedEntities([])
       : setSelectedEntities(entities);

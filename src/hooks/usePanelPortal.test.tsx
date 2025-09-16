@@ -1,6 +1,7 @@
 import { Button } from "@canonical/react-components";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { FC } from "react";
 
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 import { renderComponent } from "test/utils";
@@ -10,7 +11,7 @@ import { usePanelPortal } from "./usePanelPortal";
 const content = "This is the content";
 const containerId = "portal-container";
 
-const TestComponent = ({ classes }: { classes?: string }) => {
+const TestComponent: FC<{ classes?: string }> = ({ classes }) => {
   const { openPortal, closePortal, isOpen, Portal } = usePanelPortal(classes);
   return (
     <>

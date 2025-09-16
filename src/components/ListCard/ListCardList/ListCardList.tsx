@@ -1,8 +1,9 @@
 import { List } from "@canonical/react-components";
+import type { FC } from "react";
 
 import type { Props } from "./types";
 
-const ListCardList = ({ title, items }: Props) => {
+const ListCardList: FC<Props> = ({ title, items }: Props) => {
   return (
     <>
       <h5 className="list-card-list__title u-no-margin--bottom">{title}</h5>

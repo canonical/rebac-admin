@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import BreadcrumbNavigation from "components/BreadcrumbNavigation";
 import { SidePanelLabelledById } from "consts";
 
@@ -5,7 +7,7 @@ import { generateTitle } from "../PanelFormLink/utils";
 
 import type { Props } from "./types";
 
-const PanelFormNavigation = ({
+const PanelFormNavigation: FC<Props> = ({
   defaultPanelWidth,
   isEditing,
   panelEntity,

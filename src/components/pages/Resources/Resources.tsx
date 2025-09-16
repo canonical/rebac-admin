@@ -1,5 +1,5 @@
 import { Spinner, ModularTable } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { useMemo } from "react";
 
 import { useGetResources } from "api/resources/resources";
@@ -27,7 +27,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const Resources = () => {
+const Resources: FC = () => {
   const pagination = usePagination();
   const { data, isFetching, isError, error, refetch } = useGetResources({
     ...pagination.pageData,

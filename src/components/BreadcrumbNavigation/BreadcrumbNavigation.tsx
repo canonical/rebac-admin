@@ -1,8 +1,14 @@
 import { Button, Icon } from "@canonical/react-components";
+import type { FC } from "react";
 
 import type { Props } from "./types";
 
-const BreadcrumbNavigation = ({ backTitle, onBack, title, titleId }: Props) => {
+const BreadcrumbNavigation: FC<Props> = ({
+  backTitle,
+  onBack,
+  title,
+  titleId,
+}: Props) => {
   return (
     <nav className="p-breadcrumbs breadcrumb-navigation">
       <ol className="p-breadcrumbs__items">

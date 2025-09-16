@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import type { Response, RoleEntitlementsPatchItem } from "api/api.schemas";
@@ -21,14 +22,14 @@ import { Label, type Props } from "./types";
 
 const generateError = (
   getRolesItemEntitlementsError: AxiosError<Response> | null,
-) => {
+): string | null => {
   if (getRolesItemEntitlementsError) {
     return `Unable to get entitlements: ${getRolesItemEntitlementsError.response?.data.message}`;
   }
   return null;
 };
 
-const EditRolePanel = ({
+const EditRolePanel: FC<Props> = ({
   close,
   onRoleUpdated,
   roleId,

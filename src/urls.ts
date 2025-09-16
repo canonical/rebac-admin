@@ -70,7 +70,7 @@ const prefixSection = <S extends object>(prefix: string, section: S): S => {
   return clonedSection;
 };
 
-export const prefixedURLs = (baseURL: string) => {
+export const prefixedURLs = (baseURL: string): typeof urls => {
   let prefix = baseURL.startsWith("/") ? baseURL : `/${baseURL}`;
   prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
   return prefixSection(prefix, urls);

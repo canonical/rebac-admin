@@ -5,6 +5,7 @@ import {
   ICONS,
   Notification,
 } from "@canonical/react-components";
+import type { FC } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import type { Identity } from "api/api.schemas";
@@ -17,7 +18,7 @@ import DeleteUsersModal from "../DeleteUsersModal";
 
 import { Label } from "./types";
 
-const AccountManagementTab = () => {
+const AccountManagementTab: FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { hasCapability: canDeleteUser } = useCheckCapability(

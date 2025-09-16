@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { CapabilityMethodsItem } from "api/api.schemas";
 import { useGetCapabilities } from "api/capabilities/capabilities";
+import type { ErrorType } from "api-utils/mutator/custom-instance";
 import type { Endpoint } from "types/api";
 import { logger } from "utils";
 
@@ -13,7 +14,24 @@ export enum CapabilityAction {
   RELATE = CapabilityMethodsItem.PATCH,
 }
 
-export const useGetCapabilityActions = (endpoint: Endpoint) => {
+type Result = {
+  isFetching: boolean;
+  isError: boolean;
+  error: ErrorType<unknown> | null;
+  refetch: ReturnType<typeof useGetCapabilities>["refetch"];
+};
+
+type GetCapabilitiesActionsResult = Result & {
+  actions: (string | undefined)[];
+};
+
+type CheckCapabilityResult = Result & {
+  hasCapability: boolean;
+};
+
+export const useGetCapabilityActions = (
+  endpoint: Endpoint,
+): GetCapabilitiesActionsResult => {
   const { data, isFetching, isError, error, refetch } = useGetCapabilities(
     // Capabilities should persist for the entire user session.
     { query: { gcTime: Infinity, staleTime: Infinity } },
@@ -45,7 +63,7 @@ export const useCheckCapability = (
   endpoint: Endpoint,
   action: CapabilityAction | CapabilityAction[],
   allRequired = true,
-) => {
+): CheckCapabilityResult => {
   const { actions, isFetching, isError, error, refetch } =
     useGetCapabilityActions(endpoint);
   const actionArray = Array.isArray(action) ? action : [action];

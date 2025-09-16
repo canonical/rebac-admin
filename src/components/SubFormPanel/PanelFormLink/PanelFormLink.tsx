@@ -1,9 +1,16 @@
 import { Button, Icon } from "@canonical/react-components";
+import type { FC } from "react";
 
 import type { Props } from "./types";
 import { generateTitle } from "./utils";
 
-const PanelFormLink = ({ count, entity, icon, isEditing, onClick }: Props) => {
+const PanelFormLink: FC<Props> = ({
+  count,
+  entity,
+  icon,
+  isEditing,
+  onClick,
+}: Props) => {
   return (
     <Button
       appearance="base"

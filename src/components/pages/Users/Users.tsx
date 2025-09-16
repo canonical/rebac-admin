@@ -1,6 +1,7 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState, type JSX } from "react";
+import type { FC } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
 import type { Identity } from "api/api.schemas";
@@ -40,7 +41,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const Users = () => {
+const Users: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
@@ -131,10 +132,16 @@ const Users = () => {
             source: user.source,
           })}
           onDelete={
-            canDeleteUser ? (user) => user.id && openModal([user.id]) : null
+            canDeleteUser
+              ? (user): void => {
+                  if (user.id) {
+                    openModal([user.id]);
+                  }
+                }
+              : null
           }
           onEdit={
-            canUpdateUser ? (user) => openPanel({ editUser: user }) : null
+            canUpdateUser ? (user): void => openPanel({ editUser: user }) : null
           }
           pagination={pagination}
           selected={selected}

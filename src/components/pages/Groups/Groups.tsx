@@ -1,6 +1,6 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
-import type { JSX } from "react";
+import type { FC, JSX } from "react";
 import { useState } from "react";
 
 import type { Group } from "api/api.schemas";
@@ -28,7 +28,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const Groups = () => {
+const Groups: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
@@ -112,10 +112,18 @@ const Groups = () => {
             groupName: group.name,
           })}
           onDelete={
-            canDeleteGroup ? (group) => group.id && openModal([group.id]) : null
+            canDeleteGroup
+              ? (group): void => {
+                  if (group.id) {
+                    openModal([group.id]);
+                  }
+                }
+              : null
           }
           onEdit={
-            canUpdateGroup ? (group) => openPanel({ editGroup: group }) : null
+            canUpdateGroup
+              ? (group): void => openPanel({ editGroup: group })
+              : null
           }
           pagination={pagination}
           selected={selected}

@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import PQueue from "p-queue";
+import type { FC } from "react";
 import reactHotToast from "react-hot-toast";
 
 import {
@@ -22,7 +23,7 @@ import UserPanel from "../UserPanel";
 
 import { Label, type Props } from "./types";
 
-const AddUserPanel = ({ close, setPanelWidth }: Props) => {
+const AddUserPanel: FC<Props> = ({ close, setPanelWidth }: Props) => {
   const queryClient = useQueryClient();
   const {
     error: postIdentitiesError,

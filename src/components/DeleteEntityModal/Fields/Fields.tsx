@@ -1,12 +1,13 @@
 import { Col, Row, FormikField } from "@canonical/react-components";
 import { useFormikContext } from "formik";
+import type { FC } from "react";
 import { useEffect } from "react";
 
 import type { FormFields } from "../types";
 
 import type { Props } from "./types";
 
-const Fields = ({
+const Fields: FC<Props> = ({
   confirmationMessage,
   entity,
   entityCount,

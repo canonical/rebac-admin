@@ -1,6 +1,6 @@
 import { Spinner, Button, ButtonAppearance } from "@canonical/react-components";
 import { useQueryClient } from "@tanstack/react-query";
-import type { JSX } from "react";
+import type { FC, JSX } from "react";
 import { useState } from "react";
 
 import type { Role } from "api/api.schemas";
@@ -28,7 +28,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const Roles = () => {
+const Roles: FC = () => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState("");
   const pagination = usePagination();
@@ -114,10 +114,16 @@ const Roles = () => {
             roleName: role.name,
           })}
           onDelete={
-            canDeleteRole ? (role) => role.id && openModal([role.id]) : null
+            canDeleteRole
+              ? (role): void => {
+                  if (role.id) {
+                    openModal([role.id]);
+                  }
+                }
+              : null
           }
           onEdit={
-            canUpdateRole ? (role) => openPanel({ editRole: role }) : null
+            canUpdateRole ? (role): void => openPanel({ editRole: role }) : null
           }
           pagination={pagination}
           selected={selected}
