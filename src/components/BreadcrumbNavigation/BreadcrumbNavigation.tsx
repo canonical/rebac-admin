@@ -1,6 +1,6 @@
 import { Button, Icon } from "@canonical/react-components";
 
-import { type Props } from "./types";
+import type { Props } from "./types";
 
 const BreadcrumbNavigation = ({ backTitle, onBack, title, titleId }: Props) => {
   return (

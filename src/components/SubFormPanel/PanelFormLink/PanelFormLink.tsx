@@ -1,6 +1,6 @@
 import { Button, Icon } from "@canonical/react-components";
 
-import { type Props } from "./types";
+import type { Props } from "./types";
 import { generateTitle } from "./utils";
 
 const PanelFormLink = ({ count, entity, icon, isEditing, onClick }: Props) => {

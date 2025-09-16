@@ -10,7 +10,7 @@ import { Endpoint } from "types/api";
 
 import type { FormFields } from "./Fields";
 import Fields, { FieldName } from "./Fields";
-import { type Props } from "./types";
+import type { Props } from "./types";
 
 const schema = Yup.object().shape({
   [FieldName.NAME]: Yup.string().required("Required"),
