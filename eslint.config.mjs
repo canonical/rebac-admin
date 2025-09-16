@@ -100,6 +100,8 @@ export default [
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": "error",
       "react/jsx-filename-extension": [
         1,
         {

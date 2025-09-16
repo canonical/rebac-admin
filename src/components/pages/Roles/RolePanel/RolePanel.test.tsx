@@ -94,8 +94,8 @@ test("passes whether the role was changed to onSubmit", async () => {
 });
 
 test("the entitlement form can be displayed", async () => {
-  const mockApiServer = setupServer(getGetEntitlementsMockHandler());
-  mockApiServer.listen();
+  const mockServer = setupServer(getGetEntitlementsMockHandler());
+  mockServer.listen();
   renderComponent(
     <RolePanel close={vi.fn()} setPanelWidth={vi.fn()} onSubmit={vi.fn()} />,
   );
@@ -106,7 +106,7 @@ test("the entitlement form can be displayed", async () => {
   expect(
     screen.getByRole("form", { name: EntitlementsPanelFormLabel.FORM }),
   ).toBeInTheDocument();
-  mockApiServer.close();
+  mockServer.close();
 });
 
 test("it does not display the entitlement form if it doesn't have the capability", async () => {

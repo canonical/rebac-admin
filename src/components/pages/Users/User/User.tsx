@@ -62,14 +62,14 @@ const User: FC = () => {
 
   const { generatePanel, openPanel } = usePanel<{
     editUser?: Identity | null;
-  }>((closePanel, data, setPanelWidth) => {
-    if (data?.editUser?.id) {
+  }>((closePanel, panelData, setPanelWidth) => {
+    if (panelData?.editUser?.id) {
       return (
         <EditUserPanel
           close={closePanel}
           onUserUpdate={() => void queryClient.invalidateQueries({ queryKey })}
-          user={data.editUser}
-          userId={data.editUser.id}
+          user={panelData.editUser}
+          userId={panelData.editUser.id}
           setPanelWidth={setPanelWidth}
         />
       );

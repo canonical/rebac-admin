@@ -22,11 +22,11 @@ const SubFormPanel = <F extends FormikValues>({
 }: Props<F>): JSX.Element => {
   const [view, setView] = useState<string | null>();
   const changeView = (
-    view: string | null,
-    panelWidth?: PanelWidth | null,
+    viewName: string | null,
+    width?: PanelWidth | null,
   ): void => {
-    setView(view);
-    setPanelWidth(panelWidth);
+    setView(viewName);
+    setPanelWidth(width);
   };
 
   useEffect(() => {
@@ -74,17 +74,17 @@ const SubFormPanel = <F extends FormikValues>({
                 {subForms.map(
                   ({
                     count,
-                    entity,
+                    entity: subformEntity,
                     icon,
                     panelWidth: subPanelWidth = panelWidth,
                   }) => (
                     <PanelFormLink
-                      entity={entity}
+                      entity={subformEntity}
                       count={count}
                       icon={icon}
                       isEditing={isEditing}
-                      key={entity}
-                      onClick={() => changeView(entity, subPanelWidth)}
+                      key={subformEntity}
+                      onClick={() => changeView(subformEntity, subPanelWidth)}
                     />
                   ),
                 )}

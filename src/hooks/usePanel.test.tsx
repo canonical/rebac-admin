@@ -12,9 +12,9 @@ const containerId = "portal-container";
 const TestComponent: FC = () => {
   const { generatePanel, openPanel, closePanel } = usePanel<{
     state?: string | null;
-  }>((closePanel, data, setPanelWidth) => (
+  }>((onClose, data, setPanelWidth) => (
     <div data-testid="panel">
-      <button onClick={closePanel}>Exit</button>
+      <button onClick={onClose}>Exit</button>
       <button
         onClick={() => {
           setPanelWidth(PanelWidth.NARROW);

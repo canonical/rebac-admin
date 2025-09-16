@@ -53,14 +53,14 @@ const Users: FC = () => {
   pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editUser?: Identity | null;
-  }>((closePanel, data, setPanelWidth) => {
-    if (data?.editUser?.id) {
+  }>((closePanel, paneData, setPanelWidth) => {
+    if (paneData?.editUser?.id) {
       return (
         <EditUserPanel
           close={closePanel}
           onUserUpdate={() => void queryClient.invalidateQueries({ queryKey })}
-          user={data.editUser}
-          userId={data.editUser.id}
+          user={paneData.editUser}
+          userId={paneData.editUser.id}
           setPanelWidth={setPanelWidth}
         />
       );

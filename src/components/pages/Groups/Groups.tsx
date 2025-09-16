@@ -39,15 +39,15 @@ const Groups: FC = () => {
   pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
     editGroup?: Group | null;
-  }>((closePanel, data, setPanelWidth) => {
-    if (data?.editGroup?.id) {
+  }>((closePanel, panelData, setPanelWidth) => {
+    if (panelData?.editGroup?.id) {
       return (
         <EditGroupPanel
-          group={data.editGroup}
+          group={panelData.editGroup}
           onGroupUpdated={() =>
             void queryClient.invalidateQueries({ queryKey })
           }
-          groupId={data.editGroup.id}
+          groupId={panelData.editGroup.id}
           close={closePanel}
           setPanelWidth={setPanelWidth}
         />

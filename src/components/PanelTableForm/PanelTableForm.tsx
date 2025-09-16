@@ -75,10 +75,10 @@ const PanelTableForm = <E,>({
               entityName,
               newEntity,
               setAddEntities
-                ? (newEntity): void =>
+                ? (addEntity): void =>
                     setAddEntities(
                       addEntities.filter(
-                        (entity) => !fastDeepEqual(entity, newEntity),
+                        (entity) => !fastDeepEqual(entity, addEntity),
                       ),
                     )
                 : null,
@@ -101,8 +101,8 @@ const PanelTableForm = <E,>({
               entityName,
               existingEntity,
               setRemoveEntities
-                ? (existingEntity): void =>
-                    setRemoveEntities([...removeEntities, existingEntity])
+                ? (entity): void =>
+                    setRemoveEntities([...removeEntities, entity])
                 : null,
             ),
           );
