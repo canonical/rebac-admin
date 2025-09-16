@@ -5,7 +5,7 @@ import { useGetIdentities } from "api/identities/identities";
 import MultiSelectField from "components/MultiSelectField";
 import PanelTableForm from "components/PanelTableForm";
 
-import { type Props } from "./types";
+import type { Props } from "./types";
 
 const COLUMN_DATA = [
   {

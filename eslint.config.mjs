@@ -97,6 +97,7 @@ export default [
       "prefer-promise-reject-errors": "error",
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-import-type-side-effects": "error",
       "react/jsx-filename-extension": [
         1,
         {

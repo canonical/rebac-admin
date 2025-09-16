@@ -3,7 +3,7 @@ import { SidePanelLabelledById } from "consts";
 
 import { generateTitle } from "../PanelFormLink/utils";
 
-import { type Props } from "./types";
+import type { Props } from "./types";
 
 const PanelFormNavigation = ({
   defaultPanelWidth,

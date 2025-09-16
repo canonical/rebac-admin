@@ -7,7 +7,7 @@ import PanelTableForm from "components/PanelTableForm";
 import { CapabilityAction, useCheckCapability } from "hooks/capabilities";
 import { Endpoint } from "types/api";
 
-import { type Props } from "./types";
+import type { Props } from "./types";
 
 const COLUMN_DATA = [
   {
