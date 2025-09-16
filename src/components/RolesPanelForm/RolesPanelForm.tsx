@@ -36,7 +36,7 @@ const RolesPanelForm: FC<Props> = ({
     },
     { query: { enabled: canGetRoles } },
   );
-  const roles = data?.data.data || [];
+  const roles = data?.data.data ?? [];
   return (
     <PanelTableForm
       addEntities={addRoles}

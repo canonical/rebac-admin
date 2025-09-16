@@ -38,7 +38,7 @@ const MultiSelectField = <E,>({
         {...selectProps}
         selectedItems={mapItems(
           generateItem,
-          (existingEntities || [])
+          (existingEntities ?? [])
             .concat(addEntities)
             .filter(
               (entity) =>

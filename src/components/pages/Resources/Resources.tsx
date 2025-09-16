@@ -36,7 +36,7 @@ const Resources: FC = () => {
   pagination.setResponse(data?.data);
   const tableData = useMemo<Record<string, unknown>[]>(
     () =>
-      (resources || []).map((resource) => ({
+      (resources ?? []).map((resource) => ({
         entity: resource.entity.type,
         parent: resource.parent?.name || "-",
         resource: resource.entity.name,

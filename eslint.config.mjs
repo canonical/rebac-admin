@@ -102,6 +102,16 @@ export default [
       "@typescript-eslint/explicit-function-return-type": "error",
       "no-shadow": "off",
       "@typescript-eslint/no-shadow": "error",
+      "@typescript-eslint/prefer-nullish-coalescing": [
+        "error",
+        {
+          ignorePrimitives: {
+            string: true,
+            boolean: true,
+          },
+        },
+      ],
+      "@typescript-eslint/prefer-optional-chain": "error",
       "react/jsx-filename-extension": [
         1,
         {

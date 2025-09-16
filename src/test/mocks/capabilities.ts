@@ -24,12 +24,12 @@ export const getGetActualCapabilitiesMock = (
     ) {
       return getGetCapabilitiesMockHandler(
         getGetCapabilitiesResponseMock({
-          data: overrideGetCapabilitiesResponse
-            ? overrideGetCapabilitiesResponse
-            : Object.values<string>(Endpoint).map((endpoint) => ({
-                endpoint,
-                methods: Object.values<string>(CapabilityMethodsItem),
-              })),
+          data:
+            overrideGetCapabilitiesResponse ??
+            Object.values<string>(Endpoint).map((endpoint) => ({
+              endpoint,
+              methods: Object.values<string>(CapabilityMethodsItem),
+            })),
         }),
       );
     }
