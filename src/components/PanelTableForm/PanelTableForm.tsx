@@ -75,7 +75,7 @@ const PanelTableForm = <E,>({
               entityName,
               newEntity,
               setAddEntities
-                ? (addEntity) =>
+                ? (addEntity): void =>
                     setAddEntities(
                       addEntities.filter(
                         (entity) => !fastDeepEqual(entity, addEntity),
