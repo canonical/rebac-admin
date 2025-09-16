@@ -8,9 +8,9 @@ import { useDeleteModal } from "./useDeleteModal";
 
 const TestComponent: FC = () => {
   const { generateModal, openModal, closeModal } = useDeleteModal<string[]>(
-    (closeModal, data) => (
+    (onClose, data) => (
       <div data-testid="modal">
-        <button onClick={closeModal}>Exit</button>
+        <button onClick={onClose}>Exit</button>
         {data}
       </div>
     ),
