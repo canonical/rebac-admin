@@ -38,7 +38,7 @@ const updateRoles = (
       })),
     },
   })
-    .then(() =>
+    .then(async () =>
       queryClient.invalidateQueries({
         queryKey,
       }),

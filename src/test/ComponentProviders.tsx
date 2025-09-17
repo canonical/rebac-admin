@@ -16,12 +16,12 @@ const Wrapper: FC<
   PropsWithChildren & {
     setLocation?: (location: Location) => void;
   }
-> = ({ children, setLocation }) => {
+> = ({ children, setLocation }): JSX.Element => {
   const location = useLocation();
   useEffect(() => {
     setLocation?.(location);
   }, [location, setLocation]);
-  return children;
+  return <>{children}</>;
 };
 
 const ComponentProviders: FC<ComponentProps> = ({
