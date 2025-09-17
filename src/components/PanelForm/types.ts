@@ -4,13 +4,13 @@ import type { PropsWithChildren, ReactNode } from "react";
 
 export type Props<F extends FormikValues> = {
   close: () => void;
-  error?: string | null;
+  error?: null | string;
   isSaving?: boolean;
   submitEnabled?: boolean;
   submitLabel: ReactNode;
   submitButtonAppearance?: ActionButtonProps["appearance"];
-} & PropsWithChildren &
-  Omit<FormikConfig<F>, "children">;
+} & Omit<FormikConfig<F>, "children"> &
+  PropsWithChildren;
 
 export enum Label {
   CANCEL = "Cancel",

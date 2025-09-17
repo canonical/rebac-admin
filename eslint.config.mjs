@@ -13,6 +13,7 @@ import tseslint from "typescript-eslint";
 import vitest from "eslint-plugin-vitest";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tanstackQuery from "@tanstack/eslint-plugin-query";
+import perfectionist from "eslint-plugin-perfectionist";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,6 +49,7 @@ export default [
       "react-hooks": fixupPluginRules(hooksPlugin),
       "react-refresh": reactRefresh,
       vitest,
+      perfectionist
     },
     rules: hooksPlugin.configs.recommended.rules,
   },
@@ -118,6 +120,11 @@ export default [
       "init-declarations": "off",
       "@typescript-eslint/init-declarations": "error",
       "@typescript-eslint/promise-function-async": "error",
+      "require-await": "off",
+      "@typescript-eslint/require-await": "error",
+      "@typescript-eslint/no-unsafe-argument": "error",
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": "error",
       "react/jsx-filename-extension": [
         1,
         {
@@ -155,6 +162,8 @@ export default [
       "no-param-reassign": 0,
       "no-case-declarations": 0,
       "no-redeclare": 0,
+      "perfectionist/sort-intersection-types": "error",
+      "perfectionist/sort-union-types": "error",
       "prefer-destructuring": 0,
       "react-refresh/only-export-components": [
         "warn",
@@ -208,6 +217,7 @@ export default [
       "testing-library/no-container": "off",
       "testing-library/no-render-in-lifecycle": "off",
       "@typescript-eslint/init-declarations": "off",
+      "@typescript-eslint/require-await": "off",
     },
   },
   {

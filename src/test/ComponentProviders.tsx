@@ -13,10 +13,10 @@ export type ComponentProps = {
 } & PropsWithChildren;
 
 const Wrapper: FC<
-  PropsWithChildren & {
+  {
     setLocation?: (location: Location) => void;
-  }
-> = ({ children, setLocation }): JSX.Element => {
+  } & PropsWithChildren
+> = ({ children, setLocation }) => {
   const location = useLocation();
   useEffect(() => {
     setLocation?.(location);

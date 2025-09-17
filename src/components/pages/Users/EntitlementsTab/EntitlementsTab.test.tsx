@@ -128,7 +128,7 @@ test("does not display loading spinner when refetching", async () => {
 });
 
 test("should add entitlements", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -176,7 +176,7 @@ test("should add entitlements", async () => {
 });
 
 test("should remove entitlements", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

@@ -174,7 +174,7 @@ test("should handle no identity id error when adding a user", async () => {
 });
 
 test("should add groups", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -255,7 +255,7 @@ test("should handle errors when adding groups", async () => {
 });
 
 test("should add roles", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -336,7 +336,7 @@ test("should handle errors when adding roles", async () => {
 });
 
 test("should add entitlements", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

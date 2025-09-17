@@ -31,7 +31,7 @@ export const changeURL = (url: string): void => {
   window.happyDOM.setURL(url);
 };
 
-const getQueryClient = (options: Options | null | undefined): QueryClient =>
+const getQueryClient = (options: null | Options | undefined): QueryClient =>
   options?.queryClient ??
   new QueryClient({
     defaultOptions: {
@@ -44,7 +44,7 @@ const getQueryClient = (options: Options | null | undefined): QueryClient =>
 
 export const renderComponent = (
   component: React.JSX.Element,
-  options?: Options | null,
+  options?: null | Options,
 ): RenderComponentResult => {
   const queryClient = getQueryClient(options);
   changeURL(options?.url ?? "/");
@@ -65,7 +65,7 @@ export const renderComponent = (
 
 export const renderWrappedHook = <Result, Props>(
   hook: (initialProps: Props) => Result,
-  options?: Options | null,
+  options?: null | Options,
 ): WrappedHookResult<Result, Props> => {
   const queryClient = getQueryClient(options);
   changeURL(options?.url ?? "/");

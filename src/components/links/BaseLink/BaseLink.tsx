@@ -4,13 +4,13 @@ import type { FC, PropsWithChildren } from "react";
 import type { NavLinkProps } from "react-router";
 import { NavLink } from "react-router";
 
-export type BaseLinkProps = Omit<NavLinkProps, "to" | "children"> &
-  PropsWithChildren & {
-    baseURL: string;
-    icon?: string;
-    iconIsLight?: boolean;
-    to: string;
-  };
+export type BaseLinkProps = {
+  baseURL: string;
+  icon?: string;
+  iconIsLight?: boolean;
+  to: string;
+} & Omit<NavLinkProps, "children" | "to"> &
+  PropsWithChildren;
 
 const BaseLink: FC<BaseLinkProps> = ({
   baseURL,

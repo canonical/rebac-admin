@@ -23,7 +23,7 @@ export type Props<E extends TableEntity> = PropsWithSpread<
   },
   Omit<
     ModularTableProps<Record<string, unknown>>,
-    "getHeaderProps" | "getCellProps" | "data"
+    "data" | "getCellProps" | "getHeaderProps"
   >
 >;
 

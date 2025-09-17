@@ -39,7 +39,7 @@ const generateError = (
   getGroupsItemEntitlementsError: AxiosError<Response> | null,
   getGroupsItemIdentitiesError: AxiosError<Response> | null,
   getGroupsItemRolesError: AxiosError<Response> | null,
-): string | null => {
+): null | string => {
   if (getGroupsItemEntitlementsError) {
     return `Unable to get entitlements: ${getGroupsItemEntitlementsError.response?.data.message}`;
   }
