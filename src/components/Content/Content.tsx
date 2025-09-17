@@ -31,8 +31,12 @@ const Content = ({
               <SearchBox
                 externallyControlled
                 onChange={setSearchValue}
-                onClear={() => onSearch("")}
-                onSearch={() => onSearch(searchValue.trim())}
+                onClear={() => {
+                  onSearch("");
+                }}
+                onSearch={() => {
+                  onSearch(searchValue.trim());
+                }}
                 value={searchValue}
               />
             ) : null}

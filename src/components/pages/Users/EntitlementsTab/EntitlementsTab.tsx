@@ -103,7 +103,7 @@ const EntitlementsTab: FC = () => {
       existingEntitlements={existingEntitlements}
       setAddEntitlements={
         canRelateEntitlements
-          ? (addEntitlements): void =>
+          ? (addEntitlements): void => {
               updateEntitlements(
                 userId,
                 addEntitlements,
@@ -111,12 +111,13 @@ const EntitlementsTab: FC = () => {
                 queryKey,
                 IdentityEntitlementsPatchItemAllOfOp.add,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       setRemoveEntitlements={
         canRelateEntitlements
-          ? (removeEntitlements): void =>
+          ? (removeEntitlements): void => {
               updateEntitlements(
                 userId,
                 removeEntitlements,
@@ -124,7 +125,8 @@ const EntitlementsTab: FC = () => {
                 queryKey,
                 IdentityEntitlementsPatchItemAllOfOp.remove,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       showTable={canGetEntitlements}

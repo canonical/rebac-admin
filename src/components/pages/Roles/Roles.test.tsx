@@ -89,7 +89,9 @@ test("search roles", async () => {
   });
   renderComponent(<Roles />);
   await userEvent.type(screen.getByRole("searchbox"), "role1{enter}");
-  await waitFor(() => expect(getDone).toBeTruthy());
+  await waitFor(() => {
+    expect(getDone).toBeTruthy();
+  });
 });
 
 test("paginates", async () => {
@@ -112,7 +114,9 @@ test("paginates", async () => {
       name: EntityTablePaginationLabel.NEXT_PAGE,
     }),
   );
-  await waitFor(() => expect(getDone).toBeTruthy());
+  await waitFor(() => {
+    expect(getDone).toBeTruthy();
+  });
 });
 
 test("should display no roles data when no roles are available", async () => {

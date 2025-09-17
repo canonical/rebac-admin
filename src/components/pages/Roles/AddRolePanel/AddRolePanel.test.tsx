@@ -150,7 +150,9 @@ test("should add a role and entitlements", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
-  await waitFor(() => expect(done).toBeTruthy());
+  await waitFor(() => {
+    expect(done).toBeTruthy();
+  });
   expect(responseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );

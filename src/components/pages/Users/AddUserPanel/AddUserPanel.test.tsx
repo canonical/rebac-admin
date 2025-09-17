@@ -211,7 +211,9 @@ test("should add groups", async () => {
   await userEvent.click(
     await screen.findByRole("button", { name: "Create local user" }),
   );
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe('{"patches":[{"group":"group1","op":"add"}]}');
   expect(
     await findNotificationByText(
@@ -290,7 +292,9 @@ test("should add roles", async () => {
   await userEvent.click(
     await screen.findByRole("button", { name: "Create local user" }),
   );
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
   expect(
     await findNotificationByText(
@@ -384,7 +388,9 @@ test("should add entitlements", async () => {
   await userEvent.click(
     await screen.findByRole("button", { name: "Create local user" }),
   );
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );

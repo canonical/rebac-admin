@@ -224,7 +224,9 @@ test("should add entitlements", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
@@ -325,7 +327,9 @@ test("should add users", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe(
     '{"patches":[{"identity":"user2","op":"add"}]}',
   );
@@ -412,7 +416,9 @@ test("should add roles", async () => {
     screen.getAllByRole("button", { name: "Create group" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Create group" }));
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe('{"patches":[{"role":"role345","op":"add"}]}');
   expect(
     await findNotificationByText('Group "group1" was created.', {

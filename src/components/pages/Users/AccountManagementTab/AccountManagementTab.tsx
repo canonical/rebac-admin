@@ -47,7 +47,9 @@ const AccountManagementTab: FC = () => {
       <h5>Delete user</h5>
       <Button
         appearance={ButtonAppearance.NEGATIVE}
-        onClick={() => openModal([userId])}
+        onClick={() => {
+          openModal([userId]);
+        }}
         hasIcon
       >
         <Icon name={ICONS.delete} light /> <span>{Label.DELETE}</span>

@@ -21,7 +21,9 @@ describe("Toast Card", () => {
   };
 
   afterEach(() => {
-    act(() => reactHotToast.remove());
+    act(() => {
+      reactHotToast.remove();
+    });
   });
 
   test("should display message", () => {

@@ -122,7 +122,9 @@ const Groups: FC = () => {
           }
           onEdit={
             canUpdateGroup
-              ? (group): void => openPanel({ editGroup: group })
+              ? (group): void => {
+                  openPanel({ editGroup: group });
+                }
               : null
           }
           pagination={pagination}
@@ -141,7 +143,9 @@ const Groups: FC = () => {
             <Button
               appearance={ButtonAppearance.NEGATIVE}
               disabled={!selected.selectedEntities.length}
-              onClick={() => openModal(selected.selectedEntities)}
+              onClick={() => {
+                openModal(selected.selectedEntities);
+              }}
             >
               {Label.DELETE}
             </Button>

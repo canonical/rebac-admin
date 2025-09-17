@@ -98,7 +98,7 @@ const GroupsTab: FC = () => {
       existingGroups={existingGroups}
       setAddGroups={
         canRelateGroups
-          ? (addGroups): void =>
+          ? (addGroups): void => {
               updateGroups(
                 userId,
                 addGroups,
@@ -106,12 +106,13 @@ const GroupsTab: FC = () => {
                 queryKey,
                 IdentityGroupsPatchItemOp.add,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       setRemoveGroups={
         canRelateGroups
-          ? (removeGroups): void =>
+          ? (removeGroups): void => {
               updateGroups(
                 userId,
                 removeGroups,
@@ -119,7 +120,8 @@ const GroupsTab: FC = () => {
                 queryKey,
                 IdentityGroupsPatchItemOp.remove,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       showTable={canGetGroups}

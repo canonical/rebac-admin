@@ -144,7 +144,7 @@ const GroupPanel: FC<Props> = ({
         isFetchingEntitlementCapability
       }
       isSaving={isSaving}
-      onSubmit={async (values) =>
+      onSubmit={async (values) => {
         await onSubmit(
           values,
           isDirty,
@@ -154,8 +154,8 @@ const GroupPanel: FC<Props> = ({
           removeEntitlements,
           removeIdentities,
           removeRoles,
-        )
-      }
+        );
+      }}
       subForms={subForms}
       validationSchema={schema}
     >

@@ -217,7 +217,9 @@ test("should add and remove groups", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
-  await waitFor(() => expect(patchDone).toBeTruthy());
+  await waitFor(() => {
+    expect(patchDone).toBeTruthy();
+  });
   expect(patchResponseBody).toBe(
     '{"patches":[{"group":"3","op":"add"},{"group":"1","op":"remove"}]}',
   );
@@ -325,7 +327,9 @@ test("should add and remove roles", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       { role: "role345", op: "add" },
@@ -454,7 +458,9 @@ test("should add and remove entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       {
@@ -591,7 +597,9 @@ test("should change user details", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: "Update local user" }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     addedBy: "within",
     email: "pfft@example.com",

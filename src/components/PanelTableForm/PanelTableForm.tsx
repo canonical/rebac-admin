@@ -30,7 +30,9 @@ const generateRow = <E,>(
       appearance="base"
       className="u-no-margin--bottom is-small"
       hasIcon
-      onClick={() => onRemove(entity)}
+      onClick={() => {
+        onRemove(entity);
+      }}
     >
       <Icon name="delete">Remove {entityName}</Icon>
     </Button>
@@ -75,12 +77,13 @@ const PanelTableForm = <E,>({
               entityName,
               newEntity,
               setAddEntities
-                ? (addEntity): void =>
+                ? (addEntity): void => {
                     setAddEntities(
                       addEntities.filter(
                         (entity) => !fastDeepEqual(entity, addEntity),
                       ),
-                    )
+                    );
+                  }
                 : null,
             ),
           );
@@ -101,8 +104,9 @@ const PanelTableForm = <E,>({
               entityName,
               existingEntity,
               setRemoveEntities
-                ? (entity): void =>
-                    setRemoveEntities([...removeEntities, entity])
+                ? (entity): void => {
+                    setRemoveEntities([...removeEntities, entity]);
+                  }
                 : null,
             ),
           );

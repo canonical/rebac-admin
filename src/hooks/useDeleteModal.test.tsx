@@ -17,8 +17,20 @@ const TestComponent: FC = () => {
   );
   return (
     <>
-      <button onClick={() => openModal(["id1"])}>Open</button>
-      <button onClick={() => closeModal()}>Close</button>
+      <button
+        onClick={() => {
+          openModal(["id1"]);
+        }}
+      >
+        Open
+      </button>
+      <button
+        onClick={() => {
+          closeModal();
+        }}
+      >
+        Close
+      </button>
       {generateModal()}
     </>
   );

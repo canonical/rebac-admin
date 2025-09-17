@@ -95,7 +95,9 @@ test("search users", async () => {
   });
   renderComponent(<Users />);
   await userEvent.type(screen.getByRole("searchbox"), "joe{enter}");
-  await waitFor(() => expect(getDone).toBeTruthy());
+  await waitFor(() => {
+    expect(getDone).toBeTruthy();
+  });
 });
 
 test("paginates", async () => {
@@ -118,7 +120,9 @@ test("paginates", async () => {
       name: EntityTablePaginationLabel.NEXT_PAGE,
     }),
   );
-  await waitFor(() => expect(getDone).toBeTruthy());
+  await waitFor(() => {
+    expect(getDone).toBeTruthy();
+  });
 });
 
 test("should display no users data when no users are available", async () => {

@@ -73,9 +73,9 @@ if (root) {
       );
       return;
     })
-    .catch((error) =>
-      console.error("Error while trying to start mock API worker.", error),
-    );
+    .catch((error) => {
+      console.error("Error while trying to start mock API worker.", error);
+    });
 } else {
   console.error("Root element not found in DOM.");
 }
