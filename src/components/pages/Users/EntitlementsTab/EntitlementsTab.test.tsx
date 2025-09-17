@@ -167,7 +167,9 @@ test("should add entitlements", async () => {
   await userEvent.click(
     screen.getByRole("button", { name: EntitlementsPanelFormLabel.SUBMIT }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody).toStrictEqual(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"}]}',
   );
@@ -198,7 +200,9 @@ test("should remove entitlements", async () => {
       })
     )[0],
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody).toStrictEqual(
     '{"patches":[{"entitlement":{"entitlement":"can_read","entity_id":"editors","entity_type":"client"},"op":"remove"}]}',
   );

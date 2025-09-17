@@ -98,7 +98,7 @@ const RolesTab: FC = () => {
       existingRoles={existingRoles}
       setAddRoles={
         canRelateRoles
-          ? (addRoles): void =>
+          ? (addRoles): void => {
               updateRoles(
                 userId,
                 addRoles,
@@ -106,12 +106,13 @@ const RolesTab: FC = () => {
                 queryKey,
                 IdentityRolesPatchItemOp.add,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       setRemoveRoles={
         canRelateRoles
-          ? (removeRoles): void =>
+          ? (removeRoles): void => {
               updateRoles(
                 userId,
                 removeRoles,
@@ -119,7 +120,8 @@ const RolesTab: FC = () => {
                 queryKey,
                 IdentityRolesPatchItemOp.remove,
                 mutateAsync,
-              )
+              );
+            }
           : null
       }
       showTable={canGetRoles}

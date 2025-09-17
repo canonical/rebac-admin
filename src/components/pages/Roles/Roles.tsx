@@ -123,7 +123,11 @@ const Roles: FC = () => {
               : null
           }
           onEdit={
-            canUpdateRole ? (role): void => openPanel({ editRole: role }) : null
+            canUpdateRole
+              ? (role): void => {
+                  openPanel({ editRole: role });
+                }
+              : null
           }
           pagination={pagination}
           selected={selected}
@@ -140,7 +144,9 @@ const Roles: FC = () => {
             <Button
               appearance={ButtonAppearance.NEGATIVE}
               disabled={!selected.selectedEntities.length}
-              onClick={() => openModal(selected.selectedEntities)}
+              onClick={() => {
+                openModal(selected.selectedEntities);
+              }}
             >
               {Label.DELETE}
             </Button>

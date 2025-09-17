@@ -100,6 +100,7 @@ export default [
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/no-confusing-void-expression": "error",
       "no-shadow": "off",
       "@typescript-eslint/no-shadow": "error",
       "@typescript-eslint/prefer-nullish-coalescing": [

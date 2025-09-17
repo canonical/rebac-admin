@@ -27,7 +27,9 @@ export type WrappedHookResult<Result, Props> = {
   result: RenderHookResult<Result, Props>["result"];
 };
 
-export const changeURL = (url: string): void => window.happyDOM.setURL(url);
+export const changeURL = (url: string): void => {
+  window.happyDOM.setURL(url);
+};
 
 const getQueryClient = (options: Options | null | undefined): QueryClient =>
   options?.queryClient ??

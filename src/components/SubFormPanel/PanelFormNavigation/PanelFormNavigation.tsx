@@ -21,7 +21,9 @@ const PanelFormNavigation: FC<Props> = ({
   return (
     <BreadcrumbNavigation
       backTitle={view ? panelTitle : null}
-      onBack={() => setView(null, defaultPanelWidth)}
+      onBack={() => {
+        setView(null, defaultPanelWidth);
+      }}
       title={viewTitle ?? panelTitle}
       titleId={SidePanelLabelledById}
     />

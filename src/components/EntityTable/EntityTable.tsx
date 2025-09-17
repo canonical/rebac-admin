@@ -74,7 +74,9 @@ const EntityTable = <E extends TableEntity>({
                 <Icon name="edit" /> {Label.EDIT}
               </>
             ),
-            onClick: () => onEdit(entity),
+            onClick: () => {
+              onEdit(entity);
+            },
           });
         }
         if (onDelete) {
@@ -85,7 +87,9 @@ const EntityTable = <E extends TableEntity>({
                 <Icon name="delete" /> {Label.DELETE}
               </>
             ),
-            onClick: () => onDelete(entity),
+            onClick: () => {
+              onDelete(entity);
+            },
           });
         }
         return {
@@ -97,9 +101,11 @@ const EntityTable = <E extends TableEntity>({
                 selected.areAllEntitiesSelected ||
                 (!!entity.id && selected.selectedEntities.includes(entity.id))
               }
-              onChange={() =>
-                entity.id && selected.handleSelectEntity(entity.id)
-              }
+              onChange={() => {
+                if (entity.id) {
+                  selected.handleSelectEntity(entity.id);
+                }
+              }}
               disabled={checkboxesDisabled}
               aria-labelledby={undefined}
             />

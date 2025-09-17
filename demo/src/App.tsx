@@ -107,7 +107,9 @@ const App: FC = () => {
               controls={
                 <>
                   <Button
-                    onClick={() => setAsidePinned(!asidePinned)}
+                    onClick={() => {
+                      setAsidePinned(!asidePinned);
+                    }}
                     dense
                     className="u-no-margin"
                   >
@@ -186,7 +188,9 @@ const App: FC = () => {
       }
       status={
         <Button
-          onClick={() => setShowAside(!showAside)}
+          onClick={() => {
+            setShowAside(!showAside);
+          }}
           dense
           appearance="base"
           className="u-no-margin"

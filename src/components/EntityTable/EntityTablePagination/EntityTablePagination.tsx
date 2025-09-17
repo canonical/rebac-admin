@@ -17,10 +17,12 @@ const EntityTablePagination: FC<Props> = ({ pagination }: Props) => {
       }
       displayDescription={false}
       pageSize={pagination.pageData.size}
-      onInputPageChange={(page) =>
+      onInputPageChange={(page) => {
         // The API uses zero indexed page numbers so reduce the count by 1.
-        page > 0 && pagination.setPage(page - 1)
-      }
+        if (page > 0) {
+          pagination.setPage(page - 1);
+        }
+      }}
       onNextPage={pagination.nextPage}
       onPreviousPage={() => {
         if (pagination.previousPage) {

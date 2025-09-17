@@ -84,7 +84,9 @@ const SubFormPanel = <F extends FormikValues>({
                       icon={icon}
                       isEditing={isEditing}
                       key={subformEntity}
-                      onClick={() => changeView(subformEntity, subPanelWidth)}
+                      onClick={() => {
+                        changeView(subformEntity, subPanelWidth);
+                      }}
                     />
                   ),
                 )}

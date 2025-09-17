@@ -137,7 +137,9 @@ test("should add groups", async () => {
       name: "group3",
     }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       {
@@ -173,7 +175,9 @@ test("should remove groups", async () => {
       })
     )[0],
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       {

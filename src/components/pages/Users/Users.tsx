@@ -141,7 +141,11 @@ const Users: FC = () => {
               : null
           }
           onEdit={
-            canUpdateUser ? (user): void => openPanel({ editUser: user }) : null
+            canUpdateUser
+              ? (user): void => {
+                  openPanel({ editUser: user });
+                }
+              : null
           }
           pagination={pagination}
           selected={selected}
@@ -158,7 +162,9 @@ const Users: FC = () => {
             <Button
               appearance={ButtonAppearance.NEGATIVE}
               disabled={!selected.selectedEntities.length}
-              onClick={() => openModal(selected.selectedEntities)}
+              onClick={() => {
+                openModal(selected.selectedEntities);
+              }}
             >
               {Label.DELETE}
             </Button>

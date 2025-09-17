@@ -139,7 +139,9 @@ test("should add roles", async () => {
       name: "role3",
     }),
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       {
@@ -175,7 +177,9 @@ test("should remove roles", async () => {
       })
     )[0],
   );
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody && JSON.parse(patchResponseBody)).toStrictEqual({
     patches: [
       {

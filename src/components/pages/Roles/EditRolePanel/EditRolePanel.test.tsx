@@ -140,7 +140,9 @@ test("updates the role", async () => {
     "changed",
   );
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
-  await waitFor(() => expect(putDone).toBe(true));
+  await waitFor(() => {
+    expect(putDone).toBe(true);
+  });
   expect(putResponseBody && JSON.parse(putResponseBody)).toMatchObject({
     id: "admin123",
     name: "admin1changed",
@@ -227,7 +229,9 @@ test("should not call onRoleUpdated if the role wasn't changed", async () => {
     screen.getAllByRole("button", { name: "Edit role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(onRoleUpdated).not.toHaveBeenCalled();
 });
 
@@ -300,7 +304,9 @@ test("should add and remove entitlements", async () => {
     screen.getAllByRole("button", { name: "Edit role" })[0],
   );
   await userEvent.click(screen.getByRole("button", { name: "Update role" }));
-  await waitFor(() => expect(patchDone).toBe(true));
+  await waitFor(() => {
+    expect(patchDone).toBe(true);
+  });
   expect(patchResponseBody).toBe(
     '{"patches":[{"entitlement":{"entity_type":"client","entitlement":"can_read","entity_id":"mock-entity-id"},"op":"add"},{"entitlement":{"entitlement":"can_edit","entity_id":"moderators","entity_type":"collection"},"op":"remove"}]}',
   );
@@ -310,11 +316,11 @@ test("should add and remove entitlements", async () => {
       severity: "positive",
     }),
   ).toBeInTheDocument();
-  await waitFor(() =>
+  await waitFor(() => {
     expect(invalidateQueries).toHaveBeenCalledWith({
       queryKey: ["/roles/admin123/entitlements"],
-    }),
-  );
+    });
+  });
 });
 
 test("should handle errors when updating entitlements", async () => {

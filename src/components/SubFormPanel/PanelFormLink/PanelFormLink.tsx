@@ -15,7 +15,9 @@ const PanelFormLink: FC<Props> = ({
     <Button
       appearance="base"
       className="panel-form-link"
-      onClick={() => onClick(entity)}
+      onClick={() => {
+        onClick(entity);
+      }}
       type="button"
     >
       <span className="panel-form-link__column">

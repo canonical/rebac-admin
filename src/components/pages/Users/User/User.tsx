@@ -135,7 +135,9 @@ const User: FC = () => {
         canUpdateUser ? (
           <Button
             appearance={ButtonAppearance.DEFAULT}
-            onClick={() => openPanel({ editUser: user })}
+            onClick={() => {
+              openPanel({ editUser: user });
+            }}
           >
             <Icon name="edit" /> {Label.EDIT}
           </Button>

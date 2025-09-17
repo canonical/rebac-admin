@@ -47,9 +47,9 @@ const RolePanel: FC<Props> = ({
       isEditing={isEditing}
       isFetching={isFetchingRole || isFetchingEntitlementCapability}
       isSaving={isSaving}
-      onSubmit={async (values) =>
-        await onSubmit(values, isDirty, addEntitlements, removeEntitlements)
-      }
+      onSubmit={async (values) => {
+        await onSubmit(values, isDirty, addEntitlements, removeEntitlements);
+      }}
       subForms={
         canRelateEntitlements
           ? [

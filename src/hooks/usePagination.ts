@@ -87,8 +87,12 @@ export const usePagination = (): PaginationParams => {
     nextPage,
     pageData,
     previousPage: response?._meta.pageToken ? null : previousPage,
-    setPage: (page) => setPageData({ ...pageData, page }),
-    resetPage: () => setPageData({ size: pageData.size }),
+    setPage: (page): void => {
+      setPageData({ ...pageData, page });
+    },
+    resetPage: (): void => {
+      setPageData({ size: pageData.size });
+    },
     setResponse: updateResponse,
     setSize: (size): void => {
       setPageData({ size, ...("page" in pageData ? { page: 0 } : {}) });

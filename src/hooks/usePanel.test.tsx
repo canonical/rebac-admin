@@ -27,8 +27,20 @@ const TestComponent: FC = () => {
   ));
   return (
     <>
-      <button onClick={() => openPanel({ state: "panel state" })}>Open</button>
-      <button onClick={() => closePanel()}>Close</button>
+      <button
+        onClick={() => {
+          openPanel({ state: "panel state" });
+        }}
+      >
+        Open
+      </button>
+      <button
+        onClick={() => {
+          closePanel();
+        }}
+      >
+        Close
+      </button>
       {generatePanel()}
     </>
   );
