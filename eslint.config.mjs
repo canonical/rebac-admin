@@ -113,6 +113,10 @@ export default [
         },
       ],
       "@typescript-eslint/prefer-optional-chain": "error",
+      "no-redeclare": "off",
+      "@typescript-eslint/no-redeclare": "error",
+      "init-declarations": "off",
+      "@typescript-eslint/init-declarations": "error",
       "react/jsx-filename-extension": [
         1,
         {
@@ -202,6 +206,7 @@ export default [
       "testing-library/no-node-access": "off",
       "testing-library/no-container": "off",
       "testing-library/no-render-in-lifecycle": "off",
+      "@typescript-eslint/init-declarations": "off",
     },
   },
   {

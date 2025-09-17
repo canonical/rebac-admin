@@ -114,7 +114,7 @@ const User: FC = () => {
       ]
     : [];
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (isFetching) {
     content = <Spinner text={Label.FETCHING_USER} />;
   } else if (isError) {
