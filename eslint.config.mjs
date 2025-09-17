@@ -92,7 +92,7 @@ export default [
           varsIgnorePattern: "^_",
         },
       ],
-      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-expressions": ["error"],
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",
@@ -125,6 +125,9 @@ export default [
       "@typescript-eslint/no-unsafe-argument": "error",
       "no-use-before-define": "off",
       "@typescript-eslint/no-use-before-define": "error",
+      "prefer-destructuring": "off",
+      "@typescript-eslint/prefer-destructuring": "error",
+      "@typescript-eslint/restrict-template-expressions": "error",
       "react/jsx-filename-extension": [
         1,
         {
@@ -161,7 +164,6 @@ export default [
       "default-case": 0,
       "no-param-reassign": 0,
       "no-case-declarations": 0,
-      "no-redeclare": 0,
       "perfectionist/sort-intersection-types": "error",
       "perfectionist/sort-union-types": "error",
       "prefer-destructuring": 0,
@@ -174,6 +176,7 @@ export default [
       "@tanstack/query/exhaustive-deps": "error",
       "@tanstack/query/prefer-query-object-syntax": 0,
       "@tanstack/query/stable-query-client": "error",
+      curly: ["error", "all"],
     },
   },
   ...fixupConfigRules(compat.extends("plugin:prettier/recommended")).map(
@@ -218,6 +221,7 @@ export default [
       "testing-library/no-render-in-lifecycle": "off",
       "@typescript-eslint/init-declarations": "off",
       "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/prefer-destructuring": "off",
     },
   },
   {
