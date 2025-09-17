@@ -33,7 +33,7 @@ import { Label } from "./types";
 
 export type Props = {
   // The element ID to use to render aside panels into. Should not begin with "#".
-  asidePanelId?: string | null;
+  asidePanelId?: null | string;
   // The level of logging to be used by the logger.
   logLevel?: LogLevelDesc;
 } & ExclusiveProps<

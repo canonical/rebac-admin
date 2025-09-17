@@ -169,7 +169,7 @@ test("should add and remove groups", async () => {
   vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
     invalidateQueries,
   } as unknown as reactQuery.QueryClient);
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -279,7 +279,7 @@ test("should add and remove roles", async () => {
   vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
     invalidateQueries,
   } as unknown as reactQuery.QueryClient);
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -395,7 +395,7 @@ test("should add and remove entitlements", async () => {
   vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
     invalidateQueries,
   } as unknown as reactQuery.QueryClient);
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -565,7 +565,7 @@ test("should handle errors when updating entitlements", async () => {
 
 test("should change user details", async () => {
   const mockUserUpdate = vi.fn();
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

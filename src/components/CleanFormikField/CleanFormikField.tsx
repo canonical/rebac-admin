@@ -4,7 +4,7 @@ import { useFormikContext } from "formik";
 import type { ComponentType, ElementType } from "react";
 
 const CleanFormikField = <
-  C extends ElementType | ComponentType = typeof Input,
+  C extends ComponentType | ElementType = typeof Input,
 >({
   ...props
 }: FormikFieldProps<C>): JSX.Element => {

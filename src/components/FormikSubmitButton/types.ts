@@ -1,5 +1,5 @@
 import type { ActionButtonProps } from "@canonical/react-components";
 
-export type Props = ActionButtonProps & {
+export type Props = {
   enabled?: boolean;
-};
+} & ActionButtonProps;

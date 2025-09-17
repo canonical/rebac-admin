@@ -21,13 +21,13 @@ type Result = {
   refetch: ReturnType<typeof useGetCapabilities>["refetch"];
 };
 
-type GetCapabilitiesActionsResult = Result & {
+type GetCapabilitiesActionsResult = {
   actions: (string | undefined)[];
-};
+} & Result;
 
-type CheckCapabilityResult = Result & {
+type CheckCapabilityResult = {
   hasCapability: boolean;
-};
+} & Result;
 
 export const useGetCapabilityActions = (
   endpoint: Endpoint,

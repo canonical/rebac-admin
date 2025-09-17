@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 type Values = {
-  asidePanelId?: string | null;
+  asidePanelId?: null | string;
 };
 
 export const ReBACAdminContext = createContext<Values>({

@@ -8,7 +8,7 @@ export type Props<E> = {
   columns: Column<RowData>[];
   entityMatches?: (entity: E, search: string) => boolean;
   entityName: string;
-  error?: string | null;
+  error?: null | string;
   existingEntities?: E[];
   form?: ReactNode;
   generateCells: (entity: E) => Record<string, ReactNode>;

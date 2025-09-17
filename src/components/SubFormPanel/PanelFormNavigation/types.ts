@@ -5,6 +5,6 @@ export type Props = {
   isEditing?: boolean;
   panelEntity: string;
   panelLabelId?: string;
-  setView: (view: string | null, panelWidth?: PanelWidth | null) => void;
-  view?: string | null;
+  setView: (view: null | string, panelWidth?: null | PanelWidth) => void;
+  view?: null | string;
 };

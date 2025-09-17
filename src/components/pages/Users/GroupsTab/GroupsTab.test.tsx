@@ -110,7 +110,7 @@ test("does not display loading spinner when refetching", async () => {
 });
 
 test("should add groups", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -151,7 +151,7 @@ test("should add groups", async () => {
 });
 
 test("should remove groups", async () => {
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

@@ -106,7 +106,7 @@ afterAll(() => {
 
 test("updates the role", async () => {
   const onRoleUpdated = vi.fn();
-  let putResponseBody: string | null = null;
+  let putResponseBody: null | string = null;
   let putDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {
@@ -240,7 +240,7 @@ test("should add and remove entitlements", async () => {
   vi.spyOn(reactQuery, "useQueryClient").mockReturnValue({
     invalidateQueries,
   } as unknown as reactQuery.QueryClient);
-  let patchResponseBody: string | null = null;
+  let patchResponseBody: null | string = null;
   let patchDone = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

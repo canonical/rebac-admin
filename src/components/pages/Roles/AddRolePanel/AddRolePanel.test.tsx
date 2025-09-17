@@ -94,7 +94,7 @@ test("should add a role", async () => {
 });
 
 test("should add a role and entitlements", async () => {
-  let responseBody: string | null = null;
+  let responseBody: null | string = null;
   let done = false;
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   mockApiServer.events.on("request:start", async ({ request }) => {

@@ -18,6 +18,6 @@ export type Props = {
     addEntitlements: EntityEntitlement[],
     removeEntitlements?: EntityEntitlement[],
   ) => Promise<void>;
-  role?: Role | null;
+  role?: null | Role;
   setPanelWidth: SetPanelWidth;
 };

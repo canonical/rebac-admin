@@ -8,11 +8,11 @@ import type {
   PaginationPageParameter,
 } from "api/api.schemas";
 
-type PageData = (
+type PageData = { size: PaginationSizeParameter } & (
+  | {}
   | { nextToken: PaginationNextTokenParameter }
   | { page: PaginationPageParameter }
-  | {}
-) & { size: PaginationSizeParameter };
+);
 
 const PAGE_SIZE = 10;
 

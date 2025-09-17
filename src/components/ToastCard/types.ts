@@ -3,6 +3,6 @@ import type { Toast } from "react-hot-toast";
 
 export type Props = {
   toastInstance: Omit<Toast, "ariaProps">;
-  type: "positive" | "caution" | "negative";
+  type: "caution" | "negative" | "positive";
   undo?: () => void;
 } & PropsWithChildren;

@@ -22,7 +22,7 @@ import { Label, type Props } from "./types";
 
 const generateError = (
   getRolesItemEntitlementsError: AxiosError<Response> | null,
-): string | null => {
+): null | string => {
   if (getRolesItemEntitlementsError) {
     return `Unable to get entitlements: ${getRolesItemEntitlementsError.response?.data.message}`;
   }

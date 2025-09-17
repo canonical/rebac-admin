@@ -38,7 +38,7 @@ const Roles: FC = () => {
   });
   pagination.setResponse(data?.data);
   const { generatePanel, openPanel, isPanelOpen } = usePanel<{
-    editRole?: Role | null;
+    editRole?: null | Role;
   }>((closePanel, panelData, setPanelWidth) => {
     if (panelData?.editRole?.id) {
       return (

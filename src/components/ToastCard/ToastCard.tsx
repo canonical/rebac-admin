@@ -8,7 +8,7 @@ export default function ToastCard({
   type,
   undo,
 }: Props): JSX.Element {
-  let iconName: string | null = null;
+  let iconName: null | string = null;
   switch (type) {
     case "positive":
       iconName = "success";

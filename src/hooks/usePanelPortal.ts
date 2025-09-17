@@ -5,8 +5,8 @@ import { useContext, useEffect } from "react";
 import { ReBACAdminContext } from "context/ReBACAdminContext";
 
 export const usePanelPortal = (
-  className?: string | null,
-  labelledBy?: string | null,
+  className?: null | string,
+  labelledBy?: null | string,
   options?: UsePortalOptions,
 ): ReturnType<typeof usePortal> => {
   const { asidePanelId } = useContext(ReBACAdminContext);
