@@ -6,7 +6,7 @@ import type {
 } from "axios";
 import axios from "axios";
 
-export let axiosInstance: AxiosInstance;
+export let axiosInstance: AxiosInstance | null = null;
 
 export const setInstance = (instance: AxiosInstance): void => {
   axiosInstance = instance;
@@ -20,6 +20,9 @@ export const customInstance = <T>(
   config: AxiosRequestConfig,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<T>> => {
+  if (!axiosInstance) {
+    throw new Error("Axios instance has not been initialised.");
+  }
   const promise = axiosInstance({
     ...config,
     ...options,

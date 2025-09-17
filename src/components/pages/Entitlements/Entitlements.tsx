@@ -41,7 +41,7 @@ const Entitlements: FC = () => {
     [entitlements],
   );
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (isFetching) {
     content = <Spinner text={Label.FETCHING_ENTITLEMENTS} />;
   } else if (isError) {

@@ -44,7 +44,7 @@ const Resources: FC = () => {
     [resources],
   );
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (isFetching) {
     content = <Spinner text={Label.FETCHING_RESOURCES} />;
   } else if (isError) {

@@ -39,7 +39,7 @@ test("renders the component", () => {
 test("the api URL can be configured when not using a custom axios instance", () => {
   const apiURL = "http://example.com/api";
   renderComponent(<ReBACAdmin apiURL={apiURL} />);
-  expect(axiosInstance.defaults.baseURL).toBe(apiURL);
+  expect(axiosInstance?.defaults.baseURL).toBe(apiURL);
 });
 
 test("a custom axios instance can be passed", () => {
