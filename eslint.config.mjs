@@ -117,6 +117,7 @@ export default [
       "@typescript-eslint/no-redeclare": "error",
       "init-declarations": "off",
       "@typescript-eslint/init-declarations": "error",
+      "@typescript-eslint/promise-function-async": "error",
       "react/jsx-filename-extension": [
         1,
         {

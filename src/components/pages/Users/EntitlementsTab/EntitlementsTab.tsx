@@ -39,7 +39,7 @@ const updateEntitlements = (
       })),
     },
   })
-    .then(() =>
+    .then(async () =>
       queryClient.invalidateQueries({
         queryKey,
       }),

@@ -38,7 +38,7 @@ const updateGroups = (
       })),
     },
   })
-    .then(() =>
+    .then(async () =>
       queryClient.invalidateQueries({
         queryKey,
       }),

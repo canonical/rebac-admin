@@ -16,7 +16,7 @@ export const createInstance = (apiURL: string): void => {
   setInstance(axios.create({ baseURL: apiURL }));
 };
 
-export const customInstance = <T>(
+export const customInstance = async <T>(
   config: AxiosRequestConfig,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<T>> => {
