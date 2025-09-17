@@ -34,9 +34,11 @@ export const useEntitiesSelect = (entities: string[]): EntitiesSelect => {
   };
 
   const handleSelectAllEntities = (): void => {
-    areAllEntitiesSelected
-      ? setSelectedEntities([])
-      : setSelectedEntities(entities);
+    if (areAllEntitiesSelected) {
+      setSelectedEntities([]);
+    } else {
+      setSelectedEntities(entities);
+    }
   };
 
   return {
