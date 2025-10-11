@@ -111,7 +111,7 @@
     "express": "5.1.0",
     "formik": "2.4.6",
     "globals": "16.4.0",
-    "happy-dom": "18.0.1",
+    "happy-dom": "20.0.0",
     "ip": "2.0.1",
     "msw": "2.11.1",
     "npm-package-json-lint": "9.0.0",
