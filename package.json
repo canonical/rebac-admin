@@ -115,7 +115,7 @@
     "ip": "2.0.1",
     "msw": "2.11.1",
     "npm-package-json-lint": "9.0.0",
-    "orval": "7.11.2",
+    "orval": "8.22.0",
     "postcss": "8.5.6",
     "prettier": "3.6.2",
     "react": "19.1.1",
